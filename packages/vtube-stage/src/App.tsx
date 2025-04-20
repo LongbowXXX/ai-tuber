@@ -14,6 +14,7 @@ function App() {
   >({});
   // 頭の回転角度を保持するState
   const [headYaw, setHeadYaw] = useState<number>(0);
+  const [currentAnimation, setCurrentAnimation] = useState<string>("idle"); // 初期アニメーションを 'idle' とする
 
   // VRMインスタンスを取得するコールバック
   const handleLoad = useCallback((loadedVrm: VRM) => {
@@ -39,6 +40,12 @@ function App() {
     setHeadYaw(angle);
   }, []);
 
+  // アニメーション変更用ハンドラ
+  const handleAnimationChange = useCallback((animationName: string) => {
+    console.log(`Changing animation to: ${animationName}`);
+    setCurrentAnimation(animationName);
+  }, []);
+
   return (
     <div id="canvas-container">
       <Canvas
@@ -51,6 +58,7 @@ function App() {
           expressionWeights={expressionWeights} // 表情ウェイト (SceneContent内で更新ロジックに使用)
           headYaw={headYaw} // 頭の角度 (SceneContent内で更新ロジックに使用)
           onLoad={handleLoad} // VRMロード完了時のコールバック (SceneContent経由でVRMAvatarへ)
+          currentAnimationName={currentAnimation} // 現在のアニメーション名 (SceneContent内で更新ロジックに使用)
         />
       </Canvas>
       {/* VRMコントローラーUI */}
@@ -58,6 +66,8 @@ function App() {
         <VRMController
           onExpressionChange={handleExpressionChange}
           onHeadYawChange={handleHeadYawChange}
+          onAnimationChange={handleAnimationChange}
+          availableAnimations={["idle", "wave"]} // 利用可能なアニメーションのリスト
         />
       )}
     </div>

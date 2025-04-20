@@ -7,6 +7,8 @@ interface VRMControllerProps {
   onExpressionChange: (name: string, weight: number) => void;
   // 頭の回転を更新するコールバック
   onHeadYawChange: (angle: number) => void;
+  onAnimationChange: (animationName: string) => void;
+  availableAnimations: string[];
 }
 
 // 制御する表情のリスト（モデルに合わせて変更）
@@ -30,6 +32,8 @@ const expressionNames = [
 export const VRMController: React.FC<VRMControllerProps> = ({
   onExpressionChange,
   onHeadYawChange,
+  onAnimationChange,
+  availableAnimations,
 }) => {
   const handleExpressionSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -72,6 +76,15 @@ export const VRMController: React.FC<VRMControllerProps> = ({
           defaultValue="0"
           onChange={handleHeadSlider}
         />
+      </div>
+      {/* アニメーション選択UI */}
+      <h4>Animations</h4>
+      <div className="animation-buttons">
+        {availableAnimations.map((name) => (
+          <button key={name} onClick={() => onAnimationChange(name)}>
+            Play {name}
+          </button>
+        ))}
       </div>
     </div>
   );

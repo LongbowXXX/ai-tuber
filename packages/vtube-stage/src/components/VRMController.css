@@ -35,3 +35,19 @@
   flex-grow: 1;
   cursor: pointer;
 }
+
+.animation-buttons button {
+  background-color: #61dafb;
+  border: none;
+  color: #282c34;
+  padding: 5px 10px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.animation-buttons button:hover {
+  background-color: #4fa8c4;
+}
