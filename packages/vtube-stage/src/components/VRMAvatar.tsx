@@ -27,8 +27,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({ vrmUrl, onLoad }) => {
       const vrm: VRM = gltf.userData.vrm;
 
       // 以前のバージョン（0.x）のVRMをY軸方向に向けるためのユーティリティ
-      // VRM 1.0の場合は不要なことが多い、または別の調整が必要
-      // VRMUtils.rotateVRM0ToYAxis(vrm);
+      VRMUtils.rotateVRM0(vrm);
 
       // 物理演算(SpringBone)を有効にする場合
       // VRMUtils.addVRMSpringBones(vrm);

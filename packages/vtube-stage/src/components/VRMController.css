@@ -1,0 +1,37 @@
+/* src/components/VRMController.css */
+.vrm-controller {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(40, 40, 40, 0.8);
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 10; /* Canvasより手前に表示 */
+}
+
+.vrm-controller h4 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #555;
+  padding-bottom: 3px;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.control-row label {
+  min-width: 80px; /* ラベル幅を揃える */
+  margin-right: 10px;
+  font-size: 0.9em;
+}
+
+.control-row input[type="range"] {
+  flex-grow: 1;
+  cursor: pointer;
+}

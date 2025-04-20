@@ -1,51 +1,65 @@
 // src/App.tsx (初期状態)
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei"; // カメラ操作用
 import "./App.css";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { VRM } from "@pixiv/three-vrm";
-import { VRMAvatar } from "./components/VRMAvatar";
+import { VRMController } from "./components/VRMController";
+import { SceneContent } from "./components/SceneContent";
 
 function App() {
   const [vrm, setVrm] = useState<VRM | null>(null); // VRMインスタンスの状態
+  // 表情のウェイトを保持するState (Record<string, number> 型を使用)
+  const [expressionWeights, setExpressionWeights] = useState<
+    Record<string, number>
+  >({});
+  // 頭の回転角度を保持するState
+  const [headYaw, setHeadYaw] = useState<number>(0);
 
-  const handleLoad = (loadedVrm: VRM) => {
+  // VRMインスタンスを取得するコールバック
+  const handleLoad = useCallback((loadedVrm: VRM) => {
     setVrm(loadedVrm);
+    // 初期表情状態を設定（任意）
+    // const initialWeights: Record<string, number> = {};
+    // if (loadedVrm.expressionManager) {
+    //   loadedVrm.expressionManager.expressionMap.forEach((_, key) => {
+    //     initialWeights[key] = 0;
+    //   });
+    // }
+    // setExpressionWeights(initialWeights);
     console.log("App component received VRM instance.");
-  };
+  }, []);
+
+  // 表情UI変更時のハンドラ
+  const handleExpressionChange = useCallback((name: string, weight: number) => {
+    setExpressionWeights((prev) => ({ ...prev, [name]: weight }));
+  }, []);
+
+  // 頭の回転UI変更時のハンドラ
+  const handleHeadYawChange = useCallback((angle: number) => {
+    setHeadYaw(angle);
+  }, []);
+
   return (
     <div id="canvas-container">
       <Canvas
         camera={{ position: [0, 1.2, 1.5], fov: 50 }} // カメラ初期位置調整
         shadows // 影を有効化
       >
-        {/* 環境光 */}
-        <ambientLight intensity={0.8} />
-        {/* 平行光源 (影を落とす) */}
-        <directionalLight
-          position={[3, 5, 2]}
-          intensity={1.5}
-          castShadow
-          shadow-mapSize-width={1024}
-          shadow-mapSize-height={1024}
+        {/* Canvas の内部に SceneContent を配置し、必要な State とコールバックを渡す */}
+        <SceneContent
+          vrm={vrm} // VRMインスタンス (SceneContent内で更新ロジックに使用)
+          expressionWeights={expressionWeights} // 表情ウェイト (SceneContent内で更新ロジックに使用)
+          headYaw={headYaw} // 頭の角度 (SceneContent内で更新ロジックに使用)
+          onLoad={handleLoad} // VRMロード完了時のコールバック (SceneContent経由でVRMAvatarへ)
         />
-        {/* 床 (影を受け取る) */}
-        <mesh
-          rotation={[-Math.PI / 2, 0, 0]}
-          position={[0, 0, 0]}
-          receiveShadow
-        >
-          <planeGeometry args={[10, 10]} />
-          <meshStandardMaterial color="grey" />
-        </mesh>
-
-        {/* VRMアバターコンポーネント */}
-        <VRMAvatar vrmUrl="/avatar.vrm" onLoad={handleLoad} />
-
-        {/* カメラ操作を可能にする */}
-        <OrbitControls target={[0, 1, 0]} />
       </Canvas>
-      {/* ここに制御UIを追加していく */}
+      {/* VRMコントローラーUI */}
+      {vrm && ( // VRMがロードされてからUIを表示
+        <VRMController
+          onExpressionChange={handleExpressionChange}
+          onHeadYawChange={handleHeadYawChange}
+        />
+      )}
     </div>
   );
 }
