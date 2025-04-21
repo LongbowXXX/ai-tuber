@@ -34,6 +34,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({
   // ここでは 'idle.fbx' と 'wave.fbx' を読み込む例
   const idleAnim = useLoader(FBXLoader, "/idle.fbx");
   const waveAnim = useLoader(FBXLoader, "/wave.fbx");
+  console.log("Loaded animations:", { idleAnim, waveAnim });
 
   // 読み込んだアニメーションクリップを名前付きで保持 (useMemoで最適化)
   const animations = useMemo(() => {
@@ -105,7 +106,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({
   }, [currentAnimationName, animations, vrm]); // アニメーション名、クリップ、VRMが変わったら実行
 
   // フレームごとのVRM更新ロジック (このコンポーネントはCanvas内にあるのでOK)
-  useFrame(() => {
+  useFrame((_state, delta) => {
     if (vrm?.expressionManager) {
       // Stateに基づいて表情を更新
       Object.entries(expressionWeights).forEach(([name, weight]) => {
@@ -131,6 +132,8 @@ export const SceneContent: React.FC<SceneContentProps> = ({
         headBone.rotation.y = THREE.MathUtils.degToRad(headYaw);
       }
     }
+    // AnimationMixerの更新
+    mixer.current?.update(delta);
   });
 
   // シーンの要素をレンダリング
