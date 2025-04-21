@@ -102,6 +102,11 @@ export const SceneContent: React.FC<SceneContentProps> = ({
 
       currentAction.current = newAction; // 現在のアクションを更新
       console.log(`Switched animation to: ${currentAnimationName}`);
+    } else if (mixer.current) {
+      // アニメーションが見つからない場合は、アクションを停止
+      currentAction.current?.stop();
+      currentAction.current = null;
+      console.log(`Animation not found: ${currentAnimationName}`);
     }
   }, [currentAnimationName, animations, vrm]); // アニメーション名、クリップ、VRMが変わったら実行
 
