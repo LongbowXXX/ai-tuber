@@ -14,7 +14,7 @@ function App() {
   >({});
   // 頭の回転角度を保持するState
   const [headYaw, setHeadYaw] = useState<number>(0);
-  const [currentAnimation, setCurrentAnimation] = useState<string>("none"); // 初期アニメーションを 'none' とする
+  const [currentAnimation, setCurrentAnimation] = useState<string>("idle");
 
   // VRMインスタンスを取得するコールバック
   const handleLoad = useCallback((loadedVrm: VRM) => {
@@ -68,7 +68,7 @@ function App() {
           onExpressionChange={handleExpressionChange}
           onHeadYawChange={handleHeadYawChange}
           onAnimationChange={handleAnimationChange}
-          availableAnimations={["none", "idle", "wave"]} // 利用可能なアニメーションのリスト
+          availableAnimations={["idle", "wave"]} // 利用可能なアニメーションのリスト
         />
       )}
     </div>

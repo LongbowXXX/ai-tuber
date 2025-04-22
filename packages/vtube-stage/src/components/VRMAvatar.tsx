@@ -1,5 +1,5 @@
 // src/components/VRMAvatar.tsx
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react"; // Import useState
 import { useLoader, useFrame } from "@react-three/fiber";
 import { VRM, VRMLoaderPlugin, VRMUtils } from "@pixiv/three-vrm";
 import * as THREE from "three";
@@ -8,10 +8,16 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 interface VRMAvatarProps {
   vrmUrl: string;
   onLoad?: (vrm: VRM) => void; // VRM型を明示
+  isReadyToAnimate: boolean; // Add prop to indicate animation readiness
 }
 
-export const VRMAvatar: React.FC<VRMAvatarProps> = ({ vrmUrl, onLoad }) => {
+export const VRMAvatar: React.FC<VRMAvatarProps> = ({
+  vrmUrl,
+  onLoad,
+  isReadyToAnimate, // Receive the prop
+}) => {
   const vrmRef = useRef<VRM | null>(null); // VRMインスタンスを保持するref
+  const [isLoaded, setIsLoaded] = useState(false); // Renamed from isVisible for clarity
 
   const gltf = useLoader(GLTFLoader, vrmUrl, (loader) => {
     // VRMLoaderPluginを登録
@@ -44,6 +50,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({ vrmUrl, onLoad }) => {
       vrmRef.current = vrm; // refにVRMインスタンスを保存
       if (onLoad) {
         onLoad(vrm); // 親コンポーネントにVRMインスタンスを渡す
+        setIsLoaded(true); // Set loaded state to true after onLoad
       }
     }
     // コンポーネントアンマウント時にVRMリソースを解放
@@ -63,8 +70,8 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({ vrmUrl, onLoad }) => {
     }
   });
 
-  // シーンにVRMモデルを追加
-  return vrmRef.current ? (
+  // シーンにVRMモデルを追加 (render only when loaded AND ready to animate)
+  return isLoaded && isReadyToAnimate && vrmRef.current ? (
     <primitive object={gltf.scene} dispose={null} />
   ) : null;
 };

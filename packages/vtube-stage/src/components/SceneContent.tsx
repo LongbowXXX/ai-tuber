@@ -1,5 +1,11 @@
 // src/components/SceneContent.tsx
-import React, { useEffect, useMemo, useRef, useCallback } from "react";
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+  useState,
+} from "react";
 import { useFrame } from "@react-three/fiber";
 import {
   VRM,
@@ -36,8 +42,12 @@ export const SceneContent: React.FC<SceneContentProps> = ({
 }) => {
   const mixer = useRef<THREE.AnimationMixer | null>(null);
   const currentAction = useRef<THREE.AnimationAction | null>(null);
-  // vrmAnimationsの型を明確化
   const vrmAnimations = useRef<Record<string, VRMAnimation>>({});
+  const [loadedAnimationNames, setLoadedAnimationNames] = useState(
+    new Set<string>()
+  );
+  const [isInitialAnimationReady, setIsInitialAnimationReady] = useState(false); // State for initial animation readiness
+  const initialAnimSetupDone = useRef(false); // Ref to track if initial setup is done
 
   // --- VRMAアニメーションローダー ---
   const vrmaLoader = useMemo(() => {
@@ -57,6 +67,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({
         if (animation) {
           console.log(`Loaded ${name} VRMA animation:`, animation);
           vrmAnimations.current[name] = animation;
+          setLoadedAnimationNames((prev) => new Set(prev).add(name));
           return animation; // 読み込んだアニメーションを返す
         } else {
           console.warn(`Animation not found in ${url}`);
@@ -94,15 +105,25 @@ export const SceneContent: React.FC<SceneContentProps> = ({
 
   // --- AnimationMixerのセットアップとアニメーション切り替え ---
   useEffect(() => {
-    if (!vrm) {
-      // VRMがない場合はMixerを破棄
-      if (mixer.current) {
+    // VRMがない、または現在指定されているアニメーションがまだ読み込まれていない場合は処理を中断
+    if (!vrm || !loadedAnimationNames.has(currentAnimationName)) {
+      // VRMがない場合はMixerを破棄 (既存ロジック)
+      if (!vrm && mixer.current) {
         console.log("Cleaning up AnimationMixer due to VRM unload");
         mixer.current.stopAllAction();
         mixer.current = null;
         currentAction.current = null;
       }
-      return;
+      // アニメーション未ロードの場合も早期リターン
+      if (vrm && !loadedAnimationNames.has(currentAnimationName)) {
+        console.log(`Animation ${currentAnimationName} not loaded yet.`);
+        // 必要であれば現在のアクションを停止するロジックを追加することも可能
+        // if (currentAction.current) {
+        //     currentAction.current.stop();
+        //     currentAction.current = null;
+        // }
+      }
+      return; // 早期リターン
     }
 
     // Mixerが存在しない場合は作成
@@ -118,7 +139,8 @@ export const SceneContent: React.FC<SceneContentProps> = ({
       const newAction = mixer.current.clipAction(clip);
 
       // 現在のアクションと新しいアクションが異なる場合のみ切り替え処理
-      if (currentAction.current !== newAction) {
+      // クリップオブジェクトを直接比較する方が確実
+      if (currentAction.current?.getClip() !== clip) {
         // 古いアクションをフェードアウト
         if (currentAction.current) {
           currentAction.current.fadeOut(ANIMATION_FADE_DURATION);
@@ -134,20 +156,35 @@ export const SceneContent: React.FC<SceneContentProps> = ({
 
         currentAction.current = newAction; // 現在のアクションを更新
         console.log(`Switched animation to: ${currentAnimationName}`);
+
+        // Check if it's the initial idle animation and setup is not done
+        if (!initialAnimSetupDone.current && currentAnimationName === "idle") {
+          setIsInitialAnimationReady(true);
+          initialAnimSetupDone.current = true;
+          console.log("Initial animation ('idle') is ready and playing.");
+        }
       } else if (!currentAction.current) {
         // 初回再生または停止からの再生
         newAction.reset().play();
         currentAction.current = newAction;
         console.log(`Initial animation playing: ${currentAnimationName}`);
+
+        // Check if it's the initial idle animation and setup is not done
+        if (!initialAnimSetupDone.current && currentAnimationName === "idle") {
+          setIsInitialAnimationReady(true);
+          initialAnimSetupDone.current = true;
+          console.log("Initial animation ('idle') is ready and playing.");
+        }
       }
     } else {
-      // クリップが見つからない場合は現在のアクションを停止
+      // クリップが作成できなかった場合 (ロード済みチェックがあるため通常は発生しないはず)
+      console.warn(
+        `Failed to create clip for loaded animation: ${currentAnimationName}`
+      );
       if (currentAction.current) {
         currentAction.current.stop();
         currentAction.current = null;
-        console.log(
-          `Animation not found or clip invalid: ${currentAnimationName}, stopping current action.`
-        );
+        console.log(`Stopping current action due to clip creation failure.`);
       }
     }
 
@@ -159,7 +196,12 @@ export const SceneContent: React.FC<SceneContentProps> = ({
       }
     };
     // vrm または currentAnimationName が変更されたら再実行
-  }, [vrm, currentAnimationName, createAnimationClipFromVRMA]);
+  }, [
+    vrm,
+    currentAnimationName,
+    createAnimationClipFromVRMA,
+    loadedAnimationNames,
+  ]);
 
   // --- 表情更新関数 ---
   const updateExpressions = useCallback(() => {
@@ -211,8 +253,12 @@ export const SceneContent: React.FC<SceneContentProps> = ({
         <meshStandardMaterial color="grey" />
       </mesh>
 
-      {/* VRMアバターコンポーネント */}
-      <VRMAvatar vrmUrl="/avatar.vrm" onLoad={onLoad} />
+      {/* VRMアバターコンポーネント - Pass isInitialAnimationReady */}
+      <VRMAvatar
+        vrmUrl="/avatar.vrm"
+        onLoad={onLoad}
+        isReadyToAnimate={isInitialAnimationReady} // Pass the state down
+      />
 
       {/* カメラ操作 */}
       <OrbitControls target={[0, 1, 0]} />
