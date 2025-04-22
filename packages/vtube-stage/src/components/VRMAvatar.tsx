@@ -1,77 +1,259 @@
 // src/components/VRMAvatar.tsx
-import React, { useEffect, useRef, useState } from "react"; // Import useState
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import { useLoader, useFrame } from "@react-three/fiber";
-import { VRM, VRMLoaderPlugin, VRMUtils } from "@pixiv/three-vrm";
+import {
+  VRM,
+  VRMLoaderPlugin,
+  VRMUtils,
+  VRMExpressionPresetName,
+  VRMHumanBoneName,
+} from "@pixiv/three-vrm";
+import {
+  createVRMAnimationClip,
+  VRMAnimation,
+  VRMAnimationLoaderPlugin,
+} from "@pixiv/three-vrm-animation";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
+// --- Constants ---
+const ANIMATION_FADE_DURATION = 0.3;
+
 interface VRMAvatarProps {
   vrmUrl: string;
-  onLoad?: (vrm: VRM) => void; // VRM型を明示
-  isReadyToAnimate: boolean; // Add prop to indicate animation readiness
+  // Animation URLs (example: { idle: '/idle.vrma', wave: '/wave.vrma' })
+  animationUrls: Record<string, string>;
+  expressionWeights: Record<string, number>;
+  headYaw: number;
+  currentAnimationName: string;
+  onLoad?: (vrm: VRM) => void; // Keep onLoad for potential external use, but internal logic won't depend on it passing upwards
 }
 
 export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   vrmUrl,
-  onLoad,
-  isReadyToAnimate, // Receive the prop
+  animationUrls,
+  expressionWeights,
+  headYaw,
+  currentAnimationName,
+  onLoad, // Keep prop signature
 }) => {
-  const vrmRef = useRef<VRM | null>(null); // VRMインスタンスを保持するref
-  const [isLoaded, setIsLoaded] = useState(false); // Renamed from isVisible for clarity
+  const vrmRef = useRef<VRM | null>(null);
+  const mixer = useRef<THREE.AnimationMixer | null>(null);
+  const currentAction = useRef<THREE.AnimationAction | null>(null);
+  const vrmAnimations = useRef<Record<string, VRMAnimation>>({});
+  const [loadedAnimationNames, setLoadedAnimationNames] = useState(
+    new Set<string>()
+  );
+  const [isLoaded, setIsLoaded] = useState(false); // Tracks VRM model loading
 
+  // --- VRM Loader ---
   const gltf = useLoader(GLTFLoader, vrmUrl, (loader) => {
-    // VRMLoaderPluginを登録
-    loader.register((parser) => {
-      // parserにVRM拡張の情報を伝える
-      return new VRMLoaderPlugin(parser);
-    });
+    loader.register((parser) => new VRMLoaderPlugin(parser));
   });
 
-  // VRMのセットアップ（ロード完了時に一度だけ実行）
+  // --- VRMA Animation Loader ---
+  const vrmaLoader = useMemo(() => {
+    const loader = new GLTFLoader();
+    loader.register((parser) => new VRMAnimationLoaderPlugin(parser));
+    return loader;
+  }, []);
+
+  // --- Load Single Animation ---
+  const loadAnimation = useCallback(
+    async (name: string, url: string) => {
+      try {
+        const animGltf = await vrmaLoader.loadAsync(url);
+        const animation = animGltf.userData.vrmAnimations?.[0] as
+          | VRMAnimation
+          | undefined;
+        if (animation) {
+          console.log(
+            `Loaded ${name} VRMA animation for ${vrmUrl}:`,
+            animation
+          );
+          vrmAnimations.current[name] = animation;
+          setLoadedAnimationNames((prev) => new Set(prev).add(name));
+          return animation;
+        } else {
+          console.warn(`Animation not found in ${url}`);
+          return null;
+        }
+      } catch (error) {
+        // Keep error parameter for logging
+        console.error(`Error loading ${name} animation from ${url}:`, error); // Log the error
+        return null;
+      }
+    },
+    [vrmaLoader, vrmUrl] // Include vrmUrl in dependency if needed, though loader is stable
+  );
+
+  // --- Load All Animations ---
+  useEffect(() => {
+    Object.entries(animationUrls).forEach(([name, url]) => {
+      if (!loadedAnimationNames.has(name)) {
+        loadAnimation(name, url);
+      }
+    });
+  }, [animationUrls, loadAnimation, loadedAnimationNames]);
+
+  // --- VRM Setup ---
   useEffect(() => {
     if (gltf.userData.vrm && !vrmRef.current) {
       const vrm: VRM = gltf.userData.vrm;
-
-      // 以前のバージョン（0.x）のVRMをY軸方向に向けるためのユーティリティ
       VRMUtils.rotateVRM0(vrm);
-
-      // 物理演算(SpringBone)を有効にする場合
-      // VRMUtils.addVRMSpringBones(vrm);
-
-      // シーン内の全てのメッシュで影を落とす/受け取る設定
       gltf.scene.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {
           child.castShadow = true;
           child.receiveShadow = true;
         }
       });
-
-      console.log("VRM loaded:", vrm);
-      vrmRef.current = vrm; // refにVRMインスタンスを保存
+      console.log(`VRM loaded from ${vrmUrl}:`, vrm);
+      vrmRef.current = vrm;
+      mixer.current = new THREE.AnimationMixer(vrm.scene); // Create mixer here
+      setIsLoaded(true); // Mark VRM as loaded
       if (onLoad) {
-        onLoad(vrm); // 親コンポーネントにVRMインスタンスを渡す
-        setIsLoaded(true); // Set loaded state to true after onLoad
+        onLoad(vrm); // Call external onLoad if provided
       }
     }
-    // コンポーネントアンマウント時にVRMリソースを解放
+    // Cleanup
     return () => {
       if (vrmRef.current) {
+        mixer.current?.stopAllAction();
         VRMUtils.deepDispose(vrmRef.current.scene);
         vrmRef.current = null;
+        mixer.current = null;
+        currentAction.current = null;
+        setIsLoaded(false);
+        setLoadedAnimationNames(new Set()); // Reset loaded animations
+        vrmAnimations.current = {};
+        console.log(`Cleaned up VRM from ${vrmUrl}`);
       }
-      // Loaderによって読み込まれたGLTFリソースの解放も検討（gltf.sceneなど）
     };
-  }, [gltf, onLoad]);
+  }, [gltf, onLoad, vrmUrl]); // Add vrmUrl to dependencies
 
-  // アニメーションループでVRMを更新
-  useFrame((_state, delta) => {
-    if (vrmRef.current) {
-      vrmRef.current.update(delta); // VRMの内部状態（表情、視線、物理など）を更新
+  // --- Create Animation Clip ---
+  const createAnimationClipFromVRMA = useCallback(
+    (animationName: string): THREE.AnimationClip | null => {
+      const vrm = vrmRef.current;
+      if (vrm && vrmAnimations.current[animationName]) {
+        return createVRMAnimationClip(
+          vrmAnimations.current[animationName],
+          vrm
+        );
+      }
+      return null;
+    },
+    [] // Depends only on refs, no need to list vrmRef here
+  );
+
+  // --- Animation Switching ---
+  useEffect(() => {
+    const vrm = vrmRef.current;
+    const currentMixer = mixer.current;
+    // Ensure VRM, Mixer exist and the target animation is loaded
+    if (
+      !vrm ||
+      !currentMixer ||
+      !loadedAnimationNames.has(currentAnimationName)
+    ) {
+      return;
     }
+
+    const clip = createAnimationClipFromVRMA(currentAnimationName);
+
+    if (clip) {
+      const newAction = currentMixer.clipAction(clip);
+
+      if (currentAction.current?.getClip() !== clip) {
+        if (currentAction.current) {
+          currentAction.current.fadeOut(ANIMATION_FADE_DURATION);
+        }
+        newAction
+          .reset()
+          .setEffectiveTimeScale(1)
+          .setEffectiveWeight(1)
+          .fadeIn(ANIMATION_FADE_DURATION)
+          .play();
+        currentAction.current = newAction;
+        console.log(
+          `Avatar ${vrmUrl}: Switched animation to ${currentAnimationName}`
+        );
+      } else if (!currentAction.current) {
+        // Initial play or restart after stop
+        newAction.reset().play();
+        currentAction.current = newAction;
+        console.log(
+          `Avatar ${vrmUrl}: Started animation ${currentAnimationName}`
+        );
+      }
+    } else {
+      console.warn(
+        `Avatar ${vrmUrl}: Failed to create clip for ${currentAnimationName}`
+      );
+      if (currentAction.current) {
+        currentAction.current.stop();
+        currentAction.current = null;
+      }
+    }
+  }, [
+    currentAnimationName,
+    createAnimationClipFromVRMA,
+    loadedAnimationNames,
+    vrmUrl, // Add vrmUrl for logging clarity
+  ]);
+
+  // --- Expression Update ---
+  const updateExpressions = useCallback(() => {
+    const vrm = vrmRef.current;
+    if (!vrm?.expressionManager) return;
+    Object.entries(expressionWeights).forEach(([name, weight]) => {
+      try {
+        // Ensure the expression name is valid before setting
+        if (
+          vrm.expressionManager!.getExpression(name as VRMExpressionPresetName)
+        ) {
+          vrm.expressionManager!.setValue(
+            name as VRMExpressionPresetName,
+            weight
+          );
+        } // Removed unnecessary else block
+      } catch (error) {
+        // Keep error parameter for logging
+        console.warn(`Failed to set expression ${name} for ${vrmUrl}`, error); // Log warning with error
+      }
+    });
+  }, [expressionWeights, vrmUrl]); // Added vrmUrl back for logging
+
+  // --- Head Rotation Update ---
+  const updateHeadRotation = useCallback(() => {
+    const vrm = vrmRef.current;
+    if (!vrm?.humanoid) return;
+    const headBone = vrm.humanoid.getNormalizedBoneNode(VRMHumanBoneName.Head);
+    if (headBone) {
+      // Apply rotation relative to the default pose
+      headBone.rotation.y = THREE.MathUtils.degToRad(headYaw);
+    }
+  }, [headYaw]);
+
+  // --- Frame Update ---
+  useFrame((_state, delta) => {
+    const vrm = vrmRef.current;
+    if (vrm) {
+      updateExpressions();
+      updateHeadRotation();
+      mixer.current?.update(delta); // Update animation mixer
+      vrm.update(delta); // Update VRM internal state (expressions, lookAt, physics)
+    } // <-- Added missing closing brace
   });
 
-  // シーンにVRMモデルを追加 (render only when loaded AND ready to animate)
-  return isLoaded && isReadyToAnimate && vrmRef.current ? (
+  // Render only when VRM is loaded
+  return isLoaded && vrmRef.current ? (
     <primitive object={gltf.scene} dispose={null} />
   ) : null;
 };
