@@ -20,13 +20,14 @@ function App() {
   const handleLoad = useCallback((loadedVrm: VRM) => {
     setVrm(loadedVrm);
     // 初期表情状態を設定（任意）
-    // const initialWeights: Record<string, number> = {};
-    // if (loadedVrm.expressionManager) {
-    //   loadedVrm.expressionManager.expressionMap.forEach((_, key) => {
-    //     initialWeights[key] = 0;
-    //   });
-    // }
-    // setExpressionWeights(initialWeights);
+    const initialWeights: Record<string, number> = {};
+    if (loadedVrm.expressionManager) {
+      for (const expression of loadedVrm.expressionManager.expressions) {
+        initialWeights[expression.name] = 0; // 初期値を0に設定
+      }
+    }
+    initialWeights["neutral"] = 0.1;
+    setExpressionWeights(initialWeights);
     console.log("App component received VRM instance.");
   }, []);
 

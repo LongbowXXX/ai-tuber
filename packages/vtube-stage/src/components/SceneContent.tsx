@@ -1,147 +1,198 @@
 // src/components/SceneContent.tsx
-import React, { useEffect, useMemo, useRef } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
+import React, { useEffect, useMemo, useRef, useCallback } from "react";
+import { useFrame } from "@react-three/fiber";
 import {
   VRM,
   VRMExpressionPresetName,
   VRMHumanBoneName,
 } from "@pixiv/three-vrm";
+import {
+  createVRMAnimationClip,
+  VRMAnimation,
+  VRMAnimationLoaderPlugin,
+} from "@pixiv/three-vrm-animation";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import { VRMAvatar } from "./VRMAvatar"; // VRMAvatar をインポート
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
+import { VRMAvatar } from "./VRMAvatar";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+
+// --- 定数 ---
+const ANIMATION_FADE_DURATION = 0.3; // アニメーションのフェード時間
 
 interface SceneContentProps {
-  vrm: VRM | null; // 親から渡されるVRMインスタンス
-  expressionWeights: Record<string, number>; // 親から渡される表情ウェイト
-  headYaw: number; // 親から渡される頭の角度
-  onLoad: (vrm: VRM) => void; // VRMAvatarに渡すためのコールバック
-  currentAnimationName: string; // 現在のアニメーション名
+  vrm: VRM | null;
+  expressionWeights: Record<string, number>;
+  headYaw: number;
+  onLoad: (vrm: VRM) => void;
+  currentAnimationName: string;
 }
 
 export const SceneContent: React.FC<SceneContentProps> = ({
   vrm,
   expressionWeights,
   headYaw,
-  onLoad, // 親から受け取る
+  onLoad,
   currentAnimationName,
 }) => {
-  const mixer = useRef<THREE.AnimationMixer | null>(null); // AnimationMixerのref
-  const currentAction = useRef<THREE.AnimationAction | null>(null); // 現在再生中のアクション
+  const mixer = useRef<THREE.AnimationMixer | null>(null);
+  const currentAction = useRef<THREE.AnimationAction | null>(null);
+  // vrmAnimationsの型を明確化
+  const vrmAnimations = useRef<Record<string, VRMAnimation>>({});
 
-  // --- FBXアニメーションの読み込み ---
-  // useLoaderを使って複数のFBXファイルを読み込む
-  // ここでは 'idle.fbx' と 'wave.fbx' を読み込む例
-  const idleAnim = useLoader(FBXLoader, "/idle.fbx");
-  const waveAnim = useLoader(FBXLoader, "/wave.fbx");
-  console.log("Loaded animations:", { idleAnim, waveAnim });
+  // --- VRMAアニメーションローダー ---
+  const vrmaLoader = useMemo(() => {
+    const loader = new GLTFLoader();
+    loader.register((parser) => new VRMAnimationLoaderPlugin(parser));
+    return loader;
+  }, []);
 
-  // 読み込んだアニメーションクリップを名前付きで保持 (useMemoで最適化)
-  const animations = useMemo(() => {
-    const clips: Record<string, THREE.AnimationClip> = {};
-    // FBXLoaderはAnimationClipの配列を返すので、通常は最初のクリップを使用
-    if (idleAnim?.animations[0]) {
-      clips["idle"] = idleAnim.animations[0];
-    }
-    if (waveAnim?.animations[0]) {
-      // 名前が重複しないように調整（必要に応じて）
-      // waveAnim.animations[0].name = 'wave';
-      clips["wave"] = waveAnim.animations[0];
-    }
-    console.log("Loaded animation clips:", Object.keys(clips));
-    return clips;
-  }, [idleAnim, waveAnim]); // ローダーの結果が変わった時だけ再計算
-
-  // --- AnimationMixerのセットアップ ---
-  // VRMモデルがロードされたらMixerを作成
-  useEffect(() => {
-    if (vrm) {
-      mixer.current = new THREE.AnimationMixer(vrm.scene); // VRMのシーンをミキサーに渡す
-      console.log("AnimationMixer created");
-
-      // 初期アニメーションを再生
-      if (animations[currentAnimationName]) {
-        const clip = animations[currentAnimationName];
-        const action = mixer.current.clipAction(clip);
-        action.reset().play();
-        currentAction.current = action;
-        console.log(`Initial animation playing: ${currentAnimationName}`);
+  // --- アニメーション読み込み関数 ---
+  const loadAnimation = useCallback(
+    async (name: string, url: string) => {
+      try {
+        const gltf = await vrmaLoader.loadAsync(url);
+        const animation = gltf.userData.vrmAnimations?.[0] as
+          | VRMAnimation
+          | undefined;
+        if (animation) {
+          console.log(`Loaded ${name} VRMA animation:`, animation);
+          vrmAnimations.current[name] = animation;
+          return animation; // 読み込んだアニメーションを返す
+        } else {
+          console.warn(`Animation not found in ${url}`);
+          return null;
+        }
+      } catch (error) {
+        console.error(`Error loading ${name} animation:`, error);
+        return null;
       }
+    },
+    [vrmaLoader] // vrmaLoaderが変わらない限り関数は再生成されない
+  );
 
-      // クリーンアップ関数
-      return () => {
-        console.log("Cleaning up AnimationMixer");
-        mixer.current?.stopAllAction(); // 全てのアクションを停止
+  // --- アニメーションの読み込み ---
+  useEffect(() => {
+    // 初回レンダリング時にアニメーションを読み込む
+    loadAnimation("idle", "/idle.vrma");
+    loadAnimation("wave", "/wave.vrma");
+    // loadAnimationはuseCallbackでメモ化されているため、依存配列に含めても無限ループしない
+  }, [loadAnimation]);
+
+  // --- アニメーションクリップ作成関数 ---
+  const createAnimationClipFromVRMA = useCallback(
+    (animationName: string): THREE.AnimationClip | null => {
+      if (vrm && vrmAnimations.current[animationName]) {
+        return createVRMAnimationClip(
+          vrmAnimations.current[animationName],
+          vrm
+        );
+      }
+      return null;
+    },
+    [vrm] // vrmが変わった時だけ再生成
+  );
+
+  // --- AnimationMixerのセットアップとアニメーション切り替え ---
+  useEffect(() => {
+    if (!vrm) {
+      // VRMがない場合はMixerを破棄
+      if (mixer.current) {
+        console.log("Cleaning up AnimationMixer due to VRM unload");
+        mixer.current.stopAllAction();
         mixer.current = null;
         currentAction.current = null;
-      };
+      }
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vrm, animations]); // vrmまたはanimationsが変更されたら再実行
 
-  // --- アニメーションの切り替え ---
-  useEffect(() => {
-    if (mixer.current && animations[currentAnimationName]) {
-      const clip = animations[currentAnimationName];
+    // Mixerが存在しない場合は作成
+    if (!mixer.current) {
+      mixer.current = new THREE.AnimationMixer(vrm.scene);
+      console.log("AnimationMixer created");
+    }
+
+    // 再生するアニメーションクリップを取得
+    const clip = createAnimationClipFromVRMA(currentAnimationName);
+
+    if (clip) {
       const newAction = mixer.current.clipAction(clip);
 
-      // 現在のアクションがあればフェードアウト、なければ即時停止
-      if (currentAction.current && currentAction.current !== newAction) {
-        currentAction.current.fadeOut(0.3); // 0.3秒でフェードアウト
-      } else if (currentAction.current !== newAction) {
-        currentAction.current?.stop(); // 古いアクションを即時停止
-      }
-
-      // 新しいアクションをフェードインして再生
-      newAction
-        .reset()
-        .setEffectiveTimeScale(1)
-        .setEffectiveWeight(1)
-        .fadeIn(0.3)
-        .play(); // 0.3秒でフェードイン
-
-      currentAction.current = newAction; // 現在のアクションを更新
-      console.log(`Switched animation to: ${currentAnimationName}`);
-    } else if (mixer.current) {
-      // アニメーションが見つからない場合は、アクションを停止
-      currentAction.current?.stop();
-      currentAction.current = null;
-      console.log(`Animation not found: ${currentAnimationName}`);
-    }
-  }, [currentAnimationName, animations, vrm]); // アニメーション名、クリップ、VRMが変わったら実行
-
-  // フレームごとのVRM更新ロジック (このコンポーネントはCanvas内にあるのでOK)
-  useFrame((_state, delta) => {
-    if (vrm?.expressionManager) {
-      // Stateに基づいて表情を更新
-      Object.entries(expressionWeights).forEach(([name, weight]) => {
-        // nameがVRMExpressionPresetNameに含まれるかチェックする方がより安全
-        try {
-          vrm.expressionManager!.setValue(
-            name as VRMExpressionPresetName,
-            weight
-          );
-        } catch (error) {
-          console.warn(`Failed to set expression ${name}`, error);
+      // 現在のアクションと新しいアクションが異なる場合のみ切り替え処理
+      if (currentAction.current !== newAction) {
+        // 古いアクションをフェードアウト
+        if (currentAction.current) {
+          currentAction.current.fadeOut(ANIMATION_FADE_DURATION);
         }
-      });
-    }
 
-    if (vrm?.humanoid) {
-      // Stateに基づいて頭の回転を更新
-      const headBone = vrm.humanoid.getNormalizedBoneNode(
-        VRMHumanBoneName.Head
-      );
-      if (headBone) {
-        // Y軸周りの回転を設定
-        headBone.rotation.y = THREE.MathUtils.degToRad(headYaw);
+        // 新しいアクションをフェードインして再生
+        newAction
+          .reset()
+          .setEffectiveTimeScale(1)
+          .setEffectiveWeight(1)
+          .fadeIn(ANIMATION_FADE_DURATION)
+          .play();
+
+        currentAction.current = newAction; // 現在のアクションを更新
+        console.log(`Switched animation to: ${currentAnimationName}`);
+      } else if (!currentAction.current) {
+        // 初回再生または停止からの再生
+        newAction.reset().play();
+        currentAction.current = newAction;
+        console.log(`Initial animation playing: ${currentAnimationName}`);
+      }
+    } else {
+      // クリップが見つからない場合は現在のアクションを停止
+      if (currentAction.current) {
+        currentAction.current.stop();
+        currentAction.current = null;
+        console.log(
+          `Animation not found or clip invalid: ${currentAnimationName}, stopping current action.`
+        );
       }
     }
-    // AnimationMixerの更新
-    mixer.current?.update(delta);
+
+    // クリーンアップ関数: コンポーネントアンマウント時またはVRM変更時にMixerを停止
+    return () => {
+      if (mixer.current && vrm) {
+        // vrmが変わる直前のクリーンアップ
+        console.log("Cleaning up AnimationMixer on effect re-run or unmount");
+      }
+    };
+    // vrm または currentAnimationName が変更されたら再実行
+  }, [vrm, currentAnimationName, createAnimationClipFromVRMA]);
+
+  // --- 表情更新関数 ---
+  const updateExpressions = useCallback(() => {
+    if (!vrm?.expressionManager) return;
+    Object.entries(expressionWeights).forEach(([name, weight]) => {
+      try {
+        vrm.expressionManager!.setValue(
+          name as VRMExpressionPresetName,
+          weight
+        );
+      } catch (error) {
+        console.warn(`Failed to set expression ${name}`, error);
+      }
+    });
+  }, [vrm, expressionWeights]); // vrmとexpressionWeightsが変わった時だけ再生成
+
+  // --- 頭部回転更新関数 ---
+  const updateHeadRotation = useCallback(() => {
+    if (!vrm?.humanoid) return;
+    const headBone = vrm.humanoid.getNormalizedBoneNode(VRMHumanBoneName.Head);
+    if (headBone) {
+      headBone.rotation.y = THREE.MathUtils.degToRad(headYaw);
+    }
+  }, [vrm, headYaw]); // vrmとheadYawが変わった時だけ再生成
+
+  // --- フレームごとの更新 ---
+  useFrame((_state, delta) => {
+    updateExpressions();
+    updateHeadRotation();
+    mixer.current?.update(delta); // AnimationMixerの更新
   });
 
-  // シーンの要素をレンダリング
+  // --- シーン要素のレンダリング ---
   return (
     <>
       {/* 環境光 */}
@@ -161,7 +212,6 @@ export const SceneContent: React.FC<SceneContentProps> = ({
       </mesh>
 
       {/* VRMアバターコンポーネント */}
-      {/* onLoadコールバックをVRMAvatarに渡す */}
       <VRMAvatar vrmUrl="/avatar.vrm" onLoad={onLoad} />
 
       {/* カメラ操作 */}
