@@ -1,6 +1,6 @@
 // src/components/SceneContent.tsx
 import React from "react";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Environment } from "@react-three/drei"; // Import Environment
 import { VRMAvatar } from "./VRMAvatar";
 import { VRM } from "@pixiv/three-vrm"; // Keep VRM type for AvatarData
 
@@ -24,6 +24,9 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars }) => {
   // --- Scene elements rendering ---
   return (
     <>
+      {/* Environment and Background */}
+      <Environment files="/background.hdr" background />
+
       {/* Environment Light */}
       <ambientLight intensity={0.8} />
       {/* Directional Light */}
@@ -36,7 +39,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars }) => {
       />
       {/* Floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[10, 10]} />
+        <planeGeometry args={[3, 3]} />
         <meshStandardMaterial color="grey" />
       </mesh>
 
