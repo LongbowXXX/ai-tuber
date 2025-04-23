@@ -3,6 +3,7 @@ import React from "react";
 import "./VRMController.css"; // スタイル用CSS
 
 interface VRMControllerProps {
+  title?: string; // Optional title prop
   // 表情のウェイトを更新するコールバック
   onExpressionChange: (name: string, weight: number) => void;
   // 頭の回転を更新するコールバック
@@ -30,6 +31,7 @@ const expressionNames = [
 ];
 
 export const VRMController: React.FC<VRMControllerProps> = ({
+  title, // Destructure title
   onExpressionChange,
   onHeadYawChange,
   onAnimationChange,
@@ -46,13 +48,15 @@ export const VRMController: React.FC<VRMControllerProps> = ({
 
   return (
     <div className="vrm-controller">
+      {title && <h3>{title}</h3>} {/* Display title if provided */}
       <h4>Expressions</h4>
       {expressionNames.map((name) => (
         <div key={name} className="control-row">
-          <label htmlFor={name}>{name}</label>
+          <label htmlFor={`${title}-${name}`}>{name}</label>{" "}
+          {/* Ensure unique id */}
           <input
             type="range"
-            id={name}
+            id={`${title}-${name}`} // Ensure unique id
             name={name}
             min="0"
             max="1"
@@ -62,13 +66,13 @@ export const VRMController: React.FC<VRMControllerProps> = ({
           />
         </div>
       ))}
-
       <h4>Head Yaw</h4>
       <div className="control-row">
-        <label htmlFor="headYaw">Yaw (-45° to 45°)</label>
+        <label htmlFor={`${title}-headYaw`}>Yaw (-45° to 45°)</label>{" "}
+        {/* Ensure unique id */}
         <input
           type="range"
-          id="headYaw"
+          id={`${title}-headYaw`} // Ensure unique id
           name="headYaw"
           min="-45"
           max="45"

@@ -32,6 +32,7 @@ interface VRMAvatarProps {
   expressionWeights: Record<string, number>;
   headYaw: number;
   currentAnimationName: string;
+  position?: [number, number, number]; // Add position prop
   onLoad?: (vrm: VRM) => void; // Keep onLoad for potential external use, but internal logic won't depend on it passing upwards
 }
 
@@ -41,6 +42,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   expressionWeights,
   headYaw,
   currentAnimationName,
+  position = [0, 0, 0], // Default position if not provided
   onLoad, // Keep prop signature
 }) => {
   const vrmRef = useRef<VRM | null>(null);
@@ -252,8 +254,8 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     } // <-- Added missing closing brace
   });
 
-  // Render only when VRM is loaded
+  // Render only when VRM is loaded, applying the position
   return isLoaded && vrmRef.current ? (
-    <primitive object={gltf.scene} dispose={null} />
+    <primitive object={gltf.scene} position={position} dispose={null} /> // Apply position here
   ) : null;
 };
