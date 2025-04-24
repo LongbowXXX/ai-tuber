@@ -19,7 +19,7 @@ jobs:
         working-directory: ./packages/vtube-stage
 
     steps:
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4
 
       - name: Verify package-lock.json
         run: |
@@ -30,7 +30,7 @@ jobs:
           git diff --exit-code packages/vtube-stage/package-lock.json || (echo "Error: package-lock.json is not up-to-date." && exit 1)
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4.10.1
+        uses: actions/setup-node@v4
         with:
           node-version: "20.x"
           cache: "npm"
