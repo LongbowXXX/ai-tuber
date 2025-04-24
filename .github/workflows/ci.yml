@@ -3,12 +3,8 @@ name: CI
 on:
   push:
     branches: [main]
-    paths:
-      - "packages/vtube-stage/**"
   pull_request:
     branches: [main]
-    paths:
-      - "packages/vtube-stage/**"
 
 jobs:
   build:
