@@ -74,7 +74,7 @@
   white-space: nowrap;
 }
 
-.control-row input[type="range"] {
+.control-row input[type='range'] {
   flex-grow: 1;
 }
 

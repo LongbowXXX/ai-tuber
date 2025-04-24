@@ -33,7 +33,7 @@
   font-size: 0.9em;
 }
 
-.control-row input[type="range"] {
+.control-row input[type='range'] {
   flex-grow: 1;
   cursor: pointer;
 }

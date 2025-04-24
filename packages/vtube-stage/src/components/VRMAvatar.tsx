@@ -1,26 +1,10 @@
 // src/components/VRMAvatar.tsx
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-  useCallback,
-} from "react";
-import { useLoader, useFrame } from "@react-three/fiber";
-import {
-  VRM,
-  VRMLoaderPlugin,
-  VRMUtils,
-  VRMExpressionPresetName,
-  VRMHumanBoneName,
-} from "@pixiv/three-vrm";
-import {
-  createVRMAnimationClip,
-  VRMAnimation,
-  VRMAnimationLoaderPlugin,
-} from "@pixiv/three-vrm-animation";
-import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { useLoader, useFrame } from '@react-three/fiber';
+import { VRM, VRMLoaderPlugin, VRMUtils, VRMExpressionPresetName, VRMHumanBoneName } from '@pixiv/three-vrm';
+import { createVRMAnimationClip, VRMAnimation, VRMAnimationLoaderPlugin } from '@pixiv/three-vrm-animation';
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 // --- Constants ---
 const ANIMATION_FADE_DURATION = 0.3;
@@ -49,20 +33,18 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   const mixer = useRef<THREE.AnimationMixer | null>(null);
   const currentAction = useRef<THREE.AnimationAction | null>(null);
   const vrmAnimations = useRef<Record<string, VRMAnimation>>({});
-  const [loadedAnimationNames, setLoadedAnimationNames] = useState(
-    new Set<string>()
-  );
+  const [loadedAnimationNames, setLoadedAnimationNames] = useState(new Set<string>());
   const [isLoaded, setIsLoaded] = useState(false); // Tracks VRM model loading
 
   // --- VRM Loader ---
-  const gltf = useLoader(GLTFLoader, vrmUrl, (loader) => {
-    loader.register((parser) => new VRMLoaderPlugin(parser));
+  const gltf = useLoader(GLTFLoader, vrmUrl, loader => {
+    loader.register(parser => new VRMLoaderPlugin(parser));
   });
 
   // --- VRMA Animation Loader ---
   const vrmaLoader = useMemo(() => {
     const loader = new GLTFLoader();
-    loader.register((parser) => new VRMAnimationLoaderPlugin(parser));
+    loader.register(parser => new VRMAnimationLoaderPlugin(parser));
     return loader;
   }, []);
 
@@ -71,16 +53,11 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     async (name: string, url: string) => {
       try {
         const animGltf = await vrmaLoader.loadAsync(url);
-        const animation = animGltf.userData.vrmAnimations?.[0] as
-          | VRMAnimation
-          | undefined;
+        const animation = animGltf.userData.vrmAnimations?.[0] as VRMAnimation | undefined;
         if (animation) {
-          console.log(
-            `Loaded ${name} VRMA animation for ${vrmUrl}:`,
-            animation
-          );
+          console.log(`Loaded ${name} VRMA animation for ${vrmUrl}:`, animation);
           vrmAnimations.current[name] = animation;
-          setLoadedAnimationNames((prev) => new Set(prev).add(name));
+          setLoadedAnimationNames(prev => new Set(prev).add(name));
           return animation;
         } else {
           console.warn(`Animation not found in ${url}`);
@@ -109,7 +86,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     if (gltf.userData.vrm && !vrmRef.current) {
       const vrm: VRM = gltf.userData.vrm;
       VRMUtils.rotateVRM0(vrm);
-      gltf.scene.traverse((child) => {
+      gltf.scene.traverse(child => {
         if ((child as THREE.Mesh).isMesh) {
           child.castShadow = true;
           child.receiveShadow = true;
@@ -144,10 +121,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     (animationName: string): THREE.AnimationClip | null => {
       const vrm = vrmRef.current;
       if (vrm && vrmAnimations.current[animationName]) {
-        return createVRMAnimationClip(
-          vrmAnimations.current[animationName],
-          vrm
-        );
+        return createVRMAnimationClip(vrmAnimations.current[animationName], vrm);
       }
       return null;
     },
@@ -159,11 +133,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     const vrm = vrmRef.current;
     const currentMixer = mixer.current;
     // Ensure VRM, Mixer exist and the target animation is loaded
-    if (
-      !vrm ||
-      !currentMixer ||
-      !loadedAnimationNames.has(currentAnimationName)
-    ) {
+    if (!vrm || !currentMixer || !loadedAnimationNames.has(currentAnimationName)) {
       return;
     }
 
@@ -176,28 +146,17 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
         if (currentAction.current) {
           currentAction.current.fadeOut(ANIMATION_FADE_DURATION);
         }
-        newAction
-          .reset()
-          .setEffectiveTimeScale(1)
-          .setEffectiveWeight(1)
-          .fadeIn(ANIMATION_FADE_DURATION)
-          .play();
+        newAction.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(ANIMATION_FADE_DURATION).play();
         currentAction.current = newAction;
-        console.log(
-          `Avatar ${vrmUrl}: Switched animation to ${currentAnimationName}`
-        );
+        console.log(`Avatar ${vrmUrl}: Switched animation to ${currentAnimationName}`);
       } else if (!currentAction.current) {
         // Initial play or restart after stop
         newAction.reset().play();
         currentAction.current = newAction;
-        console.log(
-          `Avatar ${vrmUrl}: Started animation ${currentAnimationName}`
-        );
+        console.log(`Avatar ${vrmUrl}: Started animation ${currentAnimationName}`);
       }
     } else {
-      console.warn(
-        `Avatar ${vrmUrl}: Failed to create clip for ${currentAnimationName}`
-      );
+      console.warn(`Avatar ${vrmUrl}: Failed to create clip for ${currentAnimationName}`);
       if (currentAction.current) {
         currentAction.current.stop();
         currentAction.current = null;
@@ -217,13 +176,8 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     Object.entries(expressionWeights).forEach(([name, weight]) => {
       try {
         // Ensure the expression name is valid before setting
-        if (
-          vrm.expressionManager!.getExpression(name as VRMExpressionPresetName)
-        ) {
-          vrm.expressionManager!.setValue(
-            name as VRMExpressionPresetName,
-            weight
-          );
+        if (vrm.expressionManager!.getExpression(name as VRMExpressionPresetName)) {
+          vrm.expressionManager!.setValue(name as VRMExpressionPresetName, weight);
         } // Removed unnecessary else block
       } catch (error) {
         // Keep error parameter for logging

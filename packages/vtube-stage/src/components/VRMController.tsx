@@ -1,6 +1,6 @@
 // src/components/VRMController.tsx
-import React from "react";
-import "./VRMController.css"; // スタイル用CSS
+import React from 'react';
+import './VRMController.css'; // スタイル用CSS
 
 interface VRMControllerProps {
   title?: string; // Optional title prop
@@ -14,20 +14,20 @@ interface VRMControllerProps {
 
 // 制御する表情のリスト（モデルに合わせて変更）
 const expressionNames = [
-  "neutral",
-  "happy",
-  "sad",
-  "angry",
-  "relaxed",
-  "Surprised",
-  "aa",
-  "ih",
-  "ou",
-  "ee",
-  "oh",
-  "blink",
-  "blinkLeft",
-  "blinkRight",
+  'neutral',
+  'happy',
+  'sad',
+  'angry',
+  'relaxed',
+  'Surprised',
+  'aa',
+  'ih',
+  'ou',
+  'ee',
+  'oh',
+  'blink',
+  'blinkLeft',
+  'blinkRight',
 ];
 
 export const VRMController: React.FC<VRMControllerProps> = ({
@@ -50,10 +50,9 @@ export const VRMController: React.FC<VRMControllerProps> = ({
     <div className="vrm-controller">
       {title && <h3>{title}</h3>} {/* Display title if provided */}
       <h4>Expressions</h4>
-      {expressionNames.map((name) => (
+      {expressionNames.map(name => (
         <div key={name} className="control-row">
-          <label htmlFor={`${title}-${name}`}>{name}</label>{" "}
-          {/* Ensure unique id */}
+          <label htmlFor={`${title}-${name}`}>{name}</label> {/* Ensure unique id */}
           <input
             type="range"
             id={`${title}-${name}`} // Ensure unique id
@@ -68,8 +67,7 @@ export const VRMController: React.FC<VRMControllerProps> = ({
       ))}
       <h4>Head Yaw</h4>
       <div className="control-row">
-        <label htmlFor={`${title}-headYaw`}>Yaw (-45° to 45°)</label>{" "}
-        {/* Ensure unique id */}
+        <label htmlFor={`${title}-headYaw`}>Yaw (-45° to 45°)</label> {/* Ensure unique id */}
         <input
           type="range"
           id={`${title}-headYaw`} // Ensure unique id
@@ -84,7 +82,7 @@ export const VRMController: React.FC<VRMControllerProps> = ({
       {/* アニメーション選択UI */}
       <h4>Animations</h4>
       <div className="animation-buttons">
-        {availableAnimations.map((name) => (
+        {availableAnimations.map(name => (
           <button key={name} onClick={() => onAnimationChange(name)}>
             Play {name}
           </button>

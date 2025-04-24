@@ -1,8 +1,8 @@
 // src/components/SceneContent.tsx
-import React from "react";
-import { OrbitControls, Environment } from "@react-three/drei"; // Import Environment
-import { VRMAvatar } from "./VRMAvatar";
-import { VRM } from "@pixiv/three-vrm"; // Keep VRM type for AvatarData
+import React from 'react';
+import { OrbitControls, Environment } from '@react-three/drei'; // Import Environment
+import { VRMAvatar } from './VRMAvatar';
+import { VRM } from '@pixiv/three-vrm'; // Keep VRM type for AvatarData
 
 // Define a type for the data needed for each avatar
 interface AvatarData {
@@ -44,7 +44,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars }) => {
       </mesh>
 
       {/* Render each VRM Avatar based on the avatars prop */}
-      {avatars.map((avatar) => (
+      {avatars.map(avatar => (
         <VRMAvatar
           key={avatar.id} // Use unique ID as key
           vrmUrl={avatar.vrmUrl}
