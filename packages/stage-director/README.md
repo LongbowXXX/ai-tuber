@@ -55,7 +55,7 @@ AI V-Tuber システムの中央オーケストレーションハブ。
 
 ## サービスの実行
 
-サービスは通常、Uvicorn のような ASGI サーバーを使用して実行されます。メインアプリケーションインスタンスが `src/stage_director/main.py` にあると仮定します (このファイルと FastAPI アプリをその中に作成する必要があるかもしれません):
+サービスは通常、Uvicorn のような ASGI サーバーを使用して実行されます。
 
 ```bash
 uvicorn stage_director.main:app --reload --host 0.0.0.0 --port 8000
