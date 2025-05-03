@@ -1,23 +1,17 @@
 import { useState, useCallback } from 'react';
 import { useWebSocket } from './useWebSocket';
-import { StageCommand } from '../types/command';
+import { StageCommand, AvatarState as BaseAvatarState } from '../types/command';
 import { validateStageCommand } from '../utils/command_validator';
 
-// Define the structure for a single avatar's state (copied from App.tsx)
-export interface AvatarState {
-  id: string;
-  vrmUrl: string;
-  animationUrls: Record<string, string>;
-  expressionWeights: Record<string, number>;
-  headYaw: number;
-  currentAnimationName: string;
+// Define an internal state that extends the base AvatarState with position
+export interface InternalAvatarState extends BaseAvatarState {
   position: [number, number, number];
 }
 
 export function useStageCommandHandler() {
   const [lastMessage, setLastMessage] = useState<StageCommand | object | null>(null);
-  const [avatars, setAvatars] = useState<AvatarState[]>([
-    // Initial avatar states (copied from App.tsx)
+  const [avatars, setAvatars] = useState<InternalAvatarState[]>([
+    // Initial avatar states
     {
       id: 'avatar1',
       vrmUrl: '/avatar.vrm',
@@ -69,7 +63,6 @@ export function useStageCommandHandler() {
           break;
         // Add cases for 'playAnimation' and 'setHeadYaw' here later if needed
         default: {
-          // Use type assertion after validation ensures command exists
           const unknownCommand = command as StageCommand;
           console.warn(`Received unknown or unhandled command type after validation: ${unknownCommand.command}`);
         }
@@ -78,7 +71,7 @@ export function useStageCommandHandler() {
       console.warn('Received data failed validation:', validationResult.errors);
       setLastMessage({ error: 'Validation failed', errors: validationResult.errors, data });
     }
-  }, []); // No external dependencies needed within the hook itself for this handler
+  }, []);
 
   const { isConnected, sendMessage } = useWebSocket<unknown>({
     onMessage: handleWebSocketMessage,
@@ -86,7 +79,7 @@ export function useStageCommandHandler() {
 
   return {
     avatars,
-    setAvatars, // Expose setAvatars for direct manipulation if needed (e.g., by VRMController)
+    setAvatars,
     lastMessage,
     isConnected,
     sendMessage,

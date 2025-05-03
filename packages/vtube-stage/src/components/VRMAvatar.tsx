@@ -15,7 +15,7 @@ interface VRMAvatarProps {
   animationUrls: Record<string, string>;
   expressionWeights: Record<string, number>;
   headYaw: number;
-  currentAnimationName: string;
+  currentAnimationName: string | null; // Allow currentAnimationName to be string or null
   position?: [number, number, number]; // Add position prop
   onLoad?: (vrm: VRM) => void; // Keep onLoad for potential external use, but internal logic won't depend on it passing upwards
 }
@@ -133,7 +133,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     const vrm = vrmRef.current;
     const currentMixer = mixer.current;
     // Ensure VRM, Mixer exist and the target animation is loaded
-    if (!vrm || !currentMixer || !loadedAnimationNames.has(currentAnimationName)) {
+    if (!vrm || !currentMixer || !currentAnimationName || !loadedAnimationNames.has(currentAnimationName)) {
       return;
     }
 

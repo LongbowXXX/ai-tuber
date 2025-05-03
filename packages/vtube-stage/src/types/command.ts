@@ -94,6 +94,16 @@ export class TriggerAnimationCommand extends BaseCommand<'triggerAnimation', Tri
 // 受け取る可能性のある全てのコマンドの Union 型 (クラスの Union に変更)
 export type StageCommand = SetExpressionCommand | LogMessageCommand | SetPoseCommand | TriggerAnimationCommand;
 
+// AvatarState インターフェースの定義
+export interface AvatarState {
+  id: string;
+  vrmUrl: string;
+  animationUrls: { [key: string]: string };
+  expressionWeights: { [key: string]: number };
+  headYaw: number;
+  currentAnimationName: string | null;
+}
+
 // 型ガードは class-validator の validate 関数で代替するため不要になることが多い
 // export function isStageCommand(obj: unknown): obj is StageCommand {
 //   return typeof obj === 'object' && obj !== null && typeof obj.command === 'string' && typeof obj.payload === 'object';

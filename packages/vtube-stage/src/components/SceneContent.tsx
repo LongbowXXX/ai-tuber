@@ -11,7 +11,7 @@ interface AvatarData {
   animationUrls: Record<string, string>;
   expressionWeights: Record<string, number>;
   headYaw: number;
-  currentAnimationName: string;
+  currentAnimationName: string | null; // Allow currentAnimationName to be string or null
   position?: [number, number, number]; // Make position optional
   onLoad?: (vrm: VRM) => void; // Optional onLoad callback per avatar
 }
@@ -51,7 +51,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars }) => {
           animationUrls={avatar.animationUrls}
           expressionWeights={avatar.expressionWeights}
           headYaw={avatar.headYaw}
-          currentAnimationName={avatar.currentAnimationName}
+          currentAnimationName={avatar.currentAnimationName} // Pass currentAnimationName (which can be null)
           position={avatar.position} // Pass position prop
           onLoad={avatar.onLoad} // Pass down individual onLoad if provided
         />
