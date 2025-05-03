@@ -1,10 +1,10 @@
 import { Canvas } from '@react-three/fiber';
-import './App.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { VRMController } from './components/VRMController';
 import { SceneContent } from './components/SceneContent';
 import { StageCommand } from './types/command';
 import { validateStageCommand } from './utils/command_validator';
+import { ThemeProvider, createTheme, CssBaseline, Box, Paper, Typography, Chip, Button } from '@mui/material';
 
 // Define the structure for a single avatar's state
 interface AvatarState {
@@ -17,6 +17,13 @@ interface AvatarState {
   position: [number, number, number]; // Add position
 }
 
+// Define the light theme
+const lightTheme = createTheme({
+  palette: {
+    mode: 'light',
+  },
+});
+
 const WS_URL = 'ws://localhost:8000/ws'; // Make sure this matches your stage-director address
 
 function App() {
@@ -25,6 +32,28 @@ function App() {
 
   // useRef to hold the WebSocket instance persistent across renders
   const ws = useRef<WebSocket | null>(null);
+
+  // State now holds an array of avatar states. Initialize with two avatars.
+  const [avatars, setAvatars] = useState<AvatarState[]>([
+    {
+      id: 'avatar1',
+      vrmUrl: '/avatar.vrm',
+      animationUrls: { idle: '/idle.vrma', wave: '/wave.vrma' },
+      expressionWeights: { neutral: 0.1 },
+      headYaw: 0,
+      currentAnimationName: 'idle',
+      position: [-0.5, 0, 0], // Position for first avatar
+    },
+    {
+      id: 'avatar2',
+      vrmUrl: '/avatar2.vrm', // Use avatar2.vrm
+      animationUrls: { idle: '/idle.vrma', wave: '/wave.vrma' }, // Assuming same animations for now
+      expressionWeights: { neutral: 0.1 },
+      headYaw: 0,
+      currentAnimationName: 'idle',
+      position: [0.5, 0, 0], // Position for second avatar
+    },
+  ]);
 
   // Function to initialize WebSocket connection
   const connectWebSocket = useCallback(() => {
@@ -179,96 +208,97 @@ function App() {
     }
   };
 
-  // State now holds an array of avatar states. Initialize with two avatars.
-  const [avatars, setAvatars] = useState<AvatarState[]>([
-    {
-      id: 'avatar1',
-      vrmUrl: '/avatar.vrm',
-      animationUrls: { idle: '/idle.vrma', wave: '/wave.vrma' },
-      expressionWeights: { neutral: 0.1 },
-      headYaw: 0,
-      currentAnimationName: 'idle',
-      position: [-0.5, 0, 0], // Position for first avatar
-    },
-    {
-      id: 'avatar2',
-      vrmUrl: '/avatar2.vrm', // Use avatar2.vrm
-      animationUrls: { idle: '/idle.vrma', wave: '/wave.vrma' }, // Assuming same animations for now
-      expressionWeights: { neutral: 0.1 },
-      headYaw: 0,
-      currentAnimationName: 'idle',
-      position: [0.5, 0, 0], // Position for second avatar
-    },
-  ]);
-
   // --- Rendering ---
   return (
-    <div id="app-container">
-      {' '}
-      {/* Changed ID for clarity */}
-      <div id="canvas-container">
-        <Canvas camera={{ position: [0, 1.2, 2.5], fov: 50 }} shadows>
-          {/* Pass the entire avatars array to SceneContent */}
-          <SceneContent avatars={avatars} />
-        </Canvas>
-      </div>
-      {/* Controller UI Area */}
-      <div className="controllers-area">
-        <h3>Stage Controls & Status</h3>
+    <ThemeProvider theme={lightTheme}>
+      <CssBaseline />
+      <Box sx={{ display: 'flex', height: '100vh' }}>
+        {/* Canvas Area */}
+        <Box sx={{ flexGrow: 1, position: 'relative' }}>
+          <Canvas camera={{ position: [0, 1.2, 2.5], fov: 50 }} shadows>
+            <SceneContent avatars={avatars} />
+          </Canvas>
+        </Box>
 
-        {/* Connection Status */}
-        <div>
-          <strong>Connection Status:</strong>{' '}
-          <span style={{ color: isConnected ? 'green' : 'red' }}>{isConnected ? 'Connected' : 'Disconnected'}</span>
-        </div>
+        {/* Controller/Sidebar Area */}
+        <Paper
+          elevation={3}
+          sx={{
+            width: '350px', // Adjust width as needed
+            padding: 2,
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2, // Add spacing between elements
+          }}
+        >
+          <Typography variant="h6" component="h3">
+            Stage Controls & Status
+          </Typography>
 
-        {/* Last Received Message */}
-        <div>
-          <strong>Last Command from Server:</strong>
-          {/* Display the parsed command object nicely */}
-          <pre style={{ wordBreak: 'break-all', whiteSpace: 'pre-wrap', textAlign: 'left' }}>
-            {lastMessage ? JSON.stringify(lastMessage, null, 2) : 'N/A'}
-          </pre>
-        </div>
+          {/* Connection Status */}
+          <Box>
+            <Typography component="span" variant="body1" sx={{ fontWeight: 'bold' }}>
+              Connection Status:{' '}
+            </Typography>
+            <Chip
+              label={isConnected ? 'Connected' : 'Disconnected'}
+              color={isConnected ? 'success' : 'error'}
+              size="small"
+            />
+          </Box>
 
-        {/* Test Button */}
-        <button onClick={sendTestMessage} disabled={!isConnected}>
-          Send Test Message to Server
-        </button>
+          {/* Last Received Message */}
+          <Box>
+            <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>
+              Last Command from Server:
+            </Typography>
+            <Paper variant="outlined" sx={{ p: 1, maxHeight: '150px', overflowY: 'auto', bgcolor: 'grey.100' }}>
+              <Typography component="pre" sx={{ wordBreak: 'break-all', whiteSpace: 'pre-wrap', fontSize: '0.8rem' }}>
+                {lastMessage ? JSON.stringify(lastMessage, null, 2) : 'N/A'}
+              </Typography>
+            </Paper>
+          </Box>
 
-        {avatars.map(avatar => (
-          <VRMController
-            key={avatar.id} // Crucial for React to differentiate instances
-            title={`Avatar ${avatar.id.replace('avatar', '')} Controls`} // Add a title
-            // Define handlers directly here, ensuring they close over the correct 'avatar.id'
-            onExpressionChange={(name, weight) => {
-              setAvatars(prevAvatars =>
-                prevAvatars.map(a =>
-                  a.id === avatar.id
-                    ? {
-                        ...a,
-                        expressionWeights: {
-                          ...a.expressionWeights,
-                          [name]: weight,
-                        },
-                      }
-                    : a
-                )
-              );
-            }}
-            onHeadYawChange={angle => {
-              setAvatars(prevAvatars => prevAvatars.map(a => (a.id === avatar.id ? { ...a, headYaw: angle } : a)));
-            }}
-            onAnimationChange={animationName => {
-              setAvatars(prevAvatars =>
-                prevAvatars.map(a => (a.id === avatar.id ? { ...a, currentAnimationName: animationName } : a))
-              );
-            }}
-            availableAnimations={Object.keys(avatar.animationUrls)}
-          />
-        ))}
-      </div>
-    </div>
+          {/* Test Button */}
+          <Button variant="contained" onClick={sendTestMessage} disabled={!isConnected}>
+            Send Test Message
+          </Button>
+
+          {/* VRM Controllers */}
+          {avatars.map(avatar => (
+            <VRMController
+              key={avatar.id}
+              title={`Avatar ${avatar.id.replace('avatar', '')} Controls`}
+              onExpressionChange={(name, weight) => {
+                setAvatars(prevAvatars =>
+                  prevAvatars.map(a =>
+                    a.id === avatar.id
+                      ? {
+                          ...a,
+                          expressionWeights: {
+                            ...a.expressionWeights,
+                            [name]: weight,
+                          },
+                        }
+                      : a
+                  )
+                );
+              }}
+              onHeadYawChange={angle => {
+                setAvatars(prevAvatars => prevAvatars.map(a => (a.id === avatar.id ? { ...a, headYaw: angle } : a)));
+              }}
+              onAnimationChange={animationName => {
+                setAvatars(prevAvatars =>
+                  prevAvatars.map(a => (a.id === avatar.id ? { ...a, currentAnimationName: animationName } : a))
+                );
+              }}
+              availableAnimations={Object.keys(avatar.animationUrls)}
+            />
+          ))}
+        </Paper>
+      </Box>
+    </ThemeProvider>
   );
 }
 
