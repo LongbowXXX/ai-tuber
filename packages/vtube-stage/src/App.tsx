@@ -3,6 +3,8 @@ import './App.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { VRMController } from './components/VRMController';
 import { SceneContent } from './components/SceneContent';
+import { StageCommand } from './types/command';
+import { validateStageCommand } from './utils/command_validator';
 
 // Define the structure for a single avatar's state
 interface AvatarState {
@@ -19,7 +21,8 @@ const WS_URL = 'ws://localhost:8000/ws'; // Make sure this matches your stage-di
 
 function App() {
   const [isConnected, setIsConnected] = useState(false);
-  const [lastMessage, setLastMessage] = useState<string | null>(null);
+  const [lastMessage, setLastMessage] = useState<StageCommand | object | null>(null);
+
   // useRef to hold the WebSocket instance persistent across renders
   const ws = useRef<WebSocket | null>(null);
 
@@ -68,14 +71,80 @@ function App() {
       // The onclose event will likely follow an error, no need to clear ref here usually
     };
 
-    newWs.onmessage = event => {
-      // Check if the message is from the currently active connection
-      if (ws.current === newWs) {
-        console.log('Message from server:', event.data);
-        setLastMessage(event.data);
-        // --- TODO: Parse the command and update VRM state here ---
-      } else {
+    newWs.onmessage = async event => {
+      // Make the handler async
+      if (ws.current !== newWs) {
         console.log('Received message for a stale WebSocket instance.');
+        return;
+      }
+
+      console.log('Raw message from server:', event.data);
+      try {
+        const parsedData = JSON.parse(event.data);
+
+        // --- Replace type guard with validation ---
+        const validationResult = await validateStageCommand(parsedData);
+
+        if (validationResult.errors.length === 0 && validationResult.command) {
+          // Validation successful, command is not null
+          const command = validationResult.command;
+          setLastMessage(command); // Store validated command object
+
+          // Process command based on its type
+          switch (command.command) {
+            case 'setExpression':
+              console.log(
+                `Received setExpression: Character=${command.payload.characterId}, Name=${command.payload.expressionName}, Weight=${command.payload.weight}`
+              );
+              // --- Update the specific avatar's expression ---
+              setAvatars(prevAvatars =>
+                prevAvatars.map(a =>
+                  a.id === command.payload.characterId
+                    ? {
+                        ...a,
+                        expressionWeights: {
+                          ...a.expressionWeights, // Keep existing weights
+                          [command.payload.expressionName]: command.payload.weight, // Update specific expression
+                        },
+                      }
+                    : a
+                )
+              );
+              break;
+            case 'logMessage':
+              console.log(`Server log: ${command.payload.message}`);
+              break;
+            // Add cases for other commands like setPose, triggerAnimation later
+            // case 'setPose':
+            //    console.log(`Received setPose: Character=${command.payload.characterId}, Name=${command.payload.poseName}`);
+            //    // --- TODO: Call VRM pose function for the specific avatar ---
+            //    break;
+            // case 'triggerAnimation':
+            //    console.log(`Received triggerAnimation: Character=${command.payload.characterId}, Name=${command.payload.animationName}`);
+            // --- TODO: Call VRM animation function for the specific avatar ---
+            //    setAvatars(prevAvatars =>
+            //      prevAvatars.map(a =>
+            //        a.id === command.payload.characterId ? { ...a, currentAnimationName: command.payload.animationName } : a
+            //      )
+            //    );
+            //    break;
+            default:
+              // This should ideally not happen if commandRegistry is exhaustive
+              // and validation passes, but good for safety.
+              // const _exhaustiveCheck: never = command; // Helps ensure all commands are handled
+              console.warn(
+                `Received unknown or unhandled command type after validation: ${'command' in command ? command.command : 'unknown'}`
+              );
+          }
+        } else {
+          // Validation failed
+          console.warn('Received data failed validation:', validationResult.errors);
+          // Store the original data and the errors
+          setLastMessage({ error: 'Validation failed', errors: validationResult.errors, data: parsedData });
+        }
+      } catch (error) {
+        console.error('Failed to parse message or unexpected error during validation:', error);
+        setLastMessage({ error: 'Invalid JSON or processing error', data: event.data });
       }
     };
 
@@ -155,8 +224,11 @@ function App() {
 
         {/* Last Received Message */}
         <div>
-          <strong>Last Message from Server:</strong>
-          <p style={{ wordBreak: 'break-all' }}>{lastMessage ?? 'N/A'}</p>
+          <strong>Last Command from Server:</strong>
+          {/* Display the parsed command object nicely */}
+          <pre style={{ wordBreak: 'break-all', whiteSpace: 'pre-wrap', textAlign: 'left' }}>
+            {lastMessage ? JSON.stringify(lastMessage, null, 2) : 'N/A'}
+          </pre>
         </div>
 
         {/* Test Button */}
