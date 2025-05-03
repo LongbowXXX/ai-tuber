@@ -6,9 +6,10 @@
 import asyncio
 import json
 import random
-from typing import Any
+from typing import Literal, Union, Any
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import logging
+from pydantic import BaseModel, Field
 
 # Basic logging configuration
 logging.basicConfig(level=logging.INFO)
@@ -17,11 +18,72 @@ logger = logging.getLogger("stage-director")
 app = FastAPI(title="AI VTuber Stage Director", version="0.1.0")
 
 
+# --- Pydantic Models for Commands ---
+
+
+class SetExpressionPayload(BaseModel):
+    characterId: str
+    expressionName: str
+    weight: float = Field(..., ge=0.0, le=1.0)
+
+
+class LogMessagePayload(BaseModel):
+    message: str
+
+
+class SetPosePayload(BaseModel):
+    characterId: str
+    poseName: str
+
+
+class TriggerAnimationPayload(BaseModel):
+    characterId: str
+    animationName: str
+
+
+class AcknowledgementPayload(BaseModel):
+    status: str
+    original_message: str | dict[str, Any] | None = None
+
+
+class SetExpressionCommand(BaseModel):
+    command: Literal["setExpression"] = "setExpression"
+    payload: SetExpressionPayload
+
+
+class LogMessageCommand(BaseModel):
+    command: Literal["logMessage"] = "logMessage"
+    payload: LogMessagePayload
+
+
+class SetPoseCommand(BaseModel):
+    command: Literal["setPose"] = "setPose"
+    payload: SetPosePayload
+
+
+class TriggerAnimationCommand(BaseModel):
+    command: Literal["triggerAnimation"] = "triggerAnimation"
+    payload: TriggerAnimationPayload
+
+
+class AcknowledgementCommand(BaseModel):
+    command: Literal["acknowledgement"] = "acknowledgement"
+    payload: AcknowledgementPayload
+
+
+StageCommand = Union[
+    SetExpressionCommand,
+    LogMessageCommand,
+    SetPoseCommand,
+    TriggerAnimationCommand,
+    AcknowledgementCommand,
+]
+
+
 # --- Helper to create command JSON ---
-def create_command(command_name: str, payload: dict[str, str]) -> str:
-    """Creates a JSON string for a command."""
-    command: dict[str, Any] = {"command": command_name, "payload": payload}
-    return json.dumps(command)
+def create_command_json(command_model: BaseModel) -> str:
+    """Creates a JSON string from a Pydantic command model."""
+    return command_model.model_dump_json()
 
 
 # --- Periodic Command Sender Task ---
@@ -41,8 +103,9 @@ async def send_periodic_commands(websocket: WebSocket) -> None:
             await asyncio.sleep(5)  # Wait for 5 seconds
 
             # Send log message command
-            log_payload = {"message": f"Periodic server ping #{counter}"}
-            log_command_json = create_command("logMessage", log_payload)
+            log_payload_model = LogMessagePayload(message=f"Periodic server ping #{counter}")
+            log_command_model = LogMessageCommand(payload=log_payload_model)
+            log_command_json = create_command_json(log_command_model)
             logger.info(f"Sending command to {websocket.client}: {log_command_json}")
             await websocket.send_text(log_command_json)
             counter += 1
@@ -51,12 +114,13 @@ async def send_periodic_commands(websocket: WebSocket) -> None:
 
             # Send setExpression command with random expression
             random_expression = random.choice(expressions)
-            expression_payload: dict[str, Any] = {
-                "characterId": "avatar1",  # Placeholder
-                "expressionName": random_expression,
-                "weight": round(random.uniform(0.5, 1.0), 2),  # Random weight
-            }
-            expression_command_json = create_command("setExpression", expression_payload)
+            expression_payload_model = SetExpressionPayload(
+                characterId="avatar1",
+                expressionName=random_expression,
+                weight=round(random.uniform(0.5, 1.0), 2),
+            )
+            expression_command_model = SetExpressionCommand(payload=expression_payload_model)
+            expression_command_json = create_command_json(expression_command_model)
             logger.info(f"Sending command to {websocket.client}: {expression_command_json}")
             await websocket.send_text(expression_command_json)
 
@@ -78,41 +142,39 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     await websocket.accept()
     logger.info(f"WebSocket connection established: {websocket.client}")
 
-    # Start the periodic sender task
     sender_task: asyncio.Task[None] = asyncio.create_task(send_periodic_commands(websocket))
 
     try:
         while True:
-            # Listen for incoming messages (if needed for future interaction)
             data = await websocket.receive_text()
             logger.info(f"Received message from {websocket.client}: {data}")
-            # --- TODO: Implement logic based on client messages if necessary ---
-            # For now, we primarily send commands, not react to client messages.
-            # Acknowledge receipt?
-            ack_payload = {"status": "Received", "original_message": data}
-            ack_cmd = create_command("acknowledgement", ack_payload)
-            await websocket.send_text(ack_cmd)  # Example: Send acknowledgement
+
+            try:
+                original_msg_data: dict[str, Any] | str = json.loads(data)
+            except json.JSONDecodeError:
+                original_msg_data = data
+
+            ack_payload_model = AcknowledgementPayload(status="Received", original_message=original_msg_data)
+            ack_cmd_model = AcknowledgementCommand(payload=ack_payload_model)
+            ack_cmd_json = create_command_json(ack_cmd_model)
+            await websocket.send_text(ack_cmd_json)
 
     except WebSocketDisconnect:
         logger.info(f"WebSocket connection closed: {websocket.client}")
     except Exception as e:
         logger.error(f"WebSocket error for {websocket.client}: {e}", exc_info=True)
-        # Optionally try to close the websocket gracefully
-        await websocket.close(code=1011)  # Internal Error
+        await websocket.close(code=1011)
     finally:
-        # Cancel the sender task when the connection closes
         logger.info(f"Cancelling sender task for {websocket.client}")
         sender_task.cancel()
         try:
-            await sender_task  # Wait for the task to actually cancel
+            await sender_task
         except asyncio.CancelledError:
             logger.info("Sender task successfully cancelled.")
         logger.info(f"Cleaned up WebSocket connection: {websocket.client}")
 
 
 # --- HTTP Endpoints (Optional for testing/health check) ---
-
-
 @app.get("/")
 async def read_root() -> dict[str, str]:
     """Basic HTTP endpoint for health check or info."""
@@ -120,13 +182,8 @@ async def read_root() -> dict[str, str]:
 
 
 # --- Uvicorn Runner (for easy execution) ---
-# You can run this file directly using 'python src/main.py'
-# Or preferably use: uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
-
 if __name__ == "__main__":
     import uvicorn
 
     logger.info("Starting Stage Director server with Uvicorn...")
-    # Note: Running directly like this is less flexible than using the uvicorn command.
-    # The command line `uvicorn src.main:app --reload ...` is generally preferred.
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
