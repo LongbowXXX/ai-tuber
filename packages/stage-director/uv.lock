@@ -938,6 +938,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
+    { name = "pydantic" },
     { name = "setuptools" },
     { name = "uvicorn", extra = ["standard"] },
     { name = "websockets" },
@@ -969,6 +970,7 @@ requires-dist = [
     { name = "flake8-copyright", marker = "extra == 'dev'", specifier = ">=0.2.4" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
     { name = "myst-parser", marker = "extra == 'dev'", specifier = "==4.0.0" },
+    { name = "pydantic", specifier = ">=2.11.3" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=5.0.0" },

@@ -36,13 +36,13 @@ jobs:
         run: uv sync --frozen
 
       - name: Run Flake8
-        run: uv run flake8 src
+        run: flake8 src
 
       - name: Run Black check
-        run: uv run black --check src tests
+        run: black . --check
 
       - name: Run MyPy
-        run: uv run mypy src
+        run: mypy .
 
       - name: Run Pytest
         run: uv run pytest
