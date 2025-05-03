@@ -44,18 +44,26 @@ export function useStageCommandHandler() {
           console.log(
             `Received setExpression: Character=${command.payload.characterId}, Name=${command.payload.expressionName}, Weight=${command.payload.weight}`
           );
+
           setAvatars(prevAvatars =>
-            prevAvatars.map(a =>
-              a.id === command.payload.characterId
-                ? {
-                    ...a,
-                    expressionWeights: {
-                      ...a.expressionWeights,
-                      [command.payload.expressionName]: command.payload.weight,
-                    },
-                  }
-                : a
-            )
+            prevAvatars.map(a => {
+              if (a.id === command.payload.characterId) {
+                // Create a new expressionWeights object with all weights set to 0
+                const newExpressionWeights: { [key: string]: number } = {};
+                Object.keys(a.expressionWeights).forEach(key => {
+                  newExpressionWeights[key] = 0;
+                });
+
+                // Set the specified expression's weight
+                newExpressionWeights[command.payload.expressionName] = command.payload.weight;
+
+                return {
+                  ...a,
+                  expressionWeights: newExpressionWeights,
+                };
+              }
+              return a;
+            })
           );
           break;
         case 'logMessage':

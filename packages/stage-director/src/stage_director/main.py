@@ -28,7 +28,14 @@ def create_command(command_name: str, payload: dict[str, str]) -> str:
 async def send_periodic_commands(websocket: WebSocket) -> None:
     """Periodically sends test commands to the connected client."""
     counter = 0
-    expressions = ["happy", "sad", "angry", "surprised", "neutral"]
+    expressions = [
+        "neutral",
+        "happy",
+        "sad",
+        "angry",
+        "relaxed",
+        "Surprised",
+    ]
     try:
         while True:
             await asyncio.sleep(5)  # Wait for 5 seconds
@@ -45,7 +52,7 @@ async def send_periodic_commands(websocket: WebSocket) -> None:
             # Send setExpression command with random expression
             random_expression = random.choice(expressions)
             expression_payload: dict[str, Any] = {
-                "characterId": "char1",  # Placeholder
+                "characterId": "avatar1",  # Placeholder
                 "expressionName": random_expression,
                 "weight": round(random.uniform(0.5, 1.0), 2),  # Random weight
             }
