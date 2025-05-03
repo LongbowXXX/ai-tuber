@@ -1,0 +1,48 @@
+name: Stage Director CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/stage-director/**"
+      - ".github/workflows/stage-director-ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "packages/stage-director/**"
+      - ".github/workflows/stage-director-ci.yml"
+
+jobs:
+  build-stage-director:
+    name: Build stage-director
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./packages/stage-director
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Run Flake8
+        run: uv run flake8 src
+
+      - name: Run Black check
+        run: uv run black --check src tests
+
+      - name: Run MyPy
+        run: uv run mypy src
+
+      - name: Run Pytest
+        run: uv run pytest

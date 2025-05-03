@@ -1,13 +1,20 @@
-name: CI
+name: VTube Stage CI
 
 on:
   push:
     branches: [main]
+    paths:
+      - "packages/vtube-stage/**"
+      - ".github/workflows/vtube-stage-ci.yml"
   pull_request:
     branches: [main]
+    paths:
+      - "packages/vtube-stage/**"
+      - ".github/workflows/vtube-stage-ci.yml"
 
 jobs:
-  build:
+  build-vtube-stage:
+    name: Build vtube-stage
     runs-on: ubuntu-latest
 
     defaults:
