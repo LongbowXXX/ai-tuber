@@ -36,13 +36,13 @@ jobs:
         run: uv sync --frozen --all-extras # Add --all-extras to install dev dependencies
 
       - name: Run Flake8
-        run: flake8 .
+        run: uv run flake8 .
 
       - name: Run Black check
-        run: black . --check
+        run: uv run black . --check
 
       - name: Run MyPy
-        run: mypy .
+        run: uv run mypy .
 
       - name: Run Pytest
         run: uv run pytest
