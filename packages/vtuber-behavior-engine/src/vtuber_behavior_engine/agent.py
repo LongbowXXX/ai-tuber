@@ -12,6 +12,8 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai.types import Content, Part
 
+from vtuber_behavior_engine.mcp_client import connect
+
 # --- Logging Setup ---
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -76,6 +78,7 @@ if __name__ == "__main__":
         test_query = "Hello! How are you?"
         # Execute asynchronous function
         asyncio.run(run_agent_standalone(character_agent, test_query))
+        asyncio.run(connect())
     except ValueError as e:
         logger.error("run ValueError", exc_info=e)
     except Exception as e:
