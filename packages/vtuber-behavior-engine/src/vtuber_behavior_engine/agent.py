@@ -20,17 +20,17 @@ logger = logging.getLogger(__name__)
 # --- Character Agent Definition ---
 def create_character_agent() -> LlmAgent:  # type: ignore[no-any-unimported]
     """Creates a simple character agent instance."""
-    load_dotenv()  # .env ファイルから環境変数を読み込む
+    load_dotenv()  # Load environment variables from .env file
     logger.info("Creating Character Agent A...")
-    # LlmAgent を作成
+    # Create LlmAgent
     agent = LlmAgent(
         model="gemini-2.0-flash",
-        name="character_agent_a",  # エージェントの名前
-        # エージェントの指示 (ペルソナとタスク)
-        instruction="""あなたはキャラクターA、明るく元気なバーチャルタレントです。
-ユーザーからの入力に対して、自然で簡潔に応答してください。
-あなたの応答は、そのまま会話として利用されます。""",
-        # tools=[] # この段階ではツールはまだ不要
+        name="character_agent_a",  # Agent name
+        # Agent instructions (persona and task)
+        instruction="""You are Character A, a bright and cheerful virtual talent.
+Please respond naturally and concisely to user input.
+Your responses will be used directly in conversation.""",
+        # tools=[] # Tools are not needed at this stage
     )
     logger.info("Character Agent A created.")
     return agent
@@ -41,10 +41,10 @@ async def run_agent_standalone(agent: LlmAgent, user_query: str) -> str:  # type
     """Runs the agent with a single query for testing."""
     logger.info(f"Running agent with query: '{user_query}'")
 
-    # ADK Runner を使うための準備
+    # Prepare to use ADK Runner
     session_service = InMemorySessionService()
     artifacts_service = InMemoryArtifactService()
-    # ユーザーからの入力をADKが理解できる形式に変換
+    # Convert user input into a format ADK can understand
     message = Content(role="user", parts=[Part(text=user_query)])
 
     runner = Runner(
@@ -57,7 +57,7 @@ async def run_agent_standalone(agent: LlmAgent, user_query: str) -> str:  # type
     logger.info(f"Running agent with session: '{session}'")
 
     final_response = None
-    # run_async はイベントの非同期イテレータを返す
+    # run_async returns an asynchronous iterator of events
     async for event in runner.run_async(session_id=session.id, user_id=session.user_id, new_message=message):
         logger.info(f"Agent Event: {event}")
 
@@ -68,13 +68,13 @@ async def run_agent_standalone(agent: LlmAgent, user_query: str) -> str:  # type
     return final_response or ""
 
 
-# スクリプトとして直接実行された場合の処理
+# Processing when executed directly as a script
 if __name__ == "__main__":
     try:
         character_agent = create_character_agent()
-        # テスト用の質問
-        test_query = "こんにちは！調子はどう？"
-        # 非同期関数を実行
+        # Test query
+        test_query = "Hello! How are you?"
+        # Execute asynchronous function
         asyncio.run(run_agent_standalone(character_agent, test_query))
     except ValueError as e:
         logger.error("run ValueError", exc_info=e)
