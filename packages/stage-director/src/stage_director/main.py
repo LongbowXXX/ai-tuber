@@ -30,7 +30,17 @@ async def read_root() -> dict[str, str]:
 
 # --- Uvicorn Runner (for easy execution) ---
 if __name__ == "__main__":
-    import uvicorn
+    import asyncio  # asyncio をインポート
+    from uvicorn import Config, Server  # Config と Server をインポート
 
-    logger.info("Starting Stage Director server with Uvicorn...")
-    uvicorn.run("stage_director.main:app", host="127.0.0.1", port=8000, log_level="info", reload=True)
+    async def main() -> None:
+        # サーバー設定
+        config = Config("stage_director.main:app", host="127.0.0.1", port=8000, log_level="info", reload=True)
+        server = Server(config)
+
+        logger.info("Starting Stage Director server with Uvicorn...")
+        # サーバーを実行
+        await server.serve()
+
+    # 非同期メイン関数を実行
+    asyncio.run(main())
