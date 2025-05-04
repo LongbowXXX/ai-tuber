@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 # --- Character Agent Definition ---
-def create_character_agent() -> LlmAgent:
+def create_character_agent() -> LlmAgent:  # type: ignore[no-any-unimported]
     """Creates a simple character agent instance."""
     load_dotenv()  # .env ファイルから環境変数を読み込む
     logger.info("Creating Character Agent A...")
@@ -37,7 +37,7 @@ def create_character_agent() -> LlmAgent:
 
 
 # --- Agent Execution Logic (for standalone testing) ---
-async def run_agent_standalone(agent: LlmAgent, user_query: str):
+async def run_agent_standalone(agent: LlmAgent, user_query: str) -> str:  # type: ignore[no-any-unimported]
     """Runs the agent with a single query for testing."""
     logger.info(f"Running agent with query: '{user_query}'")
 
@@ -65,7 +65,7 @@ async def run_agent_standalone(agent: LlmAgent, user_query: str):
             final_response = event.content.parts[0].text
 
     logger.info(f"Agent final response: {final_response}")
-    return final_response
+    return final_response or ""
 
 
 # スクリプトとして直接実行された場合の処理
