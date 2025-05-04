@@ -9,8 +9,9 @@ requires-python = ">=3.10" # ADK requires Python 3.10+ [cite: 184]
 readme = "README.md"
 license = { text = "MIT" }
 dependencies = [
+    "python-dotenv>=1.0.1",
     "google-adk>=0.4.0",
-    "google-generativeai>=0.8.5",
+    "google-genai>=1.13.0",
 ]
 
 
