@@ -55,13 +55,9 @@ AI V-Tuber システムの中央オーケストレーションハブ。
 
 ## サービスの実行
 
-サービスは通常、Uvicorn のような ASGI サーバーを使用して実行されます。
-
 ```bash
-uvicorn stage_director.main:app --reload --host 0.0.0.0 --port 8000
+uv run python src/stage_director/main.py
 ```
-
-_(注意: FastAPI アプリケーションと WebSocket エンドポイントのロジックを `src/stage_director/` に実装する必要があります)_
 
 ## 設定
 

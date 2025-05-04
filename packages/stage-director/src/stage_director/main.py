@@ -6,8 +6,10 @@
 import logging
 from fastapi import FastAPI
 
+from stage_director.websocket_handler import websocket_endpoint
+
 # Import the websocket endpoint function
-from .websocket_handler import websocket_endpoint
+
 
 # Basic logging configuration
 logging.basicConfig(level=logging.INFO)
