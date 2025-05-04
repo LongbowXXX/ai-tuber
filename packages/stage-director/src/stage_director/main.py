@@ -3,44 +3,14 @@
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
 
+import asyncio
 import logging
-from fastapi import FastAPI
 
-from stage_director.websocket_handler import websocket_endpoint
-
-# Import the websocket endpoint function
+from stage_director.stage_director_server import run_stage_director_server
 
 
-# Basic logging configuration
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("stage-director")
-
-app = FastAPI(title="AI VTuber Stage Director", version="0.1.0")
-
-# Register the WebSocket endpoint
-app.add_api_websocket_route("/ws", websocket_endpoint)
-
-
-# --- HTTP Endpoints (Optional for testing/health check) ---
-@app.get("/")
-async def read_root() -> dict[str, str]:
-    """Basic HTTP endpoint for health check or info."""
-    return {"message": "Stage Director is running"}
-
-
-# --- Uvicorn Runner (for easy execution) ---
 if __name__ == "__main__":
-    import asyncio  # asyncio をインポート
-    from uvicorn import Config, Server  # Config と Server をインポート
-
-    async def main() -> None:
-        # サーバー設定
-        config = Config("stage_director.main:app", host="127.0.0.1", port=8000, log_level="info", reload=True)
-        server = Server(config)
-
-        logger.info("Starting Stage Director server with Uvicorn...")
-        # サーバーを実行
-        await server.serve()
+    logging.basicConfig(level=logging.INFO)
 
     # 非同期メイン関数を実行
-    asyncio.run(main())
+    asyncio.run(run_stage_director_server())
