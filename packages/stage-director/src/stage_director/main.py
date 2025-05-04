@@ -6,11 +6,19 @@
 import asyncio
 import logging
 
+from stage_director.stage_director_mcp_server import run_stage_director_mcp_server
 from stage_director.stage_director_server import run_stage_director_server
+
+
+async def run_servers() -> None:
+    """Run all servers."""
+    await asyncio.gather(
+        run_stage_director_server(),
+        run_stage_director_mcp_server(),
+    )
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
-    # 非同期メイン関数を実行
-    asyncio.run(run_stage_director_server())
+    asyncio.run(run_servers())
