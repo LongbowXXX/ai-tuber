@@ -3,18 +3,20 @@
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
 import logging
+from contextlib import AsyncExitStack
 
-from mcp import ClientSession
-from mcp.client.sse import sse_client
+from google.adk.tools.mcp_tool import MCPToolset, MCPTool
+from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 logger = logging.getLogger(__name__)
 
 
-async def connect() -> None:
-    """Connect to the SSE server and initialize the client session."""
-    # Create an SSE client and connect to the server
-    async with sse_client("http://localhost:8080/sse") as streams:
-        async with ClientSession(streams[0], streams[1]) as session:
-            await session.initialize()
-            tools_result = await session.list_tools()
-            logger.info(f"{tools_result.tools}")
+async def get_tools_async() -> tuple[list[MCPTool], AsyncExitStack]:
+    logger.info("get_tools_async() in.")
+    tools, exit_stack = await MCPToolset.from_server(
+        connection_params=SseServerParams(
+            url="http://localhost:8080/sse",
+        )
+    )
+    logger.info(f"get_tools_async() out. tools={tools}")
+    return tools, exit_stack

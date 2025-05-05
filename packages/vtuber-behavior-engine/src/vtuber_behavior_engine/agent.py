@@ -2,7 +2,6 @@
 #
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
-import asyncio
 import logging
 
 from dotenv import load_dotenv
@@ -10,9 +9,8 @@ from google.adk.agents.llm_agent import LlmAgent
 from google.adk.artifacts.in_memory_artifact_service import InMemoryArtifactService
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
+from google.adk.tools.mcp_tool import MCPTool
 from google.genai.types import Content, Part
-
-from vtuber_behavior_engine.mcp_client import connect
 
 # --- Logging Setup ---
 logging.basicConfig(level=logging.INFO)
@@ -20,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 # --- Character Agent Definition ---
-def create_character_agent() -> LlmAgent:  # type: ignore[no-any-unimported]
+def create_character_agent(tools: list[MCPTool]) -> LlmAgent:
     """Creates a simple character agent instance."""
     load_dotenv()  # Load environment variables from .env file
     logger.info("Creating Character Agent A...")
@@ -32,14 +30,14 @@ def create_character_agent() -> LlmAgent:  # type: ignore[no-any-unimported]
         instruction="""You are Character A, a bright and cheerful virtual talent.
 Please respond naturally and concisely to user input.
 Your responses will be used directly in conversation.""",
-        # tools=[] # Tools are not needed at this stage
+        tools=tools,
     )
     logger.info("Character Agent A created.")
     return agent
 
 
 # --- Agent Execution Logic (for standalone testing) ---
-async def run_agent_standalone(agent: LlmAgent, user_query: str) -> str:  # type: ignore[no-any-unimported]
+async def run_agent_standalone(agent: LlmAgent, user_query: str) -> str:
     """Runs the agent with a single query for testing."""
     logger.info(f"Running agent with query: '{user_query}'")
 
@@ -68,18 +66,3 @@ async def run_agent_standalone(agent: LlmAgent, user_query: str) -> str:  # type
 
     logger.info(f"Agent final response: {final_response}")
     return final_response or ""
-
-
-# Processing when executed directly as a script
-if __name__ == "__main__":
-    try:
-        character_agent = create_character_agent()
-        # Test query
-        test_query = "Hello! How are you?"
-        # Execute asynchronous function
-        asyncio.run(run_agent_standalone(character_agent, test_query))
-        asyncio.run(connect())
-    except ValueError as e:
-        logger.error("run ValueError", exc_info=e)
-    except Exception as e:
-        logger.exception("run unexpected error occurred", exc_info=e)
