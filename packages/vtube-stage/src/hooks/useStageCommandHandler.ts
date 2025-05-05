@@ -69,6 +69,10 @@ export function useStageCommandHandler() {
         case 'logMessage':
           console.log(`Server log: ${command.payload.message}`);
           break;
+        case 'speak': // Add case for speak command
+          console.log(`Received speak: Character=${command.payload.characterId}, Message=${command.payload.message}`);
+          // TODO: Implement avatar speech display or audio playback
+          break;
         // Add cases for 'playAnimation' and 'setHeadYaw' here later if needed
         default: {
           const unknownCommand = command as StageCommand;

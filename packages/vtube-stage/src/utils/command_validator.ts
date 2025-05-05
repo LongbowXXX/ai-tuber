@@ -4,6 +4,7 @@ import {
   LogMessageCommand,
   SetExpressionCommand,
   SetPoseCommand,
+  SpeakCommand, // Add SpeakCommand
   StageCommand,
   TriggerAnimationCommand,
 } from '../types/command';
@@ -14,6 +15,7 @@ const commandRegistry: { [key: string]: ClassConstructor<StageCommand> } = {
   logMessage: LogMessageCommand,
   setPose: SetPoseCommand,
   triggerAnimation: TriggerAnimationCommand,
+  speak: SpeakCommand, // Add speak command
 };
 
 /**

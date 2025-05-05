@@ -91,8 +91,32 @@ export class TriggerAnimationCommand extends BaseCommand<'triggerAnimation', Tri
   declare payload: TriggerAnimationPayload;
 }
 
+// speak コマンドのペイロードクラス
+export class SpeakPayload {
+  @IsString()
+  @IsDefined()
+  characterId!: string;
+
+  @IsString()
+  @IsDefined()
+  message!: string;
+}
+export class SpeakCommand extends BaseCommand<'speak', SpeakPayload> {
+  declare command: 'speak';
+
+  @ValidateNested()
+  @Type(() => SpeakPayload)
+  @IsDefined()
+  declare payload: SpeakPayload;
+}
+
 // 受け取る可能性のある全てのコマンドの Union 型 (クラスの Union に変更)
-export type StageCommand = SetExpressionCommand | LogMessageCommand | SetPoseCommand | TriggerAnimationCommand;
+export type StageCommand =
+  | SetExpressionCommand
+  | LogMessageCommand
+  | SetPoseCommand
+  | TriggerAnimationCommand
+  | SpeakCommand;
 
 // AvatarState インターフェースの定義
 export interface AvatarState {
