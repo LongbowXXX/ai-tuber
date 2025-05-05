@@ -5,11 +5,13 @@
 
 import asyncio
 import json
-import random
 import logging
+import random
 from typing import Any
+
 from fastapi import WebSocket, WebSocketDisconnect
 
+from .command_queue import dequeue_command
 from .models import (
     LogMessagePayload,
     LogMessageCommand,
@@ -69,6 +71,24 @@ async def send_periodic_commands(websocket: WebSocket) -> None:
         logger.error(f"Error in sender task for {websocket.client}: {e}", exc_info=True)
 
 
+async def process_command_queue(websocket: WebSocket) -> None:
+    """
+    It monitors the command_queue, retrieves commands and sends them to the WebSocket.
+    """
+    try:
+        while True:
+            command = await dequeue_command()
+            command_json = create_command_json(command)
+
+            logger.info(f"Sending command from queue to {websocket.client}: {command_json}")
+            await websocket.send_text(command_json)
+
+    except asyncio.CancelledError:
+        logger.info("Command queue processing task cancelled.")
+    except Exception as e:
+        logger.error(f"Error while processing command queue for {websocket.client}: {e}", exc_info=True)
+
+
 # --- WebSocket Endpoint ---
 async def websocket_endpoint(websocket: WebSocket) -> None:
     """
@@ -78,7 +98,8 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     await websocket.accept()
     logger.info(f"WebSocket connection established: {websocket.client}")
 
-    sender_task: asyncio.Task[None] = asyncio.create_task(send_periodic_commands(websocket))
+    # sender_task: asyncio.Task[None] = asyncio.create_task(send_periodic_commands(websocket))
+    sender_task: asyncio.Task[None] = asyncio.create_task(process_command_queue(websocket))
 
     try:
         while True:
