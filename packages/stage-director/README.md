@@ -49,7 +49,6 @@ AI V-Tuber システムの中央オーケストレーションハブ。
 
 2.  **`uv` を使用して依存関係をインストールします:**
     ```bash
-    uv sync
     uv sync --extra dev
     ```
 
