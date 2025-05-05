@@ -5,6 +5,7 @@ import { VRM, VRMLoaderPlugin, VRMUtils, VRMExpressionPresetName, VRMHumanBoneNa
 import { createVRMAnimationClip, VRMAnimation, VRMAnimationLoaderPlugin } from '@pixiv/three-vrm-animation';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { SpeechBubble } from './SpeechBubble'; // Import the SpeechBubble component
 
 // --- Constants ---
 const ANIMATION_FADE_DURATION = 0.3;
@@ -16,6 +17,7 @@ interface VRMAvatarProps {
   expressionWeights: Record<string, number>;
   headYaw: number;
   currentAnimationName: string | null; // Allow currentAnimationName to be string or null
+  speechText?: string; // Add speechText prop
   position?: [number, number, number]; // Add position prop
   onLoad?: (vrm: VRM) => void; // Keep onLoad for potential external use, but internal logic won't depend on it passing upwards
 }
@@ -26,6 +28,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   expressionWeights,
   headYaw,
   currentAnimationName,
+  speechText = '', // Default to empty string
   position = [0, 0, 0], // Default position if not provided
   onLoad, // Keep prop signature
 }) => {
@@ -210,6 +213,9 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
 
   // Render only when VRM is loaded, applying the position
   return isLoaded && vrmRef.current ? (
-    <primitive object={gltf.scene} position={position} dispose={null} /> // Apply position here
+    <primitive object={gltf.scene} position={position} dispose={null}>
+      {/* Add SpeechBubble as a child, positioned relative to the avatar */}
+      <SpeechBubble text={speechText} />
+    </primitive>
   ) : null;
 };
