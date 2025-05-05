@@ -11,7 +11,7 @@ from typing import Any
 
 from fastapi import WebSocket, WebSocketDisconnect
 
-from .command_queue import dequeue_command
+from .command_queue import dequeue_command, mark_command_done
 from .models import (
     LogMessagePayload,
     LogMessageCommand,
@@ -82,6 +82,7 @@ async def process_command_queue(websocket: WebSocket) -> None:
 
             logger.info(f"Sending command from queue to {websocket.client}: {command_json}")
             await websocket.send_text(command_json)
+            mark_command_done()
 
     except asyncio.CancelledError:
         logger.info("Command queue processing task cancelled.")
@@ -107,7 +108,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
             logger.info(f"Received message from {websocket.client}: {data}")
 
             try:
-                original_msg_data: dict[str, Any] | str = json.loads(data)
+                original_msg_data: str | dict[str, Any] | None = json.loads(data)
             except json.JSONDecodeError:
                 original_msg_data = data
 
