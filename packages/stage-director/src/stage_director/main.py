@@ -9,6 +9,8 @@ import logging
 from stage_director.stage_director_mcp_server import run_stage_director_mcp_server
 from stage_director.stage_director_server import run_stage_director_server
 
+logger = logging.getLogger(__name__)
+
 
 async def run_servers() -> None:
     """Run all servers."""
@@ -20,5 +22,7 @@ async def run_servers() -> None:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-
-    asyncio.run(run_servers())
+    try:
+        asyncio.run(run_servers())
+    except KeyboardInterrupt:
+        logger.info("KeyboardInterrupt: Exiting...")

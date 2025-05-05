@@ -5,6 +5,8 @@
 import asyncio
 import logging
 
+from dotenv import load_dotenv
+
 from vtuber_behavior_engine.agent import create_character_agent, run_agent_standalone
 from vtuber_behavior_engine.mcp_client import get_tools_async
 
@@ -24,6 +26,8 @@ async def main() -> None:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
+    load_dotenv()  # Load environment variables from .env file
+
     try:
         asyncio.run(main())
     except KeyboardInterrupt:

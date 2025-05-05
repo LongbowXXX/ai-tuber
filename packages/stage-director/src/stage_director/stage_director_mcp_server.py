@@ -4,6 +4,7 @@
 #  http://opensource.org/licenses/mit-license.php
 
 import logging
+
 from mcp.server.fastmcp import FastMCP
 
 from stage_director.command_queue import enqueue_command
@@ -21,10 +22,15 @@ mcp = FastMCP(
 
 # Add an addition tool
 @mcp.tool()
-async def set_expression(set_expression_payload: SetExpressionPayload) -> AcknowledgementPayload:
-    logger.info(f"MCP Tool 'setExpression' called: set_expression_payload={set_expression_payload}")
+async def set_expression(
+    character_id: str,
+    expression_name: str,
+    weight: float,
+) -> AcknowledgementPayload:
+    payload = SetExpressionPayload(characterId=character_id, expressionName=expression_name, weight=weight)
+    logger.info(f"MCP Tool 'setExpression' called: set_expression={payload}")
     try:
-        command = SetExpressionCommand(payload=set_expression_payload)
+        command = SetExpressionCommand(payload=payload)
         await enqueue_command(command)
         return AcknowledgementPayload(status="Received")
     except Exception as e:

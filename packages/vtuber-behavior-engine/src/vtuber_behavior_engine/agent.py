@@ -4,7 +4,6 @@
 #  http://opensource.org/licenses/mit-license.php
 import logging
 
-from dotenv import load_dotenv
 from google.adk.agents.llm_agent import LlmAgent
 from google.adk.artifacts.in_memory_artifact_service import InMemoryArtifactService
 from google.adk.runners import Runner
@@ -20,16 +19,17 @@ logger = logging.getLogger(__name__)
 # --- Character Agent Definition ---
 def create_character_agent(tools: list[MCPTool]) -> LlmAgent:
     """Creates a simple character agent instance."""
-    load_dotenv()  # Load environment variables from .env file
     logger.info("Creating Character Agent A...")
     # Create LlmAgent
     agent = LlmAgent(
         model="gemini-2.0-flash",
-        name="character_agent_a",  # Agent name
+        name="avatar1",  # Agent name
         # Agent instructions (persona and task)
-        instruction="""You are Character A, a bright and cheerful virtual talent.
+        instruction="""You are Character avatar1, a bright and cheerful virtual talent.
 Please respond naturally and concisely to user input.
-Your responses will be used directly in conversation.""",
+Your responses will be used directly in conversation.
+Depending on what you want to say, choose the appropriate facial expression and must call set_expression.
+""",
         tools=tools,
     )
     logger.info("Character Agent A created.")
