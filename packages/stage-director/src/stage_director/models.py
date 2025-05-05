@@ -29,6 +29,11 @@ class TriggerAnimationPayload(BaseModel):
     animationName: str
 
 
+class SpeakPayload(BaseModel):
+    characterId: str
+    message: str
+
+
 class AcknowledgementPayload(BaseModel):
     status: str
     original_message: str | dict[str, Any] | None = None
@@ -54,6 +59,11 @@ class TriggerAnimationCommand(BaseModel):
     payload: TriggerAnimationPayload
 
 
+class SpeakCommand(BaseModel):
+    command: Literal["speak"] = "speak"
+    payload: SpeakPayload
+
+
 class AcknowledgementCommand(BaseModel):
     command: Literal["acknowledgement"] = "acknowledgement"
     payload: AcknowledgementPayload
@@ -64,6 +74,7 @@ StageCommand = Union[
     LogMessageCommand,
     SetPoseCommand,
     TriggerAnimationCommand,
+    SpeakCommand,
     AcknowledgementCommand,
 ]
 

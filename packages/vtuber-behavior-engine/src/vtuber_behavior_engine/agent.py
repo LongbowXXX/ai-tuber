@@ -28,7 +28,8 @@ def create_character_agent(tools: list[MCPTool]) -> LlmAgent:
         instruction="""You are Character avatar1, a bright and cheerful virtual talent.
 Please respond naturally and concisely to user input.
 Your responses will be used directly in conversation.
-Depending on what you want to say, choose the appropriate facial expression and must call set_expression.
+Depending on what you want to say, choose the appropriate facial expression and must call set_expression tool.
+To speak to the user, call the speak tool.
 """,
         tools=tools,
     )

@@ -18,6 +18,8 @@ from stage_director.models import (
     SetPoseCommand,
     TriggerAnimationPayload,
     TriggerAnimationCommand,
+    SpeakPayload,
+    SpeakCommand,
 )
 
 logger = logging.getLogger("stage-director.mcp")
@@ -85,6 +87,19 @@ async def trigger_animation(character_id: str, animation_name: str) -> Acknowled
     except Exception as e:
         logger.error(f"Error in trigger_animation tool: {e}", exc_info=True)
         return AcknowledgementPayload(status=f"Failed to trigger animation: {e}")
+
+
+@mcp.tool()
+async def speak(character_id: str, message: str) -> AcknowledgementPayload:
+    payload = SpeakPayload(characterId=character_id, message=message)
+    logger.info(f"MCP Tool 'speak' called: speak={payload}")
+    try:
+        command = SpeakCommand(payload=payload)
+        await enqueue_command(command)
+        return AcknowledgementPayload(status="Received")
+    except Exception as e:
+        logger.error(f"Error in speak tool: {e}", exc_info=True)
+        return AcknowledgementPayload(status=f"Failed to speak: {e}")
 
 
 async def run_stage_director_mcp_server() -> None:
