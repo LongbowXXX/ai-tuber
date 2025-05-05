@@ -12,5 +12,6 @@
   "python.testing.pytestArgs": ["tests", "--no-cov"],
   "python.analysis.diagnosticSeverityOverrides": {
     "reportMissingTypeStubs": "none"
-  }
+  },
+  "window.title": "[${rootName}]${separator}${dirty}${activeEditorShort}${separator}${profileName}${separator}${appName}"
 }
