@@ -3,9 +3,10 @@ import { useWebSocket } from './useWebSocket';
 import { StageCommand, AvatarState as BaseAvatarState } from '../types/command';
 import { validateStageCommand } from '../utils/command_validator';
 
-// Define an internal state that extends the base AvatarState with position
+// Define an internal state that extends the base AvatarState with position and speaking message
 export interface InternalAvatarState extends BaseAvatarState {
   position: [number, number, number];
+  speakingMessage?: string; // Add optional speakingMessage property
 }
 
 export function useStageCommandHandler() {
@@ -69,9 +70,22 @@ export function useStageCommandHandler() {
         case 'logMessage':
           console.log(`Server log: ${command.payload.message}`);
           break;
-        case 'speak': // Add case for speak command
+        case 'speak':
           console.log(`Received speak: Character=${command.payload.characterId}, Message=${command.payload.message}`);
-          // TODO: Implement avatar speech display or audio playback
+          setAvatars(prevAvatars =>
+            prevAvatars.map(a => {
+              if (a.id === command.payload.characterId) {
+                return {
+                  ...a,
+                  speechText: command.payload.message,
+                };
+              }
+              // Optionally clear message for other avatars or handle concurrent speech
+              // For now, just return the avatar as is if it's not the target
+              return a;
+            })
+          );
+          // TODO: Implement clearing the message after a delay or based on other events
           break;
         // Add cases for 'playAnimation' and 'setHeadYaw' here later if needed
         default: {

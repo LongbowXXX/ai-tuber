@@ -124,6 +124,7 @@ export interface AvatarState {
   vrmUrl: string;
   animationUrls: { [key: string]: string };
   expressionWeights: { [key: string]: number };
+  speechText?: string;
   headYaw: number;
   currentAnimationName: string | null;
 }

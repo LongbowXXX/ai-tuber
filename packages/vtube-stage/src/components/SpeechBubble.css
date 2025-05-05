@@ -11,6 +11,7 @@ Optional container styling if needed
   border-radius: 10px;
   border: 1px solid #ccc;
   max-width: 150px; /* Adjust as needed */
+  min-width: 120px; /* Adjust as needed */
   word-wrap: break-word; /* Wrap long words */
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
   position: relative; /* Needed for the tail */
