@@ -15,8 +15,8 @@ export function useStageCommandHandler() {
     // Initial avatar states
     {
       id: 'avatar1',
-      vrmUrl: '/avatar.vrm',
-      animationUrls: { idle: '/idle.vrma', wave: '/wave.vrma' },
+      vrmUrl: '/avatar/avatar.vrm',
+      animationUrls: { idle: '/vrma/idle.vrma', wave: '/vrma/wave.vrma' },
       expressionWeights: { neutral: 0.1 },
       headYaw: 0,
       currentAnimationName: 'idle',
@@ -24,8 +24,8 @@ export function useStageCommandHandler() {
     },
     {
       id: 'avatar2',
-      vrmUrl: '/avatar2.vrm',
-      animationUrls: { idle: '/idle.vrma', wave: '/wave.vrma' },
+      vrmUrl: '/avatar/avatar2.vrm',
+      animationUrls: { idle: '/vrma/idle.vrma', wave: '/vrma/wave.vrma' },
       expressionWeights: { neutral: 0.1 },
       headYaw: 0,
       currentAnimationName: 'idle',
