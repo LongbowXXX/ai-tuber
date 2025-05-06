@@ -84,5 +84,6 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
             agent_conversation_loop,
         ],
         description="Manages the conversation flow with multiple agents.",
+        # The root agent will be the one to return the final result
     )
     return root_agent

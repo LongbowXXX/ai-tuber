@@ -9,7 +9,6 @@ from mcp.server.fastmcp import FastMCP
 
 from stage_director.command_queue import enqueue_command
 from stage_director.models import (
-    AcknowledgementPayload,
     SetExpressionCommand,
     SetExpressionPayload,
     LogMessagePayload,
@@ -38,68 +37,68 @@ async def set_expression(
     character_id: str,
     expression_name: str,
     weight: float,
-) -> AcknowledgementPayload:
+) -> str:
     payload = SetExpressionPayload(characterId=character_id, expressionName=expression_name, weight=weight)
     logger.info(f"MCP Tool 'setExpression' called: set_expression={payload}")
     try:
         command = SetExpressionCommand(payload=payload)
         await enqueue_command(command)
-        return AcknowledgementPayload(status="Received")
+        return "Success"
     except Exception as e:
         logger.error(f"Error in set_expression tool: {e}", exc_info=True)
-        return AcknowledgementPayload(status=f"Failed to set expression: {e}")
+        return f"Failed to set expression: {e})"
 
 
 @mcp.tool()
-async def log_message(message: str) -> AcknowledgementPayload:
+async def log_message(message: str) -> str:
     payload = LogMessagePayload(message=message)
     logger.info(f"MCP Tool 'logMessage' called: message={payload}")
     try:
         command = LogMessageCommand(payload=payload)
         await enqueue_command(command)
-        return AcknowledgementPayload(status="Received")
+        return "Success"
     except Exception as e:
         logger.error(f"Error in log_message tool: {e}", exc_info=True)
-        return AcknowledgementPayload(status=f"Failed to log message: {e}")
+        return f"Failed to log message: {e}"
 
 
 @mcp.tool()
-async def set_pose(character_id: str, pose_name: str) -> AcknowledgementPayload:
+async def set_pose(character_id: str, pose_name: str) -> str:
     payload = SetPosePayload(characterId=character_id, poseName=pose_name)
     logger.info(f"MCP Tool 'setPose' called: set_pose={payload}")
     try:
         command = SetPoseCommand(payload=payload)
         await enqueue_command(command)
-        return AcknowledgementPayload(status="Received")
+        return "Success"
     except Exception as e:
         logger.error(f"Error in set_pose tool: {e}", exc_info=True)
-        return AcknowledgementPayload(status=f"Failed to set pose: {e}")
+        return f"Failed to set pose: {e}"
 
 
 @mcp.tool()
-async def trigger_animation(character_id: str, animation_name: str) -> AcknowledgementPayload:
+async def trigger_animation(character_id: str, animation_name: str) -> str:
     payload = TriggerAnimationPayload(characterId=character_id, animationName=animation_name)
     logger.info(f"MCP Tool 'triggerAnimation' called: trigger_animation={payload}")
     try:
         command = TriggerAnimationCommand(payload=payload)
         await enqueue_command(command)
-        return AcknowledgementPayload(status="Received")
+        return "Success"
     except Exception as e:
         logger.error(f"Error in trigger_animation tool: {e}", exc_info=True)
-        return AcknowledgementPayload(status=f"Failed to trigger animation: {e}")
+        return f"Failed to trigger animation: {e}"
 
 
 @mcp.tool()
-async def speak(character_id: str, message: str) -> AcknowledgementPayload:
+async def speak(character_id: str, message: str) -> str:
     payload = SpeakPayload(characterId=character_id, message=message)
     logger.info(f"MCP Tool 'speak' called: speak={payload}")
     try:
         command = SpeakCommand(payload=payload)
         await enqueue_command(command)
-        return AcknowledgementPayload(status="Received")
+        return "Success"
     except Exception as e:
         logger.error(f"Error in speak tool: {e}", exc_info=True)
-        return AcknowledgementPayload(status=f"Failed to speak: {e}")
+        return f"Failed to speak: {e}"
 
 
 async def run_stage_director_mcp_server() -> None:
