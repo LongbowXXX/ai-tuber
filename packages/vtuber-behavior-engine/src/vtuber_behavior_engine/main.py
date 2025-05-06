@@ -7,8 +7,9 @@ import logging
 
 from dotenv import load_dotenv
 
-from vtuber_behavior_engine.agent import create_character_agent, run_agent_standalone
+from vtuber_behavior_engine.agent import run_agent_standalone
 from vtuber_behavior_engine.mcp_client import get_tools_async
+from vtuber_behavior_engine.stage_agents.agent import create_root_agent
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 async def main() -> None:
     tools, exit_stack = await get_tools_async()
     try:
-        character_agent = create_character_agent(tools)
+        character_agent = create_root_agent(tools)
         # Test query
         test_query = "Hello! How are you?"
         await run_agent_standalone(character_agent, test_query)
