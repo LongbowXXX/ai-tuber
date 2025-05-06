@@ -1,0 +1,25 @@
+#  Copyright (c) 2025 LongbowXXX
+#
+#  This software is released under the MIT License.
+#  http://opensource.org/licenses/mit-license.php
+from pathlib import Path
+
+
+# 相対パスで このファイルからの相対パスが ./resources/initial_topic.md にあるファイルを読み込む
+
+
+def initial_topic() -> str:
+    return Path(__file__, "../resources/initial_topic.md").resolve().read_text(encoding="utf-8")
+
+
+def update_topic() -> str:
+    return Path(__file__, "../resources/update_topic.md").resolve().read_text(encoding="utf-8")
+
+
+def character_prompt(character_id: str) -> str:
+    return (
+        Path(__file__, "../resources/character_prompt.md")
+        .resolve()
+        .read_text(encoding="utf-8")
+        .replace("{character_id}", character_id)
+    )

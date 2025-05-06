@@ -43,7 +43,7 @@ async def run_agent_standalone(agent: BaseAgent, user_query: str) -> str:
     # run_async returns an asynchronous iterator of events
     async for event in runner.run_async(session_id=session.id, user_id=session.user_id, new_message=message):
         logger.info(f"\n\n-------------------\nAgent Event: \n{event}\n--------------------\n")
-        await asyncio.sleep(10)
+        await asyncio.sleep(3)
 
         if event.content and event.content.parts:
             final_response = event.content.parts[0].text

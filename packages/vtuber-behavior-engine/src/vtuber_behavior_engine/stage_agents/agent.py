@@ -2,9 +2,7 @@
 #
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
-#
-#  This software is released under the MIT License.
-#  http://opensource.org/licenses/mit-license.php
+
 import logging
 
 from google.adk.agents import LlmAgent, LoopAgent, SequentialAgent, BaseAgent
@@ -13,6 +11,7 @@ from google.adk.tools.mcp_tool import MCPTool
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     GEMINI_MODEL,
 )
+from vtuber_behavior_engine.stage_agents.resources import initial_topic, update_topic, character_prompt
 
 # --- State Keys ---
 STATE_CURRENT_TOPIC = "current_topic"
@@ -31,22 +30,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
         model="gemini-2.0-flash",
         name="avatar1",  # Agent name
         # Agent instructions (persona and task)
-        instruction="""You are Character avatar1, a bright and cheerful virtual talent.
-    Please respond naturally and concisely to user input and topic.
-    
-    Current topic:
-    
-    ```
-    {{current_topic}}
-    
-    ```
-    
-    Your responses will be used directly in conversation.
-    Depending on what you want to say, choose the appropriate facial expression and must call set_expression tool.
-    To speak to the user, call the speak tool.
-    
-    Please reply in Japanese.
-    """,
+        instruction=character_prompt("avatar1"),
         tools=character_tools,
         description="Character avatar1 agent",
     )
@@ -58,22 +42,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
         model="gemini-2.0-flash",
         name="avatar2",  # Agent name
         # Agent instructions (persona and task)
-        instruction="""You are Character avatar2, a bright and cheerful virtual talent.
-    Please respond naturally and concisely to user input and topic.
-    
-    Current topic:
-    
-    ```
-    {{current_topic}}
-    
-    ```
-    
-    Your responses will be used directly in conversation.
-    Depending on what you want to say, choose the appropriate facial expression and must call set_expression tool.
-    To speak to the user, call the speak tool.
-    
-    Please reply in Japanese.
-    """,
+        instruction=character_prompt("avatar2"),
         tools=character_tools,
         description="Character avatar2 agent",
     )
@@ -84,14 +53,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
         model=GEMINI_MODEL,
         # Relies solely on state via placeholders
         include_contents="none",
-        instruction=f"""As a topic provider, you create new topic.
-    
-    Task:
-    
-    In your reply, include only the topic content, do not add any explanation.
-    
-    Please reply in Japanese.
-    """,
+        instruction=initial_topic(),
         description="Provides the initial topic for the conversation.",
         output_key=STATE_CURRENT_TOPIC,
     )
@@ -99,27 +61,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
     topic_agent_in_loop = LlmAgent(
         name="TopicUpdater",
         model=GEMINI_MODEL,
-        instruction=f"""As a topic provider, you update the current topic based on the agent's conversation history.
-    
-    Current topic:
-    
-    ```
-    {{current_topic}}
-    
-    ```
-    
-    Task:
-    
-    Analyze the conversation history.
-    
-    If the conversation is stuck and a new topic is needed, suggest a new topic.
-    
-    If the current topic is fine, reply with the current topic as is.
-    
-    In your reply, include only the topic content, do not add any explanation.
-    
-    Please reply in Japanese.
-    """,
+        instruction=update_topic(),
         description="Updates the current topic based on conversation history.",
         output_key=STATE_CURRENT_TOPIC,
     )
@@ -132,6 +74,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
             topic_agent_in_loop,
         ],
         max_iterations=3,
+        description="Handles the conversation between two agents.",
     )
 
     root_agent = SequentialAgent(
