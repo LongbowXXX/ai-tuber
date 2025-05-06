@@ -16,7 +16,15 @@ export function useStageCommandHandler() {
     {
       id: 'avatar1',
       vrmUrl: '/avatar/avatar.vrm',
-      animationUrls: { idle: '/vrma/idle.vrma', wave: '/vrma/wave.vrma' },
+      animationUrls: {
+        idle: '/vrma/idle04.vrma',
+        wave: '/vrma/wave01.vrma',
+        airplane: '/vrma/airplane02.vrma',
+        rotate_left: '/vrma/rotate_left1.vrma',
+        rotate_right: '/vrma/rotate_right.vrma',
+        smallwave: '/vrma/smallwve.vrma',
+        akimbo: '/vrma/stand01.vrma',
+      },
       expressionWeights: { neutral: 0.1 },
       headYaw: 0,
       currentAnimationName: 'idle',
@@ -25,7 +33,15 @@ export function useStageCommandHandler() {
     {
       id: 'avatar2',
       vrmUrl: '/avatar/avatar2.vrm',
-      animationUrls: { idle: '/vrma/idle.vrma', wave: '/vrma/wave.vrma' },
+      animationUrls: {
+        idle: '/vrma/idle04.vrma',
+        wave: '/vrma/wave01.vrma',
+        airplane: '/vrma/airplane02.vrma',
+        rotate_left: '/vrma/rotate_left1.vrma',
+        rotate_right: '/vrma/rotate_right.vrma',
+        smallwave: '/vrma/smallwve.vrma',
+        akimbo: '/vrma/stand01.vrma',
+      },
       expressionWeights: { neutral: 0.1 },
       headYaw: 0,
       currentAnimationName: 'idle',
