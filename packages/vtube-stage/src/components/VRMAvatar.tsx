@@ -149,8 +149,40 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
         if (currentAction.current) {
           currentAction.current.fadeOut(ANIMATION_FADE_DURATION);
         }
-        newAction.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(ANIMATION_FADE_DURATION).play();
-        currentAction.current = newAction;
+
+        // If the animation is not idle, set it to return to idle after finishing
+        if (currentAnimationName !== 'idle') {
+          newAction.clampWhenFinished = true;
+          newAction.setLoop(THREE.LoopOnce, 1);
+          const onFinished = (event: THREE.Event & { action?: THREE.AnimationAction }) => {
+            console.log(`Avatar ${vrmUrl}: onFinished ${currentAnimationName}`);
+            if (event?.action === newAction) {
+              currentMixer.removeEventListener('finished', onFinished); // Remove listener
+              if (currentAction.current) {
+                currentAction.current.fadeOut(ANIMATION_FADE_DURATION);
+              }
+              const idleClip = createAnimationClipFromVRMA('idle');
+              if (idleClip) {
+                const idleAction = currentMixer.clipAction(idleClip);
+                idleAction
+                  .reset()
+                  .setEffectiveTimeScale(1)
+                  .setEffectiveWeight(1)
+                  .fadeIn(ANIMATION_FADE_DURATION)
+                  .play();
+                currentAction.current = idleAction;
+                console.log(`Avatar ${vrmUrl}: onFinished changed to idle`);
+              }
+            }
+          };
+          newAction.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(ANIMATION_FADE_DURATION).play();
+          currentAction.current = newAction;
+          currentMixer.addEventListener('finished', onFinished);
+        } else {
+          newAction.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(ANIMATION_FADE_DURATION).play();
+          currentAction.current = newAction;
+        }
+
         console.log(`Avatar ${vrmUrl}: Switched animation to ${currentAnimationName}`);
       } else if (!currentAction.current) {
         // Initial play or restart after stop
