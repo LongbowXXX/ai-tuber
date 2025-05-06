@@ -16,10 +16,19 @@ def update_topic() -> str:
     return Path(__file__, "../resources/update_topic.md").resolve().read_text(encoding="utf-8")
 
 
-def character_prompt(character_id: str) -> str:
+def character1() -> str:
+    return Path(__file__, "../resources/character1.md").resolve().read_text(encoding="utf-8")
+
+
+def character2() -> str:
+    return Path(__file__, "../resources/character2.md").resolve().read_text(encoding="utf-8")
+
+
+def character_prompt(character_id: str, character_detail: str) -> str:
     return (
         Path(__file__, "../resources/character_prompt.md")
         .resolve()
         .read_text(encoding="utf-8")
         .replace("{character_id}", character_id)
+        .replace("{character_detail}", character_detail)
     )

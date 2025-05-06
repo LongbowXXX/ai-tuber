@@ -11,7 +11,13 @@ from google.adk.tools.mcp_tool import MCPTool
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     GEMINI_MODEL,
 )
-from vtuber_behavior_engine.stage_agents.resources import initial_topic, update_topic, character_prompt
+from vtuber_behavior_engine.stage_agents.resources import (
+    initial_topic,
+    update_topic,
+    character_prompt,
+    character1,
+    character2,
+)
 
 # --- State Keys ---
 STATE_CURRENT_TOPIC = "current_topic"
@@ -30,7 +36,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
         model="gemini-2.0-flash",
         name="avatar1",  # Agent name
         # Agent instructions (persona and task)
-        instruction=character_prompt("avatar1"),
+        instruction=character_prompt("avatar1", character1()),
         tools=character_tools,
         description="Character avatar1 agent",
     )
@@ -42,7 +48,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
         model="gemini-2.0-flash",
         name="avatar2",  # Agent name
         # Agent instructions (persona and task)
-        instruction=character_prompt("avatar2"),
+        instruction=character_prompt("avatar2", character2()),
         tools=character_tools,
         description="Character avatar2 agent",
     )
@@ -73,7 +79,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
             agent2,
             topic_agent_in_loop,
         ],
-        max_iterations=3,
+        max_iterations=5,
         description="Handles the conversation between two agents.",
     )
 
