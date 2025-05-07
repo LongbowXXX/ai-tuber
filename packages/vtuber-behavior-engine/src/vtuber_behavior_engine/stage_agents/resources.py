@@ -32,3 +32,7 @@ def character_prompt(character_id: str, character_detail: str) -> str:
         .replace("{character_id}", character_id)
         .replace("{character_detail}", character_detail)
     )
+
+
+def character_output_prompt() -> str:
+    return Path(__file__, "../resources/character_output_prompt.md").resolve().read_text(encoding="utf-8")
