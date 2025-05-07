@@ -2,7 +2,6 @@
 #
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
-from google.adk.models.lite_llm import LiteLlm
 
 # AGENT_LLM_MODEL = "gemini-2.0-flash"
 

@@ -28,7 +28,7 @@ from vtuber_behavior_engine.stage_agents.resources import (
 STATE_CURRENT_TOPIC = "current_topic"
 AGENT1_CHARACTER_ID = "avatar1"
 AGENT2_CHARACTER_ID = "avatar2"
-STATE_AGENT_SPEECH = f"agent_speech"
+STATE_AGENT_SPEECH = "agent_speech"
 
 logger = logging.getLogger(__name__)
 
@@ -64,14 +64,14 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
         model=OUTPUT_LLM_MODEL,
         name="CharacterOutput1",
         instruction=character_output_prompt(),
-        description=f"Character agent1 output",
+        description="Character agent1 output",
         tools=character_tools,
     )
     agent2_output = LlmAgent(
         model=OUTPUT_LLM_MODEL,
         name="CharacterOutput2",
         instruction=character_output_prompt(),
-        description=f"Character agent2 output",
+        description="Character agent2 output",
         tools=character_tools,
     )
 
