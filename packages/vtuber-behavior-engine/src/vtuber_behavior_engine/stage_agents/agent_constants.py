@@ -9,4 +9,4 @@ from google.adk.models.lite_llm import LiteLlm
 INITIAL_TOPIC_LLM_MODEL = LiteLlm("ollama_chat/gemma3:27b")
 UPDATE_TOPIC_LLM_MODEL = "gemini-2.0-flash"
 AGENT_LLM_MODEL = "gemini-2.5-flash-preview-04-17"
-OUTPUT_LLM_MODEL = "gemini-2.0-flash"
+OUTPUT_LLM_MODEL = "gemini-1.5-flash"
