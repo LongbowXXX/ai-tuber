@@ -2,7 +2,6 @@ import { validate, ValidationError } from 'class-validator';
 import { plainToInstance, ClassConstructor } from 'class-transformer';
 import {
   LogMessageCommand,
-  SetExpressionCommand,
   SetPoseCommand,
   SpeakCommand, // Add SpeakCommand
   StageCommand,
@@ -11,7 +10,6 @@ import {
 
 // コマンドクラスのマッピング
 const commandRegistry: { [key: string]: ClassConstructor<StageCommand> } = {
-  setExpression: SetExpressionCommand,
   logMessage: LogMessageCommand,
   setPose: SetPoseCommand,
   triggerAnimation: TriggerAnimationCommand,

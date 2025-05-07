@@ -4,15 +4,11 @@
 #  http://opensource.org/licenses/mit-license.php
 
 from typing import Literal, Union, Any
-from pydantic import BaseModel, Field
+
+from pydantic import BaseModel
+
 
 # --- Pydantic Models for Commands ---
-
-
-class SetExpressionPayload(BaseModel):
-    characterId: str
-    expressionName: str
-    weight: float = Field(..., ge=0.0, le=1.0)
 
 
 class LogMessagePayload(BaseModel):
@@ -32,16 +28,12 @@ class TriggerAnimationPayload(BaseModel):
 class SpeakPayload(BaseModel):
     characterId: str
     message: str
+    emotion: str
 
 
 class AcknowledgementPayload(BaseModel):
     status: str
     original_message: str | dict[str, Any] | None = None
-
-
-class SetExpressionCommand(BaseModel):
-    command: Literal["setExpression"] = "setExpression"
-    payload: SetExpressionPayload
 
 
 class LogMessageCommand(BaseModel):
@@ -70,7 +62,6 @@ class AcknowledgementCommand(BaseModel):
 
 
 StageCommand = Union[
-    SetExpressionCommand,
     LogMessageCommand,
     SetPoseCommand,
     TriggerAnimationCommand,

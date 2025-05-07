@@ -57,11 +57,11 @@ export function useStageCommandHandler() {
       setLastMessage(command);
 
       switch (command.command) {
-        case 'setExpression':
-          console.log(
-            `Received setExpression: Character=${command.payload.characterId}, Name=${command.payload.expressionName}, Weight=${command.payload.weight}`
-          );
-
+        case 'logMessage':
+          console.log(`Server log: ${command.payload.message}`);
+          break;
+        case 'speak':
+          console.log(`Received speak: Character=${command.payload.characterId}, Message=${command.payload.message}`);
           setAvatars(prevAvatars =>
             prevAvatars.map(a => {
               if (a.id === command.payload.characterId) {
@@ -72,28 +72,11 @@ export function useStageCommandHandler() {
                 });
 
                 // Set the specified expression's weight
-                newExpressionWeights[command.payload.expressionName] = command.payload.weight;
-
-                return {
-                  ...a,
-                  expressionWeights: newExpressionWeights,
-                };
-              }
-              return a;
-            })
-          );
-          break;
-        case 'logMessage':
-          console.log(`Server log: ${command.payload.message}`);
-          break;
-        case 'speak':
-          console.log(`Received speak: Character=${command.payload.characterId}, Message=${command.payload.message}`);
-          setAvatars(prevAvatars =>
-            prevAvatars.map(a => {
-              if (a.id === command.payload.characterId) {
+                newExpressionWeights[command.payload.emotion] = 1.0;
                 return {
                   ...a,
                   speechText: command.payload.message,
+                  expressionWeights: newExpressionWeights,
                 };
               }
               // Optionally clear message for other avatars or handle concurrent speech

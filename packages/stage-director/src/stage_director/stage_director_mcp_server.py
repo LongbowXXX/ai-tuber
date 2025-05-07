@@ -2,15 +2,13 @@
 #
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
-
+import asyncio
 import logging
 
 from mcp.server.fastmcp import FastMCP
 
 from stage_director.command_queue import enqueue_command
 from stage_director.models import (
-    SetExpressionCommand,
-    SetExpressionPayload,
     LogMessagePayload,
     LogMessageCommand,
     SetPosePayload,
@@ -29,24 +27,6 @@ mcp = FastMCP(
     host="0.0.0.0",
     port=8080,
 )
-
-
-# Add an addition tool
-@mcp.tool()
-async def set_expression(
-    character_id: str,
-    expression_name: str,
-    weight: float,
-) -> str:
-    payload = SetExpressionPayload(characterId=character_id, expressionName=expression_name, weight=weight)
-    logger.info(f"MCP Tool 'setExpression' called: set_expression={payload}")
-    try:
-        command = SetExpressionCommand(payload=payload)
-        await enqueue_command(command)
-        return "Success"
-    except Exception as e:
-        logger.error(f"Error in set_expression tool: {e}", exc_info=True)
-        return f"Failed to set expression: {e})"
 
 
 @mcp.tool()
@@ -89,12 +69,13 @@ async def trigger_animation(character_id: str, animation_name: str) -> str:
 
 
 @mcp.tool()
-async def speak(character_id: str, message: str) -> str:
-    payload = SpeakPayload(characterId=character_id, message=message)
+async def speak(character_id: str, message: str, emotion: str) -> str:
+    payload = SpeakPayload(characterId=character_id, message=message, emotion=emotion)
     logger.info(f"MCP Tool 'speak' called: speak={payload}")
     try:
         command = SpeakCommand(payload=payload)
         await enqueue_command(command)
+        await asyncio.sleep(1)
         return "Success"
     except Exception as e:
         logger.error(f"Error in speak tool: {e}", exc_info=True)
