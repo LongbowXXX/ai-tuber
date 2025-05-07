@@ -10,6 +10,9 @@ from google.adk.tools.mcp_tool import MCPTool
 
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     AGENT_LLM_MODEL,
+    OUTPUT_LLM_MODEL,
+    INITIAL_TOPIC_LLM_MODEL,
+    UPDATE_TOPIC_LLM_MODEL,
 )
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
 from vtuber_behavior_engine.stage_agents.resources import (
@@ -58,14 +61,14 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
     )
 
     agent1_output = LlmAgent(
-        model=AGENT_LLM_MODEL,
+        model=OUTPUT_LLM_MODEL,
         name="CharacterOutput1",
         instruction=character_output_prompt(),
         description=f"Character agent1 output",
         tools=character_tools,
     )
     agent2_output = LlmAgent(
-        model=AGENT_LLM_MODEL,
+        model=OUTPUT_LLM_MODEL,
         name="CharacterOutput2",
         instruction=character_output_prompt(),
         description=f"Character agent2 output",
@@ -74,7 +77,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
 
     initial_topic_agent_in_loop = LlmAgent(
         name="InitialTopicProvider",
-        model=AGENT_LLM_MODEL,
+        model=INITIAL_TOPIC_LLM_MODEL,
         # Relies solely on state via placeholders
         include_contents="none",
         instruction=initial_topic(),
@@ -84,7 +87,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
 
     topic_agent_in_loop = LlmAgent(
         name="TopicUpdater",
-        model=AGENT_LLM_MODEL,
+        model=UPDATE_TOPIC_LLM_MODEL,
         instruction=update_topic(),
         description="Updates the current topic based on conversation history.",
         output_key=STATE_CURRENT_TOPIC,
