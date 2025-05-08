@@ -38,6 +38,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   const vrmAnimations = useRef<Record<string, VRMAnimation>>({});
   const [loadedAnimationNames, setLoadedAnimationNames] = useState(new Set<string>());
   const [isLoaded, setIsLoaded] = useState(false); // Tracks VRM model loading
+  const [bubbleText, setBubbleText] = useState(speechText);
 
   // --- VRM Loader ---
   const gltf = useLoader(GLTFLoader, vrmUrl, loader => {
@@ -243,11 +244,28 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     } // <-- Added missing closing brace
   });
 
+  // TTS再生関数（ダミー: 3秒待つ）
+  const playTTS = useCallback(async (text: string) => {
+    // 引数textをログ出力して警告を回避
+    console.log('[TTS] playTTS called with text:', text);
+    await new Promise(resolve => setTimeout(resolve, 8000));
+  }, []);
+
+  // speechTextが変化したらTTS再生→終了後に吹き出しを閉じる
+  useEffect(() => {
+    if (speechText && speechText !== '') {
+      setBubbleText(speechText);
+      playTTS(speechText).then(() => {
+        setBubbleText('');
+      });
+    }
+  }, [speechText, playTTS]);
+
   // Render only when VRM is loaded, applying the position
   return isLoaded && vrmRef.current ? (
     <primitive object={gltf.scene} position={position} dispose={null}>
       {/* Add SpeechBubble as a child, positioned relative to the avatar */}
-      <SpeechBubble text={speechText} />
+      {bubbleText && <SpeechBubble text={bubbleText} />}
     </primitive>
   ) : null;
 };
