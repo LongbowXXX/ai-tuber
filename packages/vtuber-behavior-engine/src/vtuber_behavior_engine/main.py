@@ -7,7 +7,7 @@ import logging
 
 from dotenv import load_dotenv
 
-from vtuber_behavior_engine.agent import run_agent_standalone
+from vtuber_behavior_engine.agent_runner import run_agent_standalone
 from vtuber_behavior_engine.mcp_client import get_tools_async
 from vtuber_behavior_engine.stage_agents.agent import create_root_agent
 
