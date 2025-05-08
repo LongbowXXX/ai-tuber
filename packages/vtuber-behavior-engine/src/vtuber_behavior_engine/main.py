@@ -19,7 +19,7 @@ async def main() -> None:
     try:
         character_agent = create_root_agent(tools)
         # Test query
-        test_query = "Hello! How are you?"
+        test_query = ""
         await run_agent_standalone(character_agent, test_query)
     finally:
         await exit_stack.aclose()

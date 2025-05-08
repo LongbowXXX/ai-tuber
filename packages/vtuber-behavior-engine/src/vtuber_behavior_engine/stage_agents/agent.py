@@ -6,6 +6,7 @@
 import logging
 
 from google.adk.agents import LlmAgent, LoopAgent, SequentialAgent, BaseAgent
+from google.adk.tools import google_search
 from google.adk.tools.mcp_tool import MCPTool
 
 from vtuber_behavior_engine.stage_agents.agent_constants import (
@@ -87,6 +88,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
         instruction=initial_topic(),
         description="Provides the initial topic for the conversation.",
         output_key=STATE_CURRENT_TOPIC,
+        tools=[google_search],
     )
 
     topic_agent_in_loop = LlmAgent(
@@ -95,6 +97,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
         instruction=update_topic(),
         description="Updates the current topic based on conversation history.",
         output_key=STATE_CURRENT_TOPIC,
+        tools=[google_search],
     )
 
     agent_conversation_loop = LoopAgent(
