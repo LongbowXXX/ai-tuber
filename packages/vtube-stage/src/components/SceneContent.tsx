@@ -26,7 +26,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars }) => {
   return (
     <>
       {/* Environment and Background */}
-      <Environment files="/background.hdr" background />
+      <Environment files="/background.jpg" background />
 
       {/* Environment Light */}
       <ambientLight intensity={0.8} />
