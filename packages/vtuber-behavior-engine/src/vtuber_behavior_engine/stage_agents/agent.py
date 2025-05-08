@@ -47,6 +47,8 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
         description=f"Character {AGENT1_CHARACTER_ID} agent",
         output_schema=AgentSpeech,
         output_key=STATE_AGENT_SPEECH,
+        disallow_transfer_to_parent=True,
+        disallow_transfer_to_peers=True,
     )
 
     # Create LlmAgent
@@ -58,6 +60,8 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
         description=f"Character {AGENT2_CHARACTER_ID} agent",
         output_schema=AgentSpeech,
         output_key=STATE_AGENT_SPEECH,
+        disallow_transfer_to_parent=True,
+        disallow_transfer_to_peers=True,
     )
 
     agent1_output = LlmAgent(
