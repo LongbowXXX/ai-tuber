@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useWebSocket } from './useWebSocket';
 import { StageCommand, AvatarState as BaseAvatarState } from '../types/command';
 import { validateStageCommand } from '../utils/command_validator';
@@ -11,43 +11,21 @@ export interface InternalAvatarState extends BaseAvatarState {
 
 export function useStageCommandHandler() {
   const [lastMessage, setLastMessage] = useState<StageCommand | object | null>(null);
-  const [avatars, setAvatars] = useState<InternalAvatarState[]>([
-    // Initial avatar states
-    {
-      id: 'avatar1',
-      vrmUrl: '/avatar/avatar.vrm',
-      animationUrls: {
-        idle: '/vrma/idle04.vrma',
-        wave: '/vrma/wave01.vrma',
-        airplane: '/vrma/airplane02.vrma',
-        rotate_left: '/vrma/rotate_left1.vrma',
-        rotate_right: '/vrma/rotate_right.vrma',
-        smallwave: '/vrma/smallwve.vrma',
-        akimbo: '/vrma/stand01.vrma',
-      },
-      expressionWeights: { neutral: 0.1 },
-      headYaw: 0,
-      currentAnimationName: 'idle',
-      position: [-0.5, 0, 0],
-    },
-    {
-      id: 'avatar2',
-      vrmUrl: '/avatar/avatar2.vrm',
-      animationUrls: {
-        idle: '/vrma/idle04.vrma',
-        wave: '/vrma/wave01.vrma',
-        airplane: '/vrma/airplane02.vrma',
-        rotate_left: '/vrma/rotate_left1.vrma',
-        rotate_right: '/vrma/rotate_right.vrma',
-        smallwave: '/vrma/smallwve.vrma',
-        akimbo: '/vrma/stand01.vrma',
-      },
-      expressionWeights: { neutral: 0.1 },
-      headYaw: 0,
-      currentAnimationName: 'idle',
-      position: [0.5, 0, 0],
-    },
-  ]);
+  const [avatars, setAvatars] = useState<InternalAvatarState[]>([]); // 初期値を空配列に
+
+  useEffect(() => {
+    fetch('/avatars.json')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch avatars.json');
+        return res.json();
+      })
+      .then(data => {
+        setAvatars(data);
+      })
+      .catch(err => {
+        console.error('Error loading avatars.json:', err);
+      });
+  }, []);
 
   const handleWebSocketMessage = useCallback(async (data: unknown) => {
     const validationResult = await validateStageCommand(data);
