@@ -17,8 +17,8 @@ from vtuber_behavior_engine.stage_agents.agent_constants import (
 )
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
 from vtuber_behavior_engine.stage_agents.resources import (
-    initial_topic,
-    update_topic,
+    initial_context,
+    update_context,
     character_prompt,
     character1,
     character2,
@@ -26,7 +26,7 @@ from vtuber_behavior_engine.stage_agents.resources import (
 )
 
 # --- State Keys ---
-STATE_CURRENT_TOPIC = "current_topic"
+STATE_CONVERSATION_CONTEXT = "conversation_context"
 AGENT1_CHARACTER_ID = "avatar1"
 AGENT2_CHARACTER_ID = "avatar2"
 STATE_AGENT_SPEECH = "agent_speech"
@@ -80,23 +80,22 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
         tools=character_tools,
     )
 
-    initial_topic_agent_in_loop = LlmAgent(
-        name="InitialTopicProvider",
+    initial_context_agent_in_loop = LlmAgent(
+        name="InitialContextProvider",
         model=INITIAL_TOPIC_LLM_MODEL,
-        # Relies solely on state via placeholders
         include_contents="none",
-        instruction=initial_topic(),
-        description="Provides the initial topic for the conversation.",
-        output_key=STATE_CURRENT_TOPIC,
+        instruction=initial_context(),
+        description="Provides the initial context for the conversation.",
+        output_key=STATE_CONVERSATION_CONTEXT,
         tools=[google_search],
     )
 
-    topic_agent_in_loop = LlmAgent(
+    context_agent_in_loop = LlmAgent(
         name="TopicUpdater",
         model=UPDATE_TOPIC_LLM_MODEL,
-        instruction=update_topic(),
-        description="Updates the current topic based on conversation history.",
-        output_key=STATE_CURRENT_TOPIC,
+        instruction=update_context(),
+        description="Updates the conversation context based on history.",
+        output_key=STATE_CONVERSATION_CONTEXT,
         tools=[google_search],
     )
 
@@ -107,7 +106,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
             agent1_output,
             agent2,
             agent2_output,
-            topic_agent_in_loop,
+            context_agent_in_loop,
         ],
         max_iterations=5,
         description="Handles the conversation between two agents.",
@@ -116,7 +115,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
     root_agent = SequentialAgent(
         name="ConversationPipeline",
         sub_agents=[
-            initial_topic_agent_in_loop,
+            initial_context_agent_in_loop,
             agent_conversation_loop,
         ],
         description="Manages the conversation flow with multiple agents.",

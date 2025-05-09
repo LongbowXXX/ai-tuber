@@ -5,15 +5,15 @@
 from pathlib import Path
 
 
-# 相対パスで このファイルからの相対パスが ./resources/initial_topic.md にあるファイルを読み込む
+# 相対パスで このファイルからの相対パスが ./resources/initial_context.md にあるファイルを読み込む
 
 
-def initial_topic() -> str:
-    return Path(__file__, "../resources/initial_topic.md").resolve().read_text(encoding="utf-8")
+def initial_context() -> str:
+    return Path(__file__, "../resources/initial_context.md").resolve().read_text(encoding="utf-8")
 
 
-def update_topic() -> str:
-    return Path(__file__, "../resources/update_topic.md").resolve().read_text(encoding="utf-8")
+def update_context() -> str:
+    return Path(__file__, "../resources/update_context.md").resolve().read_text(encoding="utf-8")
 
 
 def character1() -> str:
