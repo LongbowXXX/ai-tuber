@@ -91,7 +91,7 @@ def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
     )
 
     context_agent_in_loop = LlmAgent(
-        name="TopicUpdater",
+        name="ContextUpdater",
         model=UPDATE_TOPIC_LLM_MODEL,
         instruction=update_context(),
         description="Updates the conversation context based on history.",

@@ -23,7 +23,7 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, lastMessage,
     <Box sx={{ display: 'flex', height: '100vh' }}>
       {/* Canvas Area */}
       <Box sx={{ flexGrow: 1, position: 'relative' }}>
-        <Canvas camera={{ position: [0, 1.2, 2.5], fov: 50 }} shadows>
+        <Canvas camera={{ position: [0, 1.2, 3], fov: 50 }} shadows>
           <SceneContent avatars={avatars} />
         </Canvas>
       </Box>
