@@ -39,6 +39,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   const [loadedAnimationNames, setLoadedAnimationNames] = useState(new Set<string>());
   const [isLoaded, setIsLoaded] = useState(false); // Tracks VRM model loading
   const [bubbleText, setBubbleText] = useState(speechText);
+  const animationTimeoutRef = useRef<number | null>(null); // 3秒タイマー用ref: number型に修正
 
   // --- VRM Loader ---
   const gltf = useLoader(GLTFLoader, vrmUrl, loader => {
@@ -141,6 +142,12 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
       return;
     }
 
+    // アニメーション強制終了用タイマーをクリア
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current);
+      animationTimeoutRef.current = null;
+    }
+
     const clip = createAnimationClipFromVRMA(currentAnimationName);
 
     if (clip) {
@@ -174,11 +181,40 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
                 currentAction.current = idleAction;
                 console.log(`Avatar ${vrmUrl}: onFinished changed to idle`);
               }
+              // タイマーもクリア
+              if (animationTimeoutRef.current) {
+                clearTimeout(animationTimeoutRef.current);
+                animationTimeoutRef.current = null;
+              }
             }
           };
           newAction.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(ANIMATION_FADE_DURATION).play();
           currentAction.current = newAction;
           currentMixer.addEventListener('finished', onFinished);
+
+          // 3秒後にidleへ強制遷移
+          animationTimeoutRef.current = setTimeout(() => {
+            if (currentAction.current === newAction && currentAnimationName !== 'idle') {
+              if (currentAction.current) {
+                currentAction.current.fadeOut(ANIMATION_FADE_DURATION);
+              }
+              const idleClip = createAnimationClipFromVRMA('idle');
+              if (idleClip) {
+                const idleAction = currentMixer.clipAction(idleClip);
+                idleAction
+                  .reset()
+                  .setEffectiveTimeScale(1)
+                  .setEffectiveWeight(1)
+                  .fadeIn(ANIMATION_FADE_DURATION)
+                  .play();
+                currentAction.current = idleAction;
+                console.log(`Avatar ${vrmUrl}: forcibly changed to idle after 3s`);
+              }
+              // イベントリスナーも外す
+              currentMixer.removeEventListener('finished', onFinished);
+            }
+            animationTimeoutRef.current = null;
+          }, 3000);
         } else {
           newAction.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(ANIMATION_FADE_DURATION).play();
           currentAction.current = newAction;
@@ -196,6 +232,11 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
       if (currentAction.current) {
         currentAction.current.stop();
         currentAction.current = null;
+      }
+      // タイマーもクリア
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+        animationTimeoutRef.current = null;
       }
     }
   }, [

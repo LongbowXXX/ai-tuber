@@ -6,6 +6,6 @@
 ```
 # ツール呼び出しのルール
 - speak 内容に適切なアニメーションがあった場合、`triggerAnimation`ツールを一度だけ呼び出してください。複数回呼び出してはいけません。
-- アニメーションの種類は ["wave", "airplane", "rotate_left", "rotate_right", "smallwave", "akimbo"] のいずれかです。
+- アニメーションの種類は ["wave", "airplane", "smallwave", "akimbo"] のいずれかです。
 - text, emotion の内容で `speak`ツールを呼び出してください
 - `speak`ツールは必ず一度だけ呼び出してください。複数回呼び出してはいけません。
