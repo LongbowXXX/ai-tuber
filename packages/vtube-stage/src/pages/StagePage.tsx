@@ -10,15 +10,16 @@ interface StagePageProps {
   setAvatars: React.Dispatch<React.SetStateAction<InternalAvatarState[]>>;
   lastMessage: unknown;
   isConnected: boolean;
+  onTTSComplete?: (speakId: string) => void; // 追加
 }
 
-const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, lastMessage, isConnected }) => {
+const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, lastMessage, isConnected, onTTSComplete }) => {
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       {/* Canvas Area */}
       <Box sx={{ flexGrow: 1, position: 'relative' }}>
         <Canvas camera={{ position: [0, 1.2, 3], fov: 50 }} shadows>
-          <SceneContent avatars={avatars} />
+          <SceneContent avatars={avatars} onTTSComplete={onTTSComplete} />
         </Canvas>
       </Box>
       {/* Controller/Sidebar Area */}

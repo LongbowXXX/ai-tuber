@@ -88,15 +88,28 @@ export function useStageCommandHandler() {
     }
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isConnected, sendMessage } = useWebSocket<unknown>({
     onMessage: handleWebSocketMessage,
   });
+
+  // TTS完了時のハンドラ
+  const handleTTSComplete = useCallback(
+    (speakId: string) => {
+      if (sendMessage && speakId) {
+        sendMessage({
+          command: 'speakEnd',
+          payload: { speakId },
+        });
+      }
+    },
+    [sendMessage]
+  );
 
   return {
     avatars,
     setAvatars,
     lastMessage,
     isConnected,
+    handleTTSComplete, // 追加
   };
 }

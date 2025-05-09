@@ -21,6 +21,7 @@ export interface VRMAvatarProps {
   speechText: SpeakMessage | null; // SpeakMessage型で受け取る
   position?: [number, number, number]; // Add position prop
   onLoad?: (vrm: VRM) => void; // Keep onLoad for potential external use, but internal logic won't depend on it passing upwards
+  onTTSComplete?: (speakId: string) => void; // TTS完了時コールバックを追加
 }
 
 export const VRMAvatar: React.FC<VRMAvatarProps> = ({
@@ -32,6 +33,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   speechText, // SpeakMessage型 or null
   position = [0, 0, 0], // Default position if not provided
   onLoad, // Keep prop signature
+  onTTSComplete, // 追加
 }) => {
   const vrmRef = useRef<VRM | null>(null);
   const mixer = useRef<THREE.AnimationMixer | null>(null);
@@ -301,9 +303,12 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
       playTTS(speechText.text).then(() => {
         setBubbleText(null);
         console.log(`[VRMAvatar] End TTS: id=${speechText.id}, text=${speechText.text}`);
+        if (onTTSComplete && speechText.id) {
+          onTTSComplete(speechText.id);
+        }
       });
     }
-  }, [speechText, playTTS]);
+  }, [speechText, playTTS, onTTSComplete]);
 
   // Render only when VRM is loaded, applying the position
   return isLoaded && vrmRef.current ? (

@@ -20,9 +20,10 @@ interface AvatarData {
 
 interface SceneContentProps {
   avatars: AvatarData[]; // Array of avatar data objects
+  onTTSComplete?: (speakId: string) => void; // 追加
 }
 
-export const SceneContent: React.FC<SceneContentProps> = ({ avatars }) => {
+export const SceneContent: React.FC<SceneContentProps> = ({ avatars, onTTSComplete }) => {
   // --- Scene elements rendering ---
   return (
     <>
@@ -57,6 +58,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars }) => {
           speechText={avatar.speechText} // SpeakMessage型で渡す
           position={avatar.position} // Pass position prop
           onLoad={avatar.onLoad} // Pass down individual onLoad if provided
+          onTTSComplete={onTTSComplete} // 追加
         />
       ))}
 
