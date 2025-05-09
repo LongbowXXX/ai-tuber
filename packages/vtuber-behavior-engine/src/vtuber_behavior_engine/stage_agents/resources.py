@@ -5,7 +5,8 @@
 from pathlib import Path
 
 
-# 相対パスで このファイルからの相対パスが ./resources/initial_context.md にあるファイルを読み込む
+def initial_message() -> str:
+    return Path(__file__, "../resources/initial_message.md").resolve().read_text(encoding="utf-8")
 
 
 def initial_context() -> str:

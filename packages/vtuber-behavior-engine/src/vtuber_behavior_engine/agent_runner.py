@@ -10,32 +10,29 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai.types import Content, Part
 
-# --- Logging Setup ---
+from vtuber_behavior_engine.stage_agents.agent_constants import AGENT_SYSTEM_AAP_NAME, AGENT_SYSTEM_USER_ID
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-# --- Agent Execution Logic (for standalone testing) ---
-async def run_agent_standalone(agent: BaseAgent, user_query: str) -> str:
-    """Runs the agent with a single query for testing."""
-    logger.info(f"Running agent with query: '{user_query}'")
+async def run_agent_standalone(agent: BaseAgent, initial_message: str) -> str:
+    logger.info(f"Running agent with initial_message: '{initial_message}'")
 
     # Prepare to use ADK Runner
     session_service = InMemorySessionService()
     artifacts_service = InMemoryArtifactService()
     # Convert user input into a format ADK can understand
-    message = Content(role="user", parts=[Part(text=user_query)])
+    message = Content(role="user", parts=[Part(text=initial_message)])
 
-    app_name = "standalone_test"
-    user_id = "test_user"
 
     runner = Runner(
-        app_name=app_name,
+        app_name=AGENT_SYSTEM_AAP_NAME,
         agent=agent,
         session_service=session_service,
         artifact_service=artifacts_service,
     )
-    session = session_service.create_session(state={}, app_name=app_name, user_id=user_id)
+    session = session_service.create_session(state={}, app_name=AGENT_SYSTEM_AAP_NAME, user_id=AGENT_SYSTEM_USER_ID)
     logger.info(f"Running agent with session: '{session}'")
 
     final_response = None

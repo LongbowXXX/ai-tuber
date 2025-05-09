@@ -3,8 +3,10 @@
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
 
-# AGENT_LLM_MODEL = "gemini-2.0-flash"
+AGENT_SYSTEM_AAP_NAME = "ai_vtuber_stage_director"
+AGENT_SYSTEM_USER_ID = "vtuber_user"
 
+# AGENT_LLM_MODEL = "gemini-2.0-flash"
 # INITIAL_TOPIC_LLM_MODEL = LiteLlm("ollama_chat/gemma3:27b")
 INITIAL_TOPIC_LLM_MODEL = "gemini-2.0-flash"
 UPDATE_TOPIC_LLM_MODEL = "gemini-2.0-flash"
