@@ -28,7 +28,7 @@ export function useWebSocket<T>(options: UseWebSocketOptions<T>) {
       console.log('WebSocket Connected');
       if (ws.current === newWs) {
         setIsConnected(true);
-        newWs.send('Hello from vtube-stage!');
+        // newWs.send('Hello from vtube-stage!');
         onOpen?.(event); // Call the onOpen callback if provided
       } else {
         console.log('Received onopen for a stale WebSocket instance. Closing it.');

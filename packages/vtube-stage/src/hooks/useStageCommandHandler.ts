@@ -88,6 +88,7 @@ export function useStageCommandHandler() {
     }
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isConnected, sendMessage } = useWebSocket<unknown>({
     onMessage: handleWebSocketMessage,
   });
@@ -97,6 +98,5 @@ export function useStageCommandHandler() {
     setAvatars,
     lastMessage,
     isConnected,
-    sendMessage,
   };
 }
