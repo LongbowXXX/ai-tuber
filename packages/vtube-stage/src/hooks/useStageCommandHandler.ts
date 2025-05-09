@@ -57,14 +57,26 @@ export function useStageCommandHandler() {
                   expressionWeights: newExpressionWeights,
                 };
               }
-              // Optionally clear message for other avatars or handle concurrent speech
-              // For now, just return the avatar as is if it's not the target
               return a;
             })
           );
-          // TODO: Implement clearing the message after a delay or based on other events
           break;
-        // Add cases for 'playAnimation' and 'setHeadYaw' here later if needed
+        case 'triggerAnimation':
+          console.log(
+            `Received triggerAnimation: Character=${command.payload.characterId}, Animation=${command.payload.animationName}`
+          );
+          setAvatars(prevAvatars =>
+            prevAvatars.map(a => {
+              if (a.id === command.payload.characterId) {
+                return {
+                  ...a,
+                  currentAnimationName: command.payload.animationName,
+                };
+              }
+              return a;
+            })
+          );
+          break;
         default: {
           const unknownCommand = command as StageCommand;
           console.warn(`Received unknown or unhandled command type after validation: ${unknownCommand.command}`);
