@@ -6,18 +6,19 @@ import { createVRMAnimationClip, VRMAnimation, VRMAnimationLoaderPlugin } from '
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { SpeechBubble } from './SpeechBubble'; // Import the SpeechBubble component
+import { SpeakMessage } from '../types/command';
 
 // --- Constants ---
 const ANIMATION_FADE_DURATION = 0.3;
 
-interface VRMAvatarProps {
+export interface VRMAvatarProps {
   vrmUrl: string;
   // Animation URLs (example: { idle: '/idle.vrma', wave: '/wave.vrma' })
   animationUrls: Record<string, string>;
   expressionWeights: Record<string, number>;
   headYaw: number;
   currentAnimationName: string | null; // Allow currentAnimationName to be string or null
-  speechText?: string; // Add speechText prop
+  speechText: SpeakMessage | null; // SpeakMessage型で受け取る
   position?: [number, number, number]; // Add position prop
   onLoad?: (vrm: VRM) => void; // Keep onLoad for potential external use, but internal logic won't depend on it passing upwards
 }
@@ -28,7 +29,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   expressionWeights,
   headYaw,
   currentAnimationName,
-  speechText = '', // Default to empty string
+  speechText, // SpeakMessage型 or null
   position = [0, 0, 0], // Default position if not provided
   onLoad, // Keep prop signature
 }) => {
@@ -38,7 +39,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   const vrmAnimations = useRef<Record<string, VRMAnimation>>({});
   const [loadedAnimationNames, setLoadedAnimationNames] = useState(new Set<string>());
   const [isLoaded, setIsLoaded] = useState(false); // Tracks VRM model loading
-  const [bubbleText, setBubbleText] = useState(speechText);
+  const [bubbleText, setBubbleText] = useState<SpeakMessage | null>(null);
   const animationTimeoutRef = useRef<number | null>(null); // 3秒タイマー用ref: number型に修正
 
   // --- VRM Loader ---
@@ -294,10 +295,12 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
 
   // speechTextが変化したらTTS再生→終了後に吹き出しを閉じる
   useEffect(() => {
-    if (speechText && speechText !== '') {
+    if (speechText && speechText.text !== '') {
       setBubbleText(speechText);
-      playTTS(speechText).then(() => {
-        setBubbleText('');
+      console.log(`[VRMAvatar] Start TTS: id=${speechText.id}, text=${speechText.text}`);
+      playTTS(speechText.text).then(() => {
+        setBubbleText(null);
+        console.log(`[VRMAvatar] End TTS: id=${speechText.id}, text=${speechText.text}`);
       });
     }
   }, [speechText, playTTS]);
@@ -306,7 +309,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   return isLoaded && vrmRef.current ? (
     <primitive object={gltf.scene} position={position} dispose={null}>
       {/* Add SpeechBubble as a child, positioned relative to the avatar */}
-      {bubbleText && <SpeechBubble text={bubbleText} />}
+      {bubbleText && <SpeechBubble message={bubbleText} />}
     </primitive>
   ) : null;
 };

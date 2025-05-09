@@ -29,6 +29,7 @@ class SpeakPayload(BaseModel):
     characterId: str
     message: str
     emotion: str
+    speakId: str  # Added speakId to the payload
 
 
 class AcknowledgementPayload(BaseModel):

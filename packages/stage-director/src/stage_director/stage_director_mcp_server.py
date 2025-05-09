@@ -4,6 +4,7 @@
 #  http://opensource.org/licenses/mit-license.php
 import asyncio
 import logging
+import uuid
 
 from mcp.server.fastmcp import FastMCP
 
@@ -70,7 +71,10 @@ async def trigger_animation(character_id: str, animation_name: str) -> str:
 
 @mcp.tool()
 async def speak(character_id: str, message: str, emotion: str) -> str:
-    payload = SpeakPayload(characterId=character_id, message=message, emotion=emotion)
+    # Generate a UUID for the speakId
+    speak_id = str(uuid.uuid4())
+
+    payload = SpeakPayload(characterId=character_id, message=message, emotion=emotion, speakId=speak_id)
     logger.info(f"MCP Tool 'speak' called: speak={payload}")
     try:
         command = SpeakCommand(payload=payload)

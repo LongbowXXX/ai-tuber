@@ -6,7 +6,6 @@ import { validateStageCommand } from '../utils/command_validator';
 // Define an internal state that extends the base AvatarState with position and speaking message
 export interface InternalAvatarState extends BaseAvatarState {
   position: [number, number, number];
-  speakingMessage?: string; // Add optional speakingMessage property
 }
 
 export function useStageCommandHandler() {
@@ -38,22 +37,22 @@ export function useStageCommandHandler() {
         case 'logMessage':
           console.log(`Server log: ${command.payload.message}`);
           break;
-        case 'speak':
-          console.log(`Received speak: Character=${command.payload.characterId}, Message=${command.payload.message}`);
+        case 'speak': {
+          const { characterId, message, emotion, speakId } = command.payload;
+          console.log(`Received speak: Character=${characterId}, SpeakId=${speakId}, Message=${message}`);
           setAvatars(prevAvatars =>
             prevAvatars.map(a => {
-              if (a.id === command.payload.characterId) {
+              if (a.id === characterId) {
                 // Create a new expressionWeights object with all weights set to 0
                 const newExpressionWeights: { [key: string]: number } = {};
                 Object.keys(a.expressionWeights).forEach(key => {
                   newExpressionWeights[key] = 0;
                 });
-
                 // Set the specified expression's weight
-                newExpressionWeights[command.payload.emotion] = 1.0;
+                newExpressionWeights[emotion] = 1.0;
                 return {
                   ...a,
-                  speechText: command.payload.message,
+                  speechText: { id: speakId, text: message },
                   expressionWeights: newExpressionWeights,
                 };
               }
@@ -61,6 +60,7 @@ export function useStageCommandHandler() {
             })
           );
           break;
+        }
         case 'triggerAnimation':
           console.log(
             `Received triggerAnimation: Character=${command.payload.characterId}, Animation=${command.payload.animationName}`

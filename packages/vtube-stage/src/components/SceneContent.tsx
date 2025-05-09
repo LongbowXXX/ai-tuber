@@ -3,6 +3,7 @@ import React from 'react';
 import { OrbitControls, Environment } from '@react-three/drei'; // Import Environment
 import { VRMAvatar } from './VRMAvatar';
 import { VRM } from '@pixiv/three-vrm'; // Keep VRM type for AvatarData
+import { SpeakMessage } from '../types/command';
 
 // Define a type for the data needed for each avatar
 interface AvatarData {
@@ -12,7 +13,7 @@ interface AvatarData {
   expressionWeights: Record<string, number>;
   headYaw: number;
   currentAnimationName: string | null; // Allow currentAnimationName to be string or null
-  speechText?: string; // Add optional speechText property
+  speechText: SpeakMessage | null; // 型をSpeakMessage形式に
   position?: [number, number, number]; // Make position optional
   onLoad?: (vrm: VRM) => void; // Optional onLoad callback per avatar
 }
@@ -53,7 +54,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars }) => {
           expressionWeights={avatar.expressionWeights}
           headYaw={avatar.headYaw}
           currentAnimationName={avatar.currentAnimationName} // Pass currentAnimationName (which can be null)
-          speechText={avatar.speechText} // Pass speechText prop
+          speechText={avatar.speechText} // SpeakMessage型で渡す
           position={avatar.position} // Pass position prop
           onLoad={avatar.onLoad} // Pass down individual onLoad if provided
         />
