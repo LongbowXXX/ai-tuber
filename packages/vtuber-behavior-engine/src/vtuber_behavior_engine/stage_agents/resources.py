@@ -9,6 +9,10 @@ def initial_message() -> str:
     return Path(__file__, "../resources/initial_message.md").resolve().read_text(encoding="utf-8")
 
 
+def current_time_prompt() -> str:
+    return Path(__file__, "../resources/current_time_prompt.md").resolve().read_text(encoding="utf-8")
+
+
 def latest_news_prompt() -> str:
     return Path(__file__, "../resources/latest_news_prompt.md").resolve().read_text(encoding="utf-8")
 

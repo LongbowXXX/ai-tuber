@@ -2,8 +2,10 @@
 #
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
+import datetime
 import logging
 from xml.etree import ElementTree
+from zoneinfo import ZoneInfo
 
 import requests
 from google.adk.agents import BaseAgent, LlmAgent
@@ -15,10 +17,41 @@ from vtuber_behavior_engine.stage_agents.agent_constants import (
     STATE_CONVERSATION_CONTEXT,
     UPDATE_TOPIC_LLM_MODEL,
     STATE_LATEST_NEWS,
+    STATE_CURRENT_TIME,
 )
-from vtuber_behavior_engine.stage_agents.resources import initial_context, update_context, latest_news_prompt
+from vtuber_behavior_engine.stage_agents.resources import (
+    initial_context,
+    update_context,
+    latest_news_prompt,
+    current_time_prompt,
+)
 
 logger = logging.getLogger(__name__)
+
+
+def get_current_time() -> str:
+    """
+    A function that retrieves the current time in a specific format.
+    Returns:
+        str: The current time formatted as "YYYY-MM-DDTHH:MM:SS.mmm+HH:MM".
+    """
+    tokyo_tz = ZoneInfo("Asia/Tokyo")
+    return datetime.datetime.now(tokyo_tz).isoformat(timespec="milliseconds")
+
+
+def create_current_time_agent() -> BaseAgent:
+    """
+    Creates an agent that retrieves the current time.
+    """
+    agent = LlmAgent(
+        name="CurrentTimeAgent",
+        model=INITIAL_TOPIC_LLM_MODEL,
+        instruction=current_time_prompt(),
+        description="Get the current time.",
+        output_key=STATE_CURRENT_TIME,
+        tools=[get_current_time],
+    )
+    return agent
 
 
 def get_news() -> dict[str, str]:
