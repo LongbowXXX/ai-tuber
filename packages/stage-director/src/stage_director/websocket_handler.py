@@ -4,16 +4,12 @@
 #  http://opensource.org/licenses/mit-license.php
 
 import asyncio
-import json
 import logging
-from typing import Any
 
 from fastapi import WebSocket, WebSocketDisconnect
 
 from .command_queue import dequeue_command, mark_command_done
 from .models import (
-    AcknowledgementPayload,
-    AcknowledgementCommand,
     create_command_json,
 )
 
@@ -55,16 +51,6 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
         while True:
             data = await websocket.receive_text()
             logger.info(f"Received message from {websocket.client}: {data}")
-
-            try:
-                original_msg_data: str | dict[str, Any] | None = json.loads(data)
-            except json.JSONDecodeError:
-                original_msg_data = data
-
-            ack_payload_model = AcknowledgementPayload(status="Received", original_message=original_msg_data)
-            ack_cmd_model = AcknowledgementCommand(payload=ack_payload_model)
-            ack_cmd_json = create_command_json(ack_cmd_model)
-            await websocket.send_text(ack_cmd_json)
 
     except WebSocketDisconnect:
         logger.info(f"WebSocket connection closed: {websocket.client}")

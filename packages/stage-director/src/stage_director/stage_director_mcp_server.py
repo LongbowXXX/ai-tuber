@@ -10,10 +10,6 @@ from mcp.server.fastmcp import FastMCP
 
 from stage_director.command_queue import enqueue_command
 from stage_director.models import (
-    LogMessagePayload,
-    LogMessageCommand,
-    SetPosePayload,
-    SetPoseCommand,
     TriggerAnimationPayload,
     TriggerAnimationCommand,
     SpeakPayload,
@@ -28,32 +24,6 @@ mcp = FastMCP(
     host="0.0.0.0",
     port=8080,
 )
-
-
-@mcp.tool()
-async def log_message(message: str) -> str:
-    payload = LogMessagePayload(message=message)
-    logger.info(f"MCP Tool 'logMessage' called: message={payload}")
-    try:
-        command = LogMessageCommand(payload=payload)
-        await enqueue_command(command)
-        return "Success"
-    except Exception as e:
-        logger.error(f"Error in log_message tool: {e}", exc_info=True)
-        return f"Failed to log message: {e}"
-
-
-@mcp.tool()
-async def set_pose(character_id: str, pose_name: str) -> str:
-    payload = SetPosePayload(characterId=character_id, poseName=pose_name)
-    logger.info(f"MCP Tool 'setPose' called: set_pose={payload}")
-    try:
-        command = SetPoseCommand(payload=payload)
-        await enqueue_command(command)
-        return "Success"
-    except Exception as e:
-        logger.error(f"Error in set_pose tool: {e}", exc_info=True)
-        return f"Failed to set pose: {e}"
 
 
 @mcp.tool()

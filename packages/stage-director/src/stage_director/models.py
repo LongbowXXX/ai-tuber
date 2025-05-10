@@ -3,21 +3,9 @@
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
 
-from typing import Literal, Union, Any
+from typing import Literal, Union
 
 from pydantic import BaseModel
-
-
-# --- Pydantic Models for Commands ---
-
-
-class LogMessagePayload(BaseModel):
-    message: str
-
-
-class SetPosePayload(BaseModel):
-    characterId: str
-    poseName: str
 
 
 class TriggerAnimationPayload(BaseModel):
@@ -32,21 +20,6 @@ class SpeakPayload(BaseModel):
     speakId: str  # Added speakId to the payload
 
 
-class AcknowledgementPayload(BaseModel):
-    status: str
-    original_message: str | dict[str, Any] | None = None
-
-
-class LogMessageCommand(BaseModel):
-    command: Literal["logMessage"] = "logMessage"
-    payload: LogMessagePayload
-
-
-class SetPoseCommand(BaseModel):
-    command: Literal["setPose"] = "setPose"
-    payload: SetPosePayload
-
-
 class TriggerAnimationCommand(BaseModel):
     command: Literal["triggerAnimation"] = "triggerAnimation"
     payload: TriggerAnimationPayload
@@ -57,17 +30,9 @@ class SpeakCommand(BaseModel):
     payload: SpeakPayload
 
 
-class AcknowledgementCommand(BaseModel):
-    command: Literal["acknowledgement"] = "acknowledgement"
-    payload: AcknowledgementPayload
-
-
 StageCommand = Union[
-    LogMessageCommand,
-    SetPoseCommand,
     TriggerAnimationCommand,
     SpeakCommand,
-    AcknowledgementCommand,
 ]
 
 
