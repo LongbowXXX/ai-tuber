@@ -62,7 +62,7 @@ const LoadingOverlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 1);
   z-index: 10;
   font-size: 2rem;
   font-weight: bold;
