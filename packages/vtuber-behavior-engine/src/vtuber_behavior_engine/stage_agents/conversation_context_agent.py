@@ -27,17 +27,25 @@ def get_news() -> dict[str, str]:
     Returns:
         str: A string containing the latest news headlines and links for the specified topic.
     """
-    # 　Topic ["WORLD", "NATION", "BUSINESS", "TECHNOLOGY", "ENTERTAINMENT", "SPORTS", "SCIENCE", "HEALTH"]
-    url = "https://news.google.com/news/rss/headlines/section/topic/WORLD?hl=ja&gl=JP&ceid=JP:ja"
+    topics = ["WORLD", "NATION", "BUSINESS", "TECHNOLOGY", "ENTERTAINMENT", "SPORTS", "SCIENCE", "HEALTH"]
+    base_url = "https://news.google.com/news/rss/headlines/section/topic/{topic}?hl=ja&gl=JP&ceid=JP:ja"
+    news_results = []
+
     try:
-        response = requests.get(url)
-        response.raise_for_status()
-        root = ElementTree.fromstring(response.content)
-        news_items = []
-        for item in root.findall(".//item"):
-            title = item.find("title").text
-            news_items.append(f"{title}")
-        result = "\n".join(news_items[:5])
+        for topic in topics:
+            url = base_url.format(topic=topic)
+            response = requests.get(url)
+            response.raise_for_status()
+            root = ElementTree.fromstring(response.content)
+            topic_news: list[str] = []
+            for item in root.findall(".//item"):
+                title_element = item.find("title")
+                title: str = title_element.text or "" if title_element else ""
+                if title:
+                    topic_news.append(title)
+            news_results.append(f"【{topic}】\n" + "\n".join(topic_news[:3]))
+
+        result = "\n\n".join(news_results)
         logger.info(f"get_news(): Latest news {result}")
         return {"status": "success", "news": result}
     except Exception as e:

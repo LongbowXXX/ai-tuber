@@ -586,7 +586,7 @@ wheels = [
 
 [[package]]
 name = "google-adk"
-version = "0.4.0"
+version = "0.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "authlib" },
@@ -610,9 +610,9 @@ dependencies = [
     { name = "tzlocal" },
     { name = "uvicorn" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1d/d5/69185bb36fdce0c952101409c548ee9d258d7b014fd0b1d3650020adf158/google_adk-0.4.0.tar.gz", hash = "sha256:c134528dd45fd67b2b49ea550c135feef6758c29a9405983edec64ec72b1dd62", size = 1054057, upload_time = "2025-05-02T20:23:28.889Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/89/3e/90b9d622c0381aa12f861d0bc7ad10b148febb9da95a27836629aa7cf5f8/google_adk-0.5.0.tar.gz", hash = "sha256:6f6493889a02ce5ed1797caa6385307914b16dcb086bad02c1ad314d609075db", size = 1055492, upload_time = "2025-05-08T22:51:56.464Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/65/d9/cb41ace4db03d4d48f14443fde104ac1c7513b9351ba6618233223e3085f/google_adk-0.4.0-py3-none-any.whl", hash = "sha256:5edaf3049d98fbdafff5ccc48855a75d83ffe3c7644a865696364ecba18e97fd", size = 1175901, upload_time = "2025-05-02T20:23:27.042Z" },
+    { url = "https://files.pythonhosted.org/packages/b8/ca/761423fed60efe07e487acc867f9d3c3bfb2cba3096bbd4a84d6ac8cddb6/google_adk-0.5.0-py3-none-any.whl", hash = "sha256:4a2f2dcad337f51779af4b654579fcc0f296d8aab5db0a7855a2275722af5a24", size = 1184678, upload_time = "2025-05-08T22:51:54.292Z" },
 ]
 
 [[package]]
@@ -842,7 +842,7 @@ wheels = [
 
 [[package]]
 name = "google-genai"
-version = "1.13.0"
+version = "1.14.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -853,9 +853,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5e/1f/0861dad47febbb391123a529f3655582e2a7ce14aadb6ddc527dd7dea470/google_genai-1.13.0.tar.gz", hash = "sha256:de7b4960d361c7ea85b715ce0e07fe34903d94affa82d566d9eb04e8f92512b9", size = 165727, upload_time = "2025-04-30T23:47:02.605Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/00/ba/c8e4c0b60c6dda40e51e2125709d097c2609fce1389b4a05f40cdd51c1ec/google_genai-1.14.0.tar.gz", hash = "sha256:7c608de5bb173486a546f5ec4562255c26bae72d33d758a3207bb26f695d0087", size = 169938, upload_time = "2025-05-07T22:50:03.113Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c5/2c/1833fa15311fa4f0790e9c8ea3488382fe428c3eca62b329d6aa355871ae/google_genai-1.13.0-py3-none-any.whl", hash = "sha256:e88417c95f333827ed051282803db627192fd8e5fdf5b49b6f26644a67775d1a", size = 164405, upload_time = "2025-04-30T23:47:00.901Z" },
+    { url = "https://files.pythonhosted.org/packages/12/86/dde4cd028c8b0716b3f1f6d202647396a87a4ecbbdc7e4beb59b9d9284d3/google_genai-1.14.0-py3-none-any.whl", hash = "sha256:5916ee985bf69ac7b68c4488949225db71e21579afc7ba5ecd5321173b60d3b2", size = 168862, upload_time = "2025-05-07T22:50:01.296Z" },
 ]
 
 [[package]]
@@ -1208,7 +1208,7 @@ wheels = [
 
 [[package]]
 name = "litellm"
-version = "1.68.0"
+version = "1.68.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -1223,9 +1223,9 @@ dependencies = [
     { name = "tiktoken" },
     { name = "tokenizers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ba/22/138545b646303ca3f4841b69613c697b9d696322a1386083bb70bcbba60b/litellm-1.68.0.tar.gz", hash = "sha256:9fb24643db84dfda339b64bafca505a2eef857477afbc6e98fb56512c24dbbfa", size = 7314051, upload_time = "2025-05-04T05:41:48.081Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6b/ba/624b5ebbca8d3cbfe81ea130c72215a7ee929c2cabdef37e9fd7d07abc57/litellm-1.68.2.tar.gz", hash = "sha256:03c9ecb8955239f37f52e8e91f69ec02e75eb6290ed881b0597d7e16aa88d5e0", size = 7343243, upload_time = "2025-05-09T20:28:10.773Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/10/af/1e344bc8aee41445272e677d802b774b1f8b34bdc3bb5697ba30f0fb5d52/litellm-1.68.0-py3-none-any.whl", hash = "sha256:3bca38848b1a5236b11aa6b70afa4393b60880198c939e582273f51a542d4759", size = 7684460, upload_time = "2025-05-04T05:41:44.78Z" },
+    { url = "https://files.pythonhosted.org/packages/09/43/c3d7939d5852679b5d2fcb85b9ee5ba3286129f9b2e171f826e3c1db2867/litellm-1.68.2-py3-none-any.whl", hash = "sha256:49b63e0bdea0a84ac95ae1032f25b5730dc480d11c00b3afe21f1532496d6570", size = 7719293, upload_time = "2025-05-09T20:28:07.147Z" },
 ]
 
 [[package]]
@@ -1299,7 +1299,7 @@ wheels = [
 
 [[package]]
 name = "mcp"
-version = "1.7.1"
+version = "1.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -1312,9 +1312,9 @@ dependencies = [
     { name = "starlette" },
     { name = "uvicorn", marker = "sys_platform != 'emscripten'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/25/ae/588691c45b38f4fbac07fa3d6d50cea44cc6b35d16ddfdf26e17a0467ab2/mcp-1.7.1.tar.gz", hash = "sha256:eb4f1f53bd717f75dda8a1416e00804b831a8f3c331e23447a03b78f04b43a6e", size = 230903, upload_time = "2025-05-02T17:01:56.403Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ff/97/0a3e08559557b0ac5799f9fb535fbe5a4e4dcdd66ce9d32e7a74b4d0534d/mcp-1.8.0.tar.gz", hash = "sha256:263dfb700540b726c093f0c3e043f66aded0730d0b51f04eb0a3eb90055fe49b", size = 264641, upload_time = "2025-05-08T20:09:06.255Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ae/79/fe0e20c3358997a80911af51bad927b5ea2f343ef95ab092b19c9cc48b59/mcp-1.7.1-py3-none-any.whl", hash = "sha256:f7e6108977db6d03418495426c7ace085ba2341b75197f8727f96f9cfd30057a", size = 100365, upload_time = "2025-05-02T17:01:54.674Z" },
+    { url = "https://files.pythonhosted.org/packages/b2/b2/4ac3bd17b1fdd65658f18de4eb0c703517ee0b483dc5f56467802a9197e0/mcp-1.8.0-py3-none-any.whl", hash = "sha256:889d9d3b4f12b7da59e7a3933a0acadae1fce498bfcd220defb590aa291a1334", size = 119544, upload_time = "2025-05-08T20:09:04.458Z" },
 ]
 
 [package.optional-dependencies]
@@ -2233,11 +2233,11 @@ wheels = [
 
 [[package]]
 name = "setuptools"
-version = "80.3.0"
+version = "80.4.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/51/6c/a3f892949418b5b9aced7396919c75ffb57e38f08b712b565f5eb10677ee/setuptools-80.3.0.tar.gz", hash = "sha256:ec8308eb180b2312062b1c5523204acf872cd8b0a9e6c2ae76431b22bc4065d7", size = 1314475, upload_time = "2025-05-03T09:17:32.334Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/95/32/0cc40fe41fd2adb80a2f388987f4f8db3c866c69e33e0b4c8b093fdf700e/setuptools-80.4.0.tar.gz", hash = "sha256:5a78f61820bc088c8e4add52932ae6b8cf423da2aff268c23f813cfbb13b4006", size = 1315008, upload_time = "2025-05-09T20:42:27.972Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e6/61/a6239ff35d64e55def020335626894895847cc6659c0f8e1b676c58aad3b/setuptools-80.3.0-py3-none-any.whl", hash = "sha256:a65cffc4fb86167e3020b3ef58e08226baad8b29a3b34ce2c9d07e901bac481d", size = 1200273, upload_time = "2025-05-03T09:17:29.995Z" },
+    { url = "https://files.pythonhosted.org/packages/b1/93/dba5ed08c2e31ec7cdc2ce75705a484ef0be1a2fecac8a58272489349de8/setuptools-80.4.0-py3-none-any.whl", hash = "sha256:6cdc8cb9a7d590b237dbe4493614a9b75d0559b888047c1f67d49ba50fc3edb2", size = 1200812, upload_time = "2025-05-09T20:42:25.325Z" },
 ]
 
 [[package]]
@@ -2623,6 +2623,18 @@ wheels = [
 ]
 
 [[package]]
+name = "types-requests"
+version = "2.32.0.20250328"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/00/7d/eb174f74e3f5634eaacb38031bbe467dfe2e545bc255e5c90096ec46bc46/types_requests-2.32.0.20250328.tar.gz", hash = "sha256:c9e67228ea103bd811c96984fac36ed2ae8da87a36a633964a21f199d60baf32", size = 22995, upload_time = "2025-03-28T02:55:13.271Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cc/15/3700282a9d4ea3b37044264d3e4d1b1f0095a4ebf860a99914fd544e3be3/types_requests-2.32.0.20250328-py3-none-any.whl", hash = "sha256:72ff80f84b15eb3aa7a8e2625fffb6a93f2ad5a0c20215fc1dcfa61117bcb2a2", size = 20663, upload_time = "2025-03-28T02:55:11.946Z" },
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.13.2"
 source = { registry = "https://pypi.org/simple" }
@@ -2724,6 +2736,7 @@ dev = [
     { name = "sphinx" },
     { name = "sphinx-rtd-theme" },
     { name = "sphinxcontrib-mermaid" },
+    { name = "types-requests" },
 ]
 
 [package.metadata]
@@ -2731,10 +2744,10 @@ requires-dist = [
     { name = "black", marker = "extra == 'dev'", specifier = ">=24.10.0" },
     { name = "flake8", marker = "extra == 'dev'", specifier = ">=7.1.1" },
     { name = "flake8-copyright", marker = "extra == 'dev'", specifier = ">=0.2.4" },
-    { name = "google-adk", specifier = ">=0.4.0" },
-    { name = "google-genai", specifier = ">=1.13.0" },
-    { name = "litellm", specifier = ">=1.68.0" },
-    { name = "mcp", extras = ["cli"], specifier = ">=1.7.1" },
+    { name = "google-adk", specifier = ">=0.5.0" },
+    { name = "google-genai", specifier = ">=1.14.0" },
+    { name = "litellm", specifier = ">=1.68.2" },
+    { name = "mcp", extras = ["cli"], specifier = ">=1.8.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
     { name = "myst-parser", marker = "extra == 'dev'", specifier = "==4.0.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
@@ -2743,10 +2756,11 @@ requires-dist = [
     { name = "pytest-html", marker = "extra == 'dev'", specifier = ">=4.1.1" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "respx", marker = "extra == 'dev'", specifier = ">=0.21.1" },
-    { name = "setuptools", specifier = ">=80.0.0" },
+    { name = "setuptools", specifier = ">=80.4.0" },
     { name = "sphinx", marker = "extra == 'dev'", specifier = "==8.1.3" },
     { name = "sphinx-rtd-theme", marker = "extra == 'dev'", specifier = "==3.0.1" },
     { name = "sphinxcontrib-mermaid", marker = "extra == 'dev'", specifier = "==1.0.0" },
+    { name = "types-requests", marker = "extra == 'dev'", specifier = ">=2.28.0" },
     { name = "wheel", specifier = ">=0.45.1" },
 ]
 provides-extras = ["dev"]
