@@ -7,11 +7,13 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { SpeechBubble } from './SpeechBubble'; // Import the SpeechBubble component
 import { SpeakMessage } from '../types/command';
+import { playVoice } from '../services/tts_service';
 
 // --- Constants ---
 const ANIMATION_FADE_DURATION = 0.3;
 
 export interface VRMAvatarProps {
+  id: string;
   vrmUrl: string;
   // Animation URLs (example: { idle: '/idle.vrma', wave: '/wave.vrma' })
   animationUrls: Record<string, string>;
@@ -25,6 +27,7 @@ export interface VRMAvatarProps {
 }
 
 export const VRMAvatar: React.FC<VRMAvatarProps> = ({
+  id,
   vrmUrl,
   animationUrls,
   expressionWeights,
@@ -290,7 +293,9 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   const playTTS = useCallback(async (text: string) => {
     // 引数textをログ出力して警告を回避
     console.log('[TTS] playTTS called with text:', text);
-    await new Promise(resolve => setTimeout(resolve, 8000));
+    // await new Promise(resolve => setTimeout(resolve, 8000));
+    await playVoice(id, text); // Call the actual TTS function
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // speechTextが変化したらTTS再生→終了後に吹き出しを閉じる
@@ -307,46 +312,6 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
       });
     }
   }, [speechText, playTTS, onTTSComplete]);
-
-  // --- すべてのmeshにopacityを適用しフェードイン ---
-  // useEffect(() => {
-  //   if (!isLoaded || !vrmRef.current || !fadeIn) return;
-  //   const duration = 1000; // ms
-  //   const start = performance.now();
-  //   const meshes: THREE.Mesh[] = [];
-  //   vrmRef.current.scene.traverse(obj => {
-  //     if ((obj as THREE.Mesh).isMesh && (obj as THREE.Mesh).material) {
-  //       const mesh = obj as THREE.Mesh;
-  //       meshes.push(mesh);
-  //       if (Array.isArray(mesh.material)) {
-  //         mesh.material.forEach((mat: THREE.Material) => {
-  //           // mat.transparent = true; // 削除
-  //           mat.opacity = 0;
-  //         });
-  //       } else {
-  //         // mesh.material.transparent = true; // 削除
-  //         mesh.material.opacity = 0;
-  //       }
-  //     }
-  //   });
-  //   function animate() {
-  //     const now = performance.now();
-  //     const t = Math.min((now - start) / duration, 1);
-  //     meshes.forEach(mesh => {
-  //       if (Array.isArray(mesh.material)) {
-  //         mesh.material.forEach((mat: THREE.Material) => {
-  //           mat.opacity = t;
-  //         });
-  //       } else {
-  //         mesh.material.opacity = t;
-  //       }
-  //     });
-  //     if (t < 1) {
-  //       requestAnimationFrame(animate);
-  //     }
-  //   }
-  //   animate();
-  // }, [isLoaded, fadeIn]);
 
   // Render only when VRM is loaded, applying the position
   return isLoaded && vrmRef.current ? (
