@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const VOICEVOX_API_BASE = import.meta.env.VITE_VOICEVOX_API_BASE;
+const TTS_ENABLED = import.meta.env.VITE_TTS_ENABLED !== 'false'; // デフォルト有効、'false'で無効
 
 export async function playVoice(characterId: string, text: string): Promise<void> {
   // avatar1 の場合は 3
@@ -19,8 +20,13 @@ export async function playVoice(characterId: string, text: string): Promise<void
  * @param speakerId VOICEVOXの話者ID
  */
 export async function playVoiceVoxTTS(text: string, speakerId: number): Promise<void> {
+  if (!TTS_ENABLED) {
+    // TTS無効時は8秒待つダミー挙動
+    await new Promise(resolve => setTimeout(resolve, 8000));
+    return;
+  }
   if (!VOICEVOX_API_BASE) {
-    // 環境変数が未設定の場合は8秒待つダミー挙動
+    // 環境変数が未設定の場合も8秒待つダミー挙動
     await new Promise(resolve => setTimeout(resolve, 8000));
     return;
   }
@@ -43,7 +49,21 @@ export async function playVoiceVoxTTS(text: string, speakerId: number): Promise<
   const audioBlob = new Blob([audioData], { type: 'audio/wav' });
   const audioUrl = URL.createObjectURL(audioBlob);
   const audio = new Audio(audioUrl);
-  await audio.play();
-  // 再生終了後にURLを解放
-  audio.onended = () => URL.revokeObjectURL(audioUrl);
+  try {
+    await new Promise<void>((resolve, reject) => {
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+        resolve();
+      };
+      audio.onerror = e => {
+        URL.revokeObjectURL(audioUrl);
+        reject(e);
+      };
+      audio.play();
+    });
+  } catch (e) {
+    // エラー時もURLを解放
+    URL.revokeObjectURL(audioUrl);
+    throw e;
+  }
 }
