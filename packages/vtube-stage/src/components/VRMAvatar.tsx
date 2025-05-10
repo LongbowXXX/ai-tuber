@@ -44,6 +44,14 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   const [bubbleText, setBubbleText] = useState<SpeakMessage | null>(null);
   const animationTimeoutRef = useRef<number | null>(null); // 3秒タイマー用ref: number型に修正
 
+  // --- フェードイン用 ---
+  const [fadeIn, setFadeIn] = useState(false);
+
+  // VRMロード完了時にフェードイン開始
+  useEffect(() => {
+    if (isLoaded) setFadeIn(true);
+  }, [isLoaded]);
+
   // --- VRM Loader ---
   const gltf = useLoader(GLTFLoader, vrmUrl, loader => {
     loader.register(parser => new VRMLoaderPlugin(parser));
@@ -116,13 +124,12 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
         vrmRef.current = null;
         mixer.current = null;
         currentAction.current = null;
-        setIsLoaded(false);
-        setLoadedAnimationNames(new Set()); // Reset loaded animations
         vrmAnimations.current = {};
         console.log(`Cleaned up VRM from ${vrmUrl}`);
       }
     };
-  }, [gltf, onLoad, vrmUrl]); // Add vrmUrl to dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vrmUrl]); // Add vrmUrl to dependencies
 
   // --- Create Animation Clip ---
   const createAnimationClipFromVRMA = useCallback(
@@ -242,12 +249,8 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
         animationTimeoutRef.current = null;
       }
     }
-  }, [
-    currentAnimationName,
-    createAnimationClipFromVRMA,
-    loadedAnimationNames,
-    vrmUrl, // Add vrmUrl for logging clarity
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentAnimationName, loadedAnimationNames]);
 
   // --- Expression Update ---
   const updateExpressions = useCallback(() => {
@@ -309,6 +312,46 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
       });
     }
   }, [speechText, playTTS, onTTSComplete]);
+
+  // --- すべてのmeshにopacityを適用しフェードイン ---
+  useEffect(() => {
+    if (!isLoaded || !vrmRef.current || !fadeIn) return;
+    const duration = 1000; // ms
+    const start = performance.now();
+    const meshes: THREE.Mesh[] = [];
+    vrmRef.current.scene.traverse(obj => {
+      if ((obj as THREE.Mesh).isMesh && (obj as THREE.Mesh).material) {
+        const mesh = obj as THREE.Mesh;
+        meshes.push(mesh);
+        if (Array.isArray(mesh.material)) {
+          mesh.material.forEach((mat: THREE.Material) => {
+            // mat.transparent = true; // 削除
+            mat.opacity = 0;
+          });
+        } else {
+          // mesh.material.transparent = true; // 削除
+          mesh.material.opacity = 0;
+        }
+      }
+    });
+    function animate() {
+      const now = performance.now();
+      const t = Math.min((now - start) / duration, 1);
+      meshes.forEach(mesh => {
+        if (Array.isArray(mesh.material)) {
+          mesh.material.forEach((mat: THREE.Material) => {
+            mat.opacity = t;
+          });
+        } else {
+          mesh.material.opacity = t;
+        }
+      });
+      if (t < 1) {
+        requestAnimationFrame(animate);
+      }
+    }
+    animate();
+  }, [isLoaded, fadeIn]);
 
   // Render only when VRM is loaded, applying the position
   return isLoaded && vrmRef.current ? (

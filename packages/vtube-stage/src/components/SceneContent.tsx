@@ -21,9 +21,16 @@ interface AvatarData {
 interface SceneContentProps {
   avatars: AvatarData[]; // Array of avatar data objects
   onTTSComplete?: (speakId: string) => void; // 追加
+  controlsEnabled?: boolean; // OrbitControls有効化フラグ追加
+  onAvatarLoad?: (id: string) => void; // 追加
 }
 
-export const SceneContent: React.FC<SceneContentProps> = ({ avatars, onTTSComplete }) => {
+export const SceneContent: React.FC<SceneContentProps> = ({
+  avatars,
+  onTTSComplete,
+  controlsEnabled = true,
+  onAvatarLoad,
+}) => {
   // --- Scene elements rendering ---
   return (
     <>
@@ -50,20 +57,14 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, onTTSComple
       {avatars.map(avatar => (
         <VRMAvatar
           key={avatar.id} // Use unique ID as key
-          vrmUrl={avatar.vrmUrl}
-          animationUrls={avatar.animationUrls}
-          expressionWeights={avatar.expressionWeights}
-          headYaw={avatar.headYaw}
-          currentAnimationName={avatar.currentAnimationName} // Pass currentAnimationName (which can be null)
-          speechText={avatar.speechText} // SpeakMessage型で渡す
-          position={avatar.position} // Pass position prop
-          onLoad={avatar.onLoad} // Pass down individual onLoad if provided
+          {...avatar}
+          onLoad={onAvatarLoad ? () => onAvatarLoad(avatar.id) : undefined}
           onTTSComplete={onTTSComplete} // 追加
         />
       ))}
 
       {/* Camera Controls */}
-      <OrbitControls target={[0, 1, 0]} />
+      {controlsEnabled && <OrbitControls target={[0, 1, 0]} />}
     </>
   );
 };
