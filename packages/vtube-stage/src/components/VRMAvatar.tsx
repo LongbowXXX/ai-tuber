@@ -111,10 +111,13 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
       console.log(`VRM loaded from ${vrmUrl}:`, vrm);
       vrmRef.current = vrm;
       mixer.current = new THREE.AnimationMixer(vrm.scene); // Create mixer here
-      setIsLoaded(true); // Mark VRM as loaded
-      if (onLoad) {
-        onLoad(vrm); // Call external onLoad if provided
-      }
+      // setIsLoaded(true); // Mark VRM as loaded (旧処理)
+      setTimeout(() => {
+        setIsLoaded(true); // ディレイしてロード完了とする
+        if (onLoad) {
+          onLoad(vrm); // Call external onLoad if provided
+        }
+      }, 1000);
     }
     // Cleanup
     return () => {
