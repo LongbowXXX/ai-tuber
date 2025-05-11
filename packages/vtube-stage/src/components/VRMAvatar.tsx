@@ -8,6 +8,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { SpeechBubble } from './SpeechBubble'; // Import the SpeechBubble component
 import { SpeakMessage } from '../types/command';
 import { playVoice } from '../services/tts_service';
+import { usePseudoLipSync } from './usePseudoLipSync';
 
 // --- Constants ---
 const ANIMATION_FADE_DURATION = 0.3;
@@ -46,6 +47,9 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   const [isLoaded, setIsLoaded] = useState(false); // Tracks VRM model loading
   const [bubbleText, setBubbleText] = useState<SpeakMessage | null>(null);
   const animationTimeoutRef = useRef<number | null>(null); // 3秒タイマー用ref: number型に修正
+
+  // --- 疑似リップシンク状態 ---
+  const [isLipSync, setIsLipSync] = useState(false);
 
   // --- VRM Loader ---
   const gltf = useLoader(GLTFLoader, vrmUrl, loader => {
@@ -254,18 +258,17 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   const updateExpressions = useCallback(() => {
     const vrm = vrmRef.current;
     if (!vrm?.expressionManager) return;
+    // 通常の表情のみ適用（口パクはusePseudoLipSyncに委譲）
     Object.entries(expressionWeights).forEach(([name, weight]) => {
       try {
-        // Ensure the expression name is valid before setting
-        if (vrm.expressionManager!.getExpression(name as VRMExpressionPresetName)) {
-          vrm.expressionManager!.setValue(name as VRMExpressionPresetName, weight);
-        } // Removed unnecessary else block
+        if (vrm.expressionManager?.getExpression(name as VRMExpressionPresetName)) {
+          vrm.expressionManager.setValue(name as VRMExpressionPresetName, weight);
+        }
       } catch (error) {
-        // Keep error parameter for logging
-        console.warn(`Failed to set expression ${name} for ${vrmUrl}`, error); // Log warning with error
+        console.warn(`Failed to set expression ${name} for ${vrmUrl}`, error);
       }
     });
-  }, [expressionWeights, vrmUrl]); // Added vrmUrl back for logging
+  }, [expressionWeights, vrmUrl]);
 
   // --- Head Rotation Update ---
   const updateHeadRotation = useCallback(() => {
@@ -302,16 +305,23 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   useEffect(() => {
     if (speechText && speechText.text !== '') {
       setBubbleText(speechText);
-      console.log(`[VRMAvatar] Start TTS: id=${speechText.id}, text=${speechText.text}`);
+      setIsLipSync(true); // リップシンク開始
       playTTS(speechText.text).then(() => {
         setBubbleText(null);
-        console.log(`[VRMAvatar] End TTS: id=${speechText.id}, text=${speechText.text}`);
+        setIsLipSync(false); // リップシンク終了
         if (onTTSComplete && speechText.id) {
           onTTSComplete(speechText.id);
         }
       });
     }
+    // クリーンアップ
+    return () => {
+      setIsLipSync(false);
+    };
   }, [speechText, playTTS, onTTSComplete]);
+
+  // 疑似リップシンクフック呼び出し
+  usePseudoLipSync(vrmRef.current, isLipSync);
 
   // Render only when VRM is loaded, applying the position
   return isLoaded && vrmRef.current ? (

@@ -43,12 +43,13 @@ export function useStageCommandHandler() {
           setAvatars(prevAvatars =>
             prevAvatars.map(a => {
               if (a.id === characterId) {
-                // Create a new expressionWeights object with all weights set to 0
-                const newExpressionWeights: { [key: string]: number } = {};
-                Object.keys(a.expressionWeights).forEach(key => {
+                // 口パク用表情のみ0にし、他は維持
+                const lipsyncMouthList = ['aa', 'ih', 'ou', 'ee', 'oh'];
+                const newExpressionWeights: { [key: string]: number } = { ...a.expressionWeights };
+                lipsyncMouthList.forEach(key => {
                   newExpressionWeights[key] = 0;
                 });
-                // Set the specified expression's weight
+                // 指定されたemotionのみ1.0
                 newExpressionWeights[emotion] = 1.0;
                 return {
                   ...a,
