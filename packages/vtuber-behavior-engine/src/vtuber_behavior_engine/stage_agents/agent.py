@@ -6,7 +6,6 @@
 import logging
 
 from google.adk.agents import LoopAgent, SequentialAgent, BaseAgent
-from google.adk.tools.mcp_tool import MCPTool
 
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     AGENT1_CHARACTER_ID,
@@ -23,17 +22,18 @@ from vtuber_behavior_engine.stage_agents.resources import (
     character1,
     character2,
 )
+from vtuber_behavior_engine.stage_director_mcp_client import StageDirectorMCPClient
 
 logger = logging.getLogger(__name__)
 
 
-def create_root_agent(character_tools: list[MCPTool]) -> BaseAgent:
+def create_root_agent(stage_director_client: StageDirectorMCPClient) -> BaseAgent:
 
     agent1 = create_character_agent(AGENT1_CHARACTER_ID, character1())
     agent2 = create_character_agent(AGENT2_CHARACTER_ID, character2())
 
-    agent1_output = create_character_output_agent(AGENT1_CHARACTER_ID, character_tools)
-    agent2_output = create_character_output_agent(AGENT2_CHARACTER_ID, character_tools)
+    agent1_output = create_character_output_agent(AGENT1_CHARACTER_ID, stage_director_client)
+    agent2_output = create_character_output_agent(AGENT2_CHARACTER_ID, stage_director_client)
 
     current_time_agent = create_current_time_agent()
     news_agent = create_news_agent()

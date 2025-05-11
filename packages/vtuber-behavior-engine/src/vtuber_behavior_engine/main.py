@@ -8,7 +8,7 @@ import logging
 from dotenv import load_dotenv
 
 from vtuber_behavior_engine.agent_runner import run_agent_standalone
-from vtuber_behavior_engine.mcp_client import StageDirectorMCPClient
+from vtuber_behavior_engine.stage_director_mcp_client import StageDirectorMCPClient
 from vtuber_behavior_engine.stage_agents.agent import create_root_agent
 from vtuber_behavior_engine.stage_agents.resources import initial_message
 
@@ -16,14 +16,14 @@ logger = logging.getLogger(__name__)
 
 
 async def main() -> None:
-    mcp_client = await StageDirectorMCPClient.create_async()
+    stage_director_client = await StageDirectorMCPClient.create_async()
     try:
-        character_agent = create_root_agent(mcp_client.tools)
+        character_agent = create_root_agent(stage_director_client)
         # initial message
         message = initial_message()
         await run_agent_standalone(character_agent, message)
     finally:
-        await mcp_client.aclose()
+        await stage_director_client.aclose()
 
 
 if __name__ == "__main__":

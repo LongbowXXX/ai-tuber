@@ -8,6 +8,7 @@ from google.adk.tools.mcp_tool import MCPTool
 from vtuber_behavior_engine.stage_agents.agent_constants import AGENT_LLM_MODEL, OUTPUT_LLM_MODEL, STATE_AGENT_SPEECH
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
 from vtuber_behavior_engine.stage_agents.resources import character_prompt, character_output_prompt
+from vtuber_behavior_engine.stage_director_mcp_client import StageDirectorMCPClient
 
 
 def create_character_agent(character_id: str, character_detail: str) -> BaseAgent:
@@ -24,12 +25,12 @@ def create_character_agent(character_id: str, character_detail: str) -> BaseAgen
     return agent
 
 
-def create_character_output_agent(character_id: str, character_tools: list[MCPTool]) -> BaseAgent:
+def create_character_output_agent(character_id: str, stage_director_client: StageDirectorMCPClient) -> BaseAgent:
     agent = LlmAgent(
         model=OUTPUT_LLM_MODEL,
         name=f"CharacterOutput_{character_id}",
         instruction=character_output_prompt(),
         description=f"Character {character_id} output",
-        tools=character_tools,
+        tools=stage_director_client.tools,
     )
     return agent
