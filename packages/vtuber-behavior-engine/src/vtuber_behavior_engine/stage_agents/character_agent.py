@@ -49,7 +49,7 @@ def create_character_output_agent(character_id: str, stage_director_client: Stag
             callback_context.state[STATE_AGENT_SPEECH_BASE + character_id] = None
             return None
 
-    tools = list(filter(lambda tool: tool.name == "triggerAnimation", stage_director_client.tools))
+    tools = list(filter(lambda tool: tool.name == "trigger_animation", stage_director_client.tools))
     agent = LlmAgent(
         model=OUTPUT_LLM_MODEL,
         name=f"CharacterOutput_{character_id}",
