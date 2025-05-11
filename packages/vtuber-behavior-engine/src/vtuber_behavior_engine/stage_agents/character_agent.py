@@ -52,12 +52,13 @@ def create_character_output_agent(character_id: str, stage_director_client: Stag
         else:
             return None
 
+    tools = list(filter(lambda tool: tool.name == "triggerAnimation", stage_director_client.tools))
     agent = LlmAgent(
         model=OUTPUT_LLM_MODEL,
         name=f"CharacterOutput_{character_id}",
         instruction=character_output_prompt(character_id),
         description=f"Character {character_id} output",
-        tools=stage_director_client.tools,
+        tools=tools,
         before_agent_callback=handle_empty_speech,
         after_agent_callback=speak,
         disallow_transfer_to_parent=True,

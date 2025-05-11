@@ -5,7 +5,7 @@
 
 import logging
 
-from google.adk.agents import LoopAgent, SequentialAgent, BaseAgent, ParallelAgent
+from google.adk.agents import LoopAgent, SequentialAgent, BaseAgent
 
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     AGENT1_CHARACTER_ID,
@@ -40,35 +40,15 @@ def create_root_agent(stage_director_client: StageDirectorMCPClient) -> BaseAgen
     initial_context_agent = create_initial_context_agent()
     update_context_agent = create_update_context_agent()
 
-    parallel1 = ParallelAgent(
-        name="ParallelConversationAgent1",
-        sub_agents=[
-            agent2_output,
-            agent1_thought,
-        ],
-        description="Handles the parallel execution of multiple agents.",
-    )
-
-    agent2_and_update = SequentialAgent(
-        name="Agent2AndUpdate",
-        sub_agents=[
-            agent2_thought,
-            update_context_agent,
-        ],
-        description="Handles the conversation and agent2 and context update.",
-    )
-    parallel2 = ParallelAgent(
-        name="ParallelConversationAgent2",
-        sub_agents=[
-            agent1_output,
-            agent2_and_update,
-        ],
-        description="Handles the parallel execution of multiple agents.",
-    )
-
     agent_conversation_loop = LoopAgent(
         name="ConversationLoop",
-        sub_agents=[parallel1, parallel2],
+        sub_agents=[
+            agent1_thought,
+            agent1_output,
+            agent2_thought,
+            agent2_output,
+            update_context_agent,
+        ],
         max_iterations=5,
         description="Handles the conversation between two agents.",
     )
