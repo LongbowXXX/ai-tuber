@@ -43,14 +43,15 @@ export function useStageCommandHandler() {
           setAvatars(prevAvatars =>
             prevAvatars.map(a => {
               if (a.id === characterId) {
-                // 口パク用表情のみ0にし、他は維持
                 const lipsyncMouthList = ['aa', 'ih', 'ou', 'ee', 'oh'];
                 const newExpressionWeights: { [key: string]: number } = { ...a.expressionWeights };
-                lipsyncMouthList.forEach(key => {
-                  newExpressionWeights[key] = 0;
+                // emotionで指定された表情のみ1.0、それ以外は0。ただし口パク用は除外
+                Object.keys(newExpressionWeights).forEach(key => {
+                  if (!lipsyncMouthList.includes(key)) {
+                    newExpressionWeights[key] = 0;
+                  }
                 });
-                // 指定されたemotionのみ1.0
-                newExpressionWeights[emotion] = 1.0;
+                newExpressionWeights[emotion] = 1.0; // 指定された表情を1.0に
                 return {
                   ...a,
                   speechText: { id: speakId, text: message },

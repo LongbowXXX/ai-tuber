@@ -164,67 +164,69 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, lastMessage,
         )}
       </CanvasArea>
       {/* Controller/Sidebar Area */}
-      <Sidebar>
-        <Typography variant="h6" component="h3">
-          Stage Controls & Status
-        </Typography>
-
-        {/* Connection Status */}
-        <StatusBox>
-          <Typography component="span" variant="body1" sx={{ fontWeight: 'bold' }}>
-            Connection Status:{' '}
+      {import.meta.env.VITE_DEBUG_SIDEBAR === 'true' && (
+        <Sidebar>
+          <Typography variant="h6" component="h3">
+            Stage Controls & Status
           </Typography>
-          <Chip
-            label={isConnected ? 'Connected' : 'Disconnected'}
-            color={isConnected ? 'success' : 'error'}
-            size="small"
-          />
-        </StatusBox>
 
-        {/* Last Received Message */}
-        <LastMessageBox>
-          <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>
-            Last Command from Server:
-          </Typography>
-          <LastMessagePaper>
-            <Typography component="pre" sx={{ wordBreak: 'break-all', whiteSpace: 'pre-wrap', fontSize: '0.8rem' }}>
-              {lastMessage ? JSON.stringify(lastMessage, null, 2) : 'N/A'}
+          {/* Connection Status */}
+          <StatusBox>
+            <Typography component="span" variant="body1" sx={{ fontWeight: 'bold' }}>
+              Connection Status:{' '}
             </Typography>
-          </LastMessagePaper>
-        </LastMessageBox>
+            <Chip
+              label={isConnected ? 'Connected' : 'Disconnected'}
+              color={isConnected ? 'success' : 'error'}
+              size="small"
+            />
+          </StatusBox>
 
-        {/* VRM Controllers */}
-        {avatars.map(avatar => (
-          <VRMController
-            key={avatar.id}
-            title={`Avatar ${avatar.id.replace('avatar', '')} Controls`}
-            onExpressionChange={(name, weight) => {
-              setAvatars(prevAvatars =>
-                prevAvatars.map(a =>
-                  a.id === avatar.id
-                    ? {
-                        ...a,
-                        expressionWeights: {
-                          ...a.expressionWeights,
-                          [name]: weight,
-                        },
-                      }
-                    : a
-                )
-              );
-            }}
-            onHeadYawChange={angle => {
-              setAvatars(prevAvatars => prevAvatars.map(a => (a.id === avatar.id ? { ...a, headYaw: angle } : a)));
-            }}
-            onAnimationChange={animationName => {
-              setAvatars(prevAvatars =>
-                prevAvatars.map(a => (a.id === avatar.id ? { ...a, currentAnimationName: animationName } : a))
-              );
-            }}
-            availableAnimations={Object.keys(avatar.animationUrls)}
-          />
-        ))}
-      </Sidebar>
+          {/* Last Received Message */}
+          <LastMessageBox>
+            <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>
+              Last Command from Server:
+            </Typography>
+            <LastMessagePaper>
+              <Typography component="pre" sx={{ wordBreak: 'break-all', whiteSpace: 'pre-wrap', fontSize: '0.8rem' }}>
+                {lastMessage ? JSON.stringify(lastMessage, null, 2) : 'N/A'}
+              </Typography>
+            </LastMessagePaper>
+          </LastMessageBox>
+
+          {/* VRM Controllers */}
+          {avatars.map(avatar => (
+            <VRMController
+              key={avatar.id}
+              title={`Avatar ${avatar.id.replace('avatar', '')} Controls`}
+              onExpressionChange={(name, weight) => {
+                setAvatars(prevAvatars =>
+                  prevAvatars.map(a =>
+                    a.id === avatar.id
+                      ? {
+                          ...a,
+                          expressionWeights: {
+                            ...a.expressionWeights,
+                            [name]: weight,
+                          },
+                        }
+                      : a
+                  )
+                );
+              }}
+              onHeadYawChange={angle => {
+                setAvatars(prevAvatars => prevAvatars.map(a => (a.id === avatar.id ? { ...a, headYaw: angle } : a)));
+              }}
+              onAnimationChange={animationName => {
+                setAvatars(prevAvatars =>
+                  prevAvatars.map(a => (a.id === avatar.id ? { ...a, currentAnimationName: animationName } : a))
+                );
+              }}
+              availableAnimations={Object.keys(avatar.animationUrls)}
+            />
+          ))}
+        </Sidebar>
+      )}
     </Root>
   );
 };

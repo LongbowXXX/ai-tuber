@@ -12,7 +12,6 @@ import { usePseudoLipSync } from './usePseudoLipSync';
 
 // --- Constants ---
 const ANIMATION_FADE_DURATION = 0.3;
-const LIPSYNC_MOUTH_LIST = ['aa', 'ih', 'ou', 'ee', 'oh'];
 
 export interface VRMAvatarProps {
   id: string;
@@ -259,10 +258,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   const updateExpressions = useCallback(() => {
     const vrm = vrmRef.current;
     if (!vrm?.expressionManager) return;
-    // 通常の表情のみ適用（口パクはusePseudoLipSyncに委譲）
     Object.entries(expressionWeights).forEach(([name, weight]) => {
-      // 口パク用表情はLipSyncフックに任せる
-      if (LIPSYNC_MOUTH_LIST.includes(name)) return;
       try {
         if (vrm.expressionManager?.getExpression(name as VRMExpressionPresetName)) {
           vrm.expressionManager.setValue(name as VRMExpressionPresetName, weight);
