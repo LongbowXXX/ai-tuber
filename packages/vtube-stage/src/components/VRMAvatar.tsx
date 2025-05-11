@@ -12,6 +12,7 @@ import { usePseudoLipSync } from './usePseudoLipSync';
 
 // --- Constants ---
 const ANIMATION_FADE_DURATION = 0.3;
+const LIPSYNC_MOUTH_LIST = ['aa', 'ih', 'ou', 'ee', 'oh'];
 
 export interface VRMAvatarProps {
   id: string;
@@ -260,6 +261,8 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     if (!vrm?.expressionManager) return;
     // 通常の表情のみ適用（口パクはusePseudoLipSyncに委譲）
     Object.entries(expressionWeights).forEach(([name, weight]) => {
+      // 口パク用表情はLipSyncフックに任せる
+      if (LIPSYNC_MOUTH_LIST.includes(name)) return;
       try {
         if (vrm.expressionManager?.getExpression(name as VRMExpressionPresetName)) {
           vrm.expressionManager.setValue(name as VRMExpressionPresetName, weight);
@@ -292,23 +295,23 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     } // <-- Added missing closing brace
   });
 
-  // TTS再生関数（ダミー: 3秒待つ）
-  const playTTS = useCallback(async (text: string) => {
-    // 引数textをログ出力して警告を回避
-    console.log('[TTS] playTTS called with text:', text);
-    // await new Promise(resolve => setTimeout(resolve, 8000));
-    await playVoice(id, text); // Call the actual TTS function
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // TTS再生関数（onPlayコールバック対応）
+  const playTTS = useCallback(
+    async (text: string, onPlay?: () => void) => {
+      console.log('[TTS] playTTS called with text:', text);
+      await playVoice(id, text, onPlay); // onPlayを渡す
+    },
+    [id]
+  );
 
   // speechTextが変化したらTTS再生→終了後に吹き出しを閉じる
   useEffect(() => {
     if (speechText && speechText.text !== '') {
       setBubbleText(speechText);
-      setIsLipSync(true); // リップシンク開始
-      playTTS(speechText.text).then(() => {
+      // setIsLipSync(true); // ここでは開始しない
+      playTTS(speechText.text, () => setIsLipSync(true)).then(() => {
         setBubbleText(null);
-        setIsLipSync(false); // リップシンク終了
+        setIsLipSync(false); // 再生終了でLipSync終了
         if (onTTSComplete && speechText.id) {
           onTTSComplete(speechText.id);
         }
@@ -321,7 +324,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   }, [speechText, playTTS, onTTSComplete]);
 
   // 疑似リップシンクフック呼び出し
-  usePseudoLipSync(vrmRef.current, isLipSync);
+  usePseudoLipSync(isLoaded ? vrmRef.current : null, isLipSync);
 
   // Render only when VRM is loaded, applying the position
   return isLoaded && vrmRef.current ? (
