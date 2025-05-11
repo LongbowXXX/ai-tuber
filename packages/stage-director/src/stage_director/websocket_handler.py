@@ -4,12 +4,14 @@
 #  http://opensource.org/licenses/mit-license.php
 
 import asyncio
+import json
 import logging
 
 from fastapi import WebSocket, WebSocketDisconnect
 
-from .command_queue import dequeue_command, mark_command_done
+from .command_queue import dequeue_command, mark_command_done, enqueue_command, notify_command_done
 from .models import (
+    SpeakEndCommand,
     create_command_json,
 )
 
@@ -51,6 +53,19 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
         while True:
             data = await websocket.receive_text()
             logger.info(f"Received message from {websocket.client}: {data}")
+
+            try:
+                message = json.loads(data)  # Convert to dictionary
+                command = message.get("command")
+
+                if command == "speakEnd":
+                    logger.info(f"Handling speakEnd command: {message}")
+                    speak_end = SpeakEndCommand.model_validate(message)
+                    await enqueue_command(speak_end)
+                    notify_command_done(speak_end.payload.speakId)
+
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to decode JSON message: {data}, error: {e}")
 
     except WebSocketDisconnect:
         logger.info(f"WebSocket connection closed: {websocket.client}")

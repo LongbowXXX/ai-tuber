@@ -2,13 +2,12 @@
 #
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
-import asyncio
 import logging
 import uuid
 
 from mcp.server.fastmcp import FastMCP
 
-from stage_director.command_queue import enqueue_command
+from stage_director.command_queue import enqueue_command, wait_for_command
 from stage_director.models import (
     TriggerAnimationPayload,
     TriggerAnimationCommand,
@@ -49,7 +48,7 @@ async def speak(character_id: str, message: str, emotion: str) -> str:
     try:
         command = SpeakCommand(payload=payload)
         await enqueue_command(command)
-        await asyncio.sleep(1)
+        await wait_for_command(speak_id)
         return "Success"
     except Exception as e:
         logger.error(f"Error in speak tool: {e}", exc_info=True)

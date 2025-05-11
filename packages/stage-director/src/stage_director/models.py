@@ -20,6 +20,10 @@ class SpeakPayload(BaseModel):
     speakId: str  # Added speakId to the payload
 
 
+class SpeakEndPayload(BaseModel):
+    speakId: str
+
+
 class TriggerAnimationCommand(BaseModel):
     command: Literal["triggerAnimation"] = "triggerAnimation"
     payload: TriggerAnimationPayload
@@ -30,9 +34,15 @@ class SpeakCommand(BaseModel):
     payload: SpeakPayload
 
 
+class SpeakEndCommand(BaseModel):
+    command: Literal["speakEnd"] = "speakEnd"
+    payload: SpeakEndPayload
+
+
 StageCommand = Union[
     TriggerAnimationCommand,
     SpeakCommand,
+    SpeakEndCommand,  # Added SpeakEndCommand
 ]
 
 
