@@ -11,12 +11,28 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 logger = logging.getLogger(__name__)
 
 
-async def get_tools_async() -> tuple[list[MCPTool], AsyncExitStack]:
-    logger.info("get_tools_async() in.")
-    tools, exit_stack = await MCPToolset.from_server(
-        connection_params=SseServerParams(
-            url="http://localhost:8080/sse",
+class StageDirectorMCPClient:
+    @classmethod
+    async def create_async(cls) -> "StageDirectorMCPClient":
+        async_exit_stack = AsyncExitStack()
+        toolset = MCPToolset(
+            connection_params=SseServerParams(
+                url="http://localhost:8080/sse",
+            ),
         )
-    )
-    logger.info(f"get_tools_async() out. tools={tools}")
-    return tools, exit_stack
+        await async_exit_stack.enter_async_context(toolset)
+        tools = await toolset.load_tools()
+        return cls(toolset, tools, async_exit_stack)
+
+    def __init__(self, toolset: MCPToolset, tools: list[MCPTool], exit_stack: AsyncExitStack) -> None:
+        self._tools = tools
+        self._exit_stack = exit_stack
+        self._toolset = toolset
+
+    @property
+    def tools(self) -> list[MCPTool]:
+        return self._tools
+
+    async def aclose(self) -> None:
+        if self._exit_stack:
+            await self._exit_stack.aclose()
