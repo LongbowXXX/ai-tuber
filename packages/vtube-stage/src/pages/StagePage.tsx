@@ -97,6 +97,8 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, lastMessage,
   const [cameraAnimated, setCameraAnimated] = React.useState(false);
   // カメラアニメーション開始トリガー
   const [startCameraAnimation, setStartCameraAnimation] = React.useState(false);
+  // Startボタンを押したかどうか
+  const [started, setStarted] = React.useState(false);
   // 各アバターのロード完了IDを管理
   const [loadedAvatarIds, setLoadedAvatarIds] = React.useState<string[]>([]);
 
@@ -110,17 +112,14 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, lastMessage,
 
   // 全員ロード完了でカメラアニメーション開始（ディレイ付き）
   React.useEffect(() => {
-    if (allLoaded && !startCameraAnimation && !cameraAnimated) {
-      const timer = setTimeout(() => {
-        setStartCameraAnimation(true);
-      }, 1000);
-      return () => clearTimeout(timer);
+    if (allLoaded && started && !startCameraAnimation && !cameraAnimated) {
+      setStartCameraAnimation(true);
     }
-    // allLoadedがfalseになったらリセット
-    if (!allLoaded) {
+    // allLoadedやstartedがfalseになったらリセット
+    if (!allLoaded || !started) {
       setStartCameraAnimation(false);
     }
-  }, [allLoaded, startCameraAnimation, cameraAnimated]);
+  }, [allLoaded, started, startCameraAnimation, cameraAnimated]);
 
   return (
     <Root>
@@ -141,8 +140,28 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, lastMessage,
             onAvatarLoad={handleAvatarLoad}
           />
         </Canvas>
-        {/* ローディングオーバーレイ */}
+        {/* ローディングオーバーレイ or Startボタン */}
         {!allLoaded && <LoadingOverlay>Loading...</LoadingOverlay>}
+        {allLoaded && !started && (
+          <LoadingOverlay>
+            <button
+              style={{
+                fontSize: '2rem',
+                padding: '1em 2em',
+                borderRadius: '8px',
+                border: 'none',
+                background: '#1976d2',
+                color: '#fff',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+              }}
+              onClick={() => setStarted(true)}
+            >
+              Start
+            </button>
+          </LoadingOverlay>
+        )}
       </CanvasArea>
       {/* Controller/Sidebar Area */}
       <Sidebar>
