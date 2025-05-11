@@ -2,11 +2,14 @@
 #
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
+import asyncio
 import logging
+from asyncio import Task
 from contextlib import AsyncExitStack
 
 from google.adk.tools.mcp_tool import MCPToolset, MCPTool
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
+from mcp.types import CallToolResult
 
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
 
@@ -30,17 +33,31 @@ class StageDirectorMCPClient:
         self._tools = tools
         self._exit_stack = exit_stack
         self._toolset = toolset
+        self._current_speak_task: Task[CallToolResult] | None = None
 
     @property
     def tools(self) -> list[MCPTool]:
         return self._tools
 
     async def speak(self, speech: AgentSpeech) -> None:
+        if self._current_speak_task and not self._current_speak_task.done():
+            logger.info("Waiting for the previous speak task to finish.")
+            await self._current_speak_task
+            self._current_speak_task = None
+            logger.info("Finished waiting for the previous speak task to finish.")
+
+        logger.info(f"Speaking {speech}")
         session = self._toolset.session
-        tool_result = await session.call_tool(
-            "speak", arguments={"message": speech.text, "character_id": speech.character_id, "emotion": speech.emotion}
+        self._current_speak_task = asyncio.create_task(
+            session.call_tool(
+                "speak",
+                arguments={
+                    "message": speech.text,
+                    "character_id": speech.character_id,
+                    "emotion": speech.emotion,
+                },
+            )
         )
-        logger.info(f"speak result: {tool_result}")
 
     async def aclose(self) -> None:
         if self._exit_stack:
