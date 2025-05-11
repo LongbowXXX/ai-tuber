@@ -3,41 +3,58 @@
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from xml.etree import ElementTree
 
 import requests
 
 logger = logging.getLogger(__name__)
 
+BASE_URL = "https://news.google.com/news/rss/headlines/section/topic/{topic}?hl=ja&gl=JP&ceid=JP:ja"
+TOPICS = ["WORLD", "NATION", "BUSINESS", "TECHNOLOGY", "ENTERTAINMENT", "SPORTS", "SCIENCE", "HEALTH"]
+
+
+def fetch_topic_news(topic: str) -> str | None:
+    """
+    Fetch news for a specific topic from Google News RSS feed.
+    Args:
+        topic (str): The topic to fetch news for.
+    Returns:
+        str | None: A formatted string containing news headlines for the topic or None.
+    """
+    try:
+        url = BASE_URL.format(topic=topic)
+        response = requests.get(url)
+        response.raise_for_status()
+        root = ElementTree.fromstring(response.content)
+        topic_news = []
+        for item in root.findall(".//item"):
+            title_element = item.find("title")
+            if title_element is not None and title_element.text:
+                topic_news.append("- " + title_element.text)
+        if topic_news:
+            return f"### {topic}\n" + "\n".join(topic_news[:3])
+        else:
+            logger.error(f"fetch_topic_news({topic}): No news found")
+            return None
+    except Exception as e:
+        logger.error(f"fetch_topic_news({topic}): {e}", exc_info=e)
+        return None
+
 
 def get_news() -> dict[str, str]:
     """
-    A function that retrieves the latest news from a Google News RSS feed.
+    Retrieve the latest news for all topics in parallel.
     Returns:
-        str: A string containing the latest news headlines and links for the specified topic.
+        dict[str, str]: A dictionary containing the status and news or error message.
     """
-    # https://news.google.com/news/rss/headlines/section/topic/WORLD?hl=ja&gl=JP&ceid=JP:ja
-    topics = ["WORLD", "NATION", "BUSINESS", "TECHNOLOGY", "ENTERTAINMENT", "SPORTS", "SCIENCE", "HEALTH"]
-    base_url = "https://news.google.com/news/rss/headlines/section/topic/{topic}?hl=ja&gl=JP&ceid=JP:ja"
-    news_results: list[str] = []
-
     try:
-        for topic in topics:
-            url = base_url.format(topic=topic)
-            response = requests.get(url)
-            response.raise_for_status()
-            root = ElementTree.fromstring(response.content)
-            topic_news: list[str] = []
-            for item in root.findall(".//item"):
-                title_element = item.find("title")
-                if title_element is not None and title_element.text:
-                    topic_news.append("- " + title_element.text)
-            if topic_news:
-                news_results.append(f"### {topic}\n" + "\n".join(topic_news[:3]))
-
-        result = "\n\n".join(news_results)
-        logger.info(f"get_news(): Latest news {result}")
-        return {"status": "success", "news": result}
+        with ThreadPoolExecutor() as executor:
+            results = list(executor.map(fetch_topic_news, TOPICS))
+            non_null_results = [result for result in results if result is not None]
+        news_results = "\n\n".join(non_null_results)
+        logger.info(f"get_news(): Latest news {news_results}")
+        return {"status": "success", "news": news_results}
     except Exception as e:
         logger.error(f"get_news(): {e}", exc_info=e)
         return {"status": "failed", "error_message": f"Get news failed.: {e}"}
