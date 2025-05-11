@@ -50,6 +50,8 @@ def create_current_time_agent() -> BaseAgent:
         description="Get the current time.",
         output_key=STATE_CURRENT_TIME,
         tools=[get_current_time],
+        disallow_transfer_to_parent=True,
+        disallow_transfer_to_peers=True,
     )
     return agent
 
@@ -99,6 +101,8 @@ def create_news_agent() -> BaseAgent:
         description="Retrieves the latest news",
         output_key=STATE_LATEST_NEWS,
         tools=[get_news, load_web_page],
+        disallow_transfer_to_parent=True,
+        disallow_transfer_to_peers=True,
     )
     return agent
 
@@ -111,6 +115,8 @@ def create_initial_context_agent() -> BaseAgent:
         description="Provides the initial context for the conversation.",
         output_key=STATE_CONVERSATION_CONTEXT,
         tools=[google_search],
+        disallow_transfer_to_parent=True,
+        disallow_transfer_to_peers=True,
     )
     return agent
 
@@ -123,5 +129,7 @@ def create_update_context_agent() -> BaseAgent:
         description="Updates the conversation context based on history.",
         output_key=STATE_CONVERSATION_CONTEXT,
         tools=[google_search],
+        disallow_transfer_to_parent=True,
+        disallow_transfer_to_peers=True,
     )
     return agent

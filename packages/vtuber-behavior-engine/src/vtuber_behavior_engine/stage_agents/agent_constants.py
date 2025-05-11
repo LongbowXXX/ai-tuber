@@ -18,7 +18,7 @@ OUTPUT_LLM_MODEL = "gemini-2.0-flash"
 
 # --- State Keys ---
 STATE_CONVERSATION_CONTEXT = "conversation_context"
-STATE_AGENT_SPEECH = "agent_speech"
+STATE_AGENT_SPEECH_BASE = "agent_speech_"
 STATE_LATEST_NEWS = "latest_news"
 STATE_CURRENT_TIME = "current_time"
 

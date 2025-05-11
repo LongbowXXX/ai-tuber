@@ -9,7 +9,7 @@ import logging
 
 from fastapi import WebSocket, WebSocketDisconnect
 
-from .command_queue import dequeue_command, mark_command_done, enqueue_command, notify_command_done
+from .command_queue import dequeue_command, mark_command_done, notify_command_done
 from .models import (
     SpeakEndCommand,
     create_command_json,
@@ -61,7 +61,6 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                 if command == "speakEnd":
                     logger.info(f"Handling speakEnd command: {message}")
                     speak_end = SpeakEndCommand.model_validate(message)
-                    await enqueue_command(speak_end)
                     notify_command_done(speak_end.payload.speakId)
 
             except json.JSONDecodeError as e:

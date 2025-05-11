@@ -5,7 +5,7 @@
 
 import logging
 
-from google.adk.agents import LoopAgent, SequentialAgent, BaseAgent
+from google.adk.agents import LoopAgent, SequentialAgent, BaseAgent, ParallelAgent
 
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     AGENT1_CHARACTER_ID,
@@ -29,8 +29,8 @@ logger = logging.getLogger(__name__)
 
 def create_root_agent(stage_director_client: StageDirectorMCPClient) -> BaseAgent:
 
-    agent1 = create_character_agent(AGENT1_CHARACTER_ID, character1())
-    agent2 = create_character_agent(AGENT2_CHARACTER_ID, character2())
+    agent1_thought = create_character_agent(AGENT1_CHARACTER_ID, character1())
+    agent2_thought = create_character_agent(AGENT2_CHARACTER_ID, character2())
 
     agent1_output = create_character_output_agent(AGENT1_CHARACTER_ID, stage_director_client)
     agent2_output = create_character_output_agent(AGENT2_CHARACTER_ID, stage_director_client)
@@ -38,17 +38,37 @@ def create_root_agent(stage_director_client: StageDirectorMCPClient) -> BaseAgen
     current_time_agent = create_current_time_agent()
     news_agent = create_news_agent()
     initial_context_agent = create_initial_context_agent()
-    context_agent_in_loop = create_update_context_agent()
+    update_context_agent = create_update_context_agent()
+
+    parallel1 = ParallelAgent(
+        name="ParallelConversationAgent1",
+        sub_agents=[
+            agent2_output,
+            agent1_thought,
+        ],
+        description="Handles the parallel execution of multiple agents.",
+    )
+
+    agent2_and_update = SequentialAgent(
+        name="Agent2AndUpdate",
+        sub_agents=[
+            agent2_thought,
+            update_context_agent,
+        ],
+        description="Handles the conversation and agent2 and context update.",
+    )
+    parallel2 = ParallelAgent(
+        name="ParallelConversationAgent2",
+        sub_agents=[
+            agent1_output,
+            agent2_and_update,
+        ],
+        description="Handles the parallel execution of multiple agents.",
+    )
 
     agent_conversation_loop = LoopAgent(
         name="ConversationLoop",
-        sub_agents=[
-            agent1,
-            agent1_output,
-            agent2,
-            agent2_output,
-            context_agent_in_loop,
-        ],
+        sub_agents=[parallel1, parallel2],
         max_iterations=5,
         description="Handles the conversation between two agents.",
     )
