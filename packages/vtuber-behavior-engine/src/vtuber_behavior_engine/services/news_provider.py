@@ -3,6 +3,7 @@
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
 import logging
+import random
 from concurrent.futures import ThreadPoolExecutor
 from xml.etree import ElementTree
 
@@ -12,6 +13,18 @@ logger = logging.getLogger(__name__)
 
 BASE_URL = "https://news.google.com/news/rss/headlines/section/topic/{topic}?hl=ja&gl=JP&ceid=JP:ja"
 TOPICS = ["WORLD", "NATION", "BUSINESS", "TECHNOLOGY", "ENTERTAINMENT", "SPORTS", "SCIENCE", "HEALTH"]
+
+
+def select_random_news(news_list: list[str], count: int = 3) -> list[str]:
+    """
+    Select a random subset of news from the provided list.
+    Args:
+        news_list (list[str]): The list of news items.
+        count (int): The number of news items to select.
+    Returns:
+        list[str]: A randomly selected subset of news items.
+    """
+    return random.sample(news_list, min(len(news_list), count))
 
 
 def fetch_topic_news(topic: str) -> str | None:
@@ -33,7 +46,8 @@ def fetch_topic_news(topic: str) -> str | None:
             if title_element is not None and title_element.text:
                 topic_news.append("- " + title_element.text)
         if topic_news:
-            return f"### {topic}\n" + "\n".join(topic_news[:3])
+            selected_news = select_random_news(topic_news)
+            return f"### {topic}\n" + "\n".join(selected_news)
         else:
             logger.error(f"fetch_topic_news({topic}): No news found")
             return None
