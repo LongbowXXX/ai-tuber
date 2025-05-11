@@ -37,19 +37,16 @@ def create_character_agent(character_id: str, character_detail: str) -> BaseAgen
 
 
 def create_character_output_agent(character_id: str, stage_director_client: StageDirectorMCPClient) -> BaseAgent:
-    async def speak(callback_context: CallbackContext) -> Optional[types.Content]:
-        speech_data = callback_context.state[STATE_AGENT_SPEECH_BASE + character_id]
-        logger.info(f"speak(): {speech_data}")
-        speech_model = AgentSpeech.model_validate(speech_data)
-        await stage_director_client.speak(speech_model)
-        callback_context.state[STATE_AGENT_SPEECH_BASE + character_id] = None
-        return None
-
-    async def handle_empty_speech(callback_context: CallbackContext) -> Optional[types.Content]:
+    async def handle_speech(callback_context: CallbackContext) -> Optional[types.Content]:
         if STATE_AGENT_SPEECH_BASE + character_id not in callback_context.state:
             logger.info("No speech data found in state. skipping output.")
             return types.ModelContent(parts=[Part.from_text(text="Nothing to do.")])
         else:
+            speech_data = callback_context.state[STATE_AGENT_SPEECH_BASE + character_id]
+            logger.info(f"speak(): {speech_data}")
+            speech_model = AgentSpeech.model_validate(speech_data)
+            await stage_director_client.speak(speech_model)
+            callback_context.state[STATE_AGENT_SPEECH_BASE + character_id] = None
             return None
 
     tools = list(filter(lambda tool: tool.name == "triggerAnimation", stage_director_client.tools))
@@ -59,8 +56,7 @@ def create_character_output_agent(character_id: str, stage_director_client: Stag
         instruction=character_output_prompt(character_id),
         description=f"Character {character_id} output",
         tools=tools,
-        before_agent_callback=handle_empty_speech,
-        after_agent_callback=speak,
+        before_agent_callback=handle_speech,
         disallow_transfer_to_parent=True,
         disallow_transfer_to_peers=True,
     )
