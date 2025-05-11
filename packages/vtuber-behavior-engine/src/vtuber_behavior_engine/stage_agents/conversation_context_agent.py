@@ -4,13 +4,15 @@
 #  http://opensource.org/licenses/mit-license.php
 import datetime
 import logging
+from typing import Optional
 from xml.etree import ElementTree
 from zoneinfo import ZoneInfo
 
 import requests
 from google.adk.agents import BaseAgent, LlmAgent
+from google.adk.agents.callback_context import CallbackContext
 from google.adk.tools import google_search
-from google.adk.tools.load_web_page import load_web_page
+from google.genai import types
 
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     INITIAL_TOPIC_LLM_MODEL,
@@ -22,8 +24,6 @@ from vtuber_behavior_engine.stage_agents.agent_constants import (
 from vtuber_behavior_engine.stage_agents.resources import (
     initial_context,
     update_context,
-    latest_news_prompt,
-    current_time_prompt,
 )
 
 logger = logging.getLogger(__name__)
@@ -39,32 +39,16 @@ def get_current_time() -> str:
     return datetime.datetime.now(tokyo_tz).isoformat(timespec="milliseconds")
 
 
-def create_current_time_agent() -> BaseAgent:
-    """
-    Creates an agent that retrieves the current time.
-    """
-    agent = LlmAgent(
-        name="CurrentTimeAgent",
-        model=INITIAL_TOPIC_LLM_MODEL,
-        instruction=current_time_prompt(),
-        description="Get the current time.",
-        output_key=STATE_CURRENT_TIME,
-        tools=[get_current_time],
-        disallow_transfer_to_parent=True,
-        disallow_transfer_to_peers=True,
-    )
-    return agent
-
-
 def get_news() -> dict[str, str]:
     """
     A function that retrieves the latest news from a Google News RSS feed.
     Returns:
         str: A string containing the latest news headlines and links for the specified topic.
     """
+    # https://news.google.com/news/rss/headlines/section/topic/WORLD?hl=ja&gl=JP&ceid=JP:ja
     topics = ["WORLD", "NATION", "BUSINESS", "TECHNOLOGY", "ENTERTAINMENT", "SPORTS", "SCIENCE", "HEALTH"]
     base_url = "https://news.google.com/news/rss/headlines/section/topic/{topic}?hl=ja&gl=JP&ceid=JP:ja"
-    news_results = []
+    news_results: list[str] = []
 
     try:
         for topic in topics:
@@ -75,10 +59,10 @@ def get_news() -> dict[str, str]:
             topic_news: list[str] = []
             for item in root.findall(".//item"):
                 title_element = item.find("title")
-                title: str = title_element.text or "" if title_element else ""
-                if title:
-                    topic_news.append(title)
-            news_results.append(f"【{topic}】\n" + "\n".join(topic_news[:3]))
+                if title_element is not None and title_element.text:
+                    topic_news.append("- " + title_element.text)
+            if topic_news:
+                news_results.append(f"### {topic}\n" + "\n".join(topic_news[:3]))
 
         result = "\n\n".join(news_results)
         logger.info(f"get_news(): Latest news {result}")
@@ -88,26 +72,14 @@ def get_news() -> dict[str, str]:
         return {"status": "failed", "error_message": f"Get news failed.: {e}"}
 
 
-def create_news_agent() -> BaseAgent:
-    """
-    Creates a news-agent that retrieves the latest news for a specified topic.
-    Returns:
-        BaseAgent: The news-agent.
-    """
-    agent = LlmAgent(
-        name="NewsAgent",
-        model=INITIAL_TOPIC_LLM_MODEL,
-        instruction=latest_news_prompt(),
-        description="Retrieves the latest news",
-        output_key=STATE_LATEST_NEWS,
-        tools=[get_news, load_web_page],
-        disallow_transfer_to_parent=True,
-        disallow_transfer_to_peers=True,
-    )
-    return agent
-
-
 def create_initial_context_agent() -> BaseAgent:
+    def provide_news(callback_context: CallbackContext) -> Optional[types.Content]:
+        news_data = get_news()
+        callback_context.state[STATE_LATEST_NEWS] = news_data
+        logger.info(f"provide_news(): {news_data}")
+        callback_context.state[STATE_CURRENT_TIME] = get_current_time()
+        return None
+
     agent = LlmAgent(
         name="InitialContextProvider",
         model=INITIAL_TOPIC_LLM_MODEL,
@@ -117,6 +89,7 @@ def create_initial_context_agent() -> BaseAgent:
         tools=[google_search],
         disallow_transfer_to_parent=True,
         disallow_transfer_to_peers=True,
+        before_agent_callback=provide_news,
     )
     return agent
 

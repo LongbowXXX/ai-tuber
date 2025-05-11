@@ -15,8 +15,6 @@ from vtuber_behavior_engine.stage_agents.character_agent import create_character
 from vtuber_behavior_engine.stage_agents.conversation_context_agent import (
     create_initial_context_agent,
     create_update_context_agent,
-    create_news_agent,
-    create_current_time_agent,
 )
 from vtuber_behavior_engine.stage_agents.resources import (
     character1,
@@ -35,8 +33,6 @@ def create_root_agent(stage_director_client: StageDirectorMCPClient) -> BaseAgen
     agent1_output = create_character_output_agent(AGENT1_CHARACTER_ID, stage_director_client)
     agent2_output = create_character_output_agent(AGENT2_CHARACTER_ID, stage_director_client)
 
-    current_time_agent = create_current_time_agent()
-    news_agent = create_news_agent()
     initial_context_agent = create_initial_context_agent()
     update_context_agent = create_update_context_agent()
 
@@ -56,8 +52,6 @@ def create_root_agent(stage_director_client: StageDirectorMCPClient) -> BaseAgen
     root_agent = SequentialAgent(
         name="ConversationPipeline",
         sub_agents=[
-            current_time_agent,
-            news_agent,
             initial_context_agent,
             agent_conversation_loop,
         ],
