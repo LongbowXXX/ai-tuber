@@ -20,7 +20,7 @@ from vtuber_behavior_engine.stage_agents.resources import (
     character1,
     character2,
 )
-from vtuber_behavior_engine.stage_director_mcp_client import StageDirectorMCPClient
+from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
 
 logger = logging.getLogger(__name__)
 

@@ -17,7 +17,7 @@ from vtuber_behavior_engine.stage_agents.agent_constants import (
 )
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
 from vtuber_behavior_engine.stage_agents.resources import character_prompt, character_output_prompt
-from vtuber_behavior_engine.stage_director_mcp_client import StageDirectorMCPClient
+from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
 
 logger = logging.getLogger(__name__)
 

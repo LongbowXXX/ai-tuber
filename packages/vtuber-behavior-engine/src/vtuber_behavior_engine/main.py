@@ -8,7 +8,7 @@ import logging
 from dotenv import load_dotenv
 
 from vtuber_behavior_engine.agent_runner import run_agent_standalone
-from vtuber_behavior_engine.stage_director_mcp_client import StageDirectorMCPClient
+from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
 from vtuber_behavior_engine.stage_agents.agent import create_root_agent
 from vtuber_behavior_engine.stage_agents.resources import initial_message
 
