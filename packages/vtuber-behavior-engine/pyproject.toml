@@ -16,6 +16,9 @@ dependencies = [
     "wheel>=0.45.1",
     "setuptools>=80.4.0",
     "litellm>=1.68.2",
+    "google-api-python-client>=2.169.0",
+    "google-auth-oauthlib>=1.2.2",
+    "google-auth-httplib2>=0.2.0",
 ]
 
 
