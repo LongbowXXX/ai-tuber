@@ -4,6 +4,7 @@
 #  http://opensource.org/licenses/mit-license.php
 
 import logging
+import os
 from fastapi import FastAPI
 from uvicorn import Config, Server
 
@@ -27,13 +28,13 @@ async def read_root() -> dict[str, str]:
 async def run_stage_director_server() -> None:
     """Run the Stage Director server."""
 
-    # サーバー設定
+    # サーバー設定 (環境変数から取得)
+    host = os.getenv("STAGE_DIRECTOR_HOST", "127.0.0.1")
+    port = int(os.getenv("STAGE_DIRECTOR_PORT", "8000"))
 
-    config = Config(
-        "stage_director.stage_director_server:app", host="127.0.0.1", port=8000, log_level="info", reload=True
-    )
+    config = Config("stage_director.stage_director_server:app", host=host, port=port, log_level="info", reload=True)
     server = Server(config)
 
-    logger.info("Starting Stage Director server with Uvicorn...")
+    logger.info(f"Starting Stage Director server with Uvicorn on {host}:{port}...")
     # サーバーを実行
     await server.serve()

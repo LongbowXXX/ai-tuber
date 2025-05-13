@@ -6,6 +6,8 @@
 import asyncio
 import logging
 
+from dotenv import load_dotenv
+
 from stage_director.stage_director_mcp_server import run_stage_director_mcp_server
 from stage_director.stage_director_server import run_stage_director_server
 
@@ -22,6 +24,7 @@ async def run_servers() -> None:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
+    load_dotenv()
     try:
         asyncio.run(run_servers())
     except KeyboardInterrupt:

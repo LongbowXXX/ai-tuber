@@ -3,6 +3,7 @@
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
 import logging
+import os
 import uuid
 
 from mcp.server.fastmcp import FastMCP
@@ -20,8 +21,8 @@ logger = logging.getLogger("stage-director.mcp")
 # Create an MCP server
 mcp = FastMCP(
     "stage_director",
-    host="0.0.0.0",
-    port=8080,
+    host=os.getenv("STAGE_DIRECTOR_MCP_HOST", "0.0.0.0"),
+    port=int(os.getenv("STAGE_DIRECTOR_MCP_PORT", "8080")),
 )
 
 
