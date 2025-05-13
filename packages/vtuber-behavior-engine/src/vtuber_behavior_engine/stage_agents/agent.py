@@ -4,13 +4,18 @@
 #  http://opensource.org/licenses/mit-license.php
 
 import logging
+from typing import Optional
 
 from google.adk.agents import LoopAgent, SequentialAgent, BaseAgent
+from google.adk.agents.callback_context import CallbackContext
+from google.genai import types
 
+from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     AGENT1_CHARACTER_ID,
     AGENT2_CHARACTER_ID,
 )
+from vtuber_behavior_engine.stage_agents.agents_config import AgentsConfig
 from vtuber_behavior_engine.stage_agents.character_agent import create_character_agent, create_character_output_agent
 from vtuber_behavior_engine.stage_agents.conversation_context_agent import (
     create_initial_context_agent,
@@ -20,13 +25,12 @@ from vtuber_behavior_engine.stage_agents.resources import (
     character1,
     character2,
 )
-from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
 
 logger = logging.getLogger(__name__)
 
 
-def create_root_agent(stage_director_client: StageDirectorMCPClient) -> BaseAgent:
-
+def create_root_agent(stage_director_client: StageDirectorMCPClient, agent_config: AgentsConfig) -> BaseAgent:
+    logger.info(f"Creating root agent. agent_config={agent_config}")
     agent1_thought = create_character_agent(AGENT1_CHARACTER_ID, character1())
     agent2_thought = create_character_agent(AGENT2_CHARACTER_ID, character2())
 
@@ -45,9 +49,14 @@ def create_root_agent(stage_director_client: StageDirectorMCPClient) -> BaseAgen
             agent2_output,
             update_context_agent,
         ],
-        max_iterations=5,
+        max_iterations=agent_config.max_iterations,
         description="Handles the conversation between two agents.",
     )
+
+    async def tair_down_root_agent(callback_context: CallbackContext) -> Optional[types.Content]:
+        logger.debug(f"tair_down_root_agent {callback_context.state}")
+        await stage_director_client.wait_for_current_speak_end()
+        return None
 
     root_agent = SequentialAgent(
         name="ConversationPipeline",
@@ -56,5 +65,7 @@ def create_root_agent(stage_director_client: StageDirectorMCPClient) -> BaseAgen
             agent_conversation_loop,
         ],
         description="Manages the conversation flow with multiple agents.",
+        after_agent_callback=tair_down_root_agent,
     )
+    logger.info(f"Root agent created: {root_agent}")
     return root_agent

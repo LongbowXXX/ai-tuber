@@ -12,7 +12,6 @@ from google.genai.types import Content, Part
 
 from vtuber_behavior_engine.stage_agents.agent_constants import AGENT_SYSTEM_AAP_NAME, AGENT_SYSTEM_USER_ID
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 

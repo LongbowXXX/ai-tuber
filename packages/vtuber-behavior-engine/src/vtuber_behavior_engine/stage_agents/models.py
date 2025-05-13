@@ -7,11 +7,8 @@ from typing import Literal
 from pydantic import BaseModel
 
 
-class AgentSpeech(BaseModel):
-    """エージェントのセリフを表すクラス"""
-
-    character_id: str
-    """キャラクターのID"""
+class AgentSpeechItem(BaseModel):
+    """エージェントの単一のセリフを表すクラス"""
 
     text: str
     """セリフのテキスト"""
@@ -20,4 +17,17 @@ class AgentSpeech(BaseModel):
     """セリフの感情"""
 
     def __str__(self) -> str:
-        return f"Character ID: {self.character_id}, Text: {self.text}, Emotion: {self.emotion}"
+        return f"Text: {self.text}, Emotion: {self.emotion}"
+
+
+class AgentSpeech(BaseModel):
+    """エージェントの複数のセリフを表すクラス"""
+
+    character_id: str
+    """キャラクターのID"""
+
+    speeches: list[AgentSpeechItem]
+    """セリフのリスト"""
+
+    def __str__(self) -> str:
+        return f"Character ID: {self.character_id}, Speeches: {[str(speech) for speech in self.speeches]}"
