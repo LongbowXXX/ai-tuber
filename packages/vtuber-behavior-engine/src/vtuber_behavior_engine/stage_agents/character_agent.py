@@ -36,7 +36,7 @@ def create_character_agent(character_id: str, character_detail: str) -> BaseAgen
     return agent
 
 
-def create_character_output_agent(character_id: str, stage_director_client: StageDirectorMCPClient) -> BaseAgent:
+async def create_character_output_agent(character_id: str, stage_director_client: StageDirectorMCPClient) -> BaseAgent:
     async def handle_speech(callback_context: CallbackContext) -> Optional[types.Content]:
         if STATE_AGENT_SPEECH_BASE + character_id not in callback_context.state:
             logger.info("No speech data found in state. skipping output.")
@@ -49,7 +49,8 @@ def create_character_output_agent(character_id: str, stage_director_client: Stag
             callback_context.state[STATE_AGENT_SPEECH_BASE + character_id] = None
             return None
 
-    tools = list(filter(lambda tool: tool.name == "trigger_animation", stage_director_client.tools))
+    all_tools = await stage_director_client.load_tools()
+    tools = list(filter(lambda tool: tool.name == "trigger_animation", all_tools))
     agent = LlmAgent(
         model=OUTPUT_LLM_MODEL,
         name=f"CharacterOutput_{character_id}",

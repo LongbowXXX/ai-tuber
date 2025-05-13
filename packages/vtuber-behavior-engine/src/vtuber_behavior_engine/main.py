@@ -4,6 +4,7 @@
 #  http://opensource.org/licenses/mit-license.php
 import asyncio
 import logging
+from contextlib import AsyncExitStack
 
 from dotenv import load_dotenv
 
@@ -17,9 +18,10 @@ logger = logging.getLogger(__name__)
 
 
 async def main() -> None:
-    stage_director_client = await StageDirectorMCPClient.create_async()
+    exit_stack = AsyncExitStack()
+    stage_director_client = await StageDirectorMCPClient.create_async(exit_stack)
     try:
-        character_agent = create_root_agent(
+        character_agent = await create_root_agent(
             stage_director_client,
             AgentsConfig(
                 max_iterations=5,
@@ -29,7 +31,7 @@ async def main() -> None:
         message = initial_message()
         await run_agent_standalone(character_agent, message)
     finally:
-        await stage_director_client.aclose()
+        await exit_stack.aclose()
 
 
 if __name__ == "__main__":

@@ -29,13 +29,13 @@ from vtuber_behavior_engine.stage_agents.resources import (
 logger = logging.getLogger(__name__)
 
 
-def create_root_agent(stage_director_client: StageDirectorMCPClient, agent_config: AgentsConfig) -> BaseAgent:
+async def create_root_agent(stage_director_client: StageDirectorMCPClient, agent_config: AgentsConfig) -> BaseAgent:
     logger.info(f"Creating root agent. agent_config={agent_config}")
     agent1_thought = create_character_agent(AGENT1_CHARACTER_ID, character1())
     agent2_thought = create_character_agent(AGENT2_CHARACTER_ID, character2())
 
-    agent1_output = create_character_output_agent(AGENT1_CHARACTER_ID, stage_director_client)
-    agent2_output = create_character_output_agent(AGENT2_CHARACTER_ID, stage_director_client)
+    agent1_output = await create_character_output_agent(AGENT1_CHARACTER_ID, stage_director_client)
+    agent2_output = await create_character_output_agent(AGENT2_CHARACTER_ID, stage_director_client)
 
     initial_context_agent = create_initial_context_agent()
     update_context_agent = create_update_context_agent()

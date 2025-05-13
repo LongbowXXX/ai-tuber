@@ -16,12 +16,11 @@ logger = logging.getLogger(__name__)
 
 async def create_root_agent_for_adk_web(agent_config: AgentsConfig) -> tuple[BaseAgent, AsyncExitStack] | None:
     logger.info(f"Creating root agent. agent_config={agent_config}")
-    stage_director_client = await StageDirectorMCPClient.create_async()
-    common_exit_stack = AsyncExitStack()
-    common_exit_stack.callback(stage_director_client.aclose)
+    exit_stack = AsyncExitStack()
+    stage_director_client = await StageDirectorMCPClient.create_async(exit_stack)
     try:
-        character_agent = create_root_agent(stage_director_client, agent_config)
-        return character_agent, common_exit_stack
+        character_agent = await create_root_agent(stage_director_client, agent_config)
+        return character_agent, exit_stack
     except Exception as e:
         logger.error(f"Error creating root agent: {e}", exc_info=e)
         raise

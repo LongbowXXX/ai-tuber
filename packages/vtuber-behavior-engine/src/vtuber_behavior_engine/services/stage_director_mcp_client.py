@@ -20,29 +20,25 @@ logger = logging.getLogger(__name__)
 
 class StageDirectorMCPClient:
     @classmethod
-    async def create_async(cls) -> "StageDirectorMCPClient":
+    async def create_async(cls, async_exit_stack: AsyncExitStack) -> "StageDirectorMCPClient":
         logger.info("create_async")
-        async_exit_stack = AsyncExitStack()
         toolset = MCPToolset(
             connection_params=SseServerParams(
                 url="http://localhost:8080/sse",
             ),
+            exit_stack=async_exit_stack,
         )
         await async_exit_stack.enter_async_context(toolset)
-        tools = await toolset.load_tools()
-        return cls(toolset, tools, async_exit_stack)
+        return cls(toolset)
 
-    def __init__(self, toolset: MCPToolset, tools: list[MCPTool], exit_stack: AsyncExitStack) -> None:
+    def __init__(self, toolset: MCPToolset) -> None:
         logger.info("__init__")
-        self._tools = tools
-        self._exit_stack = exit_stack
         self._toolset = toolset
         self._current_speak_task: Task[None] | None = None
 
-    @property
-    def tools(self) -> list[MCPTool]:
+    async def load_tools(self) -> list[MCPTool]:
         logger.info("tools")
-        return self._tools
+        return await self._toolset.load_tools()  # type: ignore[no-any-return]
 
     async def speak(self, speech: AgentSpeech) -> None:
         if self._current_speak_task and not self._current_speak_task.done():
@@ -81,8 +77,3 @@ class StageDirectorMCPClient:
             await self._current_speak_task
             self._current_speak_task = None
             logger.info("Finished waiting for current speak task to finish.")
-
-    async def aclose(self) -> None:
-        logger.info("aclose")
-        if self._exit_stack:
-            await self._exit_stack.aclose()
