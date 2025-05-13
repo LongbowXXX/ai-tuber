@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-const WS_URL = 'ws://localhost:8000/ws'; // Make sure this matches your stage-director address
+if (!import.meta.env.VITE_STAGE_DIRECTER_ENDPOINT) {
+  throw new Error('VITE_STAGE_DIRECTER_ENDPOINT is not set in the environment variables.');
+}
+
+const WS_URL = import.meta.env.VITE_STAGE_DIRECTER_ENDPOINT as string;
 
 interface UseWebSocketOptions<T> {
   onMessage: (message: T) => void; // Callback to handle validated messages
