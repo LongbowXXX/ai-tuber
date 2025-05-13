@@ -3,6 +3,7 @@
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
 import logging
+import os
 import random
 from concurrent.futures import ThreadPoolExecutor
 from xml.etree import ElementTree
@@ -11,7 +12,7 @@ import requests
 
 logger = logging.getLogger(__name__)
 
-BASE_URL = "https://news.google.com/news/rss/headlines/section/topic/{topic}?hl=ja&gl=JP&ceid=JP:ja"
+NEWS_BASE_URL = os.getenv("NEWS_BASE_URL")
 TOPICS = ["WORLD", "NATION", "BUSINESS", "TECHNOLOGY", "ENTERTAINMENT", "SPORTS", "SCIENCE", "HEALTH"]
 
 
@@ -35,8 +36,12 @@ def fetch_topic_news(topic: str) -> str | None:
     Returns:
         str | None: A formatted string containing news headlines for the topic or None.
     """
+    if not NEWS_BASE_URL:
+        logger.warning("NEWS_BASE_URL is not set")
+        return None
+
     try:
-        url = BASE_URL.format(topic=topic)
+        url = NEWS_BASE_URL.format(topic=topic)
         response = requests.get(url)
         response.raise_for_status()
         root = ElementTree.fromstring(response.content)

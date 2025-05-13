@@ -7,6 +7,7 @@
 #  http://opensource.org/licenses/mit-license.php
 import asyncio
 import logging
+import os
 from asyncio import Task
 from contextlib import AsyncExitStack
 
@@ -16,15 +17,20 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
 
 logger = logging.getLogger(__name__)
+STAGE_DIRECTOR_MCP_SERVER_URL = os.getenv("STAGE_DIRECTOR_MCP_SERVER_URL")
 
 
 class StageDirectorMCPClient:
     @classmethod
     async def create_async(cls, async_exit_stack: AsyncExitStack) -> "StageDirectorMCPClient":
         logger.info("create_async")
+        if not STAGE_DIRECTOR_MCP_SERVER_URL:
+            logger.error("STAGE_DIRECTOR_MCP_SERVER_URL is not set.")
+            raise ValueError("STAGE_DIRECTOR_MCP_SERVER_URL is not set.")
+
         toolset = MCPToolset(
             connection_params=SseServerParams(
-                url="http://localhost:8080/sse",
+                url=STAGE_DIRECTOR_MCP_SERVER_URL,
             ),
             exit_stack=async_exit_stack,
         )
