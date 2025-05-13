@@ -18,6 +18,7 @@ async def create_root_agent_for_adk_web(agent_config: AgentsConfig) -> tuple[Bas
     logger.info(f"Creating root agent. agent_config={agent_config}")
     exit_stack = AsyncExitStack()
     stage_director_client = await StageDirectorMCPClient.create_async(exit_stack)
+    exit_stack.callback(lambda: logger.info("create_root_agent_for_adk_web(): exit_stack closed."))
     try:
         character_agent = await create_root_agent(stage_director_client, agent_config)
         return character_agent, exit_stack
