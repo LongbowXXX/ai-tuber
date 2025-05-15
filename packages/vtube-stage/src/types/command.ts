@@ -78,6 +78,10 @@ export class SpeakPayload {
 
   @IsString()
   @IsDefined()
+  caption!: string;
+
+  @IsString()
+  @IsDefined()
   emotion!: string;
 
   @IsString()
@@ -100,6 +104,7 @@ export type StageCommand = LogMessageCommand | SetPoseCommand | TriggerAnimation
 export interface SpeakMessage {
   id: string;
   text: string;
+  caption: string;
 }
 
 // AvatarState インターフェースの定義

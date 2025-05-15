@@ -40,11 +40,13 @@ async def trigger_animation(character_id: str, animation_name: str) -> str:
 
 
 @mcp.tool()
-async def speak(character_id: str, message: str, emotion: str) -> str:
+async def speak(character_id: str, message: str, caption: str, emotion: str) -> str:
     # Generate a UUID for the speakId
     speak_id = str(uuid.uuid4())
 
-    payload = SpeakPayload(characterId=character_id, message=message, emotion=emotion, speakId=speak_id)
+    payload = SpeakPayload(
+        characterId=character_id, message=message, caption=caption, emotion=emotion, speakId=speak_id
+    )
     logger.info(f"MCP Tool 'speak' called: speak={payload}")
     try:
         command = SpeakCommand(payload=payload)

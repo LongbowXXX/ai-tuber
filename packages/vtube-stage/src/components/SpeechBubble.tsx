@@ -11,11 +11,11 @@ interface SpeechBubbleProps {
 export const SpeechBubble: React.FC<SpeechBubbleProps> = ({ message, position = [0, 1.8, 0] }) => {
   useEffect(() => {
     if (message) {
-      console.log(`[SpeechBubble] show: id=${message.id}, text=${message.text}`);
+      console.log(`[SpeechBubble] show: id=${message.id}, text=${message.caption}`);
     }
     return () => {
       if (message) {
-        console.log(`[SpeechBubble] hide: id=${message.id}, text=${message.text}`);
+        console.log(`[SpeechBubble] hide: id=${message.id}, text=${message.caption}`);
       }
     };
   }, [message]);
@@ -27,7 +27,7 @@ export const SpeechBubble: React.FC<SpeechBubbleProps> = ({ message, position = 
   return (
     <Html position={position} center distanceFactor={10} zIndexRange={[100, 0]}>
       <div className="speech-bubble-container">
-        <div className="speech-bubble">{message.text}</div>
+        <div className="speech-bubble">{message.caption}</div>
       </div>
     </Html>
   );

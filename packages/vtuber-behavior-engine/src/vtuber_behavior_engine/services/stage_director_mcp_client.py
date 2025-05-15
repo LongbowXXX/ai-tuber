@@ -62,12 +62,13 @@ class StageDirectorMCPClient:
     async def speak_all(self, speech: AgentSpeech) -> None:
         session = self._toolset.session
         for item in speech.speeches:
-            logger.info(f"Speaking {item.text} with emotion {item.emotion}")
+            logger.info(f"Speaking {item.tts_text} with emotion {item.emotion}")
             try:
                 await session.call_tool(
                     "speak",
                     arguments={
-                        "message": item.text,
+                        "message": item.tts_text,
+                        "caption": item.caption if item.caption else item.tts_text,
                         "character_id": speech.character_id,
                         "emotion": item.emotion,
                     },
@@ -75,7 +76,7 @@ class StageDirectorMCPClient:
             except Exception as e:
                 logger.error(f"Error in speak_all-call_tool: {e}", exc_info=True)
             finally:
-                logger.info(f"Finished speaking {item.text} with emotion {item.emotion}")
+                logger.info(f"Finished speaking {item.tts_text} with emotion {item.emotion}")
 
     async def wait_for_current_speak_end(self) -> None:
         logger.info("Waiting for current speak task to finish.")

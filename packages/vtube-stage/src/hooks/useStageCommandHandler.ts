@@ -38,7 +38,7 @@ export function useStageCommandHandler() {
           console.log(`Server log: ${command.payload.message}`);
           break;
         case 'speak': {
-          const { characterId, message, emotion, speakId } = command.payload;
+          const { characterId, message, caption, emotion, speakId } = command.payload;
           console.log(`Received speak: Character=${characterId}, SpeakId=${speakId}, Message=${message}`);
           setAvatars(prevAvatars =>
             prevAvatars.map(a => {
@@ -54,7 +54,7 @@ export function useStageCommandHandler() {
                 newExpressionWeights[emotion] = 1.0; // 指定された表情を1.0に
                 return {
                   ...a,
-                  speechText: { id: speakId, text: message },
+                  speechText: { id: speakId, text: message, caption: caption },
                   expressionWeights: newExpressionWeights,
                 };
               }

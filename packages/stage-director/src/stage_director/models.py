@@ -16,8 +16,9 @@ class TriggerAnimationPayload(BaseModel):
 class SpeakPayload(BaseModel):
     characterId: str
     message: str
+    caption: str
     emotion: str
-    speakId: str  # Added speakId to the payload
+    speakId: str
 
 
 class SpeakEndPayload(BaseModel):
