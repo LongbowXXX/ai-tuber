@@ -1,19 +1,18 @@
-import { useEffect, useRef } from 'react';
 import { VRM, VRMExpressionPresetName } from '@pixiv/three-vrm';
+import { useCallback, useEffect, useRef } from 'react';
 
 const LIPSYNC_MOUTH_LIST: VRMExpressionPresetName[] = ['aa', 'ih', 'ou', 'ee', 'oh'];
 
-/**
- * 疑似リップシンク用カスタムフック
- * @param vrm VRMインスタンス
- * @param isActive trueでリップシンクON
- */
-export function usePseudoLipSync(vrm: VRM | null, isActive: boolean) {
+export function useFacialExpression(
+  vrm: VRM | null,
+  expressionWeights: Record<string, number>,
+  isVoiceActive: boolean
+) {
   const intervalRef = useRef<number | null>(null);
   const idxRef = useRef(0);
 
   useEffect(() => {
-    if (!vrm || !isActive) {
+    if (!vrm || !isVoiceActive) {
       // OFF時は全ての口形状を0に
       LIPSYNC_MOUTH_LIST.forEach(name => {
         vrm?.expressionManager?.setValue(name, 0);
@@ -42,5 +41,21 @@ export function usePseudoLipSync(vrm: VRM | null, isActive: boolean) {
         vrm?.expressionManager?.setValue(name, 0);
       });
     };
-  }, [vrm, isActive]);
+  }, [vrm, isVoiceActive]);
+
+  // --- Expression Update ---
+  const updateExpressions = useCallback(() => {
+    if (!vrm) return;
+    if (!vrm?.expressionManager) return;
+    Object.entries(expressionWeights).forEach(([name, weight]) => {
+      try {
+        if (vrm.expressionManager?.getExpression(name as VRMExpressionPresetName)) {
+          vrm.expressionManager.setValue(name as VRMExpressionPresetName, weight);
+        }
+      } catch (error) {
+        console.warn(`Failed to set expression ${name}`, error);
+      }
+    });
+  }, [vrm, expressionWeights]);
+  return { updateExpressions };
 }

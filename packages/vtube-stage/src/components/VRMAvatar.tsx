@@ -1,13 +1,13 @@
 // src/components/VRMAvatar.tsx
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { VRM, VRMExpressionPresetName, VRMHumanBoneName } from '@pixiv/three-vrm';
+import { VRM, VRMHumanBoneName } from '@pixiv/three-vrm';
 import * as THREE from 'three';
 import { SpeechBubble } from './SpeechBubble'; // Import the SpeechBubble component
 import { playVoice } from '../services/tts_service';
-import { usePseudoLipSync } from './usePseudoLipSync';
 import { useVrmModel } from '../hooks/useVrmModel';
 import { SpeakMessage } from '../types/avatar_types';
+import { useFacialExpression } from '../hooks/useFacialExpression';
 
 // --- Constants ---
 const ANIMATION_FADE_DURATION = 0.3;
@@ -49,8 +49,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   const [bubbleText, setBubbleText] = useState<SpeakMessage | null>(null);
   const animationTimeoutRef = useRef<number | null>(null); // 3秒タイマー用ref: number型に修正
 
-  // --- 疑似リップシンク状態 ---
-  const [isLipSync, setIsLipSync] = useState(false);
+  const [isTtsSpeaking, setIsTtsSpeaking] = useState(false);
 
   // --- Animation Switching ---
   useEffect(() => {
@@ -168,20 +167,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentAnimationName, loadedAnimationNames, id, onAnimationEnd, createAnimationClipFromVRMA]);
 
-  // --- Expression Update ---
-  const updateExpressions = useCallback(() => {
-    const vrm = vrmRef.current;
-    if (!vrm?.expressionManager) return;
-    Object.entries(expressionWeights).forEach(([name, weight]) => {
-      try {
-        if (vrm.expressionManager?.getExpression(name as VRMExpressionPresetName)) {
-          vrm.expressionManager.setValue(name as VRMExpressionPresetName, weight);
-        }
-      } catch (error) {
-        console.warn(`Failed to set expression ${name} for ${vrmUrl}`, error);
-      }
-    });
-  }, [vrmRef, expressionWeights, vrmUrl]);
+  const { updateExpressions } = useFacialExpression(isLoaded ? vrmRef.current : null, expressionWeights, isTtsSpeaking);
 
   // --- Head Rotation Update ---
   const updateHeadRotation = useCallback(() => {
@@ -219,9 +205,9 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     if (speechText && speechText.text !== '') {
       setBubbleText(speechText);
       // setIsLipSync(true); // ここでは開始しない
-      playTTS(speechText.text, () => setIsLipSync(true)).then(() => {
+      playTTS(speechText.text, () => setIsTtsSpeaking(true)).then(() => {
         setBubbleText(null);
-        setIsLipSync(false); // 再生終了でLipSync終了
+        setIsTtsSpeaking(false); // 再生終了でLipSync終了
         if (onTTSComplete && speechText.id) {
           onTTSComplete(speechText.id);
         }
@@ -229,12 +215,9 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     }
     // クリーンアップ
     return () => {
-      setIsLipSync(false);
+      setIsTtsSpeaking(false);
     };
   }, [speechText, playTTS, onTTSComplete, id]);
-
-  // 疑似リップシンクフック呼び出し
-  usePseudoLipSync(isLoaded ? vrmRef.current : null, isLipSync);
 
   // Render only when VRM is loaded, applying the position
   return isLoaded && vrmRef.current ? (
