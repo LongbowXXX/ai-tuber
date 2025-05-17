@@ -211,6 +211,7 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, lastMessage,
                 );
               }}
               availableAnimations={Object.keys(avatar.animationUrls)}
+              currentEmotion={avatar.currentEmotion}
             />
           ))}
         </Sidebar>

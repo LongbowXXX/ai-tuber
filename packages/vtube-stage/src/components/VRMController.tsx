@@ -8,53 +8,46 @@ interface VRMControllerProps {
   onEmotionChange: (emotion: string) => void;
   onAnimationChange: (animationName: string) => void;
   availableAnimations: string[];
+  currentEmotion: string;
 }
 
 // 制御する表情のリスト（モデルに合わせて変更）
-const emotionNames = [
-  'neutral',
-  'happy',
-  'sad',
-  'angry',
-  'relaxed',
-  'Surprised',
-  'aa',
-  'ih',
-  'ou',
-  'ee',
-  'oh',
-  'blink',
-  'blinkLeft',
-  'blinkRight',
-];
+const emotionNames = ['neutral', 'happy', 'sad', 'angry', 'relaxed', 'Surprised', 'blink', 'blinkLeft', 'blinkRight'];
 
 export const VRMController: React.FC<VRMControllerProps> = ({
   title, // Destructure title
-  onEmotionChange: onEmotionChange,
+  onEmotionChange,
   onAnimationChange,
   availableAnimations,
+  currentEmotion,
 }) => {
-  const handleExpressionSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name } = e.target;
-    onEmotionChange(name);
+  const handleEmotionRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target; // ラジオボタンのvalue属性から感情名を取得
+    onEmotionChange(value);
   };
+  // currentEmotion が変更されたらラジオボタンに反映する
+  React.useEffect(() => {
+    const radio = document.querySelector(
+      `input[name="${title || 'default'}-emotion-group"][value="${currentEmotion}"]`
+    );
+    if (radio) {
+      (radio as HTMLInputElement).checked = true; // ラジオボタンをチェック状態にする
+    }
+  }, [currentEmotion, title]);
 
   return (
     <div className="vrm-controller">
       {title && <h3>{title}</h3>} {/* Display title if provided */}
-      <h4>Expressions</h4>
+      <h4>Emotions</h4>
       {emotionNames.map(name => (
         <div key={name} className="control-row">
-          <label htmlFor={`${title}-${name}`}>{name}</label> {/* Ensure unique id */}
+          <label htmlFor={`${title}-emotion-${name}`}>{name}</label> {/* Ensure unique id */}
           <input
-            type="range"
-            id={`${title}-${name}`} // Ensure unique id
-            name={name}
-            min="0"
-            max="1"
-            step="0.01"
-            defaultValue="0" // 初期値
-            onChange={handleExpressionSlider}
+            type="radio"
+            id={`${title}-emotion-${name}`} // Ensure unique id
+            name={`${title || 'default'}-emotion-group`} // グループ内で共通のname属性
+            value={name} // 感情名をvalueとして設定
+            onChange={handleEmotionRadioChange} // 更新されたハンドラーを使用
           />
         </div>
       ))}
