@@ -20,7 +20,8 @@ interface AvatarData {
 
 interface SceneContentProps {
   avatars: AvatarData[]; // Array of avatar data objects
-  onTTSComplete?: (speakId: string) => void; // 追加
+  onTTSComplete?: (avatarId: string, speakId: string) => void;
+  onAnimationEnd?: (avatarId: string, animationName: string) => void;
   controlsEnabled?: boolean; // OrbitControls有効化フラグ追加
   onAvatarLoad?: (id: string) => void; // 追加
 }

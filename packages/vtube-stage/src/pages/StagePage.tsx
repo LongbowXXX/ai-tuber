@@ -14,7 +14,8 @@ interface StagePageProps {
   setAvatars: React.Dispatch<React.SetStateAction<InternalAvatarState[]>>;
   lastMessage: unknown;
   isConnected: boolean;
-  onTTSComplete?: (speakId: string) => void; // 追加
+  onTTSComplete?: (avatarId: string, speakId: string) => void;
+  onAnimationEnd?: (avatarId: string, animationName: string) => void;
 }
 
 // styled-components でスタイル定義

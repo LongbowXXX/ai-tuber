@@ -96,7 +96,29 @@ export function useStageCommandHandler() {
 
   // TTS完了時のハンドラ
   const handleTTSComplete = useCallback(
-    (speakId: string) => {
+    (avatarId: string, speakId: string) => {
+      console.log(`TTS complete for Avatar: ${avatarId}, SpeakId: ${speakId}`);
+      setAvatars(prevAvatars =>
+        prevAvatars.map(a => {
+          if (a.id === avatarId) {
+            const lipsyncMouthList = ['aa', 'ih', 'ou', 'ee', 'oh'];
+            const newExpressionWeights: { [key: string]: number } = { ...a.expressionWeights };
+            // 口パク用は除外
+            Object.keys(newExpressionWeights).forEach(key => {
+              if (!lipsyncMouthList.includes(key)) {
+                newExpressionWeights[key] = 0;
+              }
+            });
+            newExpressionWeights['neutral'] = 1.0;
+
+            return {
+              ...a,
+              expressionWeights: newExpressionWeights,
+            };
+          }
+          return a;
+        })
+      );
       if (sendMessage && speakId) {
         sendMessage({
           command: 'speakEnd',
@@ -107,8 +129,9 @@ export function useStageCommandHandler() {
     [sendMessage]
   );
 
-  // アニメーションループ終了時のハンドラ
-  const handleAnimationLoopEnd = useCallback((avatarId: string) => {
+  // アニメーション終了時のハンドラ
+  const handleAnimationEnd = useCallback((avatarId: string, animationName: string) => {
+    console.log(`Animation ended for Avatar: ${avatarId}, Animation: ${animationName}`);
     setAvatars(prevAvatars =>
       prevAvatars.map(a => {
         if (a.id === avatarId) {
@@ -128,6 +151,6 @@ export function useStageCommandHandler() {
     lastMessage,
     isConnected,
     handleTTSComplete,
-    handleAnimationLoopEnd, // 追加
+    handleAnimationEnd, // 追加
   };
 }

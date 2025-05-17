@@ -24,8 +24,8 @@ export interface VRMAvatarProps {
   speechText: SpeakMessage | null; // SpeakMessage型で受け取る
   position?: [number, number, number]; // Add position prop
   onLoad?: (vrm: VRM) => void; // Keep onLoad for potential external use, but internal logic won't depend on it passing upwards
-  onTTSComplete?: (speakId: string) => void; // TTS完了時コールバックを追加
-  onAnimationLoopEnd?: (avatarId: string) => void; // アニメーションが1ループ終了してidleに戻った際のコールバック
+  onTTSComplete?: (avatarId: string, speakId: string) => void; // TTS完了時コールバックを追加
+  onAnimationEnd?: (avatarId: string, animationName: string) => void; // アニメーションが1ループ終了してidleに戻った際のコールバック
 }
 
 export const VRMAvatar: React.FC<VRMAvatarProps> = ({
@@ -39,7 +39,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   position = [0, 0, 0], // Default position if not provided
   onLoad, // Keep prop signature
   onTTSComplete, // 追加
-  onAnimationLoopEnd, // 追加
+  onAnimationEnd, // 追加
 }) => {
   const vrmRef = useRef<VRM | null>(null);
   const mixer = useRef<THREE.AnimationMixer | null>(null);
@@ -172,6 +172,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
           currentAction.current.fadeOut(ANIMATION_FADE_DURATION);
         }
 
+        const newAnimationName = currentAnimationName;
         // If the animation is not idle, set it to return to idle after finishing
         if (currentAnimationName !== 'idle') {
           newAction.clampWhenFinished = true;
@@ -194,8 +195,8 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
                   .play();
                 currentAction.current = idleAction;
                 console.log(`Avatar ${vrmUrl}: onFinished changed to idle`);
-                if (onAnimationLoopEnd) {
-                  onAnimationLoopEnd(id); // アニメーション終了を通知
+                if (onAnimationEnd) {
+                  onAnimationEnd(id, newAnimationName); // アニメーション終了を通知
                 }
               }
               // タイマーもクリア
@@ -226,8 +227,8 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
                   .play();
                 currentAction.current = idleAction;
                 console.log(`Avatar ${vrmUrl}: forcibly changed to idle after 3s`);
-                if (onAnimationLoopEnd) {
-                  onAnimationLoopEnd(id); // アニメーション終了を通知
+                if (onAnimationEnd) {
+                  onAnimationEnd(id, newAnimationName); // アニメーション終了を通知
                 }
               }
               // イベントリスナーも外す
@@ -260,7 +261,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentAnimationName, loadedAnimationNames, id, onAnimationLoopEnd, createAnimationClipFromVRMA]);
+  }, [currentAnimationName, loadedAnimationNames, id, onAnimationEnd, createAnimationClipFromVRMA]);
 
   // --- Expression Update ---
   const updateExpressions = useCallback(() => {
@@ -317,7 +318,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
         setBubbleText(null);
         setIsLipSync(false); // 再生終了でLipSync終了
         if (onTTSComplete && speechText.id) {
-          onTTSComplete(speechText.id);
+          onTTSComplete(id, speechText.id);
         }
       });
     }
@@ -325,7 +326,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     return () => {
       setIsLipSync(false);
     };
-  }, [speechText, playTTS, onTTSComplete]);
+  }, [speechText, playTTS, onTTSComplete, id]);
 
   // 疑似リップシンクフック呼び出し
   usePseudoLipSync(isLoaded ? vrmRef.current : null, isLipSync);
