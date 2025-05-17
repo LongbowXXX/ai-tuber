@@ -107,11 +107,27 @@ export function useStageCommandHandler() {
     [sendMessage]
   );
 
+  // アニメーションループ終了時のハンドラ
+  const handleAnimationLoopEnd = useCallback((avatarId: string) => {
+    setAvatars(prevAvatars =>
+      prevAvatars.map(a => {
+        if (a.id === avatarId) {
+          return {
+            ...a,
+            currentAnimationName: null, // アニメーション名をリセット
+          };
+        }
+        return a;
+      })
+    );
+  }, []);
+
   return {
     avatars,
     setAvatars,
     lastMessage,
     isConnected,
-    handleTTSComplete, // 追加
+    handleTTSComplete,
+    handleAnimationLoopEnd, // 追加
   };
 }

@@ -25,6 +25,7 @@ export interface VRMAvatarProps {
   position?: [number, number, number]; // Add position prop
   onLoad?: (vrm: VRM) => void; // Keep onLoad for potential external use, but internal logic won't depend on it passing upwards
   onTTSComplete?: (speakId: string) => void; // TTS完了時コールバックを追加
+  onAnimationLoopEnd?: (avatarId: string) => void; // アニメーションが1ループ終了してidleに戻った際のコールバック
 }
 
 export const VRMAvatar: React.FC<VRMAvatarProps> = ({
@@ -38,6 +39,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   position = [0, 0, 0], // Default position if not provided
   onLoad, // Keep prop signature
   onTTSComplete, // 追加
+  onAnimationLoopEnd, // 追加
 }) => {
   const vrmRef = useRef<VRM | null>(null);
   const mixer = useRef<THREE.AnimationMixer | null>(null);
@@ -192,6 +194,9 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
                   .play();
                 currentAction.current = idleAction;
                 console.log(`Avatar ${vrmUrl}: onFinished changed to idle`);
+                if (onAnimationLoopEnd) {
+                  onAnimationLoopEnd(id); // アニメーション終了を通知
+                }
               }
               // タイマーもクリア
               if (animationTimeoutRef.current) {
@@ -221,6 +226,9 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
                   .play();
                 currentAction.current = idleAction;
                 console.log(`Avatar ${vrmUrl}: forcibly changed to idle after 3s`);
+                if (onAnimationLoopEnd) {
+                  onAnimationLoopEnd(id); // アニメーション終了を通知
+                }
               }
               // イベントリスナーも外す
               currentMixer.removeEventListener('finished', onFinished);
@@ -252,7 +260,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentAnimationName, loadedAnimationNames]);
+  }, [currentAnimationName, loadedAnimationNames, id, onAnimationLoopEnd, createAnimationClipFromVRMA]);
 
   // --- Expression Update ---
   const updateExpressions = useCallback(() => {
