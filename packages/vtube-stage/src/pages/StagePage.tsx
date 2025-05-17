@@ -193,23 +193,17 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, lastMessage,
             <VRMController
               key={avatar.id}
               title={`Avatar ${avatar.id.replace('avatar', '')} Controls`}
-              onExpressionChange={(name, weight) => {
+              onEmotionChange={name => {
                 setAvatars(prevAvatars =>
                   prevAvatars.map(a =>
                     a.id === avatar.id
                       ? {
                           ...a,
-                          expressionWeights: {
-                            ...a.expressionWeights,
-                            [name]: weight,
-                          },
+                          currentEmotion: name,
                         }
                       : a
                   )
                 );
-              }}
-              onHeadYawChange={angle => {
-                setAvatars(prevAvatars => prevAvatars.map(a => (a.id === avatar.id ? { ...a, headYaw: angle } : a)));
               }}
               onAnimationChange={animationName => {
                 setAvatars(prevAvatars =>

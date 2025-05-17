@@ -12,7 +12,6 @@ export interface AvatarState {
   animationUrls: { [key: string]: string };
   currentEmotion: string;
   speechText: SpeakMessage | null;
-  headYaw: number;
   currentAnimationName: string | null;
   position: [number, number, number];
   onTTSComplete?: (speakId: string) => void;

@@ -1,7 +1,7 @@
 // src/components/VRMAvatar.tsx
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { VRM, VRMHumanBoneName } from '@pixiv/three-vrm';
+import { VRM } from '@pixiv/three-vrm';
 import * as THREE from 'three';
 import { SpeechBubble } from './SpeechBubble'; // Import the SpeechBubble component
 import { playVoice } from '../services/tts_service';
@@ -17,7 +17,6 @@ export interface VRMAvatarProps {
   vrmUrl: string;
   animationUrls: Record<string, string>;
   currentEmotion: string;
-  headYaw: number;
   currentAnimationName: string | null;
   speechText: SpeakMessage | null;
   position?: [number, number, number];
@@ -31,7 +30,6 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   vrmUrl,
   animationUrls,
   currentEmotion: current_emotion,
-  headYaw,
   currentAnimationName,
   speechText,
   position = [0, 0, 0],
@@ -168,23 +166,11 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
 
   const { updateExpressions } = useFacialExpression(isLoaded ? vrmRef.current : null, current_emotion, isTtsSpeaking);
 
-  // --- Head Rotation Update ---
-  const updateHeadRotation = useCallback(() => {
-    const vrm = vrmRef.current;
-    if (!vrm?.humanoid) return;
-    const headBone = vrm.humanoid.getNormalizedBoneNode(VRMHumanBoneName.Head);
-    if (headBone) {
-      // Apply rotation relative to the default pose
-      headBone.rotation.y = THREE.MathUtils.degToRad(headYaw);
-    }
-  }, [vrmRef, headYaw]);
-
   // --- Frame Update ---
   useFrame((_state, delta) => {
     const vrm = vrmRef.current;
     if (vrm) {
       updateExpressions();
-      updateHeadRotation();
       mixer.current?.update(delta); // Update animation mixer
       vrm.update(delta); // Update VRM internal state (expressions, lookAt, physics)
     } // <-- Added missing closing brace
