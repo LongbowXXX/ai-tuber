@@ -15,4 +15,6 @@ export interface AvatarState {
   headYaw: number;
   currentAnimationName: string | null;
   position: [number, number, number];
+  onTTSComplete?: (speakId: string) => void;
+  onAnimationEnd?: (animationName: string) => void;
 }

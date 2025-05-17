@@ -14,8 +14,6 @@ interface StagePageProps {
   setAvatars: React.Dispatch<React.SetStateAction<AvatarState[]>>;
   lastMessage: unknown;
   isConnected: boolean;
-  onTTSComplete?: (avatarId: string, speakId: string) => void;
-  onAnimationEnd?: (avatarId: string, animationName: string) => void;
 }
 
 // styled-components でスタイル定義
@@ -93,7 +91,7 @@ const CameraInit: React.FC = () => {
   return null;
 };
 
-const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, lastMessage, isConnected, onTTSComplete }) => {
+const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, lastMessage, isConnected }) => {
   // OrbitControls有効化のためのフラグ
   const [cameraAnimated, setCameraAnimated] = React.useState(false);
   // カメラアニメーション開始トリガー
@@ -134,12 +132,7 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, lastMessage,
             active={allLoaded && startCameraAnimation && !cameraAnimated}
             onFinish={() => setCameraAnimated(true)}
           />
-          <SceneContent
-            avatars={avatars}
-            onTTSComplete={onTTSComplete}
-            controlsEnabled={cameraAnimated}
-            onAvatarLoad={handleAvatarLoad}
-          />
+          <SceneContent avatars={avatars} controlsEnabled={cameraAnimated} onAvatarLoad={handleAvatarLoad} />
         </Canvas>
         {/* ローディングオーバーレイ or Startボタン */}
         {!allLoaded && <LoadingOverlay>Loading...</LoadingOverlay>}

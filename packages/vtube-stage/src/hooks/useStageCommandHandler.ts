@@ -8,20 +8,6 @@ export function useStageCommandHandler() {
   const [lastMessage, setLastMessage] = useState<StageCommand | object | null>(null);
   const [avatars, setAvatars] = useState<AvatarState[]>([]); // 初期値を空配列に
 
-  useEffect(() => {
-    fetch('/avatars.json')
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch avatars.json');
-        return res.json();
-      })
-      .then(data => {
-        setAvatars(data);
-      })
-      .catch(err => {
-        console.error('Error loading avatars.json:', err);
-      });
-  }, []);
-
   const handleWebSocketMessage = useCallback(async (data: unknown) => {
     const validationResult = await validateStageCommand(data);
 
@@ -141,12 +127,29 @@ export function useStageCommandHandler() {
     );
   }, []);
 
+  useEffect(() => {
+    fetch('/avatars.json')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch avatars.json');
+        return res.json();
+      })
+      .then(data => {
+        for (const avarar of data) {
+          avarar.onTTSComplete = (speakId: string) => handleTTSComplete(avarar.id, speakId);
+          avarar.onAnimationEnd = (animationName: string) => handleAnimationEnd(avarar.id, animationName);
+        }
+
+        setAvatars(data);
+      })
+      .catch(err => {
+        console.error('Error loading avatars.json:', err);
+      });
+  }, [handleAnimationEnd, handleTTSComplete]);
+
   return {
     avatars,
     setAvatars,
     lastMessage,
     isConnected,
-    handleTTSComplete,
-    handleAnimationEnd, // 追加
   };
 }

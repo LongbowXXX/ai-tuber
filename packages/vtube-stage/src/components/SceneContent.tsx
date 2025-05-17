@@ -12,18 +12,11 @@ interface AvatarData extends AvatarState {
 
 interface SceneContentProps {
   avatars: AvatarData[]; // Array of avatar data objects
-  onTTSComplete?: (avatarId: string, speakId: string) => void;
-  onAnimationEnd?: (avatarId: string, animationName: string) => void;
   controlsEnabled?: boolean; // OrbitControls有効化フラグ追加
   onAvatarLoad?: (id: string) => void; // 追加
 }
 
-export const SceneContent: React.FC<SceneContentProps> = ({
-  avatars,
-  onTTSComplete,
-  controlsEnabled = true,
-  onAvatarLoad,
-}) => {
+export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEnabled = true, onAvatarLoad }) => {
   // --- Scene elements rendering ---
   return (
     <>
@@ -52,7 +45,6 @@ export const SceneContent: React.FC<SceneContentProps> = ({
           key={avatar.id} // Use unique ID as key
           {...avatar}
           onLoad={onAvatarLoad ? () => onAvatarLoad(avatar.id) : undefined}
-          onTTSComplete={onTTSComplete} // 追加
         />
       ))}
 

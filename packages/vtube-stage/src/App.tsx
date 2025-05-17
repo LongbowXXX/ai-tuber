@@ -9,20 +9,12 @@ const lightTheme = createTheme({
 });
 
 function App() {
-  const { avatars, setAvatars, lastMessage, isConnected, handleTTSComplete, handleAnimationEnd } =
-    useStageCommandHandler();
+  const { avatars, setAvatars, lastMessage, isConnected } = useStageCommandHandler();
 
   return (
     <ThemeProvider theme={lightTheme}>
       <CssBaseline />
-      <StagePage
-        avatars={avatars}
-        setAvatars={setAvatars}
-        lastMessage={lastMessage}
-        isConnected={isConnected}
-        onTTSComplete={handleTTSComplete}
-        onAnimationEnd={handleAnimationEnd}
-      />
+      <StagePage avatars={avatars} setAvatars={setAvatars} lastMessage={lastMessage} isConnected={isConnected} />
     </ThemeProvider>
   );
 }
