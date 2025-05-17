@@ -1,16 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useWebSocket } from './useWebSocket';
-import { StageCommand, AvatarState as BaseAvatarState } from '../types/command';
 import { validateStageCommand } from '../utils/command_validator';
-
-// Define an internal state that extends the base AvatarState with position and speaking message
-export interface InternalAvatarState extends BaseAvatarState {
-  position: [number, number, number];
-}
+import { AvatarState } from '../types/avatar_types';
+import { StageCommand } from '../types/command';
 
 export function useStageCommandHandler() {
   const [lastMessage, setLastMessage] = useState<StageCommand | object | null>(null);
-  const [avatars, setAvatars] = useState<InternalAvatarState[]>([]); // 初期値を空配列に
+  const [avatars, setAvatars] = useState<AvatarState[]>([]); // 初期値を空配列に
 
   useEffect(() => {
     fetch('/avatars.json')

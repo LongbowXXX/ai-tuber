@@ -4,10 +4,10 @@ import { useFrame } from '@react-three/fiber';
 import { VRM, VRMExpressionPresetName, VRMHumanBoneName } from '@pixiv/three-vrm';
 import * as THREE from 'three';
 import { SpeechBubble } from './SpeechBubble'; // Import the SpeechBubble component
-import { SpeakMessage } from '../types/command';
 import { playVoice } from '../services/tts_service';
 import { usePseudoLipSync } from './usePseudoLipSync';
 import { useVrmModel } from '../hooks/useVrmModel';
+import { SpeakMessage } from '../types/avatar_types';
 
 // --- Constants ---
 const ANIMATION_FADE_DURATION = 0.3;
@@ -45,10 +45,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     animationUrls,
     onLoad
   );
-  // const vrmRef = useRef<VRM | null>(null);
-  // const mixer = useRef<THREE.AnimationMixer | null>(null);
   const currentAction = useRef<THREE.AnimationAction | null>(null);
-  // const [isLoaded, setIsLoaded] = useState(false); // Tracks VRM model loading
   const [bubbleText, setBubbleText] = useState<SpeakMessage | null>(null);
   const animationTimeoutRef = useRef<number | null>(null); // 3秒タイマー用ref: number型に修正
 

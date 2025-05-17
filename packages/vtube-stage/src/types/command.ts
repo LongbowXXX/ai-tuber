@@ -99,21 +99,3 @@ export class SpeakCommand extends BaseCommand<'speak', SpeakPayload> {
 
 // 受け取る可能性のある全てのコマンドの Union 型 (クラスの Union に変更)
 export type StageCommand = LogMessageCommand | SetPoseCommand | TriggerAnimationCommand | SpeakCommand;
-
-// 発話内容とIDをセットで扱うデータ型
-export interface SpeakMessage {
-  id: string;
-  text: string;
-  caption: string;
-}
-
-// AvatarState インターフェースの定義
-export interface AvatarState {
-  id: string;
-  vrmUrl: string;
-  animationUrls: { [key: string]: string };
-  expressionWeights: { [key: string]: number };
-  speechText: SpeakMessage | null;
-  headYaw: number;
-  currentAnimationName: string | null;
-}

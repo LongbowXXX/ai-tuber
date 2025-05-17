@@ -3,15 +3,15 @@ import { Canvas } from '@react-three/fiber';
 import { VRMController } from '../components/VRMController';
 import { SceneContent } from '../components/SceneContent';
 import { Typography, Chip } from '@mui/material';
-import { InternalAvatarState } from '../hooks/useStageCommandHandler';
 import styled from 'styled-components';
 import { AnimatedCamera } from '../components/AnimatedCamera';
 import { useThree } from '@react-three/fiber';
 import { useEffect } from 'react';
+import { AvatarState } from '../types/avatar_types';
 
 interface StagePageProps {
-  avatars: InternalAvatarState[];
-  setAvatars: React.Dispatch<React.SetStateAction<InternalAvatarState[]>>;
+  avatars: AvatarState[];
+  setAvatars: React.Dispatch<React.SetStateAction<AvatarState[]>>;
   lastMessage: unknown;
   isConnected: boolean;
   onTTSComplete?: (avatarId: string, speakId: string) => void;

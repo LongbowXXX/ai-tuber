@@ -3,18 +3,10 @@ import React from 'react';
 import { OrbitControls, Environment } from '@react-three/drei'; // Import Environment
 import { VRMAvatar } from './VRMAvatar';
 import { VRM } from '@pixiv/three-vrm'; // Keep VRM type for AvatarData
-import { SpeakMessage } from '../types/command';
+import { AvatarState } from '../types/avatar_types';
 
 // Define a type for the data needed for each avatar
-interface AvatarData {
-  id: string; // Unique identifier for the avatar
-  vrmUrl: string;
-  animationUrls: Record<string, string>;
-  expressionWeights: Record<string, number>;
-  headYaw: number;
-  currentAnimationName: string | null; // Allow currentAnimationName to be string or null
-  speechText: SpeakMessage | null; // 型をSpeakMessage形式に
-  position?: [number, number, number]; // Make position optional
+interface AvatarData extends AvatarState {
   onLoad?: (vrm: VRM) => void; // Optional onLoad callback per avatar
 }
 
