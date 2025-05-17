@@ -3,13 +3,13 @@
     "id": "avatar1",
     "vrmUrl": "/avatar/avatar.vrm",
     "animationUrls": {
-      "idle": "/vrma/idle04.vrma",
-      "wave": "/vrma/wave01.vrma",
-      "airplane": "/vrma/airplane02.vrma",
-      "rotate_left": "/vrma/rotate_left1.vrma",
-      "rotate_right": "/vrma/rotate_right.vrma",
-      "smallwave": "/vrma/smallwve.vrma",
-      "akimbo": "/vrma/stand01.vrma"
+      "idle": "/vrma/idle_pose.vrma",
+      "wave": "/vrma/wave_pose.vrma",
+      "agree": "/vrma/agree_pose.vrma",
+      "no": "/vrma/no_pose.vrma",
+      "fear": "/vrma/fear_pose.vrma",
+      "victory": "/vrma/victory_pose.vrma",
+      "punch": "/vrma/punch_pose.vrma"
     },
     "expressionWeights": { "neutral": 0.1 },
     "headYaw": 0,
@@ -20,13 +20,13 @@
     "id": "avatar2",
     "vrmUrl": "/avatar/avatar2.vrm",
     "animationUrls": {
-      "idle": "/vrma/idle04.vrma",
-      "wave": "/vrma/wave01.vrma",
-      "airplane": "/vrma/airplane02.vrma",
-      "rotate_left": "/vrma/rotate_left1.vrma",
-      "rotate_right": "/vrma/rotate_right.vrma",
-      "smallwave": "/vrma/smallwve.vrma",
-      "akimbo": "/vrma/stand01.vrma"
+      "idle": "/vrma/idle_pose.vrma",
+      "wave": "/vrma/wave_pose.vrma",
+      "agree": "/vrma/agree_pose.vrma",
+      "no": "/vrma/no_pose.vrma",
+      "fear": "/vrma/fear_pose.vrma",
+      "victory": "/vrma/victory_pose.vrma",
+      "punch": "/vrma/punch_pose.vrma"
     },
     "expressionWeights": { "neutral": 0.1 },
     "headYaw": 0,
