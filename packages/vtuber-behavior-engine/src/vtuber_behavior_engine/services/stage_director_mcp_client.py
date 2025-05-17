@@ -60,6 +60,7 @@ class StageDirectorMCPClient:
         )
 
     async def speak_all(self, speech: AgentSpeech) -> None:
+        _ = await self._toolset.load_tools()
         session = self._toolset.session
         for item in speech.speeches:
             logger.info(f"Speaking {item.tts_text} with emotion {item.emotion}")
