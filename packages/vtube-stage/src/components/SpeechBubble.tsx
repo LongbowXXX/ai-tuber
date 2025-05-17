@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Html } from '@react-three/drei';
 import './SpeechBubble.css'; // CSS for styling
-import { SpeakMessage } from '../types/command';
+import { SpeakMessage } from '../types/avatar_types';
 
 interface SpeechBubbleProps {
   message: SpeakMessage | null;

@@ -10,7 +10,7 @@ export interface AvatarState {
   id: string;
   vrmUrl: string;
   animationUrls: { [key: string]: string };
-  expressionWeights: { [key: string]: number };
+  currentEmotion: string;
   speechText: SpeakMessage | null;
   headYaw: number;
   currentAnimationName: string | null;

@@ -1,15 +1,28 @@
 import { VRM, VRMExpressionPresetName } from '@pixiv/three-vrm';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const LIPSYNC_MOUTH_LIST: VRMExpressionPresetName[] = ['aa', 'ih', 'ou', 'ee', 'oh'];
 
-export function useFacialExpression(
-  vrm: VRM | null,
-  expressionWeights: Record<string, number>,
-  isVoiceActive: boolean
-) {
+export function useFacialExpression(vrm: VRM | null, currentEmotion: string, isVoiceActive: boolean) {
   const intervalRef = useRef<number | null>(null);
   const idxRef = useRef(0);
+  const [expressionWeights, setExpressionWeights] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    setExpressionWeights(prevExpressionWeights => {
+      const lipsyncMouthList = ['aa', 'ih', 'ou', 'ee', 'oh'];
+      const newExpressionWeights: { [key: string]: number } = { ...prevExpressionWeights };
+      // 口パク用は除外
+      Object.keys(newExpressionWeights).forEach(key => {
+        if (!lipsyncMouthList.includes(key)) {
+          newExpressionWeights[key] = 0;
+        }
+      });
+      newExpressionWeights[currentEmotion] = 1.0;
+
+      return newExpressionWeights;
+    });
+  }, [currentEmotion]);
 
   useEffect(() => {
     if (!vrm || !isVoiceActive) {

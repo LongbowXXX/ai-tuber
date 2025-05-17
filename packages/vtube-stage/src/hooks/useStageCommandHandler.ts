@@ -25,19 +25,10 @@ export function useStageCommandHandler() {
           setAvatars(prevAvatars =>
             prevAvatars.map(a => {
               if (a.id === characterId) {
-                const lipsyncMouthList = ['aa', 'ih', 'ou', 'ee', 'oh'];
-                const newExpressionWeights: { [key: string]: number } = { ...a.expressionWeights };
-                // emotionで指定された表情のみ1.0、それ以外は0。ただし口パク用は除外
-                Object.keys(newExpressionWeights).forEach(key => {
-                  if (!lipsyncMouthList.includes(key)) {
-                    newExpressionWeights[key] = 0;
-                  }
-                });
-                newExpressionWeights[emotion] = 1.0; // 指定された表情を1.0に
                 return {
                   ...a,
                   speechText: { id: speakId, text: message, caption: caption },
-                  expressionWeights: newExpressionWeights,
+                  currentEmotion: emotion,
                 };
               }
               return a;
@@ -83,19 +74,9 @@ export function useStageCommandHandler() {
       setAvatars(prevAvatars =>
         prevAvatars.map(a => {
           if (a.id === avatarId) {
-            const lipsyncMouthList = ['aa', 'ih', 'ou', 'ee', 'oh'];
-            const newExpressionWeights: { [key: string]: number } = { ...a.expressionWeights };
-            // 口パク用は除外
-            Object.keys(newExpressionWeights).forEach(key => {
-              if (!lipsyncMouthList.includes(key)) {
-                newExpressionWeights[key] = 0;
-              }
-            });
-            newExpressionWeights['neutral'] = 1.0;
-
             return {
               ...a,
-              expressionWeights: newExpressionWeights,
+              currentEmotion: 'neutral',
             };
           }
           return a;

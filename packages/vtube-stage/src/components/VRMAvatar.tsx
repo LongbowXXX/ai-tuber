@@ -15,30 +15,29 @@ const ANIMATION_FADE_DURATION = 0.3;
 export interface VRMAvatarProps {
   id: string;
   vrmUrl: string;
-  // Animation URLs (example: { idle: '/idle.vrma', wave: '/wave.vrma' })
   animationUrls: Record<string, string>;
-  expressionWeights: Record<string, number>;
+  currentEmotion: string;
   headYaw: number;
-  currentAnimationName: string | null; // Allow currentAnimationName to be string or null
-  speechText: SpeakMessage | null; // SpeakMessage型で受け取る
-  position?: [number, number, number]; // Add position prop
-  onLoad?: (vrm: VRM) => void; // Keep onLoad for potential external use, but internal logic won't depend on it passing upwards
-  onTTSComplete?: (speakId: string) => void; // TTS完了時コールバックを追加
-  onAnimationEnd?: (animationName: string) => void; // アニメーションが1ループ終了してidleに戻った際のコールバック
+  currentAnimationName: string | null;
+  speechText: SpeakMessage | null;
+  position?: [number, number, number];
+  onLoad?: (vrm: VRM) => void;
+  onTTSComplete?: (speakId: string) => void;
+  onAnimationEnd?: (animationName: string) => void;
 }
 
 export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   id,
   vrmUrl,
   animationUrls,
-  expressionWeights,
+  currentEmotion: current_emotion,
   headYaw,
   currentAnimationName,
-  speechText, // SpeakMessage型 or null
-  position = [0, 0, 0], // Default position if not provided
-  onLoad, // Keep prop signature
-  onTTSComplete, // 追加
-  onAnimationEnd, // 追加
+  speechText,
+  position = [0, 0, 0],
+  onLoad,
+  onTTSComplete,
+  onAnimationEnd,
 }) => {
   const { gltf, vrmRef, mixer, isLoaded, loadedAnimationNames, createAnimationClipFromVRMA } = useVrmModel(
     vrmUrl,
@@ -167,7 +166,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentAnimationName, loadedAnimationNames, id, onAnimationEnd, createAnimationClipFromVRMA]);
 
-  const { updateExpressions } = useFacialExpression(isLoaded ? vrmRef.current : null, expressionWeights, isTtsSpeaking);
+  const { updateExpressions } = useFacialExpression(isLoaded ? vrmRef.current : null, current_emotion, isTtsSpeaking);
 
   // --- Head Rotation Update ---
   const updateHeadRotation = useCallback(() => {
