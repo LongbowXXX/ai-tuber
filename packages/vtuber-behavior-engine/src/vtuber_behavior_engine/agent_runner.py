@@ -6,6 +6,7 @@ import logging
 
 from google.adk.agents import BaseAgent
 from google.adk.artifacts.in_memory_artifact_service import InMemoryArtifactService
+from google.adk.memory import InMemoryMemoryService
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai.types import Content, Part
@@ -21,6 +22,7 @@ async def run_agent_standalone(agent: BaseAgent, initial_message: str) -> str:
     # Prepare to use ADK Runner
     session_service = InMemorySessionService()
     artifacts_service = InMemoryArtifactService()
+    memory_service = InMemoryMemoryService()
     # Convert user input into a format ADK can understand
     message = Content(role="user", parts=[Part(text=initial_message)])
 
@@ -29,6 +31,7 @@ async def run_agent_standalone(agent: BaseAgent, initial_message: str) -> str:
         agent=agent,
         session_service=session_service,
         artifact_service=artifacts_service,
+        memory_service=memory_service,
     )
     session = session_service.create_session(state={}, app_name=AGENT_SYSTEM_AAP_NAME, user_id=AGENT_SYSTEM_USER_ID)
     logger.info(f"Running agent with session: '{session}'")
