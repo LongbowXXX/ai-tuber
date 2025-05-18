@@ -53,8 +53,8 @@ async def create_root_agent(stage_director_client: StageDirectorMCPClient, agent
         description="Handles the conversation between two agents.",
     )
 
-    async def tair_down_root_agent(callback_context: CallbackContext) -> Optional[types.Content]:
-        logger.debug(f"tair_down_root_agent {callback_context.state}")
+    async def teardown_root_agent(callback_context: CallbackContext) -> Optional[types.Content]:
+        logger.debug(f"teardown_root_agent {callback_context.state}")
         await stage_director_client.wait_for_current_speak_end()
         return None
 
@@ -65,7 +65,7 @@ async def create_root_agent(stage_director_client: StageDirectorMCPClient, agent
             agent_conversation_loop,
         ],
         description="Manages the conversation flow with multiple agents.",
-        after_agent_callback=tair_down_root_agent,
+        after_agent_callback=teardown_root_agent,
     )
     logger.info(f"Root agent created: {root_agent}")
     return root_agent
