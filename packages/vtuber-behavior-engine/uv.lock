@@ -775,6 +775,21 @@ wheels = [
 ]
 
 [[package]]
+name = "google-ai-generativelanguage"
+version = "0.6.15"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "google-api-core", extra = ["grpc"] },
+    { name = "google-auth" },
+    { name = "proto-plus" },
+    { name = "protobuf" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/11/d1/48fe5d7a43d278e9f6b5ada810b0a3530bbeac7ed7fcbcd366f932f05316/google_ai_generativelanguage-0.6.15.tar.gz", hash = "sha256:8f6d9dc4c12b065fe2d0289026171acea5183ebf2d0b11cefe12f3821e159ec3", size = 1375443, upload_time = "2025-01-13T21:50:47.459Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7c/a3/67b8a6ff5001a1d8864922f2d6488dc2a14367ceb651bc3f09a947f2f306/google_ai_generativelanguage-0.6.15-py3-none-any.whl", hash = "sha256:5a03ef86377aa184ffef3662ca28f19eeee158733e45d7947982eb953c6ebb6c", size = 1327356, upload_time = "2025-01-13T21:50:44.174Z" },
+]
+
+[[package]]
 name = "google-api-core"
 version = "2.24.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1028,6 +1043,24 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/00/ba/c8e4c0b60c6dda40e51e2125709d097c2609fce1389b4a05f40cdd51c1ec/google_genai-1.14.0.tar.gz", hash = "sha256:7c608de5bb173486a546f5ec4562255c26bae72d33d758a3207bb26f695d0087", size = 169938, upload_time = "2025-05-07T22:50:03.113Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/12/86/dde4cd028c8b0716b3f1f6d202647396a87a4ecbbdc7e4beb59b9d9284d3/google_genai-1.14.0-py3-none-any.whl", hash = "sha256:5916ee985bf69ac7b68c4488949225db71e21579afc7ba5ecd5321173b60d3b2", size = 168862, upload_time = "2025-05-07T22:50:01.296Z" },
+]
+
+[[package]]
+name = "google-generativeai"
+version = "0.8.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "google-ai-generativelanguage" },
+    { name = "google-api-core" },
+    { name = "google-api-python-client" },
+    { name = "google-auth" },
+    { name = "protobuf" },
+    { name = "pydantic" },
+    { name = "tqdm" },
+    { name = "typing-extensions" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6e/40/c42ff9ded9f09ec9392879a8e6538a00b2dc185e834a3392917626255419/google_generativeai-0.8.5-py3-none-any.whl", hash = "sha256:22b420817fb263f8ed520b33285f45976d5b21e904da32b80d4fd20c055123a2", size = 155427, upload_time = "2025-04-17T00:40:00.67Z" },
 ]
 
 [[package]]
@@ -3336,6 +3369,7 @@ dependencies = [
     { name = "google-auth-httplib2" },
     { name = "google-auth-oauthlib" },
     { name = "google-genai" },
+    { name = "google-generativeai" },
     { name = "litellm" },
     { name = "mcp", extra = ["cli"] },
     { name = "python-dotenv" },
@@ -3372,6 +3406,7 @@ requires-dist = [
     { name = "google-auth-httplib2", specifier = ">=0.2.0" },
     { name = "google-auth-oauthlib", specifier = ">=1.2.2" },
     { name = "google-genai", specifier = ">=1.14.0" },
+    { name = "google-generativeai", specifier = ">=0.8.5" },
     { name = "litellm", specifier = ">=1.68.2" },
     { name = "mcp", extras = ["cli"], specifier = ">=1.8.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },

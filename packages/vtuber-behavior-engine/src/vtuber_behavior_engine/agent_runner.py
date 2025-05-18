@@ -6,11 +6,11 @@ import logging
 
 from google.adk.agents import BaseAgent
 from google.adk.artifacts.in_memory_artifact_service import InMemoryArtifactService
-from google.adk.memory import InMemoryMemoryService
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai.types import Content, Part
 
+from vtuber_behavior_engine.services.memory.chroma_memory_service import ChromaMemoryService
 from vtuber_behavior_engine.stage_agents.agent_constants import AGENT_SYSTEM_AAP_NAME, AGENT_SYSTEM_USER_ID
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ async def run_agent_standalone(agent: BaseAgent, initial_message: str) -> str:
     # Prepare to use ADK Runner
     session_service = InMemorySessionService()
     artifacts_service = InMemoryArtifactService()
-    memory_service = InMemoryMemoryService()
+    memory_service = ChromaMemoryService()
     # Convert user input into a format ADK can understand
     message = Content(role="user", parts=[Part(text=initial_message)])
 
@@ -45,4 +45,10 @@ async def run_agent_standalone(agent: BaseAgent, initial_message: str) -> str:
             final_response = event.content.parts[0].text
 
     logger.info(f"Agent final response: {final_response}")
+    completed_session = session_service.get_session(
+        app_name=AGENT_SYSTEM_AAP_NAME, user_id=AGENT_SYSTEM_USER_ID, session_id=session.id
+    )
+    await memory_service.add_session_to_memory(completed_session)
+
+    logger.info(f"Session added to memory: {completed_session}")
     return final_response or ""

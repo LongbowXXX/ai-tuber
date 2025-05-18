@@ -64,14 +64,14 @@ uv run python src/vtuber_behavior_engine/main.py
 
 adk web を使用して、Web UI からエージェントを操作することもできます。
 
-`.env` を `src/vtuber_behavior_engine/awk_web_agent` にコピーします。
+`.env` を `src/vtuber_behavior_engine/news_agent` にコピーします。
 
 ```bash
 adk web --port=8090 src/vtuber_behavior_engine
 ```
 
 1. http://localhost:8090/ にアクセスして、ADK Web UI を開きます。
-2. 左上で、`awk_web_agent` を選択。
+2. 左上で、`news_agent` を選択。
 3. 最初の発話として`[AIタレントへの指示] まずは挨拶から始めて、トピックの話題に自然に話の流れを変えてください。`を入力
 
 

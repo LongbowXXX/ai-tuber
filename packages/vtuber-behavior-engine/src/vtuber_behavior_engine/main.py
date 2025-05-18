@@ -9,29 +9,27 @@ from contextlib import AsyncExitStack
 from dotenv import load_dotenv
 
 from vtuber_behavior_engine.agent_runner import run_agent_standalone
-from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
-from vtuber_behavior_engine.stage_agents.agent import create_root_agent
-from vtuber_behavior_engine.stage_agents.agents_config import AgentsConfig
 from vtuber_behavior_engine.stage_agents.resources import initial_message
 
 logger = logging.getLogger(__name__)
 
 
 async def main() -> None:
-    exit_stack = AsyncExitStack()
-    stage_director_client = await StageDirectorMCPClient.create_async(exit_stack)
+    from vtuber_behavior_engine.news_agent.agent import root_agent
+
+    exit_stack: AsyncExitStack | None = None
     try:
-        character_agent = await create_root_agent(
-            stage_director_client,
-            AgentsConfig(
-                max_iterations=5,
-            ),
-        )
+        agent_tuple = await root_agent
+        if agent_tuple is None:
+            logger.error("Failed to create root agent.")
+            raise Exception("Failed to create root agent.")
+        character_agent, exit_stack = agent_tuple
         # initial message
         message = initial_message()
         await run_agent_standalone(character_agent, message)
     finally:
-        await exit_stack.aclose()
+        if exit_stack is not None:
+            await exit_stack.aclose()
 
 
 if __name__ == "__main__":
