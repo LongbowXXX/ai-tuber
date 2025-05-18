@@ -29,6 +29,6 @@ async def create_root_agent_for_adk_web(agent_config: AgentsConfig) -> tuple[Bas
 
 root_agent = create_root_agent_for_adk_web(
     AgentsConfig(
-        max_iterations=1,
+        max_iterations=5,
     )
 )
