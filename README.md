@@ -114,11 +114,6 @@ graph LR
 - `四国めたん`  
   https://hub.vroid.com/characters/6844984887981314416/models/4463092040338219016
 
-### VRMA モーション
-
-- `[CC0]Sachi VRMA 1`  
-  https://booth.pm/ja/items/6412084
-
 ### 東北ずん子 ずんだもん プロジェクト キャラクター利用の手引き
 
 本プロジェクトのソースコードは MIT License で公開していますが、サンプルとして利用しているキャラクターは利用制限があります。  
