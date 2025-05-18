@@ -7,15 +7,15 @@
 ### システム構成図 (System Architecture Diagram)
 
 ```mermaid
-graph LR
+graph TB
     subgraph "AI Backend (Python/ADK)"
-        VBE["vtuber-behavior-engine\n(AI Core, ADK)"]
-        SD["stage-director\n(Orchestration, MCP Server, FastAPI)"]
+        VBE["vtuber-behavior-engine<br>(AI Core, ADK)"]
+        SD["stage-director<br>(MCP Server, FastAPI)"]
     end
 
     subgraph "Frontend & Streaming (TypeScript/React, OBS)"
-        VS["vtube-stage\n(VRM Rendering, WebSocket Client)"]
-        OBS["OBS Studio\n(Capture & Streaming)"]
+        VS["vtube-stage<br>(VRM Rendering, WebSocket Client)"]
+        OBS["OBS Studio<br>(Capture & Streaming)"]
     end
 
     SD -- "Response(MCP)" --> VBE
@@ -53,9 +53,9 @@ graph LR
 ## 技術スタック (Tech Stack)
 
 - **AI Behavior Engine (`vtuber-behavior-engine`)**: Python, Google ADK, LLM (例: Gemini)
-- **Stage Director (`stage-director`)**: Python, FastAPI, ADK (MCP Client として), WebSockets
+- **Stage Director (`stage-director`)**: Python, FastAPI, MCP Client, WebSockets
 - **VTuber Stage (`vtube-stage`)**: TypeScript, React, Vite, Three.js, @pixiv/three-vrm, WebSocket Client, obs-websocket-js
-- **Communication**: WebSockets, ADK Internal / MCP Principles
+- **Communication**: WebSockets, ADK / MCP Principles
 - **Streaming Software**: OBS Studio
 - **OBS Control**: obs-websocket
 
@@ -69,7 +69,7 @@ graph LR
     cd ai-tuber
     ```
 2.  **依存関係のインストール**:
-    各パッケージ (`vtuber-behavior-engine`, `stage-director`, `vtube-stage` ) のディレクトリに移動し、それぞれの `README.md` またはセットアップ手順 (`SetupGuide.md` ) に従って依存関係をインストールしてください (`uv` の利用を推奨)。
+    各パッケージ (`vtuber-behavior-engine`, `stage-director`, `vtube-stage` ) のディレクトリに移動し、それぞれの `README.md` に従って依存関係をインストールしてください。
 3.  **実行**:
     各コンポーネントの実行方法については、それぞれの `README.md` を参照してください。
 4.  **開発プロセス**:
