@@ -2,6 +2,8 @@
 #
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
+import logging
+from typing import Callable
 
 import chromadb
 from chromadb import QueryResult
@@ -14,6 +16,8 @@ from google.genai import types
 
 from vtuber_behavior_engine.path import APPLICATION_DB_DIR
 
+logger = logging.getLogger(__name__)
+
 
 class ChromaMemoryService(BaseMemoryService):  # type: ignore[misc]
     """Chroma Memory Service for Vtuber Behavior Engine.
@@ -22,7 +26,7 @@ class ChromaMemoryService(BaseMemoryService):  # type: ignore[misc]
     It inherits from BaseMemoryService and implements the required methods.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, event_filter: Callable[[Event], bool] | None = None) -> None:
         super().__init__()
         self._db_path = APPLICATION_DB_DIR / "chroma-memory-service"
         self._client = chromadb.PersistentClient(
@@ -32,6 +36,7 @@ class ChromaMemoryService(BaseMemoryService):  # type: ignore[misc]
         self._collection = self._client.get_or_create_collection(
             name="vtuber_sessions",
         )
+        self._event_filter = event_filter
 
     async def add_session_to_memory(self, session: Session) -> None:
         """Adds a session to the memory service.
@@ -42,8 +47,12 @@ class ChromaMemoryService(BaseMemoryService):  # type: ignore[misc]
             session: The session to add.
         """
         for event in session.events:
+            if self._event_filter:
+                if not self._event_filter(event):
+                    continue
             if event.content and event.content.parts:
                 text = " ".join(part.text for part in event.content.parts if part.text)
+                logger.info(f"Adding {text} to memory")
                 self._collection.add(
                     documents=[text],
                     metadatas=[

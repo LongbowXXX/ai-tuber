@@ -11,7 +11,12 @@ from google.adk.sessions import InMemorySessionService
 from google.genai.types import Content, Part
 
 from vtuber_behavior_engine.services.memory.chroma_memory_service import ChromaMemoryService
-from vtuber_behavior_engine.stage_agents.agent_constants import AGENT_SYSTEM_AAP_NAME, AGENT_SYSTEM_USER_ID
+from vtuber_behavior_engine.stage_agents.agent_constants import (
+    AGENT_SYSTEM_AAP_NAME,
+    AGENT_SYSTEM_USER_ID,
+    AGENT1_CHARACTER_ID,
+    AGENT2_CHARACTER_ID,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +27,9 @@ async def run_agent_standalone(agent: BaseAgent, initial_message: str) -> str:
     # Prepare to use ADK Runner
     session_service = InMemorySessionService()
     artifacts_service = InMemoryArtifactService()
-    memory_service = ChromaMemoryService()
+    memory_service = ChromaMemoryService(
+        event_filter=lambda event_data: event_data.author in [AGENT1_CHARACTER_ID, AGENT2_CHARACTER_ID],
+    )
     # Convert user input into a format ADK can understand
     message = Content(role="user", parts=[Part(text=initial_message)])
 
