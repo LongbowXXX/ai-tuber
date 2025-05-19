@@ -42,3 +42,7 @@ def character_output_prompt(character_id: str) -> str:
         .read_text(encoding="utf-8")
         .replace("{character_id}", character_id)
     )
+
+
+def recall_conversation_prompt() -> str:
+    return Path(__file__, "../resources/recall_conversation_prompt.md").resolve().read_text(encoding="utf-8")

@@ -78,10 +78,11 @@ class ChromaMemoryService(BaseMemoryService):  # type: ignore[misc]
         Returns:
             A SearchMemoryResponse containing the matching memories.
         """
+        logger.info(f"search_memory(): Searching for {query} in memory")
         results: QueryResult = self._collection.query(
             query_texts=[query],
             n_results=10,
-            where={"app_name": app_name, "user_id": user_id},
+            where={"user_id": user_id},
         )
         documents_list = results["documents"]
         metadatas_list = results["metadatas"]
@@ -90,13 +91,14 @@ class ChromaMemoryService(BaseMemoryService):  # type: ignore[misc]
 
         memory_results = []
         for documents, metadatas in zip(documents_list, metadatas_list):
-            metadata = metadatas[0]
-            document = documents[0]
-            event = Event(
-                author=metadata["author"],
-                timestamp=metadata["timestamp"],
-                content=types.Content(parts=[types.Part(text=document)]),
-            )
-            memory_results.append(MemoryResult(session_id=metadata["session_id"], events=[event]))
-
+            if not documents or not metadatas:
+                continue
+            for document, metadata in zip(documents, metadatas):
+                event = Event(
+                    author=metadata["author"],
+                    timestamp=metadata["timestamp"],
+                    content=types.Content(parts=[types.Part(text=document)]),
+                )
+                memory_results.append(MemoryResult(session_id=metadata["session_id"], events=[event]))
+        logger.info(f"search_memory(): Found memories: {memory_results}")
         return SearchMemoryResponse(memories=memory_results)

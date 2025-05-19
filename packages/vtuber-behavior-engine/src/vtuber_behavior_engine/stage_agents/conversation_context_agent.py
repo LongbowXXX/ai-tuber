@@ -8,6 +8,7 @@ from typing import Optional
 from google.adk.agents import BaseAgent, LlmAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.tools import google_search
+from google.adk.tools import load_memory
 from google.genai import types
 
 from vtuber_behavior_engine.services.current_time_provider import get_current_time
@@ -18,10 +19,12 @@ from vtuber_behavior_engine.stage_agents.agent_constants import (
     UPDATE_TOPIC_LLM_MODEL,
     STATE_LATEST_NEWS,
     STATE_CURRENT_TIME,
+    STATE_CONVERSATION_RECALL,
 )
 from vtuber_behavior_engine.stage_agents.resources import (
     initial_context,
     update_context,
+    recall_conversation_prompt,
 )
 
 logger = logging.getLogger(__name__)
@@ -57,6 +60,20 @@ def create_update_context_agent() -> BaseAgent:
         description="Updates the conversation context based on history.",
         output_key=STATE_CONVERSATION_CONTEXT,
         tools=[google_search],
+        disallow_transfer_to_parent=True,
+        disallow_transfer_to_peers=True,
+    )
+    return agent
+
+
+def create_conversation_recall_agent() -> BaseAgent:
+    agent = LlmAgent(
+        name="ConversationRecall",
+        model=INITIAL_TOPIC_LLM_MODEL,
+        instruction=recall_conversation_prompt(),
+        description="Recall past conversations related to the current one.",
+        output_key=STATE_CONVERSATION_RECALL,
+        tools=[load_memory],
         disallow_transfer_to_parent=True,
         disallow_transfer_to_peers=True,
     )

@@ -10,8 +10,12 @@
 {conversation_context}
 ```
 
+# 過去の会話履歴の記憶から得られた、現在の会話に関連する過去に対話した内容 :
+```
+{conversation_recall}
+```
 
-# 現在時刻
+# 現在時刻:
 ```
 {current_time}
 ```

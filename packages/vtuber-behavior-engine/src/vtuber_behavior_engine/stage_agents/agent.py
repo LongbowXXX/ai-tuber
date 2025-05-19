@@ -20,6 +20,7 @@ from vtuber_behavior_engine.stage_agents.character_agent import create_character
 from vtuber_behavior_engine.stage_agents.conversation_context_agent import (
     create_initial_context_agent,
     create_update_context_agent,
+    create_conversation_recall_agent,
 )
 from vtuber_behavior_engine.stage_agents.resources import (
     character1,
@@ -39,10 +40,12 @@ async def create_root_agent(stage_director_client: StageDirectorMCPClient, agent
 
     initial_context_agent = create_initial_context_agent()
     update_context_agent = create_update_context_agent()
+    recall_conversation_agent = create_conversation_recall_agent()
 
     agent_conversation_loop = LoopAgent(
         name="ConversationLoop",
         sub_agents=[
+            recall_conversation_agent,
             agent1_thought,
             agent1_output,
             agent2_thought,
