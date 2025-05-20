@@ -58,6 +58,14 @@ async def speak(character_id: str, message: str, caption: str, emotion: str) -> 
         return f"Failed to speak: {e}"
 
 
+@mcp.tool()
+async def display_markdown_text(text: str) -> str:
+    """Display Markdown text."""
+    logger.info(f"MCP Tool 'display_markdown_text' called: text={text}")
+    # Implement the logic to display Markdown text
+    return "Success"
+
+
 async def run_stage_director_mcp_server() -> None:
     """Run the MCP server."""
     await mcp.run_sse_async()

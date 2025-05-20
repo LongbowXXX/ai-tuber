@@ -38,8 +38,8 @@ async def create_root_agent(stage_director_client: StageDirectorMCPClient, agent
     agent1_output = await create_character_output_agent(AGENT1_CHARACTER_ID, stage_director_client)
     agent2_output = await create_character_output_agent(AGENT2_CHARACTER_ID, stage_director_client)
 
-    initial_context_agent = create_initial_context_agent()
-    update_context_agent = create_update_context_agent()
+    initial_context_agent = create_initial_context_agent(stage_director_client)
+    update_context_agent = create_update_context_agent(stage_director_client)
     recall_conversation_agent = create_conversation_recall_agent()
 
     agent_conversation_loop = LoopAgent(

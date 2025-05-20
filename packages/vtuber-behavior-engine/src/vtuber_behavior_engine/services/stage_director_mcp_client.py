@@ -46,6 +46,22 @@ class StageDirectorMCPClient:
         logger.info("tools")
         return await self._toolset.load_tools()  # type: ignore[no-any-return]
 
+    async def display_markdown_text(self, text: str) -> None:
+        logger.info(f"Displaying markdown text: {text}")
+        _ = await self._toolset.load_tools()
+        session = self._toolset.session
+        try:
+            await session.call_tool(
+                "display_markdown_text",
+                arguments={
+                    "text": text,
+                },
+            )
+        except Exception as e:
+            logger.error(f"Error in display_markdown_text-call_tool: {e}", exc_info=True)
+        finally:
+            logger.info("Finished displaying markdown text.")
+
     async def speak(self, speech: AgentSpeech) -> None:
         if self._current_speak_task and not self._current_speak_task.done():
             logger.info("Waiting for the previous speak task to finish.")
