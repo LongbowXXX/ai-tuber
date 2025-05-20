@@ -26,6 +26,7 @@
     "class-validator": "^0.14.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0",
     "reflect-metadata": "^0.2.2",
     "styled-components": "^6.1.18",
     "three": "^0.175.0"

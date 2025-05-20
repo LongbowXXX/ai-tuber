@@ -3,10 +3,15 @@ import { useWebSocket } from './useWebSocket';
 import { validateStageCommand } from '../utils/command_validator';
 import { AvatarState } from '../types/avatar_types';
 import { StageCommand } from '../types/command';
+import { StageState } from '../types/scene_types';
 
 export function useStageCommandHandler() {
   const [lastMessage, setLastMessage] = useState<StageCommand | object | null>(null);
   const [avatars, setAvatars] = useState<AvatarState[]>([]); // 初期値を空配列に
+  const [stage, setStage] = useState<StageState>({
+    // currentMarkdownText: '### Grounding Web Sites\n- [sourceA](url)\n### Grounding Web Search Queries\n- hoge\n- fuga',
+    currentMarkdownText: null,
+  });
 
   const handleWebSocketMessage = useCallback(async (data: unknown) => {
     const validationResult = await validateStageCommand(data);
@@ -51,6 +56,13 @@ export function useStageCommandHandler() {
               return a;
             })
           );
+          break;
+        case 'displayMarkdown':
+          console.log(`Received displayMarkdown: ${command.payload.text}`);
+          setStage(prevScene => ({
+            ...prevScene,
+            currentMarkdownText: command.payload.text,
+          }));
           break;
         default: {
           const unknownCommand = command as StageCommand;
@@ -130,6 +142,7 @@ export function useStageCommandHandler() {
   return {
     avatars,
     setAvatars,
+    stage,
     lastMessage,
     isConnected,
   };

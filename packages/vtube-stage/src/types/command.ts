@@ -97,5 +97,24 @@ export class SpeakCommand extends BaseCommand<'speak', SpeakPayload> {
   declare payload: SpeakPayload;
 }
 
+export class DisplayMarkdownPayload {
+  @IsString()
+  @IsDefined()
+  text!: string;
+}
+export class DisplayMarkdownCommand extends BaseCommand<'displayMarkdown', DisplayMarkdownPayload> {
+  declare command: 'displayMarkdown';
+
+  @ValidateNested()
+  @Type(() => DisplayMarkdownPayload)
+  @IsDefined()
+  declare payload: DisplayMarkdownPayload;
+}
+
 // 受け取る可能性のある全てのコマンドの Union 型 (クラスの Union に変更)
-export type StageCommand = LogMessageCommand | SetPoseCommand | TriggerAnimationCommand | SpeakCommand;
+export type StageCommand =
+  | LogMessageCommand
+  | SetPoseCommand
+  | TriggerAnimationCommand
+  | SpeakCommand
+  | DisplayMarkdownCommand;

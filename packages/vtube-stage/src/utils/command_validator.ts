@@ -1,6 +1,7 @@
 import { validate, ValidationError } from 'class-validator';
 import { plainToInstance, ClassConstructor } from 'class-transformer';
 import {
+  DisplayMarkdownCommand,
   LogMessageCommand,
   SetPoseCommand,
   SpeakCommand, // Add SpeakCommand
@@ -13,7 +14,8 @@ const commandRegistry: { [key: string]: ClassConstructor<StageCommand> } = {
   logMessage: LogMessageCommand,
   setPose: SetPoseCommand,
   triggerAnimation: TriggerAnimationCommand,
-  speak: SpeakCommand, // Add speak command
+  speak: SpeakCommand,
+  displayMarkdown: DisplayMarkdownCommand,
 };
 
 /**

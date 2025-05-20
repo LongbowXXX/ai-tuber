@@ -14,6 +14,8 @@ from stage_director.models import (
     TriggerAnimationCommand,
     SpeakPayload,
     SpeakCommand,
+    DisplayMarkdownTextPayload,
+    DisplayMarkdownTextCommand,
 )
 
 logger = logging.getLogger("stage-director.mcp")
@@ -62,8 +64,15 @@ async def speak(character_id: str, message: str, caption: str, emotion: str) -> 
 async def display_markdown_text(text: str) -> str:
     """Display Markdown text."""
     logger.info(f"MCP Tool 'display_markdown_text' called: text={text}")
-    # Implement the logic to display Markdown text
-    return "Success"
+    payload = DisplayMarkdownTextPayload(text=text)
+
+    try:
+        command = DisplayMarkdownTextCommand(payload=payload)
+        await enqueue_command(command)
+        return "Success"
+    except Exception as e:
+        logger.error(f"Error in display_markdown_text tool: {e}", exc_info=True)
+        return f"Failed to display_markdown_text: {e}"
 
 
 async def run_stage_director_mcp_server() -> None:

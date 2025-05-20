@@ -8,10 +8,13 @@ import { AnimatedCamera } from '../components/AnimatedCamera';
 import { useThree } from '@react-three/fiber';
 import { useEffect } from 'react';
 import { AvatarState } from '../types/avatar_types';
+import { StageState } from '../types/scene_types';
+import ReactMarkdown from 'react-markdown';
 
 interface StagePageProps {
   avatars: AvatarState[];
   setAvatars: React.Dispatch<React.SetStateAction<AvatarState[]>>;
+  stage: StageState;
   lastMessage: unknown;
   isConnected: boolean;
 }
@@ -68,6 +71,23 @@ const LoadingOverlay = styled.div`
   color: #333;
 `;
 
+const MarkdownOverlay = styled.div`
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 16px;
+  border-radius: 8px;
+  max-width: 80%;
+  max-height: 50%;
+  text-align: left;
+  font-size: 1.0rem;
+  line-height: 1.5;
+  overflow-y: auto;
+`;
+
 const CameraInit: React.FC = () => {
   const { camera } = useThree();
   useEffect(() => {
@@ -91,7 +111,7 @@ const CameraInit: React.FC = () => {
   return null;
 };
 
-const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, lastMessage, isConnected }) => {
+const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, lastMessage, isConnected }) => {
   // OrbitControls有効化のためのフラグ
   const [cameraAnimated, setCameraAnimated] = React.useState(false);
   // カメラアニメーション開始トリガー
@@ -134,6 +154,12 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, lastMessage,
           />
           <SceneContent avatars={avatars} controlsEnabled={cameraAnimated} onAvatarLoad={handleAvatarLoad} />
         </Canvas>
+        {/* Markdown Overlay */}
+        {stage.currentMarkdownText && (
+          <MarkdownOverlay>
+            <ReactMarkdown>{stage.currentMarkdownText}</ReactMarkdown>
+          </MarkdownOverlay>
+        )}
         {/* ローディングオーバーレイ or Startボタン */}
         {!allLoaded && <LoadingOverlay>Loading...</LoadingOverlay>}
         {allLoaded && !started && (

@@ -25,6 +25,10 @@ class SpeakEndPayload(BaseModel):
     speakId: str
 
 
+class DisplayMarkdownTextPayload(BaseModel):
+    text: str
+
+
 class TriggerAnimationCommand(BaseModel):
     command: Literal["triggerAnimation"] = "triggerAnimation"
     payload: TriggerAnimationPayload
@@ -40,10 +44,16 @@ class SpeakEndCommand(BaseModel):
     payload: SpeakEndPayload
 
 
+class DisplayMarkdownTextCommand(BaseModel):
+    command: Literal["displayMarkdown"] = "displayMarkdown"
+    payload: DisplayMarkdownTextPayload
+
+
 StageCommand = Union[
     TriggerAnimationCommand,
     SpeakCommand,
-    SpeakEndCommand,  # Added SpeakEndCommand
+    SpeakEndCommand,
+    DisplayMarkdownTextCommand,
 ]
 
 
