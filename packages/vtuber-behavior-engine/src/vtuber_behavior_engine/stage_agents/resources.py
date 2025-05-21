@@ -9,12 +9,12 @@ def initial_message() -> str:
     return Path(__file__, "../resources/initial_message.md").resolve().read_text(encoding="utf-8")
 
 
-def initial_context() -> str:
-    return Path(__file__, "../resources/initial_context.md").resolve().read_text(encoding="utf-8")
+def initial_news_context() -> str:
+    return Path(__file__, "../resources/news/initial_context.md").resolve().read_text(encoding="utf-8")
 
 
-def update_context() -> str:
-    return Path(__file__, "../resources/update_context.md").resolve().read_text(encoding="utf-8")
+def update_news_context() -> str:
+    return Path(__file__, "../resources/news/update_context.md").resolve().read_text(encoding="utf-8")
 
 
 def character1() -> str:

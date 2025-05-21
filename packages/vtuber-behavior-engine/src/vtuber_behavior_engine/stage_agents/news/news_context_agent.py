@@ -25,8 +25,8 @@ from vtuber_behavior_engine.stage_agents.news.news_agent_constants import (
     STATE_LATEST_NEWS,
 )
 from vtuber_behavior_engine.stage_agents.resources import (
-    initial_context,
-    update_context,
+    initial_news_context,
+    update_news_context,
 )
 
 logger = logging.getLogger(__name__)
@@ -55,7 +55,7 @@ def create_initial_news_context_agent(stage_director_client: StageDirectorMCPCli
     agent = LlmAgent(
         name="InitialContextProvider",
         model=INITIAL_TOPIC_LLM_MODEL,
-        instruction=initial_context(),
+        instruction=initial_news_context(),
         description="Provides the initial context for the conversation.",
         output_key=STATE_CONVERSATION_CONTEXT,
         tools=[google_search],
@@ -83,7 +83,7 @@ def create_update_news_context_agent(stage_director_client: StageDirectorMCPClie
     agent = LlmAgent(
         name="ContextUpdater",
         model=UPDATE_TOPIC_LLM_MODEL,
-        instruction=update_context(),
+        instruction=update_news_context(),
         description="Updates the conversation context based on history.",
         output_key=STATE_CONVERSATION_CONTEXT,
         tools=[google_search],
