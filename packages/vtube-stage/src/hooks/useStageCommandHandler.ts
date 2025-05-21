@@ -9,7 +9,8 @@ export function useStageCommandHandler() {
   const [lastMessage, setLastMessage] = useState<StageCommand | object | null>(null);
   const [avatars, setAvatars] = useState<AvatarState[]>([]); // 初期値を空配列に
   const [stage, setStage] = useState<StageState>({
-    // currentMarkdownText: '### Grounding Web Sites\n- [sourceA](url)\n### Grounding Web Search Queries\n- hoge\n- fuga',
+    // currentMarkdownText:
+    //   '### Grounding Web Sites\n- sourceA\n  - url\n### Grounding Web Search Queries\n- hoge\n- fuga',
     currentMarkdownText: null,
   });
 

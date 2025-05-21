@@ -5,8 +5,10 @@
 from google.genai.types import GroundingMetadata
 
 
-def to_grounding_markdown_text(grounding: GroundingMetadata) -> str:
-    """Convert grounding metadata to grounding Markdown text."""
+def to_grounding_markdown_text(grounding: GroundingMetadata) -> str | None:
+    """Convert grounding metadata to a grounding Markdown text."""
+    if not grounding.grounding_chunks:
+        return None
     all_str_list: list[str] = ["### Grounding Web Sites"]
     if grounding.grounding_chunks:
         for chunk in grounding.grounding_chunks:

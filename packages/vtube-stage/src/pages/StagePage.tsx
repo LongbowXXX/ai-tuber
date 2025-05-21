@@ -73,18 +73,22 @@ const LoadingOverlay = styled.div`
 
 const MarkdownOverlay = styled.div`
   position: absolute;
-  bottom: 10%;
+  bottom: 5%;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 80, 0, 0.7);
   color: white;
+  a:link { color: white; }
+  a:visited { color: white; }
+  a:hover { color: white; }
+  a:active { color: white; }
   padding: 16px;
   border-radius: 8px;
   max-width: 80%;
   max-height: 50%;
   text-align: left;
   font-size: 1.0rem;
-  line-height: 1.5;
+  line-height: 1.1;
   overflow-y: auto;
 `;
 
