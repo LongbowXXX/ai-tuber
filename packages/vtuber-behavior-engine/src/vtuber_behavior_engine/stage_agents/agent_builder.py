@@ -18,9 +18,11 @@ from vtuber_behavior_engine.stage_agents.agent_constants import (
 from vtuber_behavior_engine.stage_agents.agents_config import AgentsConfig
 from vtuber_behavior_engine.stage_agents.character_agent import create_character_agent, create_character_output_agent
 from vtuber_behavior_engine.stage_agents.conversation_context_agent import (
-    create_initial_context_agent,
-    create_update_context_agent,
     create_conversation_recall_agent,
+)
+from vtuber_behavior_engine.stage_agents.news.news_context_agent import (
+    create_initial_news_context_agent,
+    create_update_news_context_agent,
 )
 from vtuber_behavior_engine.stage_agents.resources import (
     character1,
@@ -30,7 +32,12 @@ from vtuber_behavior_engine.stage_agents.resources import (
 logger = logging.getLogger(__name__)
 
 
-async def create_root_agent(stage_director_client: StageDirectorMCPClient, agent_config: AgentsConfig) -> BaseAgent:
+async def build_root_agent(
+    initial_context_agent: BaseAgent,
+    update_context_agent: BaseAgent,
+    stage_director_client: StageDirectorMCPClient,
+    agent_config: AgentsConfig,
+) -> BaseAgent:
     logger.info(f"Creating root agent. agent_config={agent_config}")
     agent1_thought = create_character_agent(AGENT1_CHARACTER_ID, character1())
     agent2_thought = create_character_agent(AGENT2_CHARACTER_ID, character2())
@@ -38,8 +45,6 @@ async def create_root_agent(stage_director_client: StageDirectorMCPClient, agent
     agent1_output = await create_character_output_agent(AGENT1_CHARACTER_ID, stage_director_client)
     agent2_output = await create_character_output_agent(AGENT2_CHARACTER_ID, stage_director_client)
 
-    initial_context_agent = create_initial_context_agent(stage_director_client)
-    update_context_agent = create_update_context_agent(stage_director_client)
     recall_conversation_agent = create_conversation_recall_agent()
 
     agent_conversation_loop = LoopAgent(

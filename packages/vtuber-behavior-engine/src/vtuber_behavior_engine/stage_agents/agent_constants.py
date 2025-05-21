@@ -6,10 +6,7 @@
 AGENT_SYSTEM_AAP_NAME = "ai_vtuber_stage_director"
 AGENT_SYSTEM_USER_ID = "vtuber_user"
 
-# AGENT_LLM_MODEL = "gemini-2.0-flash"
-# INITIAL_TOPIC_LLM_MODEL = LiteLlm("ollama_chat/gemma3:27b")
-INITIAL_TOPIC_LLM_MODEL = "gemini-2.0-flash"
-UPDATE_TOPIC_LLM_MODEL = "gemini-2.0-flash"
+CONVERSATION_RECALL_LLM_MODEL = "gemini-2.0-flash"
 # AGENT_LLM_MODEL = "gemini-2.5-flash-preview-04-17"
 AGENT_LLM_MODEL = "gemini-2.0-flash"
 OUTPUT_LLM_MODEL = "gemini-2.0-flash"
@@ -20,7 +17,6 @@ OUTPUT_LLM_MODEL = "gemini-2.0-flash"
 STATE_CONVERSATION_CONTEXT = "conversation_context"
 STATE_CONVERSATION_RECALL = "conversation_recall"
 STATE_AGENT_SPEECH_BASE = "agent_speech_"
-STATE_LATEST_NEWS = "latest_news"
 STATE_CURRENT_TIME = "current_time"
 
 AGENT1_CHARACTER_ID = "avatar1"
