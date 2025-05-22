@@ -3,7 +3,7 @@
 
 ## 現在のプレゼンテーション資料:
 ```
-{presentation_context}
+{conversation_context}
 
 ```
 

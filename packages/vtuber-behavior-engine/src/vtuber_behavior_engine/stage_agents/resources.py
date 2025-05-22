@@ -17,6 +17,18 @@ def update_news_context() -> str:
     return Path(__file__, "../resources/news/update_context.md").resolve().read_text(encoding="utf-8")
 
 
+def initial_presentation_context() -> str:
+    return Path(__file__, "../resources/presentation/initial_context.md").resolve().read_text(encoding="utf-8")
+
+
+def update_presentation_context() -> str:
+    return Path(__file__, "../resources/presentation/update_context.md").resolve().read_text(encoding="utf-8")
+
+
+def use_ai_presentation_json() -> str:
+    return Path(__file__, "../resources/presentation/use_ai_presentation.json").resolve().read_text(encoding="utf-8")
+
+
 def character1() -> str:
     return Path(__file__, "../resources/characters/character1.md").resolve().read_text(encoding="utf-8")
 
