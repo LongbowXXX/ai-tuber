@@ -10,6 +10,6 @@ from vtuber_behavior_engine.stage_agents.presentation.presentation_root_agent_bu
 
 root_agent = build_root_presentation_agent(
     AgentsConfig(
-        max_iterations=5,
+        max_iterations=10,
     )
 )
