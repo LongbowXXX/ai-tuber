@@ -11,6 +11,7 @@ def test_dummy() -> None:
     """A dummy test to ensure the test suite is running."""
     assert True
 
+
 def test_dump_presentation() -> None:
     json_str = json.dumps(PresentationAll.model_json_schema(), indent=2)
     print(json_str)

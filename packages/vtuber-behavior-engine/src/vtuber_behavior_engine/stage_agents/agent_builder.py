@@ -20,10 +20,6 @@ from vtuber_behavior_engine.stage_agents.character_agent import create_character
 from vtuber_behavior_engine.stage_agents.conversation_context_agent import (
     create_conversation_recall_agent,
 )
-from vtuber_behavior_engine.stage_agents.news.news_context_agent import (
-    create_initial_news_context_agent,
-    create_update_news_context_agent,
-)
 from vtuber_behavior_engine.stage_agents.resources import (
     character1,
     character2,
