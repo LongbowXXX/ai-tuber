@@ -25,8 +25,13 @@ class ColorfulHandler(StreamHandler[TextIO]):
     }
 
     def emit(self, record: LogRecord) -> None:
-        record.levelname = self.mapping[record.levelname]
-        super().emit(record)
+        original_levelname = record.levelname
+        try:
+            if record.levelname in self.mapping:
+                record.levelname = self.mapping[record.levelname]
+            super().emit(record)
+        finally:
+            record.levelname = original_levelname
 
 
 def setup_logger() -> None:
