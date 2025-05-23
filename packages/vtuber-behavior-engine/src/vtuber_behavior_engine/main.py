@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 from vtuber_behavior_engine.agent_runner import run_agent_standalone
 from vtuber_behavior_engine.stage_agents.resources import initial_message
+from vtuber_behavior_engine.utils.logger import setup_logger
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,7 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    setup_logger()
     load_dotenv()  # Load environment variables from .env file
 
     try:

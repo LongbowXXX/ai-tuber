@@ -8,7 +8,7 @@ from vtuber_behavior_engine.stage_agents.presentation.presentation_models import
 
 
 def test_dummy() -> None:
-    """A dummy test to ensure the test suite is running."""
+    """A fake test to ensure the test suite is running."""
     assert True
 
 
