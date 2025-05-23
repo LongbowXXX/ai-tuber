@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 
 class MoreInfoForPresenters(BaseModel):
-    what_to_explains: list[str] = Field(description="what to explain in this slide")
+    what_to_explains: list[str] = Field(description="What will the presenter explain on this slide?")
 
 
 class PresentationSlide(BaseModel):
