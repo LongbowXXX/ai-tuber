@@ -77,6 +77,11 @@ def create_update_presentation_context_agent() -> BaseAgent:
             presentation_context = PresentationContext.model_validate_json(context_json)
             logger.info(f"after_model_callback(): \n{presentation_context.current_slide.content_markdown}")
             callback_context.state[STATE_DISPLAY_MARKDOWN_TEXT] = presentation_context.current_slide.content_markdown
+
+            if presentation_context.all_slides_completed:
+                # noinspection PyProtectedMember
+                callback_context._event_actions.escalate = True
+
         return None
 
     agent = LlmAgent(

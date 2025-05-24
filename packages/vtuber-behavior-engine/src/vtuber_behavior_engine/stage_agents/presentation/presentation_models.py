@@ -28,3 +28,4 @@ class PresentationContext(BaseModel):
     )
     table_of_contents: list[str] = Field(description="table of contents of the presentation")
     current_slide: PresentationSlide = Field(description="current slide of the presentation")
+    all_slides_completed: bool = Field(default=False, description="Flag to indicate if all slides have been presented.")

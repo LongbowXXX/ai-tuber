@@ -8,6 +8,6 @@ from vtuber_behavior_engine.stage_agents.news.news_root_agent_builder import bui
 
 root_agent = build_root_news_agent(
     AgentsConfig(
-        max_iterations=5,
+        max_iterations=20,
     )
 )
