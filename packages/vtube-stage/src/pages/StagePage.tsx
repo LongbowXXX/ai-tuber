@@ -74,7 +74,7 @@ const LoadingOverlay = styled.div`
 
 const MarkdownOverlay = styled.div`
   position: absolute;
-  bottom: 5%;
+  bottom: 2%;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0, 80, 0, 0.7);
@@ -83,10 +83,10 @@ const MarkdownOverlay = styled.div`
   a:visited { color: white; }
   a:hover { color: white; }
   a:active { color: white; }
-  padding: 16px;
+  padding: 8px;
   border-radius: 8px;
   max-width: 80%;
-  max-height: 50%;
+  max-height: 80%;
   text-align: left;
   font-size: 1.0rem;
   line-height: 1.1;
