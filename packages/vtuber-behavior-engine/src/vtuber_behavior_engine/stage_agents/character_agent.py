@@ -14,6 +14,7 @@ from vtuber_behavior_engine.stage_agents.agent_constants import (
     AGENT_LLM_MODEL,
     OUTPUT_LLM_MODEL,
     STATE_AGENT_SPEECH_BASE,
+    STATE_DISPLAY_MARKDOWN_TEXT,
 )
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
 from vtuber_behavior_engine.stage_agents.resources import character_prompt, character_output_prompt
@@ -38,6 +39,10 @@ def create_character_agent(character_id: str, character_detail: str) -> BaseAgen
 
 async def create_character_output_agent(character_id: str, stage_director_client: StageDirectorMCPClient) -> BaseAgent:
     async def handle_speech(callback_context: CallbackContext) -> Optional[types.Content]:
+        if callback_context.state[STATE_DISPLAY_MARKDOWN_TEXT] is not None:
+            logger.info("Displaying markdown text.")
+            await stage_director_client.display_markdown_text(callback_context.state[STATE_DISPLAY_MARKDOWN_TEXT])
+
         if STATE_AGENT_SPEECH_BASE + character_id not in callback_context.state:
             logger.info("No speech data found in state. skipping output.")
             return types.ModelContent(parts=[Part.from_text(text="Nothing to do.")])

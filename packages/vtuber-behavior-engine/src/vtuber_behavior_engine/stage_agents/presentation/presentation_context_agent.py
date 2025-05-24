@@ -15,6 +15,7 @@ from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirec
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     STATE_CONVERSATION_CONTEXT,
     STATE_CURRENT_TIME,
+    STATE_DISPLAY_MARKDOWN_TEXT,
 )
 from vtuber_behavior_engine.stage_agents.presentation.presentation_agent_constants import (
     STATE_PRESENTATION_ALL_DATA,
@@ -31,7 +32,7 @@ from vtuber_behavior_engine.stage_agents.resources import (
 logger = logging.getLogger(__name__)
 
 
-def create_initial_presentation_context_agent(stage_director_client: StageDirectorMCPClient) -> BaseAgent:
+def create_initial_presentation_context_agent() -> BaseAgent:
     def provide_presentation(callback_context: CallbackContext) -> Optional[types.Content]:
         presentation_json = use_ai_presentation_json()
         callback_context.state[STATE_PRESENTATION_ALL_DATA] = PresentationAll.model_validate_json(presentation_json)
@@ -39,7 +40,7 @@ def create_initial_presentation_context_agent(stage_director_client: StageDirect
         callback_context.state[STATE_CURRENT_TIME] = get_current_time()
         return None
 
-    async def after_model_callback(
+    def after_model_callback(
         callback_context: CallbackContext,
         llm_response: LlmResponse,
     ) -> Optional[LlmResponse]:
@@ -47,8 +48,8 @@ def create_initial_presentation_context_agent(stage_director_client: StageDirect
         if llm_response.content.parts and llm_response.content.parts[0].text:
             context_json = llm_response.content.parts[0].text
             presentation_context = PresentationContext.model_validate_json(context_json)
-            logger.info(f"after_model_callback(): \n{context_json}")
-            await stage_director_client.display_markdown_text(presentation_context.current_slide.content_markdown)
+            logger.info(f"after_model_callback(): \n{presentation_context.current_slide.content_markdown}")
+            callback_context.state[STATE_DISPLAY_MARKDOWN_TEXT] = presentation_context.current_slide.content_markdown
         return None
 
     agent = LlmAgent(
@@ -66,8 +67,8 @@ def create_initial_presentation_context_agent(stage_director_client: StageDirect
     return agent
 
 
-def create_update_presentation_context_agent(stage_director_client: StageDirectorMCPClient) -> BaseAgent:
-    async def after_model_callback(
+def create_update_presentation_context_agent() -> BaseAgent:
+    def after_model_callback(
         callback_context: CallbackContext,
         llm_response: LlmResponse,
     ) -> Optional[LlmResponse]:
@@ -75,8 +76,8 @@ def create_update_presentation_context_agent(stage_director_client: StageDirecto
         if llm_response.content.parts and llm_response.content.parts[0].text:
             context_json = llm_response.content.parts[0].text
             presentation_context = PresentationContext.model_validate_json(context_json)
-            logger.info(f"after_model_callback(): \n{context_json}")
-            await stage_director_client.display_markdown_text(presentation_context.current_slide.content_markdown)
+            logger.info(f"after_model_callback(): \n{presentation_context.current_slide.content_markdown}")
+            callback_context.state[STATE_DISPLAY_MARKDOWN_TEXT] = presentation_context.current_slide.content_markdown
         return None
 
     agent = LlmAgent(

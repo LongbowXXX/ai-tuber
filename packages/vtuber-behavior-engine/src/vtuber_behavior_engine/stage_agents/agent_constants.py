@@ -18,6 +18,7 @@ STATE_CONVERSATION_CONTEXT = "conversation_context"
 STATE_CONVERSATION_RECALL = "conversation_recall"
 STATE_AGENT_SPEECH_BASE = "agent_speech_"
 STATE_CURRENT_TIME = "current_time"
+STATE_DISPLAY_MARKDOWN_TEXT = "display_markdown_text"
 
 AGENT1_CHARACTER_ID = "avatar1"
 AGENT2_CHARACTER_ID = "avatar2"

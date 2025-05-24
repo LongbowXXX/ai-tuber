@@ -25,8 +25,8 @@ async def build_root_presentation_agent(agent_config: AgentsConfig) -> tuple[Bas
     stage_director_client = await StageDirectorMCPClient.create_async(exit_stack)
     exit_stack.callback(lambda: logger.info("build_root_presentation_agent(): exit_stack closed."))
     try:
-        initial_context_agent = create_initial_presentation_context_agent(stage_director_client)
-        update_context_agent = create_update_presentation_context_agent(stage_director_client)
+        initial_context_agent = create_initial_presentation_context_agent()
+        update_context_agent = create_update_presentation_context_agent()
         character_agent = await build_root_agent(
             initial_context_agent, update_context_agent, stage_director_client, agent_config
         )
