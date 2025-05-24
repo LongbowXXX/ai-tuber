@@ -21,5 +21,10 @@ class PresentationAll(BaseModel):
 
 
 class PresentationContext(BaseModel):
+    slide_progression_decision_reason: str = Field(
+        description="Step by step explanation of why the presentation's slide progress controller "
+        "decides to advance or not advance the current slide. "
+        "Make sure that the AI talent has spoken for each item in `what_to_explains`."
+    )
     table_of_contents: list[str] = Field(description="table of contents of the presentation")
     current_slide: PresentationSlide = Field(description="current slide of the presentation")
