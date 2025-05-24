@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { AvatarState } from '../types/avatar_types';
 import { StageState } from '../types/scene_types';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface StagePageProps {
   avatars: AvatarState[];
@@ -161,7 +162,7 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, lastM
         {/* Markdown Overlay */}
         {stage.currentMarkdownText && (
           <MarkdownOverlay>
-            <ReactMarkdown>{stage.currentMarkdownText}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{stage.currentMarkdownText}</ReactMarkdown>
           </MarkdownOverlay>
         )}
         {/* ローディングオーバーレイ or Startボタン */}
