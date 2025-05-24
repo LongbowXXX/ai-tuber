@@ -25,8 +25,8 @@ def update_presentation_context() -> str:
     return Path(__file__, "../resources/presentation/update_context.md").resolve().read_text(encoding="utf-8")
 
 
-def use_ai_presentation_json() -> str:
-    return Path(__file__, "../resources/presentation/use_ai_presentation.json").resolve().read_text(encoding="utf-8")
+def presentation_slides_json() -> str:
+    return Path(__file__, "../resources/presentation/presentation_slides.json").resolve().read_text(encoding="utf-8")
 
 
 def character1() -> str:

@@ -25,7 +25,7 @@ from vtuber_behavior_engine.stage_agents.presentation.presentation_models import
 from vtuber_behavior_engine.stage_agents.resources import (
     update_presentation_context,
     initial_presentation_context,
-    use_ai_presentation_json,
+    presentation_slides_json,
 )
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 def create_initial_presentation_context_agent() -> BaseAgent:
     def provide_presentation(callback_context: CallbackContext) -> Optional[types.Content]:
-        presentation_json = use_ai_presentation_json()
+        presentation_json = presentation_slides_json()
         callback_context.state[STATE_PRESENTATION_ALL_DATA] = PresentationAll.model_validate_json(presentation_json)
         logger.info(f"provide_presentation(): {presentation_json}")
         callback_context.state[STATE_CURRENT_TIME] = get_current_time()
