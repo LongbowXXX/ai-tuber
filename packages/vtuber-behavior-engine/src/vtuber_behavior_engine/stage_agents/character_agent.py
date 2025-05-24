@@ -10,6 +10,7 @@ from google.adk.agents.callback_context import CallbackContext
 from google.genai import types
 from google.genai.types import Part
 
+from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     AGENT_LLM_MODEL,
     OUTPUT_LLM_MODEL,
@@ -18,7 +19,6 @@ from vtuber_behavior_engine.stage_agents.agent_constants import (
 )
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
 from vtuber_behavior_engine.stage_agents.resources import character_prompt, character_output_prompt
-from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
 
 logger = logging.getLogger(__name__)
 
@@ -39,9 +39,7 @@ def create_character_agent(character_id: str, character_detail: str) -> BaseAgen
 
 async def create_character_output_agent(character_id: str, stage_director_client: StageDirectorMCPClient) -> BaseAgent:
     async def handle_speech(callback_context: CallbackContext) -> Optional[types.Content]:
-        if callback_context.state[STATE_DISPLAY_MARKDOWN_TEXT] is not None:
-            logger.info("Displaying markdown text.")
-            await stage_director_client.display_markdown_text(callback_context.state[STATE_DISPLAY_MARKDOWN_TEXT])
+        markdown_text = callback_context.state[STATE_DISPLAY_MARKDOWN_TEXT]
 
         if STATE_AGENT_SPEECH_BASE + character_id not in callback_context.state:
             logger.info("No speech data found in state. skipping output.")
@@ -50,7 +48,7 @@ async def create_character_output_agent(character_id: str, stage_director_client
             speech_data = callback_context.state[STATE_AGENT_SPEECH_BASE + character_id]
             logger.info(f"speak(): {speech_data}")
             speech_model = AgentSpeech.model_validate(speech_data)
-            await stage_director_client.speak(speech_model)
+            await stage_director_client.speak(speech_model, markdown_text)
             callback_context.state[STATE_AGENT_SPEECH_BASE + character_id] = None
             return None
 

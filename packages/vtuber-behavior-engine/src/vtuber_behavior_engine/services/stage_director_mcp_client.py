@@ -62,7 +62,7 @@ class StageDirectorMCPClient:
         finally:
             logger.info("Finished displaying markdown text.")
 
-    async def speak(self, speech: AgentSpeech) -> None:
+    async def speak(self, speech: AgentSpeech, markdown_text: str | None) -> None:
         if self._current_speak_task and not self._current_speak_task.done():
             logger.info("Waiting for the previous speak task to finish.")
             await self._current_speak_task
@@ -70,6 +70,8 @@ class StageDirectorMCPClient:
             logger.info("Finished waiting for the previous speak task to finish.")
 
         logger.info(f"Speaking {speech}")
+        if markdown_text is not None:
+            await self.display_markdown_text(markdown_text)
         self._current_speak_task = asyncio.create_task(self.speak_all(speech))
         self._current_speak_task.add_done_callback(
             (lambda task: logger.info(f"Speak task completed. {speech.character_id}"))
