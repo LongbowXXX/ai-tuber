@@ -25,8 +25,8 @@ async def build_root_news_agent(agent_config: AgentsConfig) -> tuple[BaseAgent, 
     stage_director_client = await StageDirectorMCPClient.create_async(exit_stack)
     exit_stack.callback(lambda: logger.info("build_root_news_agent(): exit_stack closed."))
     try:
-        initial_context_agent = create_initial_news_context_agent(stage_director_client)
-        update_context_agent = create_update_news_context_agent(stage_director_client)
+        initial_context_agent = create_initial_news_context_agent()
+        update_context_agent = create_update_news_context_agent()
         character_agent = await build_root_agent(
             initial_context_agent, update_context_agent, stage_director_client, agent_config
         )

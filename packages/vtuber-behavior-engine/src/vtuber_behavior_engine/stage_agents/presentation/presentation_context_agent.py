@@ -11,7 +11,6 @@ from google.adk.models.llm_response import LlmResponse
 from google.genai import types
 
 from vtuber_behavior_engine.services.current_time_provider import get_current_time
-from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     STATE_CONVERSATION_CONTEXT,
     STATE_CURRENT_TIME,
