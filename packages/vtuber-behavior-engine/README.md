@@ -64,25 +64,23 @@ uv run python src/vtuber_behavior_engine/main.py
 
 adk web を使用して、Web UI からエージェントを操作することもできます。
 
-`.env` を `src/vtuber_behavior_engine/news_agent` にコピーします。
-
 ```bash
 adk web --port=8090 src/vtuber_behavior_engine
 ```
 
 1. http://localhost:8090/ にアクセスして、ADK Web UI を開きます。
-2. 左上で、`news_agent` を選択。
-3. 最初の発話として`[AIタレントへの指示] まずは挨拶から始めて、"会話のコンテキスト"に自然に話の流れを変えてください。`を入力
+2. 左上で利用するAgentを選択
+  - `news_agent` を選択。
+     - 最初の発話として`[AIタレントへの指示] まずは挨拶から始めて、"会話のコンテキスト"に自然に話の流れを変えてください。`を入力
+  - `presentation_agent` を選択。
+     -  最初の発話として`Start`を入力
 
-
-## 設定
-
-設定 (例: LLM API キー、キャラクター設定、ADK 設定) は、以下を通じて管理されることが想定されます:
-
-- 設定ファイル (例: `.env`)
-- 環境変数
-
-_(詳細は未定)_
+## Presentation について
+- `resources/presentation/slides` にAIに与えるための作成済みのプレゼン資料(JSON)があります。
+- 現状では、読み込むプレゼンは`resources.py`や`presentation_context_agent.py`でハードコードされています。
+- `resources/presentation/create_presentation_slides_json_template.md` のプロンプト使うことで
+   LLMを使って自分の好きなプレゼン資料を作成できます。
+- Gemini 2.5 Pro のような頭のよい reasoning 対応のモデルでプレゼン資料を作ることをお勧めします。
 
 ## 開発
 
