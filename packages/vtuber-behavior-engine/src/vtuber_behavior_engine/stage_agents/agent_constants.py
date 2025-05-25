@@ -8,7 +8,7 @@ AGENT_SYSTEM_USER_ID = "vtuber_user"
 
 CONVERSATION_RECALL_LLM_MODEL = "gemini-2.0-flash"
 # AGENT_LLM_MODEL = "gemini-2.5-flash-preview-04-17"
-AGENT_LLM_MODEL = "gemini-2.0-flash"
+AGENT_LLM_MODEL = "gemini-2.5-flash-preview-05-20"
 OUTPUT_LLM_MODEL = "gemini-2.0-flash"
 # OUTPUT_LLM_MODEL = LiteLlm("ollama_chat/gemma3:27b")
 
