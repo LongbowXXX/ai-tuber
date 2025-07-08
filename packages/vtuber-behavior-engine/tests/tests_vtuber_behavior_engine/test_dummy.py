@@ -5,6 +5,7 @@
 import json
 
 from vtuber_behavior_engine.stage_agents.presentation.presentation_models import PresentationAll
+from vtuber_behavior_engine.stage_agents.theater.theater_models import TheaterPlay
 
 
 def test_dummy() -> None:
@@ -14,4 +15,9 @@ def test_dummy() -> None:
 
 def test_dump_presentation() -> None:
     json_str = json.dumps(PresentationAll.model_json_schema(), indent=2)
+    print(json_str)
+
+
+def test_dump_theater() -> None:
+    json_str = json.dumps(TheaterPlay.model_json_schema(), indent=2)
     print(json_str)
