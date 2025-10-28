@@ -9,13 +9,13 @@ readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi>=0.115.12",
-    "setuptools>=80.0.0",
-    "uvicorn[standard]>=0.34.2",
+    "fastapi==0.120.0",
+    "setuptools>=80.9.0",
+    "uvicorn[standard]>=0.38.0",
     "websockets>=15.0.1",
     "wheel>=0.45.1",
-    "pydantic>=2.11.3",
-    "mcp[cli]>=1.7.1",
+    "pydantic>=2.12.3",
+    "mcp[cli]>=1.19.0",
 ]
 
 [project.optional-dependencies]

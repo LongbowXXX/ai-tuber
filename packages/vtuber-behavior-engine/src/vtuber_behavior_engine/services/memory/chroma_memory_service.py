@@ -10,7 +10,8 @@ from chromadb import QueryResult
 from chromadb.utils import embedding_functions
 from google.adk.events import Event
 from google.adk.memory import BaseMemoryService
-from google.adk.memory.base_memory_service import SearchMemoryResponse, MemoryResult
+from google.adk.memory.base_memory_service import SearchMemoryResponse
+from google.adk.memory.memory_entry import MemoryEntry
 from google.adk.sessions import Session
 from google.genai import types
 
@@ -19,7 +20,7 @@ from vtuber_behavior_engine.path import APPLICATION_DB_DIR
 logger = logging.getLogger(__name__)
 
 
-class ChromaMemoryService(BaseMemoryService):  # type: ignore[misc]
+class ChromaMemoryService(BaseMemoryService):
     """Chroma Memory Service for Vtuber Behavior Engine.
 
     This class is a placeholder for the Chroma memory service.
@@ -94,11 +95,12 @@ class ChromaMemoryService(BaseMemoryService):  # type: ignore[misc]
             if not documents or not metadatas:
                 continue
             for document, metadata in zip(documents, metadatas):
-                event = Event(
-                    author=metadata["author"],
-                    timestamp=metadata["timestamp"],
-                    content=types.Content(parts=[types.Part(text=document)]),
+                memory_results.append(
+                    MemoryEntry(
+                        content=types.Content(parts=[types.Part(text=document)]),
+                        author=str(metadata["author"]),
+                        timestamp=str(metadata["timestamp"]),
+                    )
                 )
-                memory_results.append(MemoryResult(session_id=metadata["session_id"], events=[event]))
         logger.info(f"search_memory(): Found memories: {memory_results}")
         return SearchMemoryResponse(memories=memory_results)

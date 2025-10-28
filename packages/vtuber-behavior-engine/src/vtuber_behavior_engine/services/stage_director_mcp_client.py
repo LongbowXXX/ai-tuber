@@ -11,8 +11,9 @@ import os
 from asyncio import Task
 from contextlib import AsyncExitStack
 
-from google.adk.tools.mcp_tool import MCPToolset, MCPTool
-from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
+from google.adk.tools import McpToolset
+from google.adk.tools.mcp_tool import MCPTool
+from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams, MCPSessionManager
 
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
 
@@ -27,29 +28,32 @@ class StageDirectorMCPClient:
         if not STAGE_DIRECTOR_MCP_SERVER_URL:
             logger.error("STAGE_DIRECTOR_MCP_SERVER_URL is not set.")
             raise ValueError("STAGE_DIRECTOR_MCP_SERVER_URL is not set.")
-
-        toolset = MCPToolset(
-            connection_params=SseServerParams(
-                url=STAGE_DIRECTOR_MCP_SERVER_URL,
-            ),
-            exit_stack=async_exit_stack,
+        connection_params = SseServerParams(
+            url=STAGE_DIRECTOR_MCP_SERVER_URL,
         )
-        await async_exit_stack.enter_async_context(toolset)
-        return cls(toolset)
+        toolset = McpToolset(
+            connection_params=connection_params,
+        )
+        async_exit_stack.push_async_callback(toolset.close)
+        mcp_session_manager = MCPSessionManager(
+            connection_params=connection_params,
+        )
+        return cls(toolset, mcp_session_manager)
 
-    def __init__(self, toolset: MCPToolset) -> None:
+    def __init__(self, toolset: McpToolset, mcp_session_manager: MCPSessionManager) -> None:
         logger.info("__init__")
         self._toolset = toolset
+        self._mcp_session_manager = mcp_session_manager
         self._current_speak_task: Task[None] | None = None
 
     async def load_tools(self) -> list[MCPTool]:
         logger.info("tools")
-        return await self._toolset.load_tools()  # type: ignore[no-any-return]
+        return await self._toolset.get_tools()  # type: ignore[no-any-return]
 
     async def display_markdown_text(self, text: str) -> None:
         logger.info(f"Displaying markdown text: {text}")
-        _ = await self._toolset.load_tools()
-        session = self._toolset.session
+        session = await self._mcp_session_manager.create_session()
+
         try:
             await session.call_tool(
                 "display_markdown_text",
@@ -78,8 +82,7 @@ class StageDirectorMCPClient:
         )
 
     async def speak_all(self, speech: AgentSpeech) -> None:
-        _ = await self._toolset.load_tools()
-        session = self._toolset.session
+        session = await self._mcp_session_manager.create_session()
         for item in speech.speeches:
             logger.info(f"Speaking {item.tts_text} with emotion {item.emotion}")
             try:

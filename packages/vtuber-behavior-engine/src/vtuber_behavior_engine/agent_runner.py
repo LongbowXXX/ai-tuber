@@ -40,7 +40,9 @@ async def run_agent_standalone(agent: BaseAgent, initial_message: str) -> str:
         artifact_service=artifacts_service,
         memory_service=memory_service,
     )
-    session = session_service.create_session(state={}, app_name=AGENT_SYSTEM_AAP_NAME, user_id=AGENT_SYSTEM_USER_ID)
+    session = await session_service.create_session(
+        state={}, app_name=AGENT_SYSTEM_AAP_NAME, user_id=AGENT_SYSTEM_USER_ID
+    )
     logger.info(f"Running agent with session: '{session}'")
 
     final_response = None
@@ -52,10 +54,11 @@ async def run_agent_standalone(agent: BaseAgent, initial_message: str) -> str:
             final_response = event.content.parts[0].text
 
     logger.info(f"Agent final response: {final_response}")
-    completed_session = session_service.get_session(
+    completed_session = await session_service.get_session(
         app_name=AGENT_SYSTEM_AAP_NAME, user_id=AGENT_SYSTEM_USER_ID, session_id=session.id
     )
-    await memory_service.add_session_to_memory(completed_session)
+    if completed_session:
+        await memory_service.add_session_to_memory(completed_session)
 
     logger.info(f"Session added to memory: {completed_session}")
     return final_response or ""
