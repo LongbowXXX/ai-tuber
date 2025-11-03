@@ -3,10 +3,11 @@
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
 import logging
-from typing import Optional
+from typing import Optional, Iterable, cast
 
 from google.adk.agents import LlmAgent, BaseAgent
 from google.adk.agents.callback_context import CallbackContext
+from google.adk.agents.llm_agent import ToolUnion
 from google.genai import types
 from google.genai.types import Part
 
@@ -59,7 +60,7 @@ async def create_character_output_agent(character_id: str, stage_director_client
         name=f"CharacterOutput_{character_id}",
         instruction=character_output_prompt(character_id),
         description=f"Character {character_id} output",
-        tools=tools,
+        tools=list(cast(Iterable[ToolUnion], tools)),
         before_agent_callback=handle_speech,
         disallow_transfer_to_parent=True,
         disallow_transfer_to_peers=True,

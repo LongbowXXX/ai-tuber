@@ -45,7 +45,8 @@ def create_initial_presentation_context_agent() -> BaseAgent:
         llm_response: LlmResponse,
     ) -> Optional[LlmResponse]:
         logger.info(f"after_model_callback(): {callback_context}, {llm_response}")
-        if llm_response.content.parts and llm_response.content.parts[0].text:
+
+        if llm_response.content and llm_response.content.parts and llm_response.content.parts[0].text:
             context_json = llm_response.content.parts[0].text
             presentation_context = PresentationContext.model_validate_json(context_json)
             logger.info(f"after_model_callback(): \n{presentation_context.current_slide.content_markdown}")
@@ -73,7 +74,7 @@ def create_update_presentation_context_agent() -> BaseAgent:
         llm_response: LlmResponse,
     ) -> Optional[LlmResponse]:
         logger.info(f"after_model_callback(): {callback_context}, {llm_response}")
-        if llm_response.content.parts and llm_response.content.parts[0].text:
+        if llm_response.content and llm_response.content.parts and llm_response.content.parts[0].text:
             context_json = llm_response.content.parts[0].text
             presentation_context = PresentationContext.model_validate_json(context_json)
             logger.info(f"after_model_callback(): \n{presentation_context.current_slide.content_markdown}")
@@ -81,7 +82,7 @@ def create_update_presentation_context_agent() -> BaseAgent:
 
             if presentation_context.all_slides_completed:
                 # noinspection PyProtectedMember
-                callback_context._event_actions.escalate = True
+                callback_context._event_actions.escalate = True  # pyright: ignore[reportPrivateUsage]
 
         return None
 

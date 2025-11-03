@@ -90,7 +90,7 @@ class ChromaMemoryService(BaseMemoryService):
         if not documents_list or not metadatas_list:
             return SearchMemoryResponse(memories=[])
 
-        memory_results = []
+        memory_results: list[MemoryEntry] = []
         for documents, metadatas in zip(documents_list, metadatas_list):
             if not documents or not metadatas:
                 continue

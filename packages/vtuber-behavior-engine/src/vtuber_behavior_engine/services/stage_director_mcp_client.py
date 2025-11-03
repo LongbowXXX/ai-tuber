@@ -9,10 +9,11 @@ import asyncio
 import logging
 import os
 from asyncio import Task
+from collections.abc import Iterable
 from contextlib import AsyncExitStack
+from typing import cast
 
-from google.adk.tools import McpToolset
-from google.adk.tools.mcp_tool import MCPTool
+from google.adk.tools import McpToolset, BaseTool
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams, MCPSessionManager
 
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
@@ -46,9 +47,10 @@ class StageDirectorMCPClient:
         self._mcp_session_manager = mcp_session_manager
         self._current_speak_task: Task[None] | None = None
 
-    async def load_tools(self) -> list[MCPTool]:
+    async def load_tools(self) -> list[BaseTool]:
         logger.info("tools")
-        return await self._toolset.get_tools()  # type: ignore[no-any-return]
+        tools = await self._toolset.get_tools()
+        return list(cast(Iterable[BaseTool], tools))
 
     async def display_markdown_text(self, text: str) -> None:
         logger.info(f"Displaying markdown text: {text}")

@@ -25,7 +25,7 @@ async def run_agent_standalone(agent: BaseAgent, initial_message: str) -> str:
     logger.info(f"Running agent with initial_message: '{initial_message}'")
 
     # Prepare to use ADK Runner
-    session_service = InMemorySessionService()
+    session_service = InMemorySessionService()  # type: ignore[no-untyped-call]
     artifacts_service = InMemoryArtifactService()
     memory_service = ChromaMemoryService(
         event_filter=lambda event_data: event_data.author in [AGENT1_CHARACTER_ID, AGENT2_CHARACTER_ID],
