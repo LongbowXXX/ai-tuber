@@ -13,5 +13,6 @@
   "python.analysis.diagnosticSeverityOverrides": {
     "reportMissingTypeStubs": "none"
   },
-  "window.title": "[${rootName}]${separator}${dirty}${activeEditorShort}${separator}${profileName}${separator}${appName}"
+  "window.title": "[${rootName}]${separator}${dirty}${activeEditorShort}${separator}${profileName}${separator}${appName}",
+  "github.copilot.chat.localeOverride": "ja"
 }
