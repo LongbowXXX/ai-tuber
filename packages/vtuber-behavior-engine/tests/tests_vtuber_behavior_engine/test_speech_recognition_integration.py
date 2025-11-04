@@ -14,6 +14,7 @@ import logging
 import queue
 import time
 
+import pytest
 from dotenv import load_dotenv
 
 from vtuber_behavior_engine.services.speech_recognition import SpeechRecognitionManager
@@ -21,16 +22,8 @@ from vtuber_behavior_engine.services.speech_recognition import SpeechRecognition
 logger = logging.getLogger(__name__)
 
 
-def test_speech_recognition_with_real_microphone() -> None:
-    """
-    実際のマイクを使用した音声認識テスト
-
-    このテストを実行するには:
-    set RUN_MANUAL_TESTS=1
-    pytest -k test_speech_recognition_with_real_microphone -s
-
-    テスト開始後、日本語で何か話しかけてください。
-    """
+@pytest.mark.skip(reason="Manual test that requires a real microphone and Google STT credentials.")
+def test_speech_recognition() -> None:
     load_dotenv()
     logger.info("=" * 80)
     logger.setLevel(logging.DEBUG)
