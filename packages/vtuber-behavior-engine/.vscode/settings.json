@@ -1,5 +1,5 @@
 {
-  "python.analysis.typeCheckingMode": "strict",
+  "python.analysis.typeCheckingMode": "off",
   "python.analysis.autoImportCompletions": true,
   "mypy-type-checker.importStrategy": "fromEnvironment",
   "flake8.importStrategy": "fromEnvironment",
@@ -11,7 +11,18 @@
   "python.testing.pytestEnabled": true,
   "python.testing.pytestArgs": ["tests", "--no-cov"],
   "python.analysis.diagnosticSeverityOverrides": {
-    "reportMissingTypeStubs": "none"
+    "reportGeneralTypeIssues": "none",
+    "reportMissingImports": "none",
+    "reportMissingModuleSource": "none",
+    "reportMissingTypeStubs": "none",
+    "reportOptionalMemberAccess": "none",
+    "reportOptionalOperand": "none",
+    "reportOptionalSubscript": "none",
+    "reportPrivateImportUsage": "none",
+    "reportUndefinedVariable": "none",
+    "reportUnboundVariable": "none",
+    "reportUnusedImport": "none",
+    "reportUnusedVariable": "none"
   },
   "window.title": "[${rootName}]${separator}${dirty}${activeEditorShort}${separator}${profileName}${separator}${appName}",
   "github.copilot.chat.localeOverride": "ja"
