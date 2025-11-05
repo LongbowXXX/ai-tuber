@@ -9,6 +9,7 @@ from types import TracebackType
 from typing import Generator, Optional, Iterable, Type
 
 import pyaudio
+from google.adk.tools import BaseTool
 from google.cloud import speech
 
 logger = logging.getLogger(__name__)
@@ -126,3 +127,101 @@ class SpeechRecognitionManager:
         logger.info("[Manager] 正常に終了しました。")
         # exc_type が None でない場合 (例外発生時)、False を返して例外を再送出
         return exc_type is None
+
+    def start(self) -> None:
+        """スレッドを明示的に開始する（ContextManager を使わない場合）"""
+        if self._stt_thread is not None and self._stt_thread.is_alive():
+            logger.warning("[Manager] STTスレッドは既に実行中です。")
+            return
+
+        logger.info("[Manager] STTスレッドを開始します。")
+        self._stop_event.clear()
+        self._stt_thread = threading.Thread(target=self._stt_thread_func, daemon=True)
+        self._stt_thread.start()
+
+    def stop(self) -> None:
+        """スレッドを明示的に停止する（ContextManager を使わない場合）"""
+        if self._stt_thread is None or not self._stt_thread.is_alive():
+            logger.warning("[Manager] STTスレッドは既に停止しています。")
+            return
+
+        logger.info("[Manager] 停止シグナルを送信し、クリーンアップします...")
+        self._stop_event.set()
+
+        if self._stt_thread:
+            self._stt_thread.join()
+
+        self._audio_interface.terminate()
+        logger.info("[Manager] 正常に終了しました。")
+
+    def get_transcripts(self, timeout: float = 0.1) -> list[str]:
+        """
+        キューから確定した発話テキストを全て取得して返す。
+
+        Args:
+            timeout: 各キュー取得のタイムアウト（秒）
+
+        Returns:
+            確定した発話テキストのリスト
+        """
+        transcripts: list[str] = []
+        while True:
+            try:
+                transcript = self._transcript_queue.get(timeout=timeout)
+                transcripts.append(transcript)
+            except queue.Empty:
+                break
+        return transcripts
+
+
+class SpeechRecognitionTool(BaseTool):
+    """
+    LLMから呼び出し可能な音声認識ツール。
+    バックグラウンドで常時音声認識を実行し、ユーザーの発話を取得できる。
+    """
+
+    def __init__(self) -> None:
+        super().__init__(
+            name="get_user_speech",
+            description="ユーザーの音声発話を取得します。バックグラウンドで音声認識が動作しており、確定した発話テキストを返します。発話がない場合は空のリストを返します。",
+        )
+        self._manager: Optional[SpeechRecognitionManager] = None
+        logger.info("[SpeechRecognitionTool] 初期化完了")
+
+    async def __call__(self) -> dict[str, list[str]]:
+        """
+        ツール呼び出し時に実行される関数。
+        確定した発話テキストをキューから取得して返す。
+
+        Returns:
+            {"transcripts": ["発話1", "発話2", ...]}
+        """
+        if self._manager is None:
+            logger.error("[SpeechRecognitionTool] マネージャーが初期化されていません。")
+            return {"transcripts": []}
+
+        transcripts = self._manager.get_transcripts()
+        if transcripts:
+            logger.info(f"[SpeechRecognitionTool] 取得した発話: {transcripts}")
+        else:
+            logger.debug("[SpeechRecognitionTool] 新しい発話はありません。")
+
+        return {"transcripts": transcripts}
+
+    def start_recognition(self) -> None:
+        """音声認識を開始する"""
+        if self._manager is None:
+            logger.info("[SpeechRecognitionTool] SpeechRecognitionManager を作成して開始します。")
+            self._manager = SpeechRecognitionManager()
+            self._manager.start()
+        else:
+            logger.warning("[SpeechRecognitionTool] 音声認識は既に開始されています。")
+
+    def stop_recognition(self) -> None:
+        """音声認識を停止する"""
+        if self._manager is not None:
+            logger.info("[SpeechRecognitionTool] 音声認識を停止します。")
+            self._manager.stop()
+            self._manager = None
+        else:
+            logger.warning("[SpeechRecognitionTool] 音声認識は既に停止しています。")

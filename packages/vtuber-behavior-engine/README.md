@@ -22,6 +22,7 @@ AI V-Tuber システムのコアとなる AI 頭脳。対話生成、感情分�
 - **感情分析:** テキストから感情を推定しラベリング。
 - **コンテキスト管理:** 対話履歴とキャラクター状態の維持。
 - **ADK 統合:** Google ADK を活用したエージェント、ツール、オーケストレーション機能。
+- **音声認識ツール:** LLM がツール呼び出しでユーザー発話を取得できる機能。
 - **(潜在的) ツール利用:** 外部 API やカスタムツールとの連携。
 
 ## 技術スタック
@@ -51,6 +52,7 @@ AI V-Tuber システムのコアとなる AI 頭脳。対話生成、感情分�
     ```bash
     uv sync --extra dev
     ```
+
 ## 環境変数の設定
 
 `.env_sample` を `.env` にコピーし、必要な環境変数を設定します。
@@ -60,6 +62,7 @@ AI V-Tuber システムのコアとなる AI 頭脳。対話生成、感情分�
 ```bash
 uv run python src/vtuber_behavior_engine/main.py
 ```
+
 ### ADK Web を使った実行
 
 adk web を使用して、Web UI からエージェントを操作することもできます。
@@ -69,18 +72,64 @@ adk web --port=8090 src/vtuber_behavior_engine
 ```
 
 1. http://localhost:8090/ にアクセスして、ADK Web UI を開きます。
-2. 左上で利用するAgentを選択
-  - `news_agent` を選択。
-     - 最初の発話として`[AIタレントへの指示] まずは挨拶から始めて、"会話のコンテキスト"に自然に話の流れを変えてください。`を入力
-  - `presentation_agent` を選択。
-     -  最初の発話として`Start`を入力
+2. 左上で利用する Agent を選択
+
+- `news_agent` を選択。
+  - 最初の発話として`[AIタレントへの指示] まずは挨拶から始めて、"会話のコンテキスト"に自然に話の流れを変えてください。`を入力
+- `presentation_agent` を選択。
+  - 最初の発話として`Start`を入力
 
 ## Presentation について
-- `resources/presentation/slides` にAIに与えるための作成済みのプレゼン資料(JSON)があります。
+
+- `resources/presentation/slides` に AI に与えるための作成済みのプレゼン資料(JSON)があります。
 - 現状では、読み込むプレゼンは`resources.py`や`presentation_context_agent.py`でハードコードされています。
 - `resources/presentation/create_presentation_slides_json_template.md` のプロンプト使うことで
-   LLMを使って自分の好きなプレゼン資料を作成できます。
+  LLM を使って自分の好きなプレゼン資料を作成できます。
 - Gemini 2.5 Pro のような頭のよい reasoning 対応のモデルでプレゼン資料を作ることをお勧めします。
+
+## 音声認識ツール (SpeechRecognitionTool)
+
+`SpeechRecognitionTool` は、LLM がツール呼び出しでユーザーの音声発話をリアルタイムに取得できる機能を提供します。
+
+### 使い方
+
+```python
+from vtuber_behavior_engine.services import SpeechRecognitionTool
+from google.adk.agents import LlmAgent
+
+# ツールを作成
+speech_tool = SpeechRecognitionTool()
+
+# 音声認識を開始（バックグラウンドで実行）
+speech_tool.start_recognition()
+
+# エージェントにツールを登録
+agent = LlmAgent(
+    model="gemini-2.0-flash-exp",
+    system_instruction="定期的に get_user_speech ツールでユーザー発話を確認してください。",
+    tools=[speech_tool],
+)
+
+# エージェント実行
+response = await agent.run(user_message="発話をチェックしてください")
+
+# 終了時に停止
+speech_tool.stop_recognition()
+```
+
+### 前提条件
+
+- Google Cloud Speech-to-Text API の認証情報が必要です
+- 環境変数 `GOOGLE_APPLICATION_CREDENTIALS` にサービスアカウントキーのパスを設定してください
+- マイク入力が利用可能である必要があります
+
+### サンプルコード
+
+詳細な使用例は `examples/speech_recognition_tool_example.py` を参照してください。
+
+```bash
+uv run python examples/speech_recognition_tool_example.py
+```
 
 ## 開発
 
