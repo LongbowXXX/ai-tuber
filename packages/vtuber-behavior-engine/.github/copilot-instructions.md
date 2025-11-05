@@ -32,6 +32,7 @@
 - スタンドアロンのニュースエージェントは `uv run python src/vtuber_behavior_engine/main.py` で実行します。Stage Director サーバーが起動済みであることを確認します。
 - 対話的に試す場合は `adk web --port=8090 src/vtuber_behavior_engine` を実行し、UI から `news_agent` や `presentation_agent` を選択します。
 - テストは現状最低限ですが、`pytest`（`pyproject.toml` で設定済み）を実行し、非同期テストを増やす際は `pytest -k` で絞り込みを検討してください。
+- テストフレームワークは `pytest` を使ってください。
 - `uv` で生成した仮想環境を有効化した状態（`.\.venv\Scripts\Activate.ps1` 等）でコマンドを走らせる前提です。未アクティブだと `flake8` などが解決できません。
 
 **コーディング規約**
