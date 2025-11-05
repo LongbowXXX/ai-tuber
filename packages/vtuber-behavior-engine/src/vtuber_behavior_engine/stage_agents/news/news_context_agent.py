@@ -13,6 +13,7 @@ from google.genai import types
 
 from vtuber_behavior_engine.services.current_time_provider import get_current_time
 from vtuber_behavior_engine.services.news_provider import get_news
+from vtuber_behavior_engine.services.speech_recognition import SpeechRecognitionTool
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     STATE_CONVERSATION_CONTEXT,
     STATE_CURRENT_TIME,
@@ -23,6 +24,7 @@ from vtuber_behavior_engine.stage_agents.news.news_agent_constants import (
     INITIAL_TOPIC_LLM_MODEL,
     UPDATE_TOPIC_LLM_MODEL,
     STATE_LATEST_NEWS,
+    STATE_USER_SPEECH,
 )
 from vtuber_behavior_engine.stage_agents.resources import (
     initial_news_context,
@@ -67,7 +69,18 @@ def create_initial_news_context_agent() -> BaseAgent:
     return agent
 
 
-def create_update_news_context_agent() -> BaseAgent:
+def create_update_news_context_agent(speech_tool: SpeechRecognitionTool) -> BaseAgent:
+    def get_user_speech(callback_context: CallbackContext) -> Optional[types.Content]:
+        """音声認識ツールからユーザーの発話を取得して状態に保存"""
+        transcripts = speech_tool._manager.get_transcripts() if speech_tool._manager else []
+        if transcripts:
+            logger.info(f"get_user_speech(): ユーザーの発話を取得: {transcripts}")
+            callback_context.state[STATE_USER_SPEECH] = transcripts
+        else:
+            logger.debug("get_user_speech(): 新しい発話はありません。")
+            callback_context.state[STATE_USER_SPEECH] = []
+        return None
+
     def after_model_callback(
         callback_context: CallbackContext,
         llm_response: LlmResponse,
@@ -86,9 +99,10 @@ def create_update_news_context_agent() -> BaseAgent:
         instruction=update_news_context(),
         description="Updates the conversation context based on history.",
         output_key=STATE_CONVERSATION_CONTEXT,
-        tools=[google_search],
+        tools=[google_search, speech_tool],
         disallow_transfer_to_parent=True,
         disallow_transfer_to_peers=True,
+        before_agent_callback=get_user_speech,
         after_model_callback=after_model_callback,
     )
     return agent
