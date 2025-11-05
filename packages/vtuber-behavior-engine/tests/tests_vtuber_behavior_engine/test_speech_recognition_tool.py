@@ -91,7 +91,8 @@ class TestSpeechRecognitionTool:
         tool.start_recognition()
 
         # キューに直接データを追加
-        tool._manager._transcript_queue.put("テスト発話")
+        if tool._manager is not None:
+            tool._manager._transcript_queue.put("テスト発話")
 
         result = await tool()
         assert result == {"transcripts": ["テスト発話"]}

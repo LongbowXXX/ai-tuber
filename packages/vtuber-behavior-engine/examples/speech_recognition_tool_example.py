@@ -13,8 +13,6 @@ SpeechRecognitionTool の使用例
 import asyncio
 import logging
 
-from google.adk.agents import LlmAgent
-
 from vtuber_behavior_engine.services import SpeechRecognitionTool
 from vtuber_behavior_engine.utils.logger import setup_logger
 
@@ -31,26 +29,14 @@ async def main() -> None:
     logger.info("音声認識を開始しました。話しかけてください...")
 
     try:
-        # 3. エージェントを作成してツールを登録
-        agent = LlmAgent(
-            model="gemini-2.0-flash-exp",
-            system_instruction=(
-                "あなたは音声認識アシスタントです。"
-                "定期的に get_user_speech ツールを使ってユーザーの発話を確認してください。"
-                "発話があれば、その内容を要約して返してください。"
-                "発話がなければ、「発話待ちです」と返してください。"
-            ),
-            tools=[speech_tool],
-        )
-
-        # 4. エージェントとの対話ループ
-        for i in range(10):
-            logger.info(f"\n--- ループ {i + 1} ---")
-            response = await agent.run(
-                user_message=f"発話をチェックしてください（{i + 1}回目）",
-            )
-            logger.info(f"エージェント応答: {response.message}")
-            await asyncio.sleep(3)
+        # 3. エージェントを作成してツールを登録する方法については
+        # agent_runner.py の run_agent_standalone() を参照してください
+        # 例: agent = LlmAgent(
+        #   model="gemini-2.0-flash-exp",
+        #   instruction="...",
+        #   tools=[speech_tool],
+        # )
+        logger.info("エージェントの実行例は agent_runner.py を参照してください")
 
     finally:
         # 5. 音声認識を停止
