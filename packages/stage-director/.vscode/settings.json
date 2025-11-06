@@ -14,5 +14,10 @@
     "reportMissingTypeStubs": "none"
   },
   "window.title": "[${rootName}]${separator}${dirty}${activeEditorShort}${separator}${profileName}${separator}${appName}",
-  "github.copilot.chat.localeOverride": "ja"
+  "github.copilot.chat.localeOverride": "ja",
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "text": "コミットメッセージは英語で生成してください。"
+    }
+  ]
 }
