@@ -8,6 +8,7 @@ from typing import Optional, Iterable, cast
 from google.adk.agents import LlmAgent, BaseAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.llm_agent import ToolUnion
+from google.adk.planners import BuiltInPlanner
 from google.genai import types
 from google.genai.types import Part
 
@@ -34,6 +35,11 @@ def create_character_agent(character_id: str, character_detail: str) -> BaseAgen
         output_key=STATE_AGENT_SPEECH_BASE + character_id,
         disallow_transfer_to_parent=True,
         disallow_transfer_to_peers=True,
+        planner=BuiltInPlanner(
+            thinking_config=types.ThinkingConfig(
+                include_thoughts=False,
+            )
+        ),
     )
     return agent
 
@@ -64,5 +70,10 @@ async def create_character_output_agent(character_id: str, stage_director_client
         before_agent_callback=handle_speech,
         disallow_transfer_to_parent=True,
         disallow_transfer_to_peers=True,
+        planner=BuiltInPlanner(
+            thinking_config=types.ThinkingConfig(
+                include_thoughts=False,
+            )
+        ),
     )
     return agent

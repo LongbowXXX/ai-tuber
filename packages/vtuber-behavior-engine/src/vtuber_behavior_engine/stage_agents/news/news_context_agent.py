@@ -8,6 +8,7 @@ from typing import Optional
 from google.adk.agents import BaseAgent, LlmAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.models.llm_response import LlmResponse
+from google.adk.planners import BuiltInPlanner
 from google.adk.tools import google_search
 from google.genai import types
 
@@ -65,6 +66,12 @@ def create_initial_news_context_agent() -> BaseAgent:
         disallow_transfer_to_peers=True,
         before_agent_callback=provide_news,
         after_model_callback=after_model_callback,
+        planner=BuiltInPlanner(
+            thinking_config=types.ThinkingConfig(
+                include_thoughts=True,
+                thinking_budget=2048,
+            )
+        ),
     )
     return agent
 
@@ -104,5 +111,11 @@ def create_update_news_context_agent(speech_tool: SpeechRecognitionTool) -> Base
         disallow_transfer_to_peers=True,
         before_agent_callback=get_user_speech,
         after_model_callback=after_model_callback,
+        planner=BuiltInPlanner(
+            thinking_config=types.ThinkingConfig(
+                include_thoughts=True,
+                thinking_budget=2048,
+            )
+        ),
     )
     return agent
