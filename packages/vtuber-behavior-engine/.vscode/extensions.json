@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "ms-python.debugpy",
+        "ms-python.python",
+        "ms-python.vscode-python-envs",
+        "ms-python.black-formatter",
+        "ms-python.flake8",
+        "ms-python.mypy-type-checker",
+        "github.vscode-pull-request-github",
+        "github.vscode-github-actions"
+    ]
+}
