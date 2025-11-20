@@ -35,7 +35,7 @@ async def build_root_news_agent(agent_config: AgentsConfig) -> tuple[BaseAgent, 
         initial_context_agent = create_initial_news_context_agent()
         update_context_agent = create_update_news_context_agent(speech_tool)
         character_agent = await build_root_agent(
-            initial_context_agent, update_context_agent, stage_director_client, agent_config
+            initial_context_agent, update_context_agent, stage_director_client, agent_config, speech_tool
         )
         return character_agent, exit_stack
     except Exception as e:

@@ -19,13 +19,34 @@ from vtuber_behavior_engine.stage_agents.agent_constants import (
     STATE_AGENT_SPEECH_BASE,
     STATE_DISPLAY_MARKDOWN_TEXT,
 )
+from vtuber_behavior_engine.services.speech_recognition import SpeechRecognitionTool
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
+from vtuber_behavior_engine.stage_agents.news.news_agent_constants import STATE_USER_SPEECH
 from vtuber_behavior_engine.stage_agents.resources import character_prompt, character_output_prompt
 
 logger = logging.getLogger(__name__)
 
 
-def create_character_agent(character_id: str, character_detail: str) -> BaseAgent:
+def create_character_agent(
+    character_id: str, character_detail: str, speech_tool: Optional[SpeechRecognitionTool] = None
+) -> BaseAgent:
+    def get_user_speech(callback_context: CallbackContext) -> Optional[types.Content]:
+        """音声認識ツールからユーザーの発話を取得して状態に保存"""
+        if speech_tool is None:
+            return None
+
+        transcripts = speech_tool._manager.get_transcripts() if speech_tool._manager else []
+        if transcripts:
+            logger.info(f"get_user_speech({character_id}): ユーザーの発話を取得: {transcripts}")
+            # 既存の発話リストがあれば追加する
+            current_speech = callback_context.state.get(STATE_USER_SPEECH, [])
+            if not isinstance(current_speech, list):
+                current_speech = []
+            callback_context.state[STATE_USER_SPEECH] = current_speech + transcripts
+        else:
+            logger.debug(f"get_user_speech({character_id}): 新しい発話はありません。")
+        return None
+
     agent = LlmAgent(
         model=AGENT_LLM_MODEL,
         name=character_id,
@@ -35,6 +56,7 @@ def create_character_agent(character_id: str, character_detail: str) -> BaseAgen
         output_key=STATE_AGENT_SPEECH_BASE + character_id,
         disallow_transfer_to_parent=True,
         disallow_transfer_to_peers=True,
+        before_agent_callback=get_user_speech,
         planner=BuiltInPlanner(
             thinking_config=types.ThinkingConfig(
                 include_thoughts=False,

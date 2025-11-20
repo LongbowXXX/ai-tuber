@@ -10,6 +10,7 @@ from google.adk.agents import LoopAgent, SequentialAgent, BaseAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.genai import types
 
+from vtuber_behavior_engine.services.speech_recognition import SpeechRecognitionTool
 from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     AGENT1_CHARACTER_ID,
@@ -33,10 +34,11 @@ async def build_root_agent(
     update_context_agent: BaseAgent,
     stage_director_client: StageDirectorMCPClient,
     agent_config: AgentsConfig,
+    speech_tool: Optional[SpeechRecognitionTool] = None,
 ) -> BaseAgent:
     logger.info(f"Creating root agent. agent_config={agent_config}")
-    agent1_thought = create_character_agent(AGENT1_CHARACTER_ID, character1())
-    agent2_thought = create_character_agent(AGENT2_CHARACTER_ID, character2())
+    agent1_thought = create_character_agent(AGENT1_CHARACTER_ID, character1(), speech_tool)
+    agent2_thought = create_character_agent(AGENT2_CHARACTER_ID, character2(), speech_tool)
 
     agent1_output = await create_character_output_agent(AGENT1_CHARACTER_ID, stage_director_client)
     agent2_output = await create_character_output_agent(AGENT2_CHARACTER_ID, stage_director_client)
