@@ -1,91 +1,102 @@
 # Stage Director
 
-AI V-Tuber システムの中央オーケストレーションハブ。
+AI V-Tuber システムの舞台監督（Stage Director）。MCP (Model Context Protocol) サーバーとして機能し、AI エージェントからの指示を `vtube-stage` へのコマンドに変換します。
 
 ## 概要
 
-`stage-director` は、AI コア (`vtuber-behavior-engine`) とリアルタイムレンダリングエンジン (`vtube-stage`) の間の橋渡し役として機能します。インタラクションの全体的なフローを管理し、AI が生成した応答を V-Tuber アバターへの実行可能なコマンドに変換し、セッション状態を維持します。
+`stage-director` は、AI コア (`vtuber-behavior-engine`) とリアルタイムレンダリングエンジン (`vtube-stage`) の間の仲介役です。
+MCP Server としてツールを提供し、AI エージェントがキャラクターの操作（発話、アニメーション、表示）を行えるようにします。また、WebSocket サーバーとして `vtube-stage` と接続し、リアルタイムなコマンド送信と同期制御を行います。
 
 ## アーキテクチャにおける役割
 
 メインの [アーキテクチャドキュメント](../../docs/architecture.md) で説明されているように、`stage-director` は以下の役割を担います:
 
-1.  入力トリガー (例: ユーザーメッセージ、システムイベント) を受信します。
-2.  `vtuber-behavior-engine` と連携し (ADK の原則を使用)、対話と感情的な応答を生成します。
-3.  セッション状態とコンテキストを管理します。
-4.  AI の出力 (テキスト、感情ラベル) を `vtube-stage` 用の特定のコマンド (例: 対話テキスト、表情ブレンドシェイプ、ポーズデータ、視線ターゲット、潜在的な OBS コマンド) に変換します。
-5.  WebSocket を介して `vtube-stage` とリアルタイムで通信します。
+1. **MCP Server**: `vtuber-behavior-engine` に対して、以下のツールを提供します。
+   - `speak`: キャラクターの発話と感情表現
+   - `trigger_animation`: アニメーション（ポーズ）の再生
+   - `display_markdown_text`: Markdown テキストの表示
+2. **WebSocket Server**: `vtube-stage` からの接続を受け入れ、コマンドを送信します。
+3. **コマンドキューイング**: AI からのツール呼び出しをキューに入れ、順次処理します。
+4. **同期制御**: TTS（音声合成）の完了を待機し、AI の発話ペースを制御します。
 
 ## 機能
 
-- **オーケストレーション:** インタラクションのエンドツーエンドフローを管理します。
-- **状態管理:** セッションコンテキストとキャラクターの状態を維持します。
-- **コマンド変換:** AI の出力 (感情、対話) を VRM コマンドにマッピングします。
-- **WebSocket 通信:** `vtube-stage` へのリアルタイムコマンドストリームを提供します。
-- **ADK 統合:** Agent Development Kit を活用してビヘイビアエンジンと対話します。
+- **MCP ツール提供**: `speak`, `trigger_animation`, `display_markdown_text`
+- **WebSocket 通信**: `vtube-stage` への JSON コマンド送信
+- **同期制御**: `speakEnd` イベントによる発話完了待機
+- **UUID 管理**: 各発話コマンドに一意な ID を付与し、追跡可能にする
 
 ## 技術スタック
 
 - Python 3.11+
-- FastAPI (WebSocket 通信および潜在的な API 用)
-- WebSockets (`websockets` ライブラリ)
-- Google Agent Development Kit (ADK) - _アーキテクチャに基づき暗黙的に使用_
+- **FastAPI**: WebSocket サーバー
+- **mcp (FastMCP)**: Model Context Protocol サーバー
+- **uvicorn**: ASGI サーバー
+- **pydantic**: データバリデーション
 
 ## 前提条件
 
 - Python >= 3.11
-- `uv`
+- `uv` (パッケージマネージャー)
 
 ## インストール
 
-1.  **`uv` を使用して仮想環境を作成します:**
+1. **`uv` を使用して仮想環境を作成します:**
 
-    ```bash
-    uv venv
-    source .venv/bin/activate # Linux/macOS
-    # または
-    .venv\\Scripts\\activate # Windows
-    ```
+   ```bash
+   uv venv
+   # Windows
+   .venv\Scripts\activate
+   # Linux/macOS
+   source .venv/bin/activate
+   ```
 
-2.  **`uv` を使用して依存関係をインストールします:**
-    ```bash
-    uv sync --extra dev
-    ```
+2. **依存関係をインストールします:**
+
+   ```bash
+   uv sync --extra dev
+   ```
 
 ## サービスの実行
+
+`stage-director` は、MCP サーバーと WebSocket サーバーの両方を起動します。
 
 ```bash
 uv run python src/stage_director/main.py
 ```
 
-## 設定
+- **WebSocket Server**: `ws://127.0.0.1:8000/ws`
+- **MCP Server**: `0.0.0.0:8080` (SSE)
 
-設定 (例: WebSocket ポート、`vtuber-behavior-engine` への接続詳細、感情と表情のマッピング) は、以下を通じて管理されます:
+## 環境変数
 
-- 設定ファイル (例: `.env`)
+`.env` ファイルで以下の設定が可能です。
 
-_(詳細は未定)_
+```env
+STAGE_DIRECTOR_HOST=127.0.0.1
+STAGE_DIRECTOR_PORT=8000
+STAGE_DIRECTOR_MCP_HOST=0.0.0.0
+STAGE_DIRECTOR_MCP_PORT=8080
+```
 
 ## 開発
 
-このプロジェクトでは、コードの品質を確保するためにいくつかのツールを使用しています:
-
-- **フォーマット:** `black`
-- **リンティング:** `flake8`
-- **型チェック:** `mypy`
-- **テスト:** `pytest`
-
-これらのツールは、次のようなコマンドで実行できます:
+コード品質ツール:
 
 ```bash
-black .
-flake8
-mypy .
-pytest
-```
+# フォーマット
+uv run black .
 
-具体的な設定については `pyproject.toml` を参照してください。
+# リンティング
+uv run flake8
+
+# 型チェック
+uv run mypy .
+
+# テスト
+uv run pytest
+```
 
 ## ライセンス
 
-このプロジェクトは MIT ライセンスの下でライセンスされています - 詳細はメインの [LICENSE](../../LICENSE) ファイルを参照してください。
+MIT License - [LICENSE](../../LICENSE)

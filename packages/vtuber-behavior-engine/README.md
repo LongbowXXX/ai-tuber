@@ -1,156 +1,122 @@
 # VTuber Behavior Engine
 
-AI V-Tuber システムのコアとなる AI 頭脳。対話生成、感情分析、コンテキスト管理を担当します。
+AI V-Tuber システムの頭脳となる AI コア。Google ADK (Agent Development Kit) をベースにしたマルチエージェントシステムで、対話生成、感情分析、コンテキスト管理を行います。
 
 ## 概要
 
-`vtuber-behavior-engine` は、AI V-Tuber システムのインテリジェンスを担当するコンポーネントです。大規模言語モデル (LLM) と Google Agent Development Kit (ADK) を活用し、`stage-director` からの要求に応じて、対話の生成、感情の分析、およびコンテキストの維持を行います。
+`vtuber-behavior-engine` は、複数の専門エージェントが協調して動作する AI システムです。
+MCP (Model Context Protocol) Client として `stage-director` に接続し、生成した対話やアクションを実際のキャラクター動作（発話、アニメーション、表示）として実行します。
 
 ## アーキテクチャにおける役割
 
 メインの [アーキテクチャドキュメント](../../docs/architecture.md) で説明されているように、`vtuber-behavior-engine` は以下の役割を担います:
 
-1.  LLM と ADK を活用して、文脈に沿った対話を生成します。ADK の機能により、複数のエージェントやツールを連携させる可能性があります。
-2.  生成された対話や入力に基づいて感情を分析し、感情ラベル (例: `happy`, `sad`) とその強度を付与します。専用の ADK エージェント/ツールを使用する可能性があります。
-3.  対話履歴やキャラクターの状態などのコンテキストを管理し、一貫性を保ちます。ADK がセッション管理メカニズムを提供する可能性があります。
-4.  (潜在的) ADK/MCP を介して外部ツール (例: Web 検索、カスタム Python 関数) を利用し、より高度な応答やアクションを生成します。
-5.  生成された応答 (対話テキスト、感情ラベル) を MCP を介して `stage-director` に返します。
+1. **マルチエージェントシステム**: 役割の異なる複数のエージェント（キャラクター、ニュース、プレゼンテーションなど）を協調動作させます。
+2. **MCP Client**: `stage-director` の MCP Server に接続し、以下のツールを使用してキャラクターを制御します。
+   - `speak`: 発話と感情表現
+   - `trigger_animation`: ポーズ変更
+   - `display_markdown_text`: 情報表示
+3. **音声認識統合**: Google Cloud Speech API を使用してユーザーの発話を取得し、対話に反映させます。
+4. **コンテキスト管理**: 会話の流れやキャラクターの状態を維持します。
 
-## 機能
+## エージェント構成
 
-- **対話生成:** LLM を利用した自然で文脈に沿った会話。
-- **感情分析:** テキストから感情を推定しラベリング。
-- **コンテキスト管理:** 対話履歴とキャラクター状態の維持。
-- **ADK 統合:** Google ADK を活用したエージェント、ツール、オーケストレーション機能。
-- **音声認識ツール:** LLM がツール呼び出しでユーザー発話を取得できる機能。
-- **(潜在的) ツール利用:** 外部 API やカスタムツールとの連携。
+- **Character Agent**: キャラクターの性格（ペルソナ）に基づいた対話を生成します。
+- **News Agent**: ニュース記事に基づいた解説や議論を行います。
+- **Presentation Agent**: スライド資料に基づいたプレゼンテーションを行います。
+- **Conversation Context Agent**: 会話の文脈を管理し、適切なトピックを提供します。
 
 ## 技術スタック
 
 - Python 3.11+
-- Google Agent Development Kit (ADK)
-- 大規模言語モデル (LLM) クライアント (例: `google-generativeai`)
-- (オプション) 感情分析ライブラリ (例: `transformers`)
+- **Google ADK**: マルチエージェントフレームワーク
+- **google-genai**: Gemini API クライアント
+- **google-cloud-speech**: 音声認識
+- **mcp**: Model Context Protocol クライアント
+- **chromadb**: ベクトルデータベース（コンテキスト検索用）
 
 ## 前提条件
 
 - Python >= 3.11
-- `uv`
+- `uv` (パッケージマネージャー)
+- Google Cloud Project (Gemini API, Cloud Speech API)
 
 ## インストール
 
-1.  **`uv` を使用して仮想環境を作成します:**
+1. **`uv` を使用して仮想環境を作成します:**
 
-    ```bash
-    uv venv
-    source .venv/bin/activate # Linux/macOS
-    # または
-    .venv/Scripts/activate # Windows
-    ```
+   ```bash
+   uv venv
+   # Windows
+   .venv\Scripts\activate
+   # Linux/macOS
+   source .venv/bin/activate
+   ```
 
-2.  **`uv` を使用して依存関係をインストールします:**
-    ```bash
-    uv sync --extra dev
-    ```
+2. **依存関係をインストールします:**
+
+   ```bash
+   uv sync --extra dev
+   ```
 
 ## 環境変数の設定
 
 `.env_sample` を `.env` にコピーし、必要な環境変数を設定します。
 
+```env
+GOOGLE_API_KEY=your_gemini_api_key
+GOOGLE_APPLICATION_CREDENTIALS=path/to/service_account.json
+STAGE_DIRECTOR_MCP_HOST=localhost
+STAGE_DIRECTOR_MCP_PORT=8080
+```
+
 ## サービスの実行
+
+### スタンドアロン実行
+
+メインスクリプトを実行すると、設定されたエージェント（デフォルトは News Agent）が起動します。
 
 ```bash
 uv run python src/vtuber_behavior_engine/main.py
 ```
 
-### ADK Web を使った実行
+### ADK Web UI での実行
 
-adk web を使用して、Web UI からエージェントを操作することもできます。
+ADK Web UI を使用して、ブラウザからエージェントをデバッグ・操作できます。
 
 ```bash
 adk web --port=8090 src/vtuber_behavior_engine
 ```
 
-1. http://localhost:8090/ にアクセスして、ADK Web UI を開きます。
-2. 左上で利用する Agent を選択
+1. `http://localhost:8090/` にアクセス
+2. 左上のメニューからエージェントを選択（例: `news_agent`, `presentation_agent`）
+3. チャット欄に開始トリガーを入力
+   - **News Agent**: `[AIタレントへの指示] まずは挨拶から始めて...`
+   - **Presentation Agent**: `Start`
 
-- `news_agent` を選択。
-  - 最初の発話として`[AIタレントへの指示] まずは挨拶から始めて、"会話のコンテキスト"に自然に話の流れを変えてください。`を入力
-- `presentation_agent` を選択。
-  - 最初の発話として`Start`を入力
+## プレゼンテーション機能
 
-## Presentation について
-
-- `resources/presentation/slides` に AI に与えるための作成済みのプレゼン資料(JSON)があります。
-- 現状では、読み込むプレゼンは`resources.py`や`presentation_context_agent.py`でハードコードされています。
-- `resources/presentation/create_presentation_slides_json_template.md` のプロンプト使うことで
-  LLM を使って自分の好きなプレゼン資料を作成できます。
-- Gemini 2.5 Pro のような頭のよい reasoning 対応のモデルでプレゼン資料を作ることをお勧めします。
-
-## 音声認識ツール (SpeechRecognitionTool)
-
-`SpeechRecognitionTool` は、LLM がツール呼び出しでユーザーの音声発話をリアルタイムに取得できる機能を提供します。
-
-### 使い方
-
-```python
-from vtuber_behavior_engine.services import SpeechRecognitionTool
-from google.adk.agents import LlmAgent
-
-# ツールを作成
-speech_tool = SpeechRecognitionTool()
-
-# 音声認識を開始（バックグラウンドで実行）
-speech_tool.start_recognition()
-
-# エージェントにツールを登録
-agent = LlmAgent(
-    model="gemini-2.0-flash-exp",
-    system_instruction="定期的に get_user_speech ツールでユーザー発話を確認してください。",
-    tools=[speech_tool],
-)
-
-# エージェント実行
-response = await agent.run(user_message="発話をチェックしてください")
-
-# 終了時に停止
-speech_tool.stop_recognition()
-```
-
-### 前提条件
-
-- Google Cloud Speech-to-Text API の認証情報が必要です
-- 環境変数 `GOOGLE_APPLICATION_CREDENTIALS` にサービスアカウントキーのパスを設定してください
-- マイク入力が利用可能である必要があります
-
-### サンプルコード
-
-詳細な使用例は `examples/speech_recognition_tool_example.py` を参照してください。
-
-```bash
-uv run python examples/speech_recognition_tool_example.py
-```
+- `resources/presentation/slides` にある JSON ファイルをスライドとして読み込みます。
+- `resources/presentation/create_presentation_slides_json_template.md` のプロンプトを使用して、LLM で新しいスライド JSON を生成できます。
 
 ## 開発
 
-このプロジェクトでは、コードの品質を確保するためにいくつかのツールを使用しています:
-
-- **フォーマット:** `black`
-- **リンティング:** `flake8`
-- **型チェック:** `mypy`
-- **テスト:** `pytest`
-
-これらのツールは、次のようなコマンドで実行できます:
+コード品質ツール:
 
 ```bash
-black .
-flake8 .
-mypy .
-pytest
-```
+# フォーマット
+uv run black .
 
-具体的な設定については `pyproject.toml` を参照してください。
+# リンティング
+uv run flake8
+
+# 型チェック
+uv run mypy .
+
+# テスト
+uv run pytest
+```
 
 ## ライセンス
 
-このプロジェクトは MIT ライセンスの下でライセンスされています - 詳細はメインの [LICENSE](../../LICENSE) ファイルを参照してください。
+MIT License - [LICENSE](../../LICENSE)
