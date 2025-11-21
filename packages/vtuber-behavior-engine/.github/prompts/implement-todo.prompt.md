@@ -1,6 +1,6 @@
 ---
 description: 選択したコード内のTODO/FIXMEコメントを実装する
-mode: agent
+agent: agent
 ---
 
 # TODO/FIXME 実装アシスタント

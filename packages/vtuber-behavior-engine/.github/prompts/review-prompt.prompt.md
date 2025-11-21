@@ -1,6 +1,6 @@
 ---
 description: プロンプト内容をレビューし、改善案を一つずつ提案します
-mode: agent
+agent: agent
 ---
 
 # プロンプトレビュー＆改善提案
