@@ -83,7 +83,7 @@ sequenceDiagram
     participant Runner as ADK Runner
     participant RootAgent as Root Agent
     participant InitCtx as Initial News Context
-    participant Loop as Conversation Loop
+    participant ConvLoop as Conversation Loop
     participant Recall as Recall Agent
     participant Char1Think as Character1 Thought
     participant Char1Out as Character1 Output
@@ -100,22 +100,22 @@ sequenceDiagram
     InitCtx-->>RootAgent: context set
 
     %% Conversation Loop
-    RootAgent->>Loop: 会話ループ開始
+    RootAgent->>ConvLoop: 会話ループ開始
 
     loop max_iterations
         %% Recall
-        Loop->>Recall: 過去の会話を想起
+        ConvLoop->>Recall: 過去の会話を想起
         Recall->>Memory: search_memory("今日のニュース")
         Memory-->>Recall: 過去の関連会話
         Recall->>Recall: set STATE_CONVERSATION_RECALL
 
         %% Character 1
-        Loop->>Char1Think: キャラクター1の思考
+        ConvLoop->>Char1Think: キャラクター1の思考
         Char1Think->>Char1Think: get_user_speech() (音声認識)
         Char1Think->>Char1Think: generate response with LLM
         Char1Think->>Char1Think: set STATE_AGENT_SPEECH_character1
 
-        Loop->>Char1Out: キャラクター1の出力
+        ConvLoop->>Char1Out: キャラクター1の出力
         Char1Out->>Char1Out: get AgentSpeech from state
         Char1Out->>MCP: speak(AgentSpeech)
         MCP->>StageDir: call_tool("speak", {...})
@@ -123,10 +123,10 @@ sequenceDiagram
         Char1Out->>Char1Out: clear STATE_DISPLAY_MARKDOWN_TEXT
 
         %% Character 2 (同様)
-        Loop->>Loop: キャラクター2も同様に思考→出力
+        ConvLoop->>ConvLoop: キャラクター2も同様に思考→出力
 
         %% Update Context
-        Loop->>Loop: update context (時刻、ユーザー発話など)
+        ConvLoop->>ConvLoop: update context (時刻、ユーザー発話など)
     end
 
     RootAgent->>Memory: add_session_to_memory()
@@ -173,7 +173,7 @@ sequenceDiagram
     participant Runner as ADK Runner
     participant RootAgent as Root Agent
     participant InitCtx as Initial Presentation Context
-    participant Loop as Conversation Loop
+    participant ConvLoop as Conversation Loop
     participant Char1Think as Character1 Thought
     participant Char1Out as Character1 Output
     participant MCP as MCP Client
@@ -188,15 +188,15 @@ sequenceDiagram
     InitCtx-->>RootAgent: context set
 
     %% Conversation Loop
-    RootAgent->>Loop: 会話ループ開始
+    RootAgent->>ConvLoop: 会話ループ開始
 
     loop until presentation ends
-        Loop->>Char1Think: キャラクター1の思考
+        ConvLoop->>Char1Think: キャラクター1の思考
         Char1Think->>Char1Think: generate presentation speech
         Char1Think->>Char1Think: set STATE_AGENT_SPEECH_character1
         Char1Think->>Char1Think: set STATE_DISPLAY_MARKDOWN_TEXT (slide content)
 
-        Loop->>Char1Out: キャラクター1の出力
+        ConvLoop->>Char1Out: キャラクター1の出力
         Char1Out->>MCP: display_markdown_text(slide)
         MCP->>StageDir: call_tool("display_markdown_text")
         StageDir-->>MCP: displayed
@@ -204,8 +204,8 @@ sequenceDiagram
         MCP->>StageDir: call_tool("speak")
         StageDir-->>MCP: speaking...
 
-        Loop->>Loop: キャラクター2も同様
-        Loop->>Loop: update context (次のスライドへ)
+        ConvLoop->>ConvLoop: キャラクター2も同様
+        ConvLoop->>ConvLoop: update context (次のスライドへ)
     end
 
     RootAgent-->>Runner: 完了

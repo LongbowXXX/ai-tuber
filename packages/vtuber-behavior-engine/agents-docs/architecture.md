@@ -146,7 +146,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant Loop as Conversation Loop
+    participant ConvLoop as Conversation Loop
     participant Recall
     participant Char1Think
     participant Char1Out
@@ -155,26 +155,26 @@ sequenceDiagram
     participant Memory
 
     loop max_iterations
-        Loop->>Recall: 想起
+        ConvLoop->>Recall: 想起
         Recall->>Memory: search_memory(query)
         Memory-->>Recall: past conversations
-        Recall-->>Loop: STATE_CONVERSATION_RECALL
+        Recall-->>ConvLoop: STATE_CONVERSATION_RECALL
 
-        Loop->>Char1Think: キャラクター1思考
+        ConvLoop->>Char1Think: キャラクター1思考
         Char1Think->>Char1Think: get_user_speech()
-        Char1Think-->>Loop: STATE_AGENT_SPEECH_character1
+        Char1Think-->>ConvLoop: STATE_AGENT_SPEECH_character1
 
-        Loop->>Char1Out: キャラクター1出力
+        ConvLoop->>Char1Out: キャラクター1出力
         Char1Out->>MCP: speak(AgentSpeech)
         MCP->>StageDir: call_tool("speak")
         StageDir-->>MCP: speaking...
 
-        Loop->>Loop: キャラクター2も同様
+        ConvLoop->>ConvLoop: キャラクター2も同様
 
-        Loop->>Loop: update context
+        ConvLoop->>ConvLoop: update context
     end
 
-    Loop->>Memory: add_session_to_memory()
+    ConvLoop->>Memory: add_session_to_memory()
 ```
 
 ### 3. 状態管理フロー
