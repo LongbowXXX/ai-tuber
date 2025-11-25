@@ -24,7 +24,7 @@
 | `mcp[cli]`          | >= 1.19.0  | MCP SSE サーバー、ツール定義            |
 | `pydantic`          | >= 2.12.3  | コマンドモデル定義、バリデーション      |
 | `websockets`        | >= 15.0.1  | WebSocket 通信サポート                  |
-| `python-dotenv`     | (implicit) | `.env` ファイル読み込み                 |
+| `python-dotenv`     | >= 1.0.0   | `.env` ファイル読み込み                 |
 | `setuptools`        | >= 80.9.0  | パッケージビルド                        |
 | `wheel`             | >= 0.45.1  | パッケージビルド                        |
 

@@ -16,6 +16,7 @@ dependencies = [
     "wheel>=0.45.1",
     "pydantic>=2.12.3",
     "mcp[cli]>=1.19.0",
+    "python-dotenv>=1.0.0",
 ]
 
 [project.optional-dependencies]
