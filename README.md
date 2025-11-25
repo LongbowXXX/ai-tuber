@@ -65,17 +65,25 @@ graph LR
    cd ai-tuber
    ```
 
-2. **VoiceVox のセットアップ**:
+2. **GitHub Copilot Prompts のセットアップ** (Windows):
+
+   ```powershell
+   .\setup-prompts-junctions.ps1
+   ```
+
+   詳細は [.github/PROMPTS_MANAGEMENT.md](.github/PROMPTS_MANAGEMENT.md) を参照。
+
+3. **VoiceVox のセットアップ**:
    VoiceVox をインストールし、起動してください（デフォルトポート: 50021）。
 
-3. **各パッケージのセットアップ**:
+4. **各パッケージのセットアップ**:
    各ディレクトリ (`packages/*`) の `README.md` に従って、依存関係のインストールと環境変数の設定を行ってください。
 
    - `packages/stage-director`: `uv sync`
    - `packages/vtuber-behavior-engine`: `uv sync`
    - `packages/vtube-stage`: `npm install`
 
-4. **実行**:
+5. **実行**:
    以下の順序でコンポーネントを起動します。
 
    1. **VoiceVox**: アプリケーションを起動
