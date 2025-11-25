@@ -1,3 +1,17 @@
+**詳細ドキュメント**
+
+詳細な設計・実装情報は `agents-docs/` 配下を参照してください:
+
+- [architecture.md](../agents-docs/architecture.md) - システム概要、コンポーネント図、シーケンス図、設計判断
+- [coding-conventions.md](../agents-docs/coding-conventions.md) - 設計原則、命名規則、コードスタイル、ログ規約
+- [constraints-and-gotchas.md](../agents-docs/constraints-and-gotchas.md) - パフォーマンス要件、セキュリティ、技術的負債、よくあるトラブル
+- [directory-structure.md](../agents-docs/directory-structure.md) - ディレクトリ構造、モジュール間の依存関係
+- [key-flows.md](../agents-docs/key-flows.md) - 主要な機能フロー（speak, trigger_animation, display_markdown_text, WebSocket 接続管理）
+- [tech-stack.md](../agents-docs/tech-stack.md) - 技術スタック、依存ライブラリ、外部サービス連携
+- [testing.md](../agents-docs/testing.md) - テスト戦略、テスト実行方法、カバレッジ目標、ベストプラクティス
+
+---
+
 **プロジェクトマップ**
 
 - `src/stage_director/main.py` は `dotenv` で `.env` を読み込み、FastAPI の WebSocket サーバーと MCP の SSE サーバーを `asyncio.gather` で同時起動します。両方とも常時稼働のバックグラウンドサービスとして扱います。
