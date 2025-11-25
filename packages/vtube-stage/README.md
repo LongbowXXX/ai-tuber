@@ -8,19 +8,18 @@ AI V-Tuber システムのフロントエンドであり、VRM モデルの描�
 
 ## アーキテクチャにおける役割
 
-メインの [アーキテクチャドキュメント](../../docs/architecture.md) で説明されているように、`vtube-stage` は以下の役割を担います:
+[アーキテクチャドキュメント](./agents-docs/architecture.md) で説明されているように、`vtube-stage` は以下の役割を担います:
 
 1.  VRM モデルの読み込みとレンダリング。
 2.  `stage-director` からの WebSocket コマンドを受信し、キャラクターの表情、ポーズ、視線をリアルタイムで更新。
-3.  OBS Studio との連携 (`obs-websocket-js`) により、シーン切り替えやソース表示/非表示を制御。
-4.  (オプション) TTS (Text-to-Speech) を使用した音声合成とリップシンク。
+3.  (オプション) TTS (Text-to-Speech) を使用した音声合成とリップシンク。
 
 ## 機能
 
 - **VRM モデルのレンダリング:** Three.js と `@pixiv/three-vrm` を使用。
 - **リアルタイム更新:** WebSocket を介して受信したコマンドに基づく表情やポーズの更新。
-- **OBS 制御:** `obs-websocket-js` を使用して OBS Studio をリモート制御。
-- **TTS/リップシンク:** (オプション) 音声合成とリップシンクのサポート。
+- **TTS/リップシンク:** (オプション) VOICEVOX を使用した音声合成とリップシンクのサポート。
+- **Markdown オーバーレイ:** 画面上への Markdown テキスト表示。
 
 ## 技術スタック
 
@@ -30,7 +29,7 @@ AI V-Tuber システムのフロントエンドであり、VRM モデルの描�
 - Three.js
 - `@pixiv/three-vrm`
 - WebSocket クライアント
-- `obs-websocket-js`
+- VOICEVOX TTS
 
 ## 前提条件
 
@@ -83,6 +82,18 @@ npm run lint
 npm run format
 ```
 
+## 詳細ドキュメント
+
+開発者向けの詳細なドキュメントは `agents-docs/` ディレクトリを参照してください:
+
+- [アーキテクチャ](./agents-docs/architecture.md) - システム構成とコンポーネント設計
+- [ディレクトリ構造](./agents-docs/directory-structure.md) - ファイル配置ガイド
+- [技術スタック](./agents-docs/tech-stack.md) - 使用ライブラリと環境変数
+- [コーディング規約](./agents-docs/coding-conventions.md) - 命名規則とスタイルガイド
+- [主要フロー](./agents-docs/key-flows.md) - 処理フローの詳細
+- [制約と注意事項](./agents-docs/constraints-and-gotchas.md) - 既知の問題とトラブルシューティング
+- [テスト戦略](./agents-docs/testing.md) - テスト導入ガイド
+
 ## ライセンス
 
-このプロジェクトは MIT ライセンスの下でライセンスされています - 詳細はメインの [LICENSE](../../LICENSE) ファイルを参照してください。
+このプロジェクトは MIT ライセンスの下でライセンスされています。
