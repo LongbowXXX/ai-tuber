@@ -1,64 +1,158 @@
-**プロジェクトドキュメント**
+# VTuber Behavior Engine - GitHub Copilot カスタム命令
 
-- このプロジェクトには `agents-docs/` ディレクトリに包括的なドキュメントが用意されています。詳細な情報が必要な場合は以下を参照してください：
-  - `agents-docs/architecture.md` - システム全体の構成と設計思想、データフロー図
-  - `agents-docs/directory-structure.md` - ディレクトリ構造と各モジュールの責務、依存関係
-  - `agents-docs/coding-conventions.md` - 設計原則、設計パターン、命名規則、コードスタイル
-  - `agents-docs/key-flows.md` - 主要な機能フローのシーケンス図と処理詳細
-  - `agents-docs/tech-stack.md` - 技術スタック、依存ライブラリ、外部サービス連携
-  - `agents-docs/testing.md` - テスト戦略、実行方法、ベストプラクティス
-  - `agents-docs/constraints-and-gotchas.md` - 技術的制約、既知の問題、トラブルシューティング
+## プロジェクト概要
 
-**プロジェクト範囲**
+`vtuber-behavior-engine` は、Google ADK (Agent Development Kit) ベースの AI VTuber の頭脳システムです。複数の AI エージェントが協調して動作し、キャラクターの対話生成、感情分析、コンテキスト管理を行います。
 
-- `vtuber_behavior_engine` は `stage-director` によって呼び出される ADK 製の頭脳であり、`main.py` では `news_agent.root_agent` を起動してニュース用のパイプラインを立ち上げます。
-- `agent_runner.run_agent_standalone` は `google.adk.Runner` をラップし、インメモリのセッション／アーティファクトと `ChromaMemoryService` による永続化をまとめて面倒見ます。
-- 他のステージ（presentation／theater）に切り替える場合は、`src/vtuber_behavior_engine/main.py` でインポートしているルートビルダーを差し替えます。
-- ログは `utils/logger.setup_logger` 経由でコンソールと `logs/app_<date>.log` に出力されるため、新しいエントリポイントを追加する際もこの仕組みを活かしてください。
-- 詳細なアーキテクチャは `agents-docs/architecture.md` と `agents-docs/directory-structure.md` を参照してください。
+**主な機能**:
 
-**エージェント構成**
+- マルチエージェント協調（ニュース解説、プレゼンテーションなど）
+- MCP クライアント統合（Stage Director との連携）
+- リアルタイム音声認識（Google Cloud Speech API）
+- 会話履歴の永続化と検索（Chroma ベクトル DB）
+- 構造化出力（Pydantic モデル）
 
-- `stage_agents/agent_builder.build_root_agent` は `SequentialAgent` を組み立て、初期コンテキスト → 会話ループの順で実行します。
-- ループ順序は「リコール → avatar1 思考 → 出力 → avatar2 思考 → 出力 → コンテキスト更新」で固定されているので、サブエージェントを追加する際は状態キーを崩さないようにします。
-- キャラクターの思考は `stage_agents/character_agent.create_character_agent` で生成し、出力は Stage Director に渡す前に `AgentSpeech` でバリデーションされます。
-- 出力系エージェントは `StageDirectorMCPClient.speak` を呼ぶ前提で動作し、画面表示用テキストは `STATE_DISPLAY_MARKDOWN_TEXT` に入っているものを利用した後クリアします。
-- エージェントの詳細な処理フローは `agents-docs/key-flows.md` のシーケンス図を参照してください。
+## 技術スタック
 
-**状態とメモリ**
+| カテゴリ       | 技術                                          |
+| -------------- | --------------------------------------------- |
+| 言語           | Python 3.11+                                  |
+| フレームワーク | Google ADK v1.17.0+, Pydantic v2.x            |
+| LLM            | Gemini API (`gemini-2.5-flash`)               |
+| データベース   | Chroma（ベクトル DB）                         |
+| 外部連携       | MCP (Stage Director), Google Cloud Speech API |
+| パッケージ管理 | uv                                            |
+| 品質管理       | black, flake8, mypy, pytest                   |
 
-- 共有ステートキーは `stage_agents/agent_constants.py` にまとまっているので、`STATE_AGENT_SPEECH_BASE` や `STATE_CONVERSATION_CONTEXT` など既存のキーを再利用してください。
-- `ConversationRecall` エージェントは履歴を `STATE_CONVERSATION_RECALL` に保存し、必要であれば ADK のメモリツール経由で追加のコンテキストを読み込みます。
-- `ChromaMemoryService` は `%APPDATA%/vtuber-behavior-engine/db` 以下にイベントを保存し、埋め込み生成には `GOOGLE_API_KEY` が必要です。
-- 新しいメモリを投入する際は既存と同じように `event_filter=lambda event.author in [avatar1, avatar2]` で話者を絞り込みます。
+## アーキテクチャ概要
 
-**外部サービス**
+```
+main.py → agent_runner.py → Root Agent (SequentialAgent)
+                                ├── Initial Context Agent
+                                └── Conversation Loop (LoopAgent)
+                                    ├── Recall Agent
+                                    ├── Character1 Thought → Output
+                                    ├── Character2 Thought → Output
+                                    └── Update Context Agent
+```
 
-- Stage Director への MCP 接続先は `STAGE_DIRECTOR_MCP_SERVER_URL` に設定されるので、起動失敗時は `.env` の値欠如を疑ってください。
-- Stage Director は `display_markdown_text`・`speak`・`trigger_animation` を提供します。`StageDirectorMCPClient.load_tools` で一度ツール一覧を取得してから利用します。
-- ニュース用コンテキストは `NEWS_BASE_URL` のテンプレート URL から RSS を取得する設計です。例: `https://news.google.com/.../{topic}`。
-- プレゼンテーションフローは `stage_agents/resources/presentation/slides` にある JSON を読み込みます。スキーマを変える場合は `presentation_context_agent` も更新してください。
-- 外部サービスの詳細は `agents-docs/tech-stack.md` の「外部サービスとの連携」セクションを参照してください。
+**主要コンポーネント**:
 
-**開発ワークフロー**
+- `agent_runner.py`: ADK Runner のラッパー（InMemorySession + ChromaMemoryService）
+- `stage_agents/agent_builder.py`: Root Agent のビルダー（SequentialAgent を構築）
+- `stage_agents/character_agent.py`: キャラクター思考・出力（AgentSpeech で構造化）
+- `services/stage_director_mcp_client.py`: Stage Director との MCP 連携
+- `services/memory/chroma_memory_service.py`: 会話履歴の永続化（Gemini 埋め込み）
 
-- 依存関係は `uv venv` → `uv sync --extra dev` でセットアップします。必要なシークレットは `.env_sample` を参照してください。
-- スタンドアロンのニュースエージェントは `uv run python src/vtuber_behavior_engine/main.py` で実行します。Stage Director サーバーが起動済みであることを確認します。
-- 対話的に試す場合は `adk web --port=8090 src/vtuber_behavior_engine` を実行し、UI から `news_agent` や `presentation_agent` を選択します。
-- テストは `pytest` で実行します。詳細は `agents-docs/testing.md` を参照してください。
-- テストフレームワークは `pytest` を使ってください。
-- `uv` で生成した仮想環境を有効化した状態（`.\.venv\Scripts\Activate.ps1` 等）でコマンドを走らせる前提です。未アクティブだと `flake8` などが解決できません。
-- トラブルシューティングは `agents-docs/constraints-and-gotchas.md` の「よくあるトラブルと対処法」を参照してください。
+**エージェント構成**:
 
-**コーディング規約**
+- ループ順序は「リコール → avatar1 思考 → 出力 → avatar2 思考 → 出力 → コンテキスト更新」で固定
+- 共有ステートキーは `stage_agents/agent_constants.py` で定義
+- 出力系エージェントは `StageDirectorMCPClient.speak` を呼び出し
 
-- LLM 用プロンプトは `stage_agents/resources/*.md` に配置されています。`{character_id}` などのプレースホルダーは残したまま差し替え箇所を説明します。
-- 構造化出力は `AgentSpeech` や `PresentationContext` といった pydantic モデルを使い、`output_schema` で検証を通す方針です。
-- 画面表示用オーバーレイは `StageDirectorMCPClient.speak` の前に `STATE_DISPLAY_MARKDOWN_TEXT` に設定し、`after_model_callback` 内で適切にクリアします。
-- 新規 ADK エージェントでは `disallow_transfer_*` をデフォルトのまま `True` に保ち、意図的にクロスエージェントの制御移譲を許す場合のみ変更します。
-- 詳細な命名規則、設計パターン、コードスタイルは `agents-docs/coding-conventions.md` を参照してください。
+## 開発ワークフロー
 
-**品質管理ツール**
+### 環境構築
 
-- フォーマッタは `black .`、リンタは `flake8 .`、型チェックは `mypy .` を利用します。各ツールの設定は `pyproject.toml` にまとまっています。
-- これらのコマンドも仮想環境をアクティブにした PowerShell などから実行してください。未アクティブの場合は依存パッケージが見つからないエラーになります。
+```powershell
+uv venv
+.\.venv\Scripts\Activate.ps1
+uv sync --extra dev
+cp .env_sample .env  # API キーを設定
+```
+
+### 実行
+
+```powershell
+# スタンドアロン実行（Stage Director が起動済みであること）
+uv run python src/vtuber_behavior_engine/main.py
+
+# ADK Web UI
+adk web --port=8090 src/vtuber_behavior_engine
+```
+
+### テスト・品質チェック
+
+```powershell
+pytest                     # テスト実行
+black .                    # フォーマット
+flake8 .                   # リント
+mypy .                     # 型チェック
+```
+
+**重要**: 仮想環境を有効化した状態でコマンドを実行してください。
+
+## コーディング規約（重要）
+
+### 型ヒント
+
+- すべての関数に型ヒントを付ける
+- `T | None` を使用（`Optional[T]` ではなく）
+
+### ADK エージェント
+
+- `disallow_transfer_to_self=True`, `disallow_transfer_to_agents=True` を維持
+- 共有ステートキーは `stage_agents/agent_constants.py` で定義
+- プロンプトは `stage_agents/resources/*.md` に配置
+- プレースホルダーは `{character_id}`, `{topic}` などの形式
+
+### 構造化出力
+
+- `AgentSpeech`, `PresentationContext` などの Pydantic モデルを使用
+- `output_schema` で検証
+
+### ロギング
+
+- `logging.getLogger(__name__)` を使用
+- 設定は `utils/logger.py` の `setup_logger()` で一元管理
+
+### 著作権表記
+
+各ファイルの先頭に以下を記載：
+
+```python
+#  Copyright (c) 2025 LongbowXXX
+#
+#  This software is released under the MIT License.
+#  http://opensource.org/licenses/mit-license.php
+```
+
+## 環境変数（必須）
+
+| 変数名                           | 用途                          |
+| -------------------------------- | ----------------------------- |
+| `GOOGLE_API_KEY`                 | Gemini API キー               |
+| `GOOGLE_APPLICATION_CREDENTIALS` | Google Cloud 認証情報パス     |
+| `STAGE_DIRECTOR_MCP_SERVER_URL`  | Stage Director の MCP URL     |
+| `NEWS_BASE_URL`                  | ニュース RSS テンプレート URL |
+
+## 詳細ドキュメント
+
+詳細な情報は `agents-docs/` ディレクトリを参照してください：
+
+- [architecture.md](../agents-docs/architecture.md) - システム構成と設計思想、データフロー図
+- [directory-structure.md](../agents-docs/directory-structure.md) - ディレクトリ構造と各モジュールの責務
+- [coding-conventions.md](../agents-docs/coding-conventions.md) - 設計パターン、命名規則、コードスタイル
+- [key-flows.md](../agents-docs/key-flows.md) - 主要な機能フローのシーケンス図
+- [tech-stack.md](../agents-docs/tech-stack.md) - 技術スタック、依存ライブラリ、外部サービス
+- [testing.md](../agents-docs/testing.md) - テスト戦略、実行方法、ベストプラクティス
+- [constraints-and-gotchas.md](../agents-docs/constraints-and-gotchas.md) - 技術的制約、既知の問題
+
+## 言語別・ファイル別の詳細規約
+
+特定のファイルタイプには追加の命令が適用されます：
+
+- `.github/instructions/python.instructions.md` - Python コードの詳細規約
+- `.github/instructions/test.instructions.md` - テストコードの規約
+- `.github/instructions/prompt.instructions.md` - プロンプトテンプレートの規約
+
+## よくあるトラブル
+
+| 症状                        | 原因                     | 対処法                                  |
+| --------------------------- | ------------------------ | --------------------------------------- |
+| `GOOGLE_API_KEY is not set` | 環境変数未設定           | `.env` に API キーを設定                |
+| MCP 接続エラー              | Stage Director 未起動    | Stage Director を起動                   |
+| `flake8` が見つからない     | 仮想環境未アクティブ     | `.\.venv\Scripts\Activate.ps1` を実行   |
+| Chroma DB ロックエラー      | 複数プロセスからアクセス | 既存プロセスを終了、DB を削除して再作成 |
+
+詳細は [constraints-and-gotchas.md](../agents-docs/constraints-and-gotchas.md) を参照してください。
