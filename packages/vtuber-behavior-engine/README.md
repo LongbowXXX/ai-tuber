@@ -117,6 +117,13 @@ uv run mypy .
 uv run pytest
 ```
 
+## ドキュメント
+
+- **[Copilot 開発ガイド](docs/copilot-development-guide.md)** - GitHub Copilot を活用した効率的な開発方法
+- **[アーキテクチャ概要](agents-docs/architecture.md)** - システム構成と設計思想
+- **[ディレクトリ構造](agents-docs/directory-structure.md)** - 各モジュールの責務と依存関係
+- **[コーディング規約](agents-docs/coding-conventions.md)** - 設計パターン、命名規則、コードスタイル
+
 ## ライセンス
 
 MIT License - [LICENSE](../../LICENSE)
