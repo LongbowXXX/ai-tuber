@@ -1,4 +1,4 @@
-# Copilot Instructions for Terraformer
+# Copilot Instructions for AI Tuber System
 
 This file provides instructions for AI coding agents.
 
