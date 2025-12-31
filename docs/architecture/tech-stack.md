@@ -4,18 +4,18 @@
 
 ## 全体
 
-| カテゴリ       | 技術                         | 用途                                                            |
-| -------------- | ---------------------------- | --------------------------------------------------------------- |
-| 言語           | Python 3.11+                 | AI バックエンド（Behavior Engine / Stage Director）             |
-| 言語           | TypeScript (TS 5.7)          | フロントエンド（vtube-stage）                                   |
-| フレームワーク | FastAPI                      | stage-director の WebSocket/HTTP サーバー                       |
-| プロトコル     | WebSocket                    | stage-director ↔ vtube-stage のリアルタイム制御                 |
-| プロトコル     | MCP (Model Context Protocol) | vtuber-behavior-engine → stage-director のツール呼び出し（SSE） |
-| フレームワーク | Google ADK                   | vtuber-behavior-engine のマルチエージェント実行                 |
-| フロント       | React 19 / Vite              | vtube-stage UI/ビルド                                           |
-| 3D             | Three.js / @pixiv/three-vrm  | VRM モデル描画/制御                                             |
-| TTS            | VoiceVox                     | 音声合成（HTTP API）                                            |
-| 配信           | OBS Studio                   | ウィンドウキャプチャ（現状 obs-websocket 制御は未実装）         |
+| カテゴリ       | 技術                                      | 用途                                                            |
+| -------------- | ----------------------------------------- | --------------------------------------------------------------- |
+| 言語           | Python 3.11+                              | AI バックエンド（Behavior Engine / Stage Director）             |
+| 言語           | TypeScript (TS 5.7)                       | フロントエンド（vtube-stage）                                   |
+| フレームワーク | FastAPI (0.120.0)                         | stage-director の WebSocket/HTTP サーバー                       |
+| プロトコル     | WebSocket                                 | stage-director ↔ vtube-stage のリアルタイム制御                 |
+| プロトコル     | MCP (Model Context Protocol)              | vtuber-behavior-engine → stage-director のツール呼び出し（SSE） |
+| フレームワーク | Google ADK (>= 1.17.0)                    | vtuber-behavior-engine のマルチエージェント実行                 |
+| フロント       | React 19 / Vite 6                         | vtube-stage UI/ビルド                                           |
+| 3D             | Three.js (0.175) / @pixiv/three-vrm (3.4) | VRM モデル描画/制御                                             |
+| TTS            | VoiceVox                                  | 音声合成（HTTP API）                                            |
+| 配信           | OBS Studio                                | ウィンドウキャプチャ（現状 obs-websocket 制御は未実装）         |
 
 ## stage-director（Python）
 

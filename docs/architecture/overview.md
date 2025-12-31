@@ -34,8 +34,8 @@
 
 ### vtube-stage
 
-- 実装: TypeScript + React 19 + Vite
-- 主な依存: `three`, `@pixiv/three-vrm`, `react-markdown`, `class-validator`
+- 実装: TypeScript + React 19 + Vite 6
+- 主な依存: `three` (0.175), `@pixiv/three-vrm` (3.4), `react-markdown`, `class-validator`
 - 入口: `packages/vtube-stage/src/main.tsx`
 - 役割:
   - `VITE_STAGE_DIRECTER_ENDPOINT` の WebSocket に接続（`useWebSocket.ts`）
