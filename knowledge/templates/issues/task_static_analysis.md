@@ -1,47 +1,47 @@
 ---
-name: Static Analysis Task
-about: Detect potential bugs and code quality issues
-title: "🔍 Static Analysis: [Version/Component]"
+name: 静的解析タスク
+about: 潜在的なバグとコード品質問題を検出する
+title: "🔍 静的解析: [バージョン/コンポーネント]"
 labels: ["quality", "verification"]
 assignees: []
 ---
 
-## 🎯 Objective
+## 🎯 目的
 
-Run static analysis tools to detect and fix potential bugs, code smell, and quality issues.
+静的解析ツールを実行し、潜在的なバグ、コードスメル、品質問題を検出して修正します。
 
-## 🛠️ Tools Used
+## 🛠️ 使用ツール
 
 - [ ] Flake8 / Pylint (Python)
 - [ ] ESLint (TypeScript/JavaScript)
 - [ ] Other:
 
-## 📊 Findings
+## 📊 検出結果
 
-### Critical Issues
+### 重大な問題
 
-> Must be fixed.
-
-- [ ] [File/Module]: [Description]
-  - Action:
-
-### Warnings / Info
-
-> Review and fix if necessary.
+> 必ず修正する。
 
 - [ ] [File/Module]: [Description]
-  - Action:
+  - 対応:
 
-### False Positives
+### 警告 / 情報
 
-> Record false positives to ignore.
+> 必要に応じて確認し修正する。
+
+- [ ] [File/Module]: [Description]
+  - 対応:
+
+### 誤検知（False Positive）
+
+> 無視する誤検知は記録する。
 
 - [ ] [Rule ID]: [Reason]
 
-## ✅ Exit Criteria
+## ✅ 完了条件
 
-- [ ] Static analysis executed.
-- [ ] Critical issues addressed.
-- [ ] Reasons for ignored issues recorded.
-- [ ] Results recorded on ticket.
-- [ ] Analysis tools run without error (or with known exceptions).
+- [ ] 静的解析が実行されている。
+- [ ] 重大な問題が対応済みである。
+- [ ] 無視した問題の理由が記録されている。
+- [ ] 結果がチケットに記録されている。
+- [ ] 解析ツールがエラーなしで実行できる（または既知の例外を含めて説明されている）。

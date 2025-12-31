@@ -1,19 +1,19 @@
-# Few-Shot Chain of Thought (Reasoning)
+# Few-Shot Chain of Thought（推論）
 
-## Problem
+## 問題
 
-Standard "Chain of Thought" (CoT) instructions ("Think step by step") are often too abstract, leading models to ramble without structure or skip critical reasoning steps.
+標準的な「Chain of Thought（CoT）」指示（例:「ステップバイステップで考えて」）は抽象的すぎることが多く、モデルが構造なく冗長に語ったり、重要な推論ステップを飛ばしたりする原因になります。
 
-## Solution
+## 解決策
 
-Provide a concrete _example_ of the expected reasoning process within the prompt. This "Few-Shot" approach aligns the model's internal monologue with the desired depth and structure.
+プロンプト内に、期待する推論プロセスの具体的な _例_ を提示します。この「Few-Shot」アプローチは、モデルの内部の思考を望ましい深さと構造に揃えます。
 
-## Implementation Steps
+## 実装手順
 
-1.  **Define Structure**: Create a `<thinking>` block example.
-2.  **Show "Good" Pattern**: Demonstrate how to catch an error or weigh options.
+1.  **構造を定義する**: `<thinking>` ブロックの例を作ります。
+2.  **「良い」パターンを示す**: エラーの発見や選択肢の比較をどう行うかをデモします。
 
-## Example Template
+## テンプレ例
 
 ```xml
 <example_thinking>
@@ -29,7 +29,7 @@ User asked: "Refactor the login function."
 </example_thinking>
 ```
 
-## Benefits
+## 利点
 
-- **Alignment**: The model copies the _logic structure_ of the example.
-- **Consistency**: Produces more predictable and high-quality reasoning outputs.
+- **アラインメント（Alignment）**: モデルが例の _ロジック構造_ を模倣します。
+- **一貫性（Consistency）**: より予測可能で高品質な推論アウトプットが得られます。

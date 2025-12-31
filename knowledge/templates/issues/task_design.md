@@ -1,20 +1,20 @@
-# Design Discussion Issue Template
+# 設計議論 Issue テンプレート
 
-## Overview
+## 概要
 
-This Issue is for discussing and deciding on concrete implementation methods (architecture, interfaces) based on the Requirement Definition.
+この Issue は、要件定義に基づいて具体的な実装方法（アーキテクチャ、インターフェース）を議論し決定するためのものです。
 
-Please create the design document using the following template:
+次のテンプレートを使用して設計ドキュメントを作成してください:
 
-- **Template**: [Design Template](../artifacts/design.template.md)
-- **Destination**: `docs/specs/[FeatureName]/design.md`
+- **テンプレート**: [設計テンプレート](../artifacts/design.template.md)
+- **保存先**: `docs/specs/[FeatureName]/design.md`
 
-## ✅ Exit Criteria
+## ✅ 完了条件
 
-- [ ] Design document created in Git.
-- [ ] Design approved by Architect.
-- [ ] All specifications are reflected.
-- [ ] Consistency with existing systems confirmed.
-- [ ] Performance impact considered.
-- [ ] Error handling designed.
-- [ ] Testability considered.
+- [ ] 設計ドキュメントが Git 上に作成されている。
+- [ ] 設計がアーキテクトに承認されている。
+- [ ] すべての仕様が反映されている。
+- [ ] 既存システムとの整合性が確認されている。
+- [ ] 性能影響が考慮されている。
+- [ ] エラーハンドリングが設計されている。
+- [ ] テスト容易性が考慮されている。

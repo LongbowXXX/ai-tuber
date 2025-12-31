@@ -1,32 +1,33 @@
-# Ideal Adoption Guide: Maximizing Terraformer
+# 理想的な導入ガイド: Terraformer を最大化する
 
-This guide outlines the recommended workflow for introducing Terraformer to your project. By following these steps, you build a high-context environment where AI agents can collaborate effectively from Day 1.
+このガイドは、Terraformer をプロジェクトへ導入するための推奨ワークフローをまとめたものです。これらの手順に従うことで、AI エージェントが Day 1 から効果的に協働できる、高コンテキストな環境を構築できます。
 
-## Phase 0: Preparation (Before Terraforming)
+## フェーズ 0: 準備（Terraforming 前）
 
-AI agents rely on **Explicit Context**. The more information you provide _before_ they arrive, the smarter they will be.
+AI エージェントは **明示的コンテキスト（Explicit Context）** に依存します。到着前に提供する情報が多いほど、より賢く動けます。
 
-1.  **Gather Existing Knowledge**
+1.  **既存知識を収集する**
 
-    - Find existing design documents, API specifications, database schemas, and external documentation URLs.
-    - **Action**: Commit these files to your repository (e.g., in a `docs/` or `references/` folder).
+- 既存の設計ドキュメント、API 仕様、DB スキーマ、外部ドキュメント URL を探す。
+- **アクション**: これらのファイルをリポジトリにコミットする（例: `docs/` や `references/` フォルダ）。
 
-2.  **Create an Index (The "Crawlable" Root)**
-    - AI agents typically start scanning from the project root.
-    - **Action**: Update your root `README.md` to include links to the documents gathered in step 1.
-    - _Why?_ If it's not linked from the root (or standard locations), the agents might miss it.
+2.  **インデックスを作成する（「クロール可能」なルート）**
 
-## Phase 1: Terraforming (Installation)
+- AI エージェントは通常、プロジェクトルートからスキャンを開始します。
+- **アクション**: ルートの `README.md` を更新し、手順 1 で集めたドキュメントへのリンクを追加する。
+- _なぜ？_ ルート（または標準的な場所）からリンクされていないと、エージェントが見落とす可能性があります。
 
-Follow the standard installation instructions in the [README](../../README.md).
+## フェーズ 1: Terraforming（インストール）
 
-1.  **Install**: Copy the `.github` and `knowledge` directories.
-2.  **Initialize Context**: Run `/terraform-context` to generate the initial `AGENTS.md`.
-3.  **Summon Agents**: Run `/terraformer` to generate project-specific agent personas and skills.
+[README](../../README.md) の標準インストール手順に従ってください。
 
-### Anatomy of a Terraformed Project
+1.  **インストール**: `.github` と `knowledge` ディレクトリをコピーする。
+2.  **コンテキスト初期化**: `/terraform-context` を実行し、初期 `AGENTS.md` を生成する。
+3.  **エージェント召喚**: `/terraformer` を実行し、プロジェクト固有のエージェント人格とスキルを生成する。
 
-After installation, your project structure will look like this:
+### Terraformed プロジェクトの構造
+
+インストール後のプロジェクト構造は次のようになります:
 
 ```
 my-project/
@@ -46,42 +47,42 @@ my-project/
 
 ## Phase 2: Refinement (Post-Terraforming)
 
-Now that the "AI Team" is installed, use them to improve the project's "AI-Readiness".
+「AI チーム」がインストールされたので、彼らを使ってプロジェクトの「AI-Ready 度」を高めます。
 
-### 1. Excavate Implicit Specifications
+### 1. 暗黙仕様の発掘
 
-Legacy code often contains business rules that are not documented.
+レガシーコードには、ドキュメント化されていないビジネスルールが含まれていることがよくあります。
 
-- **Action**: Ask `@BusinessAnalyst` to reverse-engineer specifications from key files.
-  - _Prompt_: "Analyze `src/core/pricing.ts` and document the pricing logic as a User Story in `docs/specs/pricing.md`."
+- **アクション**: `@BusinessAnalyst` に主要ファイルから仕様をリバースエンジニアリングさせる。
+  - _プロンプト_: "Analyze `src/core/pricing.ts` and document the pricing logic as a User Story in `docs/specs/pricing.md`."
 
-### 2. Update & Detail Documentation
+### 2. ドキュメントの更新と詳細化
 
-Auto-generated docs are a starting point. Make them richer.
+自動生成ドキュメントは出発点です。より豊かにしていきます。
 
-- **Action**: Ask `@Architect` to generate diagrams.
-  - _Prompt_: "Create a Mermaid sequence diagram showing the authentication flow based on the current code."
+- **アクション**: `@Architect` に図を生成させる。
+  - _プロンプト_: "Create a Mermaid sequence diagram showing the authentication flow based on the current code."
 
-### 3. Define Project Rules
+### 3. プロジェクトルールの定義
 
-Every project has unique conventions (naming, testing, directory structure).
+すべてのプロジェクトには固有の規約（命名、テスト、ディレクトリ構造）があります。
 
-- **Action**: Document these in `docs/rules/` or add them to `AGENTS.md` (Constitution).
-- _Tip_: If an agent makes a mistake, don't just correct the code—**correct the prompt (instruction)**. Add a rule so it doesn't happen again.
+- **アクション**: これらを `docs/rules/` に記録するか、`AGENTS.md`（Constitution）に追加する。
+- _Tip_: エージェントがミスをした場合、コードを直すだけでなく **プロンプト（指示）を直す**。再発しないようにルールを追加します。
 
-### 4. Establish Collaborative Workflows
+### 4. 協働ワークフローの確立
 
-Shift from "Command & Control" to "collaboration".
+「指示と統制（Command & Control）」から「協働（collaboration）」へ移行します。
 
-- Regularly update `AGENTS.md` as the project evolves.
+- プロジェクトの進化に合わせて `AGENTS.md` を定期的に更新します。
 
-> **Goal**: The ultimate goal is to have a repository where **Documentation is the Source Code**. Any developer (human or AI) should be able to read the docs and understand exactly how the system works without guessing.
+> **目標**: 最終目標は、**Documentation is the Source Code** と言えるリポジトリを持つことです。どんな開発者（人間/AI）でも、ドキュメントを読めば推測なしにシステムがどう動くかを正確に理解できる状態を目指します。
 
-## Appendix: Knowledge vs. Docs
+## 付録: Knowledge と Docs の違い
 
-To prevent confusion, we separate "Universal Principles" from "Project Reality".
+混乱を防ぐため、「普遍原則」と「プロジェクト固有の現実」を分離します。
 
-| Directory        | Type                    | Description                                                                                                                                                                                                                        |
-| :--------------- | :---------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`knowledge/`** | **Immutable** (Mostly)  | Contains the "Textbook" of the ANTP method. These files (like _AI Literacy_ or _Review Guidelines_) are generic and apply to _any_ project. You typically **do not** edit these unless you are customizing the methodology itself. |
-| **`docs/`**      | **Mutable**             | Contains the "State" of _your_ project. This is where you write specs, architecture diagrams, and project-specific rules (`docs/rules/`). **This is where the Agents work.**                                                       |
+| Directory        | Type                 | Description                                                                                                                                                                                                                 |
+| :--------------- | :------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`knowledge/`** | **不変（ほとんど）** | ANTP メソッドの「教科書」を含みます。これらのファイル（_AI Literacy_ や _Review Guidelines_ など）は汎用で、_あらゆる_ プロジェクトに適用できます。通常は、メソッドそのものをカスタマイズする場合を除き、**編集しません**。 |
+| **`docs/`**      | **可変**             | _あなた_ のプロジェクトの「状態」を含みます。仕様、アーキテクチャ図、プロジェクト固有のルール（`docs/rules/`）を書く場所です。**エージェントはここで作業します。**                                                          |

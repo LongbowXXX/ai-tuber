@@ -1,37 +1,37 @@
 ---
-name: Verify Exit Criteria
+name: 完了条件の検証
 about: |
-  Confirm that:
-  - [ ] All Exit Criteria items verified.
-  - [ ] Deliverables exist in Git.
-  - [ ] Documentation updated.
-  - [ ] Team approval obtained.
-  - [ ] Confirmation recorded on ticket.
-title: "✅ Verify Exit Criteria: [Feature/Release Name]"
+  次を確認します:
+  - [ ] すべての完了条件項目が検証済みである。
+  - [ ] 成果物が Git に存在する。
+  - [ ] ドキュメントが更新されている。
+  - [ ] チーム承認が得られている。
+  - [ ] 確認結果がチケットに記録されている。
+title: "✅ 完了条件の検証: [機能/リリース名]"
 labels: ["verification", "completion"]
 assignees: []
 ---
 
-## 🎯 Objective
+## 🎯 目的
 
-Final verification to ensure the story meets the agreed Definition of Done before closing.
+クローズ前に、このストーリーが合意された完了の定義（DoD）を満たしていることを最終検証します。
 
-## 📝 Verification Checklist
+## 📝 検証チェックリスト
 
-> Copy the criteria defined in "Define Exit Criteria" task here and check them off.
+> 「完了条件の定義」タスクで定義した基準をここへコピーし、チェックを付けてください。
 
-### Functional Requirements
-
-- [ ] ...
-
-### Non-Functional Requirements
+### 機能要件
 
 - [ ] ...
 
-### Quality & Documentation
+### 非機能要件
 
 - [ ] ...
 
-## ✅ Final Decision
+### 品質とドキュメント
 
-- [ ] **Ready to Close**: All criteria met.
+- [ ] ...
+
+## ✅ 最終判断
+
+- [ ] **クローズ可能**: すべての基準を満たしている。

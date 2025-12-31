@@ -1,31 +1,31 @@
-# Story: Fix [Bug Name]
+# ストーリー: [バグ名] の修正
 
-## 1. Problem
+## 1. 問題
 
-**Description**: [Brief description of the bug]
+**説明**: [バグの簡潔な説明]
 **Issue ID**: #[IssueNumber]
 
-## 2. Bug Fix WBS
+## 2. バグ修正 WBS
 
-### 1. Analysis & Reproduction
+### 1. 分析と再現
 
-- [ ] Create Bug Fix Plan (`knowledge/templates/agents/bug_fix_plan.template.md`)
-  - **Deliverable**: `docs/specs/fixes/[IssueID]/fix-plan.md`
+- [ ] バグ修正計画の作成（`knowledge/templates/agents/bug_fix_plan.template.md`）
+  - **成果物**: `docs/specs/fixes/[IssueID]/fix-plan.md`
 
-### 2. Implementation
+### 2. 実装
 
-- [ ] Implementation Task (`task_implementation.md`)
-  - **Deliverable**: PR with Fix + Regression Test.
-- [ ] Horizontal Expansion (Yokoten)
-  - **Check**: Search for similar bugs in codebase.
+- [ ] 実装タスク（`task_implementation.md`）
+  - **成果物**: 修正 + 回帰テストを含む PR。
+- [ ] 横展開（Yokoten）
+  - **確認**: コードベース内で類似バグを検索する。
 
-### 3. Verification
+### 3. 検証
 
-- [ ] Verification Task (`task_test_functional.md`)
-  - **Check**: Bug is reproduced (fail) -> Fix applied -> Bug is fixed (pass).
-  - **Check**: No side effects found.
+- [ ] 検証タスク（`task_test_functional.md`）
+  - **確認**: バグ再現（fail） -> 修正適用 -> バグ解消（pass）。
+  - **確認**: 副作用がない。
 
-### 4. Completion
+### 4. 完了
 
-- [ ] Merge Fix.
-- [ ] Close this Story.
+- [ ] 修正をマージする。
+- [ ] このストーリーをクローズする。

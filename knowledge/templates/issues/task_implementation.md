@@ -1,34 +1,34 @@
-# Task: Implementation [Task Name]
+# タスク: 実装 [タスク名]
 
-**Parent Story**: #[Story Issue Number]
+**親ストーリー**: #[ストーリー Issue 番号]
 
-## 1. Goal
+## 1. 目標
 
-Implement the features/fixes described in [Spec/Design].
+[仕様/設計] に記載された機能/修正を実装します。
 
-## 2. Requirements & Context
+## 2. 要件とコンテキスト
 
-- **Spec**: [Link to Spec]
-- **Design**: [Link to Design/Implementation Plan]
+- **仕様**: [仕様へのリンク]
+- **設計**: [設計/実装計画へのリンク]
 
-## 3. Implementation Steps
+## 3. 実装手順
 
-1. [ ] Create Branch `feature/[name]` or `fix/[name]`
-2. [ ] Implement Code
-3. [ ] Add Unit Tests
-4. [ ] Run Local Tests
-5. [ ] Create Pull Request
-   - **PR Link**: [Link]
+1. [ ] ブランチを作成する（`feature/[name]` または `fix/[name]`）
+2. [ ] 実装する
+3. [ ] ユニットテストを追加する
+4. [ ] ローカルでテストを実行する
+5. [ ] Pull Request を作成する
+   - **PR リンク**: [リンク]
 
-## 4. Verification
+## 4. 検証
 
-- [ ] CI Passed
-- [ ] Self-Review Completed
+- [ ] CI が通っている
+- [ ] セルフレビューが完了している
 
-## 5. Definition of Done
+## 5. 完了の定義（DoD）
 
-- [ ] Merged to `main`.
-- [ ] Follows coding standards.
-- [ ] Unit tests created and passed.
-- [ ] Code review completed.
-- [ ] Story Checklist Updated.
+- [ ] `main` へマージ済み。
+- [ ] コーディング標準に従っている。
+- [ ] ユニットテストが作成され、通っている。
+- [ ] コードレビューが完了している。
+- [ ] ストーリーのチェックリストを更新済み。

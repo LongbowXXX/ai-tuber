@@ -1,34 +1,34 @@
 ---
 name: Execute Release
-about: Perform the release actions
-title: "🚀 Execute Release: [Version]"
+about: リリース作業を実行する
+title: "🚀 リリース実行: [バージョン]"
 labels: ["release", "ops"]
 assignees: []
 ---
 
-## 🎯 Objective
+## 🎯 目的
 
-Execute the release process to publish the new version to users.
+新バージョンをユーザーへ提供するため、リリース手順を実行します。
 
-## 📝 Activities
+## 📝 作業内容
 
-- [ ] **Tagging**: Create and push Git Tag (`vX.Y.Z`).
-- [ ] **GitHub Release**: Create release page on GitHub.
-  - Title: `vX.Y.Z`
-  - Body: Paste Release Notes/CHANGELOG content.
-  - Upload: Artifacts (if any).
-- [ ] **Publish**: Push to package registry (if applicable).
-- [ ] **Announcement**: Send release announcement (Slack, Discord, Email, etc.).
+- [ ] **タグ付け**: Git タグ（`vX.Y.Z`）を作成して push する。
+- [ ] **GitHub Release**: GitHub 上にリリースページを作成する。
+  - タイトル: `vX.Y.Z`
+  - 本文: リリースノート/CHANGELOG の内容を貼り付ける。
+  - アップロード: 成果物（あれば）。
+- [ ] **公開**: パッケージレジストリへ公開する（該当する場合）。
+- [ ] **告知**: リリース告知を送る（Slack、Discord、メール等）。
 
-## 📊 Results
+## 📊 結果
 
-- Release URL:
+- リリース URL:
 
-## ✅ Exit Criteria
+## ✅ 完了条件
 
-- [ ] Git Tag created and pushed.
-- [ ] GitHub Release Page created.
-- [ ] Release notes written.
-- [ ] Artifacts uploaded.
-- [ ] Published to package registry (if applicable).
-- [ ] Release announcement sent.
+- [ ] Git タグが作成され push 済みである。
+- [ ] GitHub Release ページが作成されている。
+- [ ] リリースノートが記載されている。
+- [ ] 成果物がアップロードされている。
+- [ ] パッケージレジストリへ公開済みである（該当する場合）。
+- [ ] リリース告知が送信済みである。

@@ -1,31 +1,31 @@
-# Sanity Test Result Template
+# サニティテスト結果テンプレート
 
-## Overview
+## 概要
 
-Template for recording quick check (health check) results to see if major features are working correctly.
+主要機能が正しく動作しているかを確認するための、簡易チェック（ヘルスチェック）結果を記録するテンプレートです。
 
-## Structure
+## 構造
 
 ```markdown
-# [Test] Sanity Test Result
+# [Test] サニティテスト結果
 
-## Environment
+## 環境
 
-- Version: {Commit Hash / Version}
+- バージョン: {コミットハッシュ / バージョン}
 
-## Checklist Reference
+## チェックリスト参照
 
-Please execute using the latest Sanity Checklist on Git (`docs/tests/sanity.md`).
+Git 上の最新サニティチェックリスト（`docs/tests/sanity.md`）に従って実行してください。
 
-## Execution
+## 実行
 
-- [ ] All check items executed.
-- [ ] Results recorded.
-- [ ] Issues found handled.
+- [ ] すべてのチェック項目が実行されている。
+- [ ] 結果が記録されている。
+- [ ] 発見された課題が対応されている。
 
-**Execution Result**
+**実行結果**
 
-| Version       |   Result    | Date         | Runner | Note                      |
+| バージョン    |    結果     | 日付         | 実行者 | 補足                      |
 | :------------ | :---------: | :----------- | :----- | :------------------------ |
 | {Commit Hash} | PASS / FAIL | {YYYY-MM-DD} | {Name} | All OK / Failed at ST-003 |
 ```

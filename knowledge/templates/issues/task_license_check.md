@@ -1,42 +1,42 @@
 ---
-name: License Check Task
-about: Verify dependency licenses for compliance
-title: "⚖️ License Check: [Version/Component]"
+name: ライセンスチェックタスク
+about: 依存関係ライセンスのコンプライアンス適合を確認する
+title: "⚖️ ライセンスチェック: [バージョン/コンポーネント]"
 labels: ["legal", "verification"]
 assignees: []
 ---
 
-## 🎯 Objective
+## 🎯 目的
 
-Ensure all third-party libraries comply with the project's license policy (e.g., no GPL contamination for commercial/proprietary projects).
+すべてのサードパーティライブラリが、プロジェクトのライセンス方針に適合していることを確認します（例：商用/プロプライエタリ案件での GPL 混入を回避）。
 
-## 🛠️ Tools Used
+## 🛠️ 使用ツール
 
 - [ ] `pip-licenses` (Python)
 - [ ] `license-checker` (Node.js)
 - [ ] Other:
 
-## 📝 Activities
+## 📝 作業内容
 
-- [ ] Update `docs/licenses.md` (or equivalent) with the latest dependency list.
-- [ ] Commit the updated license list to Git.
+- [ ] `docs/licenses.md`（または同等ファイル）を最新の依存関係一覧で更新する。
+- [ ] 更新したライセンス一覧を Git にコミットする。
 
-## 📊 Findings
+## 📊 検出結果
 
-### Problematic Licenses (e.g., GPL, AGPL)
+### 問題になり得るライセンス（例: GPL, AGPL）
 
 - [ ] [Package Name]: [License Type]
-  - Usage Context: [Internal Tool / Distributed Binary / SaaS]
-  - Action: [Replace / Keep (Exempt)]
+  - 利用コンテキスト: [社内ツール / 配布バイナリ / SaaS]
+  - 対応: [置換 / 継続（例外扱い）]
 
-### Unknown Licenses
+### 不明なライセンス
 
 - [ ] [Package Name]
-  - Investigation Result:
+  - 調査結果:
 
-## ✅ Exit Criteria
+## ✅ 完了条件
 
-- [ ] License list file updated and committed.
-- [ ] All dependency licenses checked.
-- [ ] No issues with commercial use.
-- [ ] Confirmation recorded on ticket.
+- [ ] ライセンス一覧ファイルが更新され、コミットされている。
+- [ ] すべての依存関係ライセンスが確認されている。
+- [ ] 商用利用に問題がない。
+- [ ] 確認結果がチケットに記録されている。

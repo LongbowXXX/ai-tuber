@@ -1,280 +1,304 @@
-[← Back to Workflow](./workflow.md)
+[← ワークフローへ戻る](./workflow.md)
 
-# Release Task Details
+# リリースタスク詳細
 
-## Overview
+## 概要
 
-Create a Release Story when releasing the application.
-Bug fixes and small tasks that shouldn't be individual stories are linked to the Release Story.
+アプリケーションをリリースする際は、リリースストーリーを作成します。
+個別ストーリーにするほどではないバグ修正や小タスクは、リリースストーリーへ紐づけます。
 
-## Task List
+## タスクリスト
 
-1. [Agree on Version & Tag Name](#1-agree-on-version--tag-name)
-2. [Verify Related Fixes](#2-verify-related-fixes)
-3. [Run Sanity Test](#3-run-sanity-test)
-4. [Vulnerability Check](#4-vulnerability-check)
-5. [Static Analysis](#5-static-analysis)
-6. [Update Documentation](#6-update-documentation)
-7. [License Check](#7-license-check)
-8. [Create Release Checklist](#8-create-release-checklist)
-9. [Run Pre-release Checks](#9-run-pre-release-checks)
-10. [Define Exit Criteria](#10-define-exit-criteria)
-11. [Execute Release](#11-execute-release)
-12. [Verify Exit Criteria](#12-verify-exit-criteria)
-
----
-
-### 1. Agree on Version & Tag Name
-
-**Deliverable**: Agreement record on Project Management Tool
-
-**Goal**: Clarify release version naming rules and content.
-
-**Activities**:
-
-- Version decision based on Semantic Versioning (SemVer).
-- Git Tag name decision.
-- Draft Release Notes core content.
-- Record agreement on ticket.
-  - **Template**: [Release Version Agreement](../templates/issues/task_version_agreement.md)
-
-**Checkpoints**:
-
-- [ ] Verify using [Release Version Agreement](../templates/issues/task_version_agreement.md).
+1. [バージョンとタグ名の合意](#1-agree-on-version--tag-name)
+2. [関連修正の確認](#2-verify-related-fixes)
+3. [サニティテスト実施](#3-run-sanity-test)
+4. [脆弱性チェック](#4-vulnerability-check)
+5. [静的解析](#5-static-analysis)
+6. [ドキュメント更新](#6-update-documentation)
+7. [ライセンスチェック](#7-license-check)
+8. [リリースチェックリスト作成](#8-create-release-checklist)
+9. [プレリリースチェック実行](#9-run-pre-release-checks)
+10. [完了条件の定義](#10-define-exit-criteria)
+11. [リリース実行](#11-execute-release)
+12. [完了条件の検証](#12-verify-exit-criteria)
 
 ---
 
-### 2. Verify Related Fixes
+<a id="1-agree-on-version--tag-name"></a>
 
-**Deliverable**: Confirmation result on Project Management Tool
+### 1. バージョンとタグ名の合意
 
-**Goal**: Ensure all changes linked to the Release Story are included.
+**成果物**: プロジェクト管理ツール上の合意記録
 
-**Activities**:
+**目的**: リリースバージョンの命名規則と内容を明確化します。
 
-- Check bug fixes linked to Release Story.
-- Check feature additions/changes linked to Release Story.
-- Check for merge omissions.
-- Confirm conflict resolution.
-- Record confirmation results on ticket.
-  - **Template**: [Verify Related Fixes](../templates/issues/task_verify_related_fixes.md)
+**作業内容**:
 
-**Checkpoints**:
+- セマンティックバージョニング（SemVer）に基づくバージョン決定。
+- Git タグ名の決定。
+- リリースノートの中核コンテンツをドラフトする。
+- チケットに合意内容を記録する。
+  - **テンプレート**: [リリース版合意](../templates/issues/task_version_agreement.md)
 
-- [ ] Verify using [Verify Related Fixes](../templates/issues/task_verify_related_fixes.md).
+**チェックポイント**:
 
----
-
-### 3. Run Sanity Test
-
-**Deliverable**: Sanity Test Result (Issue)
-
-- **Template**: [Sanity Test Task](../templates/issues/task_test_sanity.md)
-
-**Goal**: Ensure the release candidate is stable enough for further testing.
-
-**Activities**:
-
-- Deploy Release Candidate to Staging/Test environment.
-- Execute Sanity Test items based on `docs/tests/sanity.md`.
-- Record pass/fail.
-
-**Checkpoints**:
-
-- [ ] Verify using [Sanity Test Task](../templates/issues/task_test_sanity.md).
+- [ ] [リリース版合意](../templates/issues/task_version_agreement.md) を使って検証する。
 
 ---
 
-### 4. Vulnerability Check
+<a id="2-verify-related-fixes"></a>
 
-**Deliverable**: Vulnerability Check Result (Issue)
+### 2. 関連修正の確認
 
-**Goal**: Identify and address security risks.
+**成果物**: プロジェクト管理ツール上の確認結果
 
-**Activities**:
+**目的**: リリースストーリーに紐づく変更がすべて含まれていることを保証します。
 
-- Vulnerability scan of dependency libraries.
-  - Python: `pip-audit` or `safety`
-  - Node.js: `npm audit` or `yarn audit`
-- Check against known vulnerability databases.
-- Handle found vulnerabilities.
-  - Critical/High: Must fix.
-  - Medium: Evaluate risk and decide.
-  - Low: Record and consider for future.
-- **Template**: [Vulnerability Check Task](../templates/issues/task_vulnerability_check.md)
+**作業内容**:
 
-**Checkpoints**:
+- リリースストーリーに紐づくバグ修正を確認する。
+- リリースストーリーに紐づく機能追加/変更を確認する。
+- マージ漏れを確認する。
+- コンフリクト解消を確認する。
+- 確認結果をチケットに記録する。
+  - **テンプレート**: [関連修正の確認](../templates/issues/task_verify_related_fixes.md)
 
-- [ ] Verify using [Vulnerability Check Task](../templates/issues/task_vulnerability_check.md).
+**チェックポイント**:
 
----
-
-### 5. Static Analysis
-
-**Deliverable**: Static Analysis Result (Project Management Tool)
-
-**Goal**: Detect potential bugs and quality issues via static analysis.
-
-**Activities**:
-
-- Run static analysis tools.
-- Analyze detected issues.
-- Fix high-priority issues.
-- Determine and record False Positives.
-- Record check results on ticket.
-  - **Template**: [Static Analysis Task](../templates/issues/task_static_analysis.md)
-
-**Checkpoints**:
-
-- [ ] Verify using [Static Analysis Task](../templates/issues/task_static_analysis.md).
+- [ ] [関連修正の確認](../templates/issues/task_verify_related_fixes.md) を使って検証する。
 
 ---
 
-### 6. Update Documentation
+<a id="3-run-sanity-test"></a>
 
-**Deliverable**: Updated Documentation (Git)
+### 3. サニティテスト実施
 
-- **Template**: [Update Documentation](../templates/issues/task_docs_update.md)
+**成果物**: サニティテスト結果（Issue）
 
-**Goal**: Ensure users and developers have access to the latest info.
+- **テンプレート**: [サニティテストタスク](../templates/issues/task_test_sanity.md)
 
-**Activities**:
+**目的**: リリース候補が追加テストに進めるだけ安定していることを確認します。
 
-- Update README.md.
-- Update CHANGELOG.md or change history.
-- Update HowToUse/Tutorials.
-- Update API Specs (if applicable).
-- Update Dependency List.
+**作業内容**:
 
-**Checkpoints**:
+- リリース候補をステージング/テスト環境へデプロイする。
+- `docs/tests/sanity.md` に基づきサニティテスト項目を実行する。
+- 合否を記録する。
 
-- [ ] Verify using [Update Documentation](../templates/issues/task_docs_update.md).
+**チェックポイント**:
 
----
-
-### 7. License Check
-
-**Deliverable**: License List File (Git)
-
-**Goal**: Ensure library licenses are appropriate and avoid legal risks.
-
-**Activities**:
-
-- Retrieve license list of dependencies.
-- Update license list file.
-- Commit to Git.
-- Check license types.
-- Identify and handle problematic licenses.
-- Update license notices.
-- Record confirmation results on ticket.
-  - **Template**: [License Check Task](../templates/issues/task_license_check.md)
-
-**Checkpoints**:
-
-- [ ] Verify using [License Check Task](../templates/issues/task_license_check.md).
+- [ ] [サニティテストタスク](../templates/issues/task_test_sanity.md) を使って検証する。
 
 ---
 
-### 8. Create Release Checklist
+<a id="4-vulnerability-check"></a>
 
-**Deliverable**: Check items on Project Management Tool
+### 4. 脆弱性チェック
 
-**Goal**: Clarify final check criteria before release.
+**成果物**: 脆弱性チェック結果（Issue）
 
-**Activities**:
+**目的**: セキュリティリスクを特定し、対処します。
 
-- Record release check items on ticket. Includes:
-  - Operation Check (Feature verification linked to release).
-  - Quality/Security (Vulnerability, Static Analysis, License).
-  - Documents (README updates, etc.).
-  - Release Artifacts (Build output, etc.).
-  - Version Control (Tags, Commits).
-- **Template**: [Release Checklist](../templates/issues/task_release_checklist.md)
+**作業内容**:
 
-**Checkpoints**:
+- 依存ライブラリの脆弱性スキャン。
+  - Python: `pip-audit` または `safety`
+  - Node.js: `npm audit` または `yarn audit`
+- 既知の脆弱性データベースと照合する。
+- 検出された脆弱性に対処する。
+  - Critical/High: 必ず修正する。
+  - Medium: リスク評価し判断する。
+  - Low: 記録し将来対応を検討する。
+- **テンプレート**: [脆弱性チェックタスク](../templates/issues/task_vulnerability_check.md)
 
-- [ ] Verify using [Release Checklist](../templates/issues/task_release_checklist.md).
+**チェックポイント**:
 
----
-
-### 9. Run Pre-release Checks
-
-**Deliverable**: Confirmation result on Project Management Tool
-
-**Goal**: Confirm release criteria are met.
-
-**Activities**:
-
-- Execute checks based on items created in 8.
-- Record results for each item.
-- Handle discovered issues.
-- Record confirmation results on ticket.
-
-**Checkpoints**:
-
-- [ ] All check items executed.
-- [ ] All check items passed.
-- [ ] Issues handled appropriately.
-- [ ] Confirmation results recorded on ticket.
+- [ ] [脆弱性チェックタスク](../templates/issues/task_vulnerability_check.md) を使って検証する。
 
 ---
 
-### 10. Define Exit Criteria
+<a id="5-static-analysis"></a>
 
-**Deliverable**: Exit Criteria Document (Issue)
+### 5. 静的解析
 
-- **Template**: [Define Exit Criteria](../templates/issues/task_define_exit_criteria.md)
+**成果物**: 静的解析結果（プロジェクト管理ツール）
 
-**Goal**: Clarify criteria for release completion.
+**目的**: 静的解析により潜在バグや品質問題を検出します。
 
-**Mandatory Items**:
+**作業内容**:
 
-- [ ] Pre-release checks executed and passed.
-- [ ] Release completed.
-  - [ ] Release page created.
-  - [ ] Release announcement sent.
-  - [ ] Git Tag created.
-  - [ ] Release artifacts published.
+- 静的解析ツールを実行する。
+- 検出された問題を分析する。
+- 高優先度の問題を修正する。
+- False Positive を判断し記録する。
+- チケットにチェック結果を記録する。
+  - **テンプレート**: [静的解析タスク](../templates/issues/task_static_analysis.md)
 
-**Checkpoints**:
+**チェックポイント**:
 
-- [ ] Verify using [Define Exit Criteria](../templates/issues/task_define_exit_criteria.md).
-
----
-
-### 11. Execute Release
-
-**Deliverable**: Release Page, Release Artifacts
-
-**Goal**: Officially release the new version.
-
-**Activities**:
-
-- Create Git Tag.
-- **Template**: [Execute Release](../templates/issues/task_release_execution.md)
-- Create GitHub Release Page.
-- Publish to Package Registry (if applicable).
-- Send release announcement.
-
-**Checkpoints**:
-
-- [ ] Verify using [Execute Release](../templates/issues/task_release_execution.md).
+- [ ] [静的解析タスク](../templates/issues/task_static_analysis.md) を使って検証する。
 
 ---
 
-### 12. Verify Exit Criteria
+<a id="6-update-documentation"></a>
 
-**Deliverable**: Confirmation result on Project Management Tool
+### 6. ドキュメント更新
 
-**Goal**: Confirm Release Story meets completion criteria.
+**成果物**: 更新済みドキュメント（Git）
 
-**Activities**:
+- **テンプレート**: [ドキュメント更新](../templates/issues/task_docs_update.md)
 
-- Final check based on Exit Criteria.
-- **Template**: [Verify Exit Criteria](../templates/issues/task_verify_exit_criteria.md)
-- Verification of all deliverables.
-- Record confirmation results as comment on ticket.
+**目的**: ユーザーと開発者が最新情報にアクセスできるようにします。
 
-**Checkpoints**:
+**作業内容**:
 
-- [ ] Verify using [Verify Exit Criteria](../templates/issues/task_verify_exit_criteria.md).
+- README.md を更新する。
+- CHANGELOG.md もしくは変更履歴を更新する。
+- HowToUse/チュートリアルを更新する。
+- API 仕様を更新する（該当する場合）。
+- 依存一覧を更新する。
+
+**チェックポイント**:
+
+- [ ] [ドキュメント更新](../templates/issues/task_docs_update.md) を使って検証する。
+
+---
+
+<a id="7-license-check"></a>
+
+### 7. ライセンスチェック
+
+**成果物**: ライセンス一覧ファイル（Git）
+
+**目的**: ライブラリのライセンスが適切であることを確認し、法的リスクを回避します。
+
+**作業内容**:
+
+- 依存関係のライセンス一覧を取得する。
+- ライセンス一覧ファイルを更新する。
+- Git にコミットする。
+- ライセンス種別を確認する。
+- 問題のあるライセンスを特定し対処する。
+- ライセンス通知を更新する。
+- 確認結果をチケットに記録する。
+  - **テンプレート**: [ライセンスチェックタスク](../templates/issues/task_license_check.md)
+
+**チェックポイント**:
+
+- [ ] [ライセンスチェックタスク](../templates/issues/task_license_check.md) を使って検証する。
+
+---
+
+<a id="8-create-release-checklist"></a>
+
+### 8. リリースチェックリスト作成
+
+**成果物**: プロジェクト管理ツール上のチェック項目
+
+**目的**: リリース前の最終チェック基準を明確化します。
+
+**作業内容**:
+
+- チケットにリリースチェック項目を記録する。含める内容:
+  - 動作確認（リリースに紐づく機能検証）。
+  - 品質/セキュリティ（脆弱性、静的解析、ライセンス）。
+  - ドキュメント（README 更新など）。
+  - リリース成果物（ビルド出力など）。
+  - バージョン管理（タグ、コミット）。
+- **テンプレート**: [リリースチェックリスト](../templates/issues/task_release_checklist.md)
+
+**チェックポイント**:
+
+- [ ] [リリースチェックリスト](../templates/issues/task_release_checklist.md) を使って検証する。
+
+---
+
+<a id="9-run-pre-release-checks"></a>
+
+### 9. プレリリースチェック実行
+
+**成果物**: プロジェクト管理ツール上の確認結果
+
+**目的**: リリース条件が満たされていることを確認します。
+
+**作業内容**:
+
+- 8 で作成した項目に基づいてチェックを実行する。
+- 各項目の結果を記録する。
+- 発見された問題に対処する。
+- 確認結果をチケットに記録する。
+
+**チェックポイント**:
+
+- [ ] 全チェック項目を実行した。
+- [ ] 全チェック項目が合格した。
+- [ ] 問題に適切に対処した。
+- [ ] 確認結果をチケットに記録した。
+
+---
+
+<a id="10-define-exit-criteria"></a>
+
+### 10. 完了条件の定義
+
+**成果物**: 完了条件ドキュメント（Issue）
+
+- **テンプレート**: [完了条件の定義](../templates/issues/task_define_exit_criteria.md)
+
+**目的**: リリース完了の基準を明確化します。
+
+**必須項目**:
+
+- [ ] プレリリースチェックを実行し合格した。
+- [ ] リリースが完了した。
+  - [ ] リリースページを作成した。
+  - [ ] リリース告知を送信した。
+  - [ ] Git タグを作成した。
+  - [ ] リリース成果物を公開した。
+
+**チェックポイント**:
+
+- [ ] [完了条件の定義](../templates/issues/task_define_exit_criteria.md) を使って検証する。
+
+---
+
+<a id="11-execute-release"></a>
+
+### 11. リリース実行
+
+**成果物**: リリースページ、リリース成果物
+
+**目的**: 新バージョンを正式にリリースします。
+
+**作業内容**:
+
+- Git タグを作成する。
+- **テンプレート**: [リリース実行](../templates/issues/task_release_execution.md)
+- GitHub Release ページを作成する。
+- パッケージレジストリへ公開する（該当する場合）。
+- リリース告知を送信する。
+
+**チェックポイント**:
+
+- [ ] [リリース実行](../templates/issues/task_release_execution.md) を使って検証する。
+
+---
+
+<a id="12-verify-exit-criteria"></a>
+
+### 12. 完了条件の検証
+
+**成果物**: プロジェクト管理ツール上の確認結果
+
+**目的**: リリースストーリーが完了基準を満たしていることを確認します。
+
+**作業内容**:
+
+- 完了条件に基づく最終確認。
+- **テンプレート**: [完了条件の検証](../templates/issues/task_verify_exit_criteria.md)
+- すべての成果物の検証。
+- 確認結果をチケットのコメントとして記録する。
+
+**チェックポイント**:
+
+- [ ] [完了条件の検証](../templates/issues/task_verify_exit_criteria.md) を使って検証する。

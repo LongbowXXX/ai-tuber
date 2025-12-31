@@ -1,10 +1,10 @@
-# Design Document: [Feature Name]
+# 設計ドキュメント: [Feature Name]
 
-## 1. Overview
+## 1. 概要
 
-[High-level summary of the design]
+[設計の高レベル要約]
 
-## 2. Architecture Diagram (Mermaid)
+## 2. アーキテクチャ図（Mermaid）
 
 ```mermaid
 graph TD
@@ -25,6 +25,6 @@ interface IService {
 }
 ```
 
-## 5. Key Decisions & Trade-offs
+## 5. 重要な判断とトレードオフ
 
-- Decision A vs B...
+- 判断 A vs B...

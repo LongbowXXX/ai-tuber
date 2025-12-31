@@ -1,25 +1,25 @@
-# Task Management with `#todo`
+# `#todo` によるタスク管理
 
-## Problem
+## 問題
 
-When a custom prompt requires performing multiple complex operations (e.g., analyzing context, generating multiple files, validating links), Copilot may occasionally skip steps or lose track of progress, leading to incomplete results.
+カスタムプロンプトで複数の複雑な操作（例: コンテキスト分析、複数ファイル生成、リンク検証）を要求すると、Copilot が手順を飛ばしたり進捗を見失ったりして、結果が不完全になることがあります。
 
-## Solution
+## 解決策
 
-Enforce structured execution by explicitly registering tasks using the `#todo` tool at the beginning of the prompt and requiring a final verification step.
+プロンプトの冒頭で `#todo` ツールを使ってタスクを明示的に登録し、最後に検証ステップを要求することで、構造化された実行を強制します。
 
-## Implementation Steps
+## 実装手順
 
-1.  **Task Initialization**:
-    At the very beginning of the prompt (after the role definition), instruct Copilot to immediately use the `#todo` tool to register all high-level tasks.
+1.  **タスク初期化**:
+    プロンプトの最初（ロール定義の直後）に、Copilot が直ちに `#todo` ツールを使って高レベルタスクをすべて登録するよう指示します。
 
     > [!IMPORTANT]
-    > Ensure that the TODO items and the work Steps match. If they do not match, the AI may make mistakes when checking progress.
+    > TODO 項目と作業ステップが一致していることを確認してください。一致していない場合、AI は進捗チェックで誤りを起こす可能性があります。
 
-2.  **Final Verification**:
-    Add a "Final Check" section at the end of the prompt that requires Copilot to confirm all registered todo are completed.
+2.  **最終検証**:
+    プロンプト末尾に「Final Check」セクションを追加し、登録した todo がすべて完了していることを Copilot に確認させます。
 
-## Example Template
+## テンプレ例
 
 ```markdown
 # Role: [Role Name]
@@ -28,7 +28,7 @@ Enforce structured execution by explicitly registering tasks using the `#todo` t
 
 ## 📋 Task Initialization
 
-**IMMEDIATELY** use the `#todo` tool to register the following tasks to track your progress:
+進捗を追跡するため、`#todo` ツールを **直ちに** 使って次のタスクを登録してください:
 
 1.  **Step 1**: [Description of step 1]
 2.  **Step 2**: [Description of step 2]
@@ -39,14 +39,14 @@ Enforce structured execution by explicitly registering tasks using the `#todo` t
 
 ## ✅ Final Check
 
-**Before finishing, confirm:**
+**終了前に確認:**
 
-- [ ] All todo are marked as completed.
-- [ ] All requirements are met.
+- [ ] すべての todo が完了としてマークされている。
+- [ ] すべての要件が満たされている。
 ```
 
-## Benefits
+## 利点
 
-- **Visibility**: Users can see the planned tasks in the "todo" view.
-- **Completeness**: Reduces the risk of missing steps in complex workflows.
-- **Self-Correction**: Encourages the model to review its own work against the checklist.
+- **可視性（Visibility）**: ユーザーは「todo」ビューで計画タスクを確認できます。
+- **完全性（Completeness）**: 複雑なワークフローで手順漏れが起きるリスクを減らします。
+- **自己修正（Self-Correction）**: チェックリストに照らして自分の作業を見直すことをモデルに促します。

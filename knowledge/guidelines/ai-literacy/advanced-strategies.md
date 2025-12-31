@@ -1,108 +1,108 @@
-# AI Literacy: Advanced Strategies & Security Protocols
+# AI リテラシー: 高度な戦略とセキュリティプロトコル
 
-> **"From Writer of Code to Architect of Intent."**
+> **「コードを書く人から、意図を設計する人へ」**
 
-In `README.md`, you learned the basic posture of treating AI as a partner. This document defines the **Terraformer Standard Prompting Strategy (SSG)** to maximize AI capabilities and the **Defensive Protocols** to manage risk.
+`README.md` では、AI をパートナーとして扱う基本姿勢を学びました。このドキュメントは、AI 能力を最大化する **Terraformer 標準プロンプティング戦略（SSG）** と、リスクを管理する **防御プロトコル** を定義します。
 
 ---
 
-## 🧠 1. Input Over Structure (The SSG Framework)
+## 🧠 1. 構造より入力（SSG フレームワーク）
 
-Modern AI models (Gemini 3 Pro, GPT-5.2, etc.) can process vast amounts of context. Discard the old wisdom of "summarizing info for brevity." Shift to a style of **"providing raw primary sources sufficiently."**
+現代の AI モデル（Gemini 3 Pro、GPT-5.2 など）は膨大なコンテキストを処理できます。「短くするために情報を要約する」という古い知恵は捨て、**「一次ソースをそのまま十分に提供する」** というスタイルへ移行します。
 
-### The 3S Principle (Terraformer Standard)
+### 3S 原則（Terraformer Standard）
 
-Three principles for context provision:
+コンテキスト提供の 3 原則:
 
-1.  **Specific**:
-    - Do not say "it's weird"; say "it returns error code 500".
-2.  **Sufficient**:
-    - **Important**: Do not fear long texts. Rather than editing information down, paste entire logs or codes.
-    - For AI, "insufficient information" is far more harmful than "too much information (noise)".
-3.  **Source-based**:
-    - Do not explain in your own words; present "primary sources (Source)" like error logs, actual code, and specs as they are.
+1.  **Specific（具体的）**:
+    - "it's weird" ではなく "it returns error code 500" のように言う。
+2.  **Sufficient（十分）**:
+    - **重要**: 長文を恐れない。情報を削るのではなく、ログやコードを丸ごと貼る。
+    - AI にとっては「情報不足」の害が、「情報過多（ノイズ）」よりはるかに大きい。
+3.  **Source-based（ソース基盤）**:
+    - 自分の言葉で説明しない。エラーログ、実コード、仕様などの「一次ソース（Source）」をそのまま提示する。
 
-### The S.S.G. Framework
+### S.S.G. フレームワーク
 
-The prompt structure recommended by Terraformer. If "Situation" and "Source" are sufficient, the "Goal" needs only be one line.
+Terraformer が推奨するプロンプト構造です。「Situation」と「Source」が十分なら、「Goal」は 1 行で足ります。
 
 1.  **Situation**
-    - Primary information on "what is happening."
-    - Paste error logs, console outputs, etc., without summarizing.
+    - 「何が起きているか」についての一次情報。
+    - エラーログ、コンソール出力などを要約せず貼る。
 2.  **Source**
-    - Use `#file` or `@workspace` to attach relevant files, config files, and specifications.
-    - If in doubt, provide more rather than less.
+    - `#file` や `@workspace` を使って、関連ファイル、設定ファイル、仕様を添付する。
+    - 迷ったら「少なめ」より「多め」。
 3.  **Goal**
-    - A concise declaration of "what you want to do."
-    - Ex: "Fix this error." / "Write a test case for this logic."
+    - 「何をしたいか」を簡潔に宣言する。
+    - 例: "Fix this error." / "Write a test case for this logic."
 
 ---
 
-## 🛡️ 2. Defensive AI Programming (Risk Management)
+## 🛡️ 2. 防御的 AI プログラミング（リスク管理）
 
-AI is a machine that probabilistically tells "plausible lies." Understand the following risks and practice defensive development.
+AI は確率的に「もっともらしい嘘」をつく機械です。次のリスクを理解し、防御的に開発してください。
 
-### 🚫 Prohibit "Vibe Coding"
+### 🚫 「Vibe Coding」を禁止する
 
-**Vibe Coding** is the act of adopting AI-generated code just because it "seems to work (Good Vibes)" without understanding the logic.
+**Vibe Coding** とは、ロジックを理解しないまま「動いていそう（Good Vibes）」という雰囲気だけで AI 生成コードを採用する行為です。
 
-- **Rule**: You must not commit a single line of code that you cannot explain yourself.
+- **ルール**: 自分で説明できないコードを 1 行たりともコミットしてはならない。
 
-### ☠️ Slopsquatting (Package Hallucination)
+### ☠️ Slopsquatting（パッケージの幻覚）
 
-AI may propose non-existent package names as "hallucinations" (e.g., `fast-json-secure`). Attackers anticipate these "names AI tends to suggest," register them on npm or PyPI, and plant malware (**Slopsquatting**).
+AI は「ハルシネーション」として存在しないパッケージ名（例: `fast-json-secure`）を提案することがあります。攻撃者は「AI が提案しがちな名前」を予測し、npm や PyPI に登録してマルウェアを仕込むことがあります（**Slopsquatting**）。
 
-- **🚨 CRITICAL RULE**: When AI suggests an `npm install` or `import`, **you must search the package in a browser to confirm it is official and truly exists.** Installing unverified packages leads directly to supply chain attacks.
+- **🚨 クリティカルルール**: AI が `npm install` や `import` を提案したら、**必ずブラウザでパッケージを検索し、公式で実在することを確認する。** 未検証パッケージの導入はサプライチェーン攻撃に直結します。
 
-### 🛡️ Security Checklist
+### 🛡️ セキュリティチェックリスト
 
-- **SQL Injection**: Are you concatenating raw SQL strings? (Force usage of placeholders/ORM)
-- **Secrets**: Are API keys hardcoded?
-- **Data Leak**: Are you entering PII (Personally Identifiable Information) into prompts?
-
----
-
-## 📝 3. Spec-Driven Development (SDD)
-
-The best way to prevent "Vibe Coding" is to write **Specs** before letting it write code.
-
-### Workflow
-
-1.  **Write Spec**: Write the requirements of the feature you want to implement in a Markdown file (e.g., `specs/login.md`). Including Mermaid diagrams is even more effective.
-2.  **Feed Context**: Load the spec into Copilot (`#file`).
-3.  **Generate**: Instruct it to "Implement specifically according to `#login.md`."
-
-By doing this, the AI generates code based on "Clear Truth (Ground Truth)" rather than "Probabilistic Guesswork," drastically reducing logical breakdowns.
+- **SQL インジェクション**: 生 SQL を連結していないか？（プレースホルダ/ORM の使用を強制する）
+- **シークレット**: API キーがハードコードされていないか？
+- **情報漏洩**: プロンプトへ PII（個人識別情報）を入力していないか？
 
 ---
 
-## 🏗️ 4. Context Engineering (Using the Brain)
+## 📝 3. Spec-Driven Development（SDD）
 
-Terraformer has already "engineered" the project's memory. Your job is to **leverage** it.
+"Vibe Coding" を防ぐ最良の方法は、コードを書かせる前に **仕様（Specs）** を書くことです。
 
-### `AGENTS.md` (The Central Brain)
+### ワークフロー
 
-This project is equipped with an `AGENTS.md` file that acts as the source of truth for AI context.
+1.  **仕様を書く**: 実装したい機能の要件を Markdown（例: `specs/login.md`）に書く。Mermaid 図を含めるとより効果的。
+2.  **コンテキストを与える**: 仕様を Copilot に読み込ませる（`#file`）。
+3.  **生成する**: "Implement specifically according to `#login.md`." と指示する。
 
-- **Role**: It defines the project's architecture, tech stack, and coding standards.
-- **Action**: **Read it.** You don't need to memorize it, but you must know what rules the AI is trying to follow. If the AI makes a mistake, check if `AGENTS.md` is outdated.
+これにより、AI は「確率的な当て推量」ではなく「明確な真実（Ground Truth）」に基づいてコードを生成でき、論理破綻を大幅に減らせます。
+
+---
+
+## 🏗️ 4. コンテキストエンジニアリング（脳を使う）
+
+Terraformer はすでにプロジェクトの「記憶」をエンジニアリングしています。あなたの仕事はそれを **活用** することです。
+
+### `AGENTS.md`（中央脳）
+
+このプロジェクトには、AI コンテキストの真実（source of truth）として機能する `AGENTS.md` ファイルがあります。
+
+- **役割**: プロジェクトのアーキテクチャ、技術スタック、コーディング標準を定義する。
+- **アクション**: **読む。** 暗記は不要ですが、AI が従おうとしているルールを把握する必要があります。AI がミスしたら `AGENTS.md` が古くないか確認します。
 
 ---
 
 **"Trust, but Verify."**
-You are required to act as an "Orchestrator" who provides sufficient information (Source) to the AI and strictly verifies its output (Code).
+あなたには、AI に十分な情報（Source）を与え、出力（Code）を厳格に検証する「オーケストレーター」として振る舞うことが求められます。
 
 ---
 
-## 🤝 5. AI Collaborative Workflow
+## 🤝 5. AI 協働ワークフロー
 
-To maximize the potential of these strategies, we follow a structured collaboration process.
+これらの戦略の潜在能力を最大化するため、構造化された協働プロセスに従います。
 
-### **Terraformer Standard Workflow**
+### **Terraformer 標準ワークフロー**
 
-We have defined a standard workflow that clarifies the division of roles between AI and Humans in each phase (Requirement, Design, Implementation, Verification, Release).
+各フェーズ（要件、設計、実装、検証、リリース）における AI と人間の役割分担を明確化する標準ワークフローを定義しています。
 
-- **Rule**: Always follow the [AI Collaborative Model](../../workflows/workflow.md) when proceeding with tasks.
-- **Key Concept**:
-  - **Process in Issue**: Discussions and decisions are recorded in GitHub Issues.
-  - **Result in Git**: Final artifacts (code, specs) are managed in Git.
+- **ルール**: タスクを進めるときは常に [AI Collaborative Model](../../workflows/workflow.md) に従う。
+- **キー概念**:
+  - **Process in Issue**: 議論と意思決定は GitHub Issues に記録する。
+  - **Result in Git**: 最終成果物（コード、仕様）は Git で管理する。

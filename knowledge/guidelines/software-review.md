@@ -1,67 +1,67 @@
-# Software Review Perspectives
+# ソフトウェアレビュー観点
 
-This document outlines the key perspectives for conducting effective code reviews and ensuring software quality.
+このドキュメントは、効果的なコードレビューを実施し、ソフトウェア品質を担保するための主要観点をまとめます。
 
-## 1. Code Review Checklist
+## 1. コードレビューチェックリスト
 
 ### Correctness
 
-- **Functionality:** Does the code perform the intended task correctly?
-- **Edge Cases:** Are boundaries and edge cases handled (e.g., null values, empty lists, large inputs)?
-- **Logic:** Is the business logic sound and free of flaws?
+- **機能**: 意図したタスクを正しく実行するか？
+- **エッジケース**: 境界値や例外的ケースが扱われているか（例: null、空リスト、大きな入力）？
+- **ロジック**: ビジネスロジックは妥当で欠陥がないか？
 
 ### Security
 
-- **Vulnerabilities:** Are there standard vulnerabilities (SQLi, XSS, CSRF, etc.)?
-- **Input Validation:** Is all external input validated and sanitized?
-- **Secrets:** Are there any hardcoded secrets or sensitive data?
-- **Authorization:** are permissions properly checked?
+- **脆弱性**: 典型的な脆弱性（SQLi、XSS、CSRF 等）がないか？
+- **入力検証**: 外部入力はすべて検証・サニタイズされているか？
+- **シークレット**: ハードコードされた秘密情報や機微情報がないか？
+- **認可**: 権限は適切にチェックされているか？
 
 ### Readability & Maintainability
 
 - **Naming (AI-Native):**
-  - **Behavior-Driven:** Function names must describe _what_ they do, not _how_ they do it (e.g., `calculate_total` vs `loop_and_add_prices`).
-  - **Standard English:** Use standard, globally recognized software terminology. Verify grammar (Subject-Verb-Object). Avoid cryptic abbreviations or local slang (e.g., `check_auth` is better than `chk_prms`).
-  - **Contextual:** Names must include full context to be self-documenting for AI context windows (e.g., `user_id` not `uid`).
-  - **Verbs:** Use precise action verbs (e.g., `fetch_user` vs `get_user` vs `load_user`).
-  - **Booleans:** Use question forms for boolean variables/functions (e.g., `is_active`, `has_permission`).
-  - **No Ambiguity:** Avoid generic names like `data`, `info`, `temp` unless the scope is extremely small (e.g. loops).
+  - **挙動駆動**: 関数名は _どうやるか_ ではなく _何をするか_ を表す（例: `calculate_total` vs `loop_and_add_prices`）。
+  - **標準英語**: 世界的に通用する標準的なソフトウェア用語を使う。文法（SVO）を確認し、暗号的な略語やローカルスラングを避ける（例: `chk_prms` より `check_auth`）。
+  - **文脈を含む**: AI のコンテキストウィンドウでも自己記述的になるよう、名前に十分な文脈を含める（例: `uid` ではなく `user_id`）。
+  - **動詞**: 正確なアクション動詞を使う（例: `fetch_user` / `get_user` / `load_user`）。
+  - **bool**: bool 変数/関数は質問形にする（例: `is_active`、`has_permission`）。
+  - **曖昧さ禁止**: スコープが極端に小さい場合（例: ループ）を除き、`data`、`info`、`temp` のような汎用名を避ける。
 - **Structure:**
-  - **Single Responsibility:** Does each class/function do exactly one thing? Avoid "God Objects" or "God Functions".
-  - **Meaningful Units:** Are modules and functions split by domain concept or logical behavior, rather than arbitrary size or type?
-  - **Cohesion:** Do the elements within a class/module belong together?
-- **Complexity:** Is the logic overly complex? Can it be simplified?
+  - **単一責任**: 各クラス/関数は「1 つのこと」だけをしているか？ "God Object" / "God Function" を避ける。
+  - **意味のある単位**: モジュールや関数は、任意のサイズ/種類ではなく、ドメイン概念や論理的挙動で分割されているか？
+  - **凝集度**: クラス/モジュール内の要素は同じ関心でまとまっているか？
+- **複雑さ**: ロジックが過度に複雑ではないか？単純化できないか？
 - **Comments:**
-  - **Public APIs:** Public classes and methods MUST have comments (DocStrings/JSDoc) that follow the language's conventions and project policy.
-    - _Exception:_ Comments may be omitted if the naming is fully self-evident (e.g., `get_id()`).
-  - **Internal:** Are complex sections explained? Are comments up-to-date?
-- **Consistency:** Does the code follow the project's coding style and conventions?
+  - **公開 API**: 公開クラス/メソッドは、その言語の慣習とプロジェクト方針に従ったコメント（DocStrings/JSDoc）を **必ず** 付ける。
+    - _例外:_ 命名が完全に自明な場合は省略してよい（例: `get_id()`）。
+  - **内部**: 複雑な箇所は説明されているか？コメントは最新か？
+- **一貫性**: コードはプロジェクトのスタイル/規約に従っているか？
 
 ### Performance
 
-- **Efficiency:** Are there any obvious performance bottlenecks (e.g., N+1 queries, nested loops)?
-- **Resource Usage:** Is memory and resource usage verified?
-- **Resource Leaks:** Are streams, database connections, and file handles properly closed/released (e.g., using `try-finally` or `using`/`with` statements)?
+- **効率**: 明らかな性能ボトルネック（例: N+1 クエリ、ネストループ）がないか？
+- **リソース使用量**: メモリやリソース使用量が確認されているか？
+- **リソースリーク**: ストリーム、DB 接続、ファイルハンドルが適切にクローズ/解放されているか（例: `try-finally`、`using`/`with`）？
 
 ### Testing
 
-- **Coverage:** Is the new code covered by automated tests?
-- **Quality:** Do the tests actually verify the behavior (not just coverage padding)?
-- **Scenarios:** Are failure, success and edge case scenarios testing?
+- **カバレッジ**: 新規コードは自動テストでカバーされているか？
+- **品質**: テストが実際に挙動を検証しているか（単なるカバレッジ稼ぎではないか）？
+- **シナリオ**: 失敗/成功/エッジケースのシナリオがテストされているか？
 
 ### Documentation
 
-- **API Docs:** If APIs changed, are docs updated?
-- **Comments:** Are internal comments clear and helpful?
+- **API ドキュメント**: API が変わった場合、ドキュメントは更新されているか？
+- **コメント**: 内部コメントは明確で有用か？
 
-## 2. PR Quality Checklist
+## 2. PR 品質チェックリスト
 
-When reviewing the Pull Request itself, ensure it adheres to the strict guidelines defined in:
+Pull Request 自体をレビューする際は、次の厳格なガイドラインに従っていることを確認します:
 
 - [PR Creation Guidelines](./pr-creation-guidelines.md)
 
 **Key Checks:**
 
-- **Description:** Does it explain **WHY** and **WHAT**?
-- **Verification:** Are manual/automated verification steps explicitly listed?
-- **Completeness:** Are screenshots/recordings included for UI changes?
+- **説明**: **WHY** と **WHAT** が説明されているか？
+- **検証**: 手動/自動の検証手順が明示的に列挙されているか？
+- **完全性**: UI 変更にスクリーンショット/録画が含まれているか？

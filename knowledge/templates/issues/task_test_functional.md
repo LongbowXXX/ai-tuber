@@ -1,48 +1,48 @@
-# Functional Test Result Template
+# 機能テスト結果テンプレート
 
-## Overview
+## 概要
 
-Template for recording detailed functional test results based on Acceptance Criteria.
+受け入れ基準に基づく詳細な機能テスト結果を記録するテンプレートです。
 
-## Exit Criteria
+## 完了条件
 
-- [ ] All check items executed.
-- [ ] Normal and Abnormal cases checked.
-- [ ] Results recorded.
-- [ ] Issues found handled.
-- [ ] Confirmation results recorded on ticket.
+- [ ] すべてのチェック項目が実行されている。
+- [ ] 正常系と異常系が確認されている。
+- [ ] 結果が記録されている。
+- [ ] 発見された課題が対応されている。
+- [ ] 確認結果がチケットに記録されている。
 
-## Structure
+## 構造
 
 ```markdown
-# [Test] Functional Test Result: {Feature Name}
+# [Test] 機能テスト結果: {機能名}
 
-## Test Environment
+## テスト環境
 
-- Version: {Commit Hash / Version}
-- OS/Browser: {Environment Info}
-- Date: {YYYY-MM-DD}
-- Runner: {Name}
+- バージョン: {コミットハッシュ / バージョン}
+- OS/ブラウザ: {環境情報}
+- 日付: {YYYY-MM-DD}
+- 実行者: {名前}
 
-## Target
+## 対象
 
-Test Case (Git): `docs/specs/{Feature Name}/test-specs/spec.md`
+テストケース（Git）: `docs/specs/{機能名}/test-specs/spec.md`
 
-## Result Summary
+## 結果サマリー
 
-| Target    | Total  |   OK   |  NG   | Skip  |  Result  |
-| :-------- | :----: | :----: | :---: | :---: | :------: |
-| Normal    |   10   |   10   |   0   |   0   |   PASS   |
-| Abnormal  |   5    |   5    |   0   |   0   |   PASS   |
-| **Total** | **15** | **15** | **0** | **0** | **PASS** |
+| 対象      |  合計  |   OK   |  NG   | スキップ |   結果   |
+| :-------- | :----: | :----: | :---: | :------: | :------: |
+| 正常      |   10   |   10   |   0   |    0     |   PASS   |
+| 異常      |   5    |   5    |   0   |    0     |   PASS   |
+| **Total** | **15** | **15** | **0** |  **0**   | **PASS** |
 
-## Detailed Results (Only for NG/Skip)
+## 詳細結果（NG/Skip のみ）
 
-| Case ID          | Result | Log/Note           |
-| :--------------- | :----- | :----------------- |
-| FT-{Feature}-XXX | NG     | Error Message: ... |
+| Case ID          | 結果 | ログ/補足             |
+| :--------------- | :--- | :-------------------- |
+| FT-{Feature}-XXX | NG   | エラーメッセージ: ... |
 
-## Notes
+## 備考
 
-- Any special notes
+- 特記事項
 ```

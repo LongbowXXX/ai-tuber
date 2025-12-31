@@ -1,63 +1,64 @@
-# Context Management: The Art of feeding AI
+# コンテキスト管理: AI へ与える文脈の技法
 
-> **"AI is only as smart as the context you give it."**
+> **「AI は、あなたが与えるコンテキストと同じだけ賢い」**
 
-This document explains how to effectively manage the context you provide to GitHub Copilot and other AI tools to get the best possible results.
+このドキュメントは、GitHub Copilot やその他の AI ツールに提供するコンテキストを効果的に管理し、可能な限り良い結果を得る方法を説明します。
 
-## 1. Neighboring Tabs (Implicit Context)
+## 1. Neighboring Tabs（暗黙コンテキスト）
 
-GitHub Copilot automatically reads the files you have open in your VS Code tabs (and recently active files) to understand the context of what you are working on. This is called **"Neighboring Tabs"**.
+GitHub Copilot は、VS Code のタブで開いているファイル（および最近アクティブだったファイル）を自動的に読み取り、あなたが取り組んでいる内容の文脈を理解します。これを **「Neighboring Tabs」** と呼びます。
 
-### Best Practices
+### ベストプラクティス
 
-- **Open Relevant Files**: If you are working on a function that uses a specific Type or Interface, make sure the file defining that Type is open in a tab.
-- **Open Tests**: When writing implementation code, keep the corresponding test file open. Copilot will infer the expected behavior from the tests.
-- **Close Irrelevant Files**: If you have 20 tabs open from a completely different task (e.g., a different feature or legacy code), Copilot might get confused and pull in irrelevant context. **Close tabs you don't need.**
+- **関連ファイルを開く**: 特定の Type/Interface を使う関数に取り組んでいるなら、その Type を定義しているファイルをタブで開いておく。
+- **テストを開く**: 実装コードを書くときは、対応するテストファイルも開いておく。Copilot はテストから期待挙動を推測します。
+- **無関係なファイルを閉じる**: 別タスク（例: 別機能、レガシーコード）のタブを 20 個開いていると、Copilot が混乱して無関係な文脈を引いてくることがあります。**不要なタブは閉じてください。**
 
-## 2. @workspace vs #file (Explicit Context)
+## 2. @workspace vs #file（明示コンテキスト）
 
-When using Copilot Chat, you can explicitly control context.
+Copilot Chat では、コンテキストを明示的に制御できます。
 
-### `@workspace` (The Scout)
+### `@workspace`（スカウト）
 
-- **What it does:** Searches the entire project index (vector database) to find relevant information.
-- **When to use:**
+- **何をするか:** プロジェクト全体のインデックス（ベクターデータベース）を検索して関連情報を見つける。
+- **使いどころ:**
   - "Where is the authentication logic defined?"
   - "How do we handle logging in this project?"
   - "Find all usages of `UserDTO`."
-- **Pro:** Can find things you don't know the location of.
-- **Con:** Can miss things if the keyword match isn't perfect, or get distracted by similar-but-wrong files.
+- **長所:** 場所が分からないものでも見つけられる。
+- **短所:** キーワード一致が不完全だと取りこぼすことがある/似て非なるファイルに気を取られることがある。
 
-### `#file` (The Sniper)
+### `#file`（スナイパー）
 
-- **What it does:** Explicitly adds the content of a specific file to the prompt context.
-- **When to use:**
+- **何をするか:** 特定ファイルの内容を、プロンプトコンテキストへ明示的に追加する。
+- **使いどころ:**
   - "Refactor `#UserService.ts` to use `#Result.ts` for error handling."
   - "Write a unit test for `#PaymentController.ts`."
-- **Pro:** Guarantees the AI "sees" the exact code you are talking about. Highest accuracy.
-- **Con:** You need to know which file is relevant.
+- **長所:** 話題にしているコードを AI が確実に「見る」。精度が最も高い。
+- **短所:** どのファイルが関連するかをあなたが知っている必要がある。
 
-### Comparison Table
+### 比較表
 
-| Feature      | `@workspace`                             | `#file`                           |
-| :----------- | :--------------------------------------- | :-------------------------------- |
-| **Scope**    | Entire Project                           | Specific File(s)                  |
-| **Agency**   | AI decides what to read                  | Human decides what to read        |
-| **Accuracy** | Good for exploration                     | Excellent for implementation      |
-| **Use Case** | "Search", "Find", "Explain Architecture" | "Refactor", "Debug", "Write Test" |
+| 特性             | `@workspace`                             | `#file`                           |
+| :--------------- | :--------------------------------------- | :-------------------------------- |
+| **範囲**         | プロジェクト全体                         | 特定ファイル                      |
+| **主体**         | AI が読むものを決める                    | 人間が読むものを決める            |
+| **精度**         | 探索に強い                               | 実装に最適                        |
+| **ユースケース** | "Search", "Find", "Explain Architecture" | "Refactor", "Debug", "Write Test" |
 
-### Note on `#codebase`
+### `#codebase` について
 
-You might see references to `#codebase` in older documentation or other AI tools. In the current version of GitHub Copilot for VS Code, **`@workspace`** is the standard agent command effectively replacing the need for a separate `#codebase` variable.
+古いドキュメントや他の AI ツールでは `#codebase` への言及を見るかもしれません。現行の GitHub Copilot for VS Code では、**`@workspace`** が標準エージェントコマンドであり、実質的に `#codebase` 変数の代替です。
 
-- **`@workspace`**: The active agent that searches your codebase.
-- **`#codebase`**: Often a deprecated or alternative variable for "all files".
+- **`@workspace`**: コードベースを検索するアクティブなエージェント。
+- **`#codebase`**: しばしば非推奨、または「全ファイル」を意味する代替変数。
 
-**Rule of Thumb:** Always start with `@workspace` for broad queries.
+**経験則:** 広い問い合わせは常に `@workspace` から始める。
 
-## Summary
+## まとめ
 
-1.  **Passive Context**: Keep your tabs clean. Open only what relates to the current task.
-2.  **Active Context**:
-    - Use `@workspace` to **find** information.
-    - Use `#file` to **feed** specific information for coding tasks.
+1.  **受動的コンテキスト**: タブをクリーンに保つ。現在タスクに関係するものだけを開く。
+2.  **能動的コンテキスト**:
+
+- `@workspace` で情報を **探す**。
+- `#file` でコーディングタスクのための具体情報を **与える**。

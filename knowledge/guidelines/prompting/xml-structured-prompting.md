@@ -1,53 +1,53 @@
-# XML + Markdown Structured Prompting Guide
+# XML + Markdown 構造化プロンプト ガイド
 
-This guide explains how to combine **XML tags** and **Markdown** to create prompts that are both machine-parseable and human-readable.
+このガイドは、**XML タグ** と **Markdown** を組み合わせて、機械可読（machine-parseable）かつ人間可読（human-readable）なプロンプトを作る方法を説明します。
 
-## 1. The Power of XML + Markdown
+## 1. XML + Markdown の力
 
-While XML provides strict structural boundaries that LLMs excel at parsing, Markdown proivdes semantic meaning and readability. combining them gives you the best of both worlds.
+XML は LLM が得意とする厳格な構造境界を提供し、Markdown は意味（セマンティクス）と可読性を提供します。両者を組み合わせることで、双方の長所を得られます。
 
-### Why this combination works:
+### なぜこの組み合わせが機能するのか
 
-1.  **XML defines the "Container"**: It tells the model _where_ information looks like and _what_ it is (e.g., `<instruction>`, `<context>`). This prevents context bleeding.
-2.  **Markdown defines the "Content"**: It tells the model _how_ to interpret the text inside (e.g., **bold** for emphasis, `-` for lists, `###` for hierarchy).
+1.  **XML が「コンテナ」を定義する**: 情報が _どこに_ あり、_何であるか_ をモデルへ伝えます（例: `<instruction>`, `<context>`）。これにより、コンテキストの混線（context bleeding）を防ぎます。
+2.  **Markdown が「内容」を定義する**: 内部のテキストを _どう解釈するか_ をモデルへ伝えます（例: 強調の **太字**、リストの `-`、階層の `###`）。
 
-> **Concept**: Think of XML as the **envelope** and Markdown as the **formatted letter** inside.
+> **概念**: XML を **封筒（envelope）**、Markdown をその中の **整形済みの手紙（formatted letter）** として捉えてください。
 
-## 2. Benefits
+## 2. 利点
 
-- **Clear Boundaries (XML)**: No confusion between instructions and data.
-- **Rich Semantics (Markdown)**: Lists, headers, and code blocks allow for complex instructions without massive blocks of plain text.
-- **Dual Readability**:
-  - **For AI**: It parses the XML structure first, then processes the Markdown semantics.
-  - **For Humans**: The prompt remains visually organized and easy to edit.
+- **明確な境界（XML）**: 指示とデータが混同されません。
+- **豊かな意味（Markdown）**: 箇条書き、見出し、コードブロックにより、巨大なプレーンテキストの塊にせず複雑な指示を表現できます。
+- **二重の可読性**:
+  - **AI 向け**: まず XML 構造を解析し、その後に Markdown の意味を処理します。
+  - **人間向け**: プロンプトが視覚的に整理され、編集しやすいままです。
 
-## 3. Common XML Tags Cheatsheet
+## 3. よく使う XML タグ チートシート
 
-| Category     | Tag                  | Purpose                                                                |
-| :----------- | :------------------- | :--------------------------------------------------------------------- |
-| **Meta**     | `<system>`           | Defines the absolute rules and behavior of the system.                 |
-|              | `<role>`             | Sets the persona (e.g., "Expert Python Dev").                          |
-| **Data**     | `<context>`          | Background information required for the task.                          |
-|              | `<documents>`        | Reference materials or search results.                                 |
-|              | `<example>`          | Few-shot examples to guide the model.                                  |
-| **Control**  | `<instruction>`      | The core task command.                                                 |
-|              | `<constraints>`      | Negative rules (what _not_ to do).                                     |
-| **Thinking** | `<thinking>`         | A space for the model to "reason" before answering (Chain of Thought). |
-| **Agentic**  | `<workflow>`         | Defines the specific loop or steps for an agent to follow.             |
-|              | `<stopping_rules>`   | Absolute safety boundaries (e.g., "STOP if you start implementing").   |
-|              | `<plan_research>`    | Instructions focused on context gathering and research phases.         |
-|              | `<plan_style_guide>` | Specific formatting rules for the agent's output (e.g., plans).        |
-| **Output**   | `<output>`           | The final answer container.                                            |
-| **Safety**   | `<uncertainty>`      | Highlights ambiguous or uncertain areas in the user request.           |
-|              | `<self_check>`       | A forced introspection step for high-risk operations.                  |
+| カテゴリ         | タグ                 | 目的                                                       |
+| :--------------- | :------------------- | :--------------------------------------------------------- |
+| **メタ**         | `<system>`           | システムの絶対ルールと振る舞いを定義する。                 |
+|                  | `<role>`             | ペルソナを設定する（例: "Expert Python Dev"）。            |
+| **データ**       | `<context>`          | タスクに必要な背景情報。                                   |
+|                  | `<documents>`        | 参考資料または検索結果。                                   |
+|                  | `<example>`          | モデルを導くための few-shot 例。                           |
+| **制御**         | `<instruction>`      | コアとなるタスク命令。                                     |
+|                  | `<constraints>`      | 禁止事項（何を _しない_ か）。                             |
+| **思考**         | `<thinking>`         | 回答前に「推論」するための領域（Chain of Thought）。       |
+| **エージェント** | `<workflow>`         | エージェントが従うべきループや手順を定義する。             |
+|                  | `<stopping_rules>`   | 絶対的な安全境界（例: "STOP if you start implementing"）。 |
+|                  | `<plan_research>`    | コンテキスト収集/調査フェーズに焦点を当てた指示。          |
+|                  | `<plan_style_guide>` | 出力フォーマット（例: plan）の具体的ルール。               |
+| **出力**         | `<output>`           | 最終回答のコンテナ。                                       |
+| **安全**         | `<uncertainty>`      | ユーザー要求の曖昧さ/不確実さを強調する。                  |
+|                  | `<self_check>`       | 高リスク操作向けの強制内省ステップ。                       |
 
-## 4. Practical Example: XML + Markdown
+## 4. 実用例: XML + Markdown
 
-Here is a standard template showing how Markdown organizes the content _within_ the XML tags:
+Markdown が XML タグ _の内側_ でどのように内容を整理するかを示す標準テンプレートです。
 
 ```xml
 <system>
-    You are a helpful assistant specialized in summarizing technical documents.
+    あなたは技術文書の要約を専門とする有能なアシスタントです。
 </system>
 
 <context>
@@ -60,66 +60,66 @@ Here is a standard template showing how Markdown organizes the content _within_ 
 </context>
 
 <instruction>
-    ### Your Task
-    Summarize the provided documents in **3 bullet points**.
+    ### タスク
+    提供された文書を **3 つの箇条書き** で要約してください。
 
-    ### Process
-    1.  **Analyze**: Look for key themes in the `<thinking>` block.
-    2.  **Draft**: Write the summary in the `<output>` block.
+    ### 手順
+    1.  **分析**: `<thinking>` ブロックで主要テーマを探す。
+    2.  **下書き**: `<output>` ブロックに要約を書く。
 </instruction>
 
 <constraints>
-    - **No Jargon**: Use simple language.
-    - **Length**: Keep each point under 20 words.
+    - **専門用語なし**: 平易な言葉を使う。
+    - **長さ**: 各ポイントは 20 語以内にする。
 </constraints>
 ```
 
-**Expected Output:**
+**期待される出力:**
 
 ```xml
 <thinking>
-    The document discusses X, Y, and Z. The key points are...
+    文書は X、Y、Z について述べている。要点は次のとおり...
 </thinking>
 
 <output>
-    - Point 1 summary.
-    - Point 2 summary.
-    - Point 3 summary.
+    - ポイント1の要約。
+    - ポイント2の要約。
+    - ポイント3の要約。
 </output>
 ```
 
-## 5. Real-world References
+## 5. 現実世界の参照例
 
-For a live example of these tags in a production environment (specifically the Agentic tags), refer to the **VS Code Copilot Plan Agent**:
+本番環境でこれらのタグ（特に agentic タグ）が使われている生きた例として、**VS Code Copilot Plan Agent** を参照してください。
 
 - [Plan.agent.md](https://github.com/microsoft/vscode-copilot-chat/blob/main/assets/agents/Plan.agent.md)
 
-## 6. Hallucination Prevention Tags (GPT-5.2 Techniques)
+## 6. ハルシネーション防止タグ（GPT-5.2 Techniques）
 
-To minimize hallucinations and increase reliability in high-stakes tasks using simpler models or complex contexts, we use **Explicit Uncertainty Tags**.
+簡易モデルや複雑コンテキストを用いる高リスクタスクで、ハルシネーションを最小化し信頼性を高めるために、**明示的な不確実性タグ** を使います。
 
 ### `<uncertainty_and_ambiguity>`
 
-**Purpose**: Forces the model to explicitly list what it _doesn't_ know or where the user's request is vague, BEFORE attempting to solve the problem.
+**目的**: 問題解決を試みる前に、モデルへ「何が分からないか」またはユーザー要求のどこが曖昧かを明示的に列挙させます。
 
 **Usage**:
 
 ```xml
 <uncertainty_and_ambiguity>
-1. It is unclear if the user wants X or Y.
-2. The version of the dependency is not specified.
+1. ユーザーが X と Y のどちらを望んでいるか不明である。
+2. 依存関係のバージョンが指定されていない。
 </uncertainty_and_ambiguity>
 ```
 
 ### `<high_risk_self_check>`
 
-**Purpose**: A dedicated "Critic" mode where the model must attack its own previous output to find flaws, security vulnerabilities, or logic errors.
+**目的**: モデルが自分の直前の出力を攻撃し、欠陥、セキュリティ脆弱性、ロジックエラーを見つけるための専用「Critic」モード。
 
 **Usage**:
 
 ```xml
 <high_risk_self_check>
-1. Does the code I just generated introduce a SQL injection? -> CHECK: Parameterized queries used.
-2. Did I follow the "No formatting" rule? -> FAIL: I added bold text. Correcting...
+1. 直前に生成したコードは SQL インジェクションを導入していないか？ -> CHECK: パラメータ化クエリを使用している。
+2. 「フォーマット禁止」ルールに従ったか？ -> FAIL: 太字を追加してしまった。修正する...
 </high_risk_self_check>
 ```

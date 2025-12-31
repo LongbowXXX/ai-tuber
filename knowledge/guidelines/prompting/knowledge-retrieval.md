@@ -1,22 +1,22 @@
-# Knowledge Retrieval for Latest Specifications
+# 最新仕様のための Knowledge Retrieval（知識取得）
 
-## Problem
+## 問題
 
-Copilot's training data has a cutoff, so it may not know about the latest features, file structures, or tools available in VS Code Copilot (e.g., new prompt file formats, new chat tools).
+Copilot の学習データにはカットオフがあるため、VS Code Copilot で利用可能な最新機能・ファイル構造・ツール（例: 新しいプロンプトファイル形式、新しいチャットツール）を知らない可能性があります。
 
-## Solution
+## 解決策
 
-Explicitly instruct Copilot to fetch the latest documentation from official URLs at the beginning of the prompt before performing any generation tasks.
+生成タスクを行う前に、プロンプトの冒頭で公式 URL から最新ドキュメントを取得するよう Copilot に明示的に指示します。
 
-## Implementation Steps
+## 実装手順
 
-1.  **Identify Critical URLs**:
-    Determine which documentation pages contain the specifications relevant to your prompt (e.g., prompt files, custom agents, tools).
+1.  **重要 URL を特定する**:
+    プロンプトに関連する仕様（例: プロンプトファイル、カスタムエージェント、ツール）を含むドキュメントページを特定します。
 
-2.  **Add Prerequisite Section**:
-    Add a section (e.g., "PREREQUISITE: Knowledge Retrieval") that forces Copilot to read these URLs.
+2.  **前提セクションを追加する**:
+    Copilot にこれらの URL を読ませるためのセクション（例:「PREREQUISITE: Knowledge Retrieval」）を追加します。
 
-## Example Template
+## テンプレ例
 
 ```markdown
 ## 🚨 PREREQUISITE: Knowledge Retrieval
@@ -29,7 +29,7 @@ Explicitly instruct Copilot to fetch the latest documentation from official URLs
     - `https://code.visualstudio.com/docs/copilot/customization/custom-agents` (for custom agent structure).
 ```
 
-## Benefits
+## 利点
 
-- **Accuracy**: Ensures generated files comply with the latest schemas and standards.
-- **Capability**: Enables the use of the newest tools and features that the model might not inherently know.
+- **正確性（Accuracy）**: 生成ファイルが最新のスキーマ/標準に準拠することを保証します。
+- **能力（Capability）**: モデルが本来知らない可能性のある最新ツール/機能を利用できるようにします。

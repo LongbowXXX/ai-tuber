@@ -1,149 +1,149 @@
-[← Back to Workflow](./workflow.md)
+[← ワークフローへ戻る](./workflow.md)
 
-# Bug Fix Task Details
+# バグ修正タスク詳細
 
-## Overview
+## 概要
 
-Bug Fix Stories focus on explicitly "Reproduction" and "Prevention" to ensure bugs are fixed permanently and side effects are minimized.
+バグ修正ストーリーは、バグを恒久的に修正し副作用を最小化するために、「再現」と「予防」を明示的に重視します。
 
-## Task List
+## タスクリスト
 
-1. [Analyze & Plan](#1-analyze--plan)
-2. [Create Reproduction Test](#2-create-reproduction-test)
-3. [Implement Fix](#3-implement-fix)
-4. [Verify Fix (Test)](#4-verify-fix-test)
-5. [Verify Side Effects](#5-verify-side-effects)
-6. [Update Documentation](#6-update-documentation)
-7. [Verify Exit Criteria](#7-verify-exit-criteria)
-
----
-
-### 1. Analyze & Plan
-
-**Deliverable**: Bug Analysis Issue Comment / Plan
-
-**Goal**: Identify the root cause and decide on a fix approach.
-
-**Activities**:
-
-- Analyze the reported bug.
-- Reproduce the bug manually (if possible).
-- Identify the root cause.
-- Plan the fix.
-  - **Template**: [Bug Fix Story](../templates/issues/story_bug_fix.md)
-  - **Template**: [Bug Fix Plan](../templates/agents/bug_fix_plan.template.md) (Use this for detailed analysis)
-
-**Checkpoints**:
-
-- [ ] Verify using [Bug Fix Story](../templates/issues/story_bug_fix.md).
+1. [分析 & 計画](#1-分析--計画)
+2. [再現テストの作成](#2-再現テストの作成)
+3. [修正の実装](#3-修正の実装)
+4. [修正確認（テスト）](#4-修正確認テスト)
+5. [副作用確認](#5-副作用確認)
+6. [ドキュメント更新](#6-ドキュメント更新)
+7. [完了条件の検証](#7-exit-criteria-の検証)
 
 ---
 
-### 2. Create Reproduction Test
+### 1. 分析 & 計画
 
-**Deliverable**: Test Code (Git)
+**成果物**: バグ分析の Issue コメント / 計画
 
-**Goal**: Automate reproduction to ensure the bug is fixed and never returns (Regression Testing).
+**ゴール**: 根本原因を特定し、修正アプローチを決定する。
 
-**Activities**:
+**作業内容**:
 
-- Write a test case that fails because of the bug.
-- Commit the failing test (Red state).
+- 報告されたバグを分析する。
+- （可能なら）手動でバグを再現する。
+- 根本原因を特定する。
+- 修正計画を立てる。
+  - **テンプレート**: [バグ修正ストーリー](../templates/issues/story_bug_fix.md)
+  - **テンプレート**: [バグ修正計画](../templates/agents/bug_fix_plan.template.md)（詳細分析に使用）
 
-**Checkpoints**:
+**チェックポイント**:
 
-- [ ] Test case reproduces the bug (fails as expected).
-- [ ] Test code is committed to Git.
-
----
-
-### 3. Implement Fix
-
-**Deliverable**: Source Code (Git)
-
-**Goal**: Fix the bug.
-
-**Activities**:
-
-- Modify source code to fix the bug.
-- Refactor if necessary (ensure safety).
-  - **Template**: [Implementation Task](../templates/issues/task_implementation.md)
-
-**Checkpoints**:
-
-- [ ] Verify using [Implementation Task](../templates/issues/task_implementation.md).
+- [ ] [バグ修正ストーリー](../templates/issues/story_bug_fix.md) を用いて確認する。
 
 ---
 
-### 4. Verify Fix (Test)
+### 2. 再現テストの作成
 
-**Deliverable**: Test Result (Pass)
+**成果物**: テストコード（Git）
 
-**Goal**: Confirm the bug is fixed using the reproduction test.
+**ゴール**: 再現を自動化し、バグが修正され二度と戻らないことを保証する（回帰テスト）。
 
-**Activities**:
+**作業内容**:
 
-- Run the reproduction test.
-- Check if it passes (Green state).
-  - **Template**: [Functional Test Task](../templates/issues/task_test_functional.md)
+- バグにより失敗するテストケースを書く。
+- 失敗するテスト（Red 状態）をコミットする。
 
-**Checkpoints**:
+**チェックポイント**:
 
-- [ ] Verify using [Functional Test Task](../templates/issues/task_test_functional.md).
-
----
-
-### 5. Verify Side Effects
-
-**Deliverable**: Side Effect Check Result (Issue Comment)
-
-**Goal**: Ensure no other parts of the system are broken.
-
-**Activities**:
-
-- Run Sanity Tests (if critical/high impact).
-- Run related feature tests.
-- Manual exploratory testing around the affected area.
-
-**Checkpoints**:
-
-- [ ] No side effects observed.
-- [ ] Sanity tests pass (if executed).
+- [ ] テストケースがバグを再現する（想定どおり失敗する）。
+- [ ] テストコードが Git にコミットされている。
 
 ---
 
-### 6. Update Documentation
+### 3. 修正の実装
 
-**Deliverable**: Updated Documentation (Git)
+**成果物**: ソースコード（Git）
 
-**Goal**: Keep docs consistent with code behavior.
+**ゴール**: バグを修正する。
 
-**Activities**:
+**作業内容**:
 
-- Update specs/design if the fix changed behavior/logic.
-- Update CHANGELOG if necessary.
-- Update TROUBLESHOOTING or KNOWN_ISSUES if relevant.
+- バグを修正するためにソースコードを変更する。
+- 必要ならリファクタリングする（安全性を確保する）。
+  - **テンプレート**: [実装タスク](../templates/issues/task_implementation.md)
 
-**Checkpoints**:
+**チェックポイント**:
 
-- [ ] Docs are updated to reflect the fix.
-- [ ] CHANGELOG is updated.
+- [ ] [実装タスク](../templates/issues/task_implementation.md) を用いて確認する。
 
 ---
 
-### 7. Verify Exit Criteria
+### 4. 修正確認（テスト）
 
-**Deliverable**: Verification Record on Project Management Tool
+**成果物**: テスト結果（Pass）
 
-**Goal**: Confirm the bug fix story is complete.
+**ゴール**: 再現テストによりバグが修正されたことを確認する。
 
-**Activities**:
+**作業内容**:
 
-- Final check based on Exit Criteria.
-  - **Template**: [Verify Exit Criteria](../templates/issues/task_verify_exit_criteria.md)
-- Verify all deliverables are in Git.
-- Close the issue.
+- 再現テストを実行する。
+- Pass するか確認する（Green 状態）。
+  - **テンプレート**: [機能テストタスク](../templates/issues/task_test_functional.md)
 
-**Checkpoints**:
+**チェックポイント**:
 
-- [ ] Verify using [Verify Exit Criteria](../templates/issues/task_verify_exit_criteria.md).
+- [ ] [機能テストタスク](../templates/issues/task_test_functional.md) を用いて確認する。
+
+---
+
+### 5. 副作用確認
+
+**成果物**: 副作用確認結果（Issue コメント）
+
+**ゴール**: システムの他部分が壊れていないことを保証する。
+
+**作業内容**:
+
+- （重要/影響大なら）サニティテストを実行する。
+- 関連する機能テストを実行する。
+- 影響範囲周辺で手動の探索的テストを行う。
+
+**チェックポイント**:
+
+- [ ] 副作用が観測されない。
+- [ ] （実行した場合）サニティテストが通る。
+
+---
+
+### 6. ドキュメント更新
+
+**成果物**: 更新されたドキュメント（Git）
+
+**ゴール**: ドキュメントとコード挙動の整合性を保つ。
+
+**作業内容**:
+
+- 修正が挙動/ロジックを変えた場合、仕様/設計を更新する。
+- 必要なら CHANGELOG を更新する。
+- 関連があれば TROUBLESHOOTING や KNOWN_ISSUES を更新する。
+
+**チェックポイント**:
+
+- [ ] ドキュメントが修正内容を反映している。
+- [ ] CHANGELOG が更新されている。
+
+---
+
+### 7. 完了条件の検証
+
+**成果物**: プロジェクト管理ツール上の検証記録
+
+**ゴール**: バグ修正ストーリーが完了したことを確認する。
+
+**作業内容**:
+
+- 完了条件に基づき最終チェックを行う。
+  - **テンプレート**: [完了条件の検証](../templates/issues/task_verify_exit_criteria.md)
+- すべての成果物が Git にあることを確認する。
+- Issue をクローズする。
+
+**チェックポイント**:
+
+- [ ] [完了条件の検証](../templates/issues/task_verify_exit_criteria.md) を用いて確認する。

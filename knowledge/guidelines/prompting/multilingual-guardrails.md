@@ -1,31 +1,30 @@
-# Multilingual Instruction Guardrails
+# 多言語指示ガードレール
 
-## Problem
+## 問題
 
-When generating content in a target language (e.g., Japanese), LLMs often "summarize" or "localize" technical instructions to make them more natural, inadvertently removing critical constraints or reducing the intensity of commands (e.g., turning "MUST" into "should").
+ターゲット言語（例: 日本語）でコンテンツを生成する際、LLM は技術的な指示をより自然にするために「要約」や「ローカライズ」を行いがちで、重要な制約をうっかり削除したり、命令の強度を弱めたりします（例:「MUST」を「should」に変えてしまう）。
 
-## Solution
+## 解決策
 
-Inject a **Critical Translation Rule** immediately before the section that must be preserved. Explicitly forbid summarization and require verbatim translation while preserving structure.
+保持しなければならないセクションの直前に、**Critical Translation Rule（重要翻訳ルール）** を挿入します。要約を明示的に禁止し、構造を維持した逐語翻訳を要求します。
 
-## Implementation Steps
+## 実装手順
 
-1.  **Identify Critical Sections**: Find instructions that constitute the "Constitution" or "Rules of Engagement" (e.g., security protocols, mandatory steps).
-2.  **Inject Warning**: Add a block instructing the model to treat the next section as immutable code, not translatable text.
+1.  **重要セクションを特定する**: 「憲法」や「交戦規定（Rules of Engagement）」に相当する指示（例: セキュリティプロトコル、必須手順）を見つけます。
+2.  **警告を挿入する**: 次のセクションを翻訳対象の文章ではなく、変更不能なコードとして扱うようモデルに指示するブロックを追加します。
 
-## Example Template
+## テンプレ例
 
 ```markdown
-> [!IMPORTANT]
-> **CRITICAL TRANSLATION RULE**:
-> When generating the content below in the **Target Language**, you MUST:
+> [!IMPORTANT] > **CRITICAL TRANSLATION RULE**:
+> 以下の内容を **ターゲット言語** で生成する際、あなたは次を MUST とします:
 >
-> 1. **DO NOT SUMMARIZE**: Translate the text **verbatim**.
-> 2. **PRESERVE STRUCTURE**: Keep all structure, bullet points, and warnings.
-> 3. **MAINTAIN INTENSITY**: Do not soften "MUST" to "should".
+> 1. **要約禁止**: テキストを **逐語** で翻訳する。
+> 2. **構造維持**: すべての構造、箇条書き、警告を保持する。
+> 3. **強度維持**: 「MUST」を「should」に弱めない。
 ```
 
-## Benefits
+## 利点
 
-- **Consistency**: Ensures agents behave identically regardless of the user's language.
-- **Safety**: Prevents the accidental removal of guardrails during translation.
+- **一貫性（Consistency）**: ユーザーの言語に関係なく、エージェントが同一に振る舞うことを保証します。
+- **安全性（Safety）**: 翻訳の過程でガードレールが誤って削除されることを防ぎます。

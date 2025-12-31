@@ -1,64 +1,64 @@
-# PR Creation Guidelines
+# PR 作成ガイドライン
 
-This document strictly defines the structure and content requirements for Pull Requests (PRs) in this project.
-Strict adherence to these guidelines ensures efficient reviews and maintains a high-quality codebase.
+このドキュメントは、このプロジェクトにおける Pull Request（PR）の構造と内容要件を厳密に定義します。
+これらのガイドラインを厳格に守ることで、効率的なレビューと高品質なコードベースの維持が可能になります。
 
-## 1. Title Format
+## 1. タイトル形式
 
-There are no strict naming conventions for PR titles in this project.
-Please ensure the title is **Clear and Concise** so that the purpose of the PR can be understood at a glance.
+このプロジェクトでは PR タイトルの厳密な命名規約はありません。
+ただし、PR の目的が一目で分かるよう、タイトルは **明確かつ簡潔（Clear and Concise）** にしてください。
 
-## 2. Description Requirements
+## 2. 説明（Description）の要件
 
-The PR description serves as the persistent record of context. It MUST answer **"Why"** and **"What"** clearly.
+PR の説明は、コンテキストの永続的な記録です。**Why** と **What** に必ず明確に答えなければなりません。
 
-### General Principles
+### 一般原則
 
-- **30-Second Rule:** Reviewers should be able to grasp the "Why" and "What" within **30 seconds**.
-- **Organized & Concise:** Use bullet points. Avoid long paragraphs.
-- **DRY (Don't Repeat Yourself):** Avoid excessive explanation.
-- **Self-Evident Changes:** If the code diff makes the change obvious (e.g., renaming, simple logic fix), do not explain it in prose.
-- **No Redundancy:** Do not repeat details already present in the linked issue.
+- **30 秒ルール**: レビュアーが **30 秒以内** に Why と What を把握できるようにする。
+- **整理と簡潔さ**: 箇条書きを使い、長い段落を避ける。
+- **DRY（Don't Repeat Yourself）**: 過剰な説明を避ける。
+- **自明な変更**: diff を見れば明らかな変更（例: リネーム、単純なロジック修正）は文章で説明しない。
+- **冗長性の排除**: リンク先 Issue に既にある詳細は繰り返さない。
 
-### Structure
+### 構造
 
-#### 1. Context (The "Why")
+#### 1. コンテキスト（Why）
 
-- **Link to Issue:** Must link to the related Jira/GitHub issue (e.g., `Fixes #123`).
-- **Motivation/Background:**
-  - **DRY Principle:** If details are in the linked issue, **OMIT** them here.
-  - Do not duplicate information. Excessive detail increases reviewer load.
-  - Only highlight what is specific to this implementation or differs from the ticket.
+- **Issue へのリンク**: 関連する Jira/GitHub Issue へのリンクが必須（例: `Fixes #123`）。
+- **動機/背景**:
+  - **DRY 原則**: 詳細がリンク先 Issue にある場合、ここでは **省略（OMIT）** する。
+  - 情報を重複させない。過剰な詳細はレビュアー負荷を上げます。
+  - この実装に固有の点、またはチケットと異なる点だけを強調する。
 
-#### 2. Changes (The "What")
+#### 2. 変更点（What）
 
-- **Summary:** A bulleted list of specific changes. **Keep it high-level.** Do not narrate the diff line-by-line.
-- **Impact Scope:** Explicitly list the functional and technical areas affected by this change.
-- **For Bug Fixes:** (See [Debugging Guidelines](debugging.md))
-  - **Root Cause:** Explain the causal mechanism of the bug (Why did it happen?).
-  - **Countermeasure:** Explain how the fix addresses the root cause.
-  - **Horizontal Expansion (Yokoten):** Confirm if similar patterns were checked/fixed elsewhere in the codebase.
-- **Technical Decisions:** Explain _why_ a specific approach was chosen if alternatives existed.
-- **Migration/Breaking Changes:** Explicitly state if this requires database migrations, config updates, or breaks existing APIs.
+- **サマリー**: 具体的変更点を箇条書きで列挙。**高レベルに保つ。** diff を行単位で説明しない。
+- **影響範囲**: この変更の影響を受ける機能面/技術面の領域を明示的に列挙する。
+- **バグ修正の場合**:（[デバッグガイドライン](debugging.md) を参照）
+  - **根本原因**: バグの因果メカニズムを説明する（なぜ起きたか）。
+  - **対策**: 修正が根本原因にどう効くかを説明する。
+  - **横展開（Yokoten）**: コードベース内の類似パターンを他箇所でも確認/修正したか。
+- **技術的判断**: 代替案がある場合、なぜこのアプローチを選んだか（why）を説明する。
+- **移行/破壊的変更**: DB マイグレーション、設定更新、既存 API の破壊が必要かを明示する。
 
-#### 3. Verification (The "Proof")
+#### 3. 検証（Proof）
 
-- **Coverage:** Verification steps MUST cover the full scope defined in **Impact Scope** and **Root Cause**.
-- **Manual Tests:** Focus on **WHAT** was verified, not the detailed steps.
-  - _Bad:_ "1. Click button A. 2. Wait 5s. 3. Check logs..."
-  - _Good:_ "Verified that clicking button A triggers the correct API call and updates the UI state."
-  - **Complex Procedures:** If the test procedure is complex, document it in the **Ticket/Issue** and just reference it here.
-- **Automated Tests:** Confirm which tests were run and if new tests were added.
-- **Screenshots/Media:** **MANDATORY** for any UI or visual changes. Include "Before" and "After" comparisons if applicable.
+- **カバレッジ**: 検証手順は **Impact Scope** と **Root Cause** で定義された範囲全体をカバーしなければなりません。
+- **手動テスト**: 詳細手順ではなく、何を検証したか（**WHAT**）に集中する。
+  - _悪い例:_ "1. ボタン A をクリック。2. 5 秒待つ。3. ログ確認..."
+  - _良い例:_ "ボタン A のクリックで正しい API 呼び出しが行われ、UI 状態が更新されることを確認した。"
+  - **手順が複雑な場合**: テスト手順は **チケット/Issue** に記録し、ここでは参照だけにする。
+- **自動テスト**: 実行したテストと、新規テストを追加したかを確認する。
+- **スクリーンショット/メディア**: UI/見た目の変更がある場合は **必須**。可能なら Before/After を含める。
 
-#### 4. Risks
+#### 4. リスク
 
-- Highlight any potential risks, side effects, or areas that need extra careful review.
+- 想定されるリスク、副作用、重点的にレビューすべき箇所を強調する。
 
-## 3. Self-Check before Requesting Review
+## 3. レビュー依頼前のセルフチェック
 
-- [ ] Title is clear and concise.
-- [ ] Description is complete and follows the structure above.
-- [ ] Code has been linted and formatted.
-- [ ] Tests pass locally.
-- [ ] No extraneous files (debug logs, temp files) are included.
+- [ ] タイトルが明確で簡潔である。
+- [ ] 説明が完成しており、上記の構造に従っている。
+- [ ] コードが lint/format 済みである。
+- [ ] テストがローカルで通る。
+- [ ] 余計なファイル（デバッグログ、テンポラリファイルなど）が含まれていない。

@@ -1,45 +1,45 @@
 ---
-name: Define Exit Criteria
-about: Define the completion criteria for the story
-title: "📋 Define Exit Criteria: [Feature/Release Name]"
+name: 完了条件の定義
+about: ストーリーの完了基準を定義する
+title: "📋 完了条件の定義: [機能/リリース名]"
 labels: ["planning", "criteria"]
 assignees: []
 ---
 
-## 🎯 Objective
+## 🎯 目的
 
-Clarify the specific criteria that must be met to consider this story Complete/Done.
+このストーリーを Complete/Done と見なすために満たすべき具体的基準を明確化します。
 
-## 📝 Definition of Done
+## 📝 完了の定義（DoD）
 
-### Feature Development
+### 機能開発
 
-- [ ] **Specification**: Specification changes are reflected in the checkpoints below.
-- [ ] **Specification**: All specifications are finalized and agreed upon.
-- [ ] **Documentation**: Specification changes are reflected in the project documentation in this repository.
-- [ ] **Design**: Design is completed and documented in Git (design documents are committed to the repository).
-- [ ] **Testing**: Sanity test items are updated.
-- [ ] **Testing**: Operational verification items for feature implementation are created.
-- [ ] **Testing**: Modified sanity test items are executed.
+- [ ] **仕様**: 仕様変更が下記チェックポイントに反映されている。
+- [ ] **仕様**: すべての仕様が確定し合意されている。
+- [ ] **ドキュメント**: 仕様変更がこのリポジトリのプロジェクトドキュメントに反映されている。
+- [ ] **設計**: 設計が完了し、Git に記録されている（設計ドキュメントがリポジトリへコミットされている）。
+- [ ] **テスト**: サニティテスト項目が更新されている。
+- [ ] **テスト**: 機能実装の運用検証項目が作成されている。
+- [ ] **テスト**: 修正したサニティテスト項目が実行されている。
 
-### Release
+### リリース
 
-- [ ] **Pre-release**: All pre-release checks are executed and passed.
-- [ ] **Release**: GitHub Release page is created.
-- [ ] **Release**: Release announcement is sent.
-- [ ] **Release**: Git tag is created.
-- [ ] **Release**: Release artifacts are published.
+- [ ] **プレリリース**: すべてのプレリリースチェックが実行され、通っている。
+- [ ] **リリース**: GitHub Release ページが作成されている。
+- [ ] **リリース**: リリース告知が送信されている。
+- [ ] **リリース**: Git タグが作成されている。
+- [ ] **リリース**: リリース成果物が公開されている。
 
-### Quality & Documentation
+### 品質とドキュメント
 
-- [ ] **Test coverage**: Automated test coverage for new/changed code is at least **X%** (or team-agreed threshold) and reported in CI.
-- [ ] **CI status**: All relevant automated tests (unit/integration/e2e as applicable) are passing in the CI pipeline.
-- [ ] **User documentation**: User-facing documentation (README, feature guides, API docs, etc.) is updated to reflect the changes.
-- [ ] **Operational documentation**: Runbooks/operational guides are updated where necessary (monitoring, alerts, on-call procedures, etc.).
-- [ ] **Known issues & risks**: Any known limitations, follow-ups, or risks are documented and linked from this story.
-- [ ] **Traceability**: A link to this Exit Criteria checklist (or summary of its status) is attached/linked in the project management tool.
+- [ ] **テストカバレッジ**: 新規/変更コードの自動テストカバレッジが **X%** 以上（またはチーム合意の閾値）で、CI で報告されている。
+- [ ] **CI ステータス**: 関連する自動テスト（該当する場合は unit/integration/e2e）が CI パイプラインで通っている。
+- [ ] **ユーザードキュメント**: ユーザー向けドキュメント（README、機能ガイド、API ドキュメント等）が変更内容を反映して更新されている。
+- [ ] **運用ドキュメント**: 必要に応じて Runbook/運用ガイド（監視、アラート、オンコール手順等）が更新されている。
+- [ ] **既知の課題とリスク**: 既知の制約、フォローアップ、リスクが文書化され、このストーリーからリンクされている。
+- [ ] **トレーサビリティ**: この完了条件チェックリスト（またはそのステータス要約）へのリンクが、プロジェクト管理ツールに添付/リンクされている。
 
-## ✅ Exit Criteria for this Task
+## ✅ このタスクの完了条件
 
-- [ ] Exit Criteria items are listed above.
-- [ ] Team agreement on these criteria is obtained.
+- [ ] 完了条件の項目が上記に列挙されている。
+- [ ] これらの条件についてチーム合意が得られている。

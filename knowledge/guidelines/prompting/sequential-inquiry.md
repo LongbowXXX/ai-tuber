@@ -1,36 +1,36 @@
-# Sequential Inquiry (Sequential Questioning)
+# Sequential Inquiry（逐次質問）
 
-## Problem
+## 問題
 
-When an agent needs to collect information or "interview" the user, sending a large block of multiple questions (e.g., a bulleted list of 5 items) can overwhelm the user. This often leads to missed answers, vague responses, or cognitive overload, resulting in rework.
+エージェントが情報収集やユーザーへの「ヒアリング」を行う必要があるとき、複数の質問を大きな塊として送る（例：5 項目の箇条書き）と、ユーザーを圧倒してしまうことがあります。これは、回答漏れ、曖昧な返答、または認知負荷の増大につながり、結果として手戻りを生みます。
 
-## Solution
+## 解決策
 
-Standardize a **Sequential Inquiry** process where the agent presents the full scope first, but then asks questions **one by one**, ideally with proposed options or defaults to make answering easy (Yes/No or Selection).
+エージェントが最初に全体範囲を提示し、その後は質問を **1 つずつ** 行う **Sequential Inquiry** プロセスを標準化します。理想的には、回答しやすいように提案オプションやデフォルト（Yes/No または選択式）を添えます。
 
-## Implementation Steps
+## 実装手順
 
-1.  **Overview**: State the total number of items to verify (e.g., "I have 3 points to confirm").
-2.  **Single Question**: Ask only the first question.
-3.  **Propose Options**: Provide specific choices (e.g., "1. Option A, 2. Option B") or a recommended default.
-4.  **Iterate**: Wait for the answer before proceeding to the next question.
+1.  **概要**: 確認すべき項目の総数を伝える（例：「確認したい点が 3 つあります」）。
+2.  **単一質問**: 最初の質問だけを行う。
+3.  **選択肢の提示**: 具体的な選択肢（例：「1. 選択肢 A、2. 選択肢 B」）または推奨デフォルトを提示する。
+4.  **反復**: 次の質問へ進む前に、回答を待つ。
 
-## Example Template
+## テンプレート例
 
 ```markdown
 ## 🗣️ Sequential Inquiry Strategy
 
-**Do NOT** ask multiple questions in a single message.
+**1 つのメッセージで複数の質問をしてはならない。**
 
-1.  **State Agenda**: "I need to confirm 3 things: A, B, and C."
-2.  **Ask Step-by-Step**:
-    - "First, regarding A: I recommend [Option 1]. Is this acceptable? (Yes/No/Other)"
-3.  **Wait**: Stop and wait for the user's response.
-4.  **Next**: Once answered, proceed to B.
+1.  **アジェンダ提示**: 「確認したいことが 3 つあります：A、B、C」
+2.  **段階的に質問**:
+    - 「まず A について：私は [選択肢 1] を推奨します。問題ありませんか？（Yes/No/Other）」
+3.  **待機**: いったん止まり、ユーザーの回答を待つ。
+4.  **次へ**: 回答が得られたら、B へ進む。
 ```
 
-## Benefits
+## 利点
 
-- **Cognitive Load Management**: Reduces mental effort for the user.
-- **Precision**: Increases the likelihood of getting clear, specific answers.
-- **Structure**: Keeps the dialogue focused and linear.
+- **認知負荷の管理**: ユーザーの精神的負担を減らします。
+- **精度**: 明確で具体的な回答を得られる可能性が高まります。
+- **構造**: 対話を集中させ、線形に保ちます。

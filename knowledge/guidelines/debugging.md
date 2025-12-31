@@ -1,106 +1,106 @@
-# Debugging Guidelines: The Scientific Method
+# デバッグガイドライン：科学的方法
 
-> **"Debugging is like being the detective in a crime movie where you are also the murderer."** — Filipe Fortes
+> **"デバッグは、あなたが殺人犯でもある犯罪映画の探偵になるようなものだ。"** — Filipe Fortes
 
-This document defines the standard process and mindset for debugging in the Terraformer project.
-The most important thing in bug fixing is not "fixing it quickly" but **"reliably identifying the cause and ensuring the same problem never happens again (prevention of recurrence/horizontal expansion)"**.
+このドキュメントは、Terraformer プロジェクトにおけるデバッグの標準プロセスとマインドセットを定義します。
+バグ修正でもっとも重要なのは「素早く直すこと」ではなく、**「原因を確実に特定し、同じ問題が二度と起きないようにすること（再発防止／横展開）」** です。
 
-## 1. Core Principles
+## 1. 基本原則
 
-### 🚫 No Guesswork
+### 🚫 推測禁止
 
-Fixes based on guesses like "maybe this is the cause" ("Vibe Fix") are strictly prohibited.
-You must not change code without a clear stack trace or error logs.
+「たぶんこれが原因」など推測に基づく修正（"Vibe Fix"）は厳禁です。
+明確なスタックトレースやエラーログなしにコードを変更してはいけません。
 
-- **Bad**: "It looked like an async issue, so I added `await`."
-- **Good**: "I added logs to check the execution order and confirmed that it was being referenced before data acquisition, so I added `await`."
+- **悪い例**: 「非同期の問題っぽかったので `await` を足した。」
+- **良い例**: 「実行順序を確認するログを入れ、データ取得前に参照されていることを確認したので `await` を追加した。」
 
-### 🔗 Logical Consistency
+### 🔗 論理的一貫性
 
-Bug reports and fix proposals must be logically connected in a single line through the following three points:
+バグ報告と修正提案は、次の 3 点を通して 1 本の線で論理的に接続されていなければなりません。
 
-1.  **Symptom**: What is happening?
-2.  **Root Cause**: Why is it happening? (Mechanism)
-3.  **Fix**: Why does this fix resolve it?
+1.  **症状**: 何が起きているのか？
+2.  **根本原因**: なぜ起きているのか？（メカニズム）
+3.  **修正**: なぜこの修正で解決するのか？
 
-"The cause is unknown, but rewriting the code fixed it" is not acceptable. That merely hides the bug and may create side effects.
+「原因は不明だが、コードを書き直したら直った」は許されません。それはバグを隠し、副作用を生む可能性があります。
 
-### 🛡️ Do No Harm
+### 🛡️ 無害であること（Do No Harm）
 
-Confirming that "the bug is fixed" is not enough. The fix is only complete when you confirm that "nothing else is broken".
-Always be aware of how the code being fixed is referenced by other functions (dependencies).
+「バグが直った」だけでは不十分です。「他が壊れていない」ことを確認したときに初めて修正は完了です。
+修正対象コードが他の関数からどのように参照されているか（依存関係）を常に意識してください。
 
-### 🌐 Yokoten (Horizontal Expansion)
+### 🌐 横展開（Yokoten / Horizontal Expansion）
 
-Suspect that **"a bug occurring in one place may be occurring in other places"**.
-Once the cause of a bug is identified, check if similar code patterns or misuse of the same library exist in other files, and eliminate that type of problem from the entire project.
+**「ある場所で起きるバグは、他の場所でも起きているかもしれない」** と疑ってください。
+原因が特定できたら、他ファイルに同様のコードパターンや同一ライブラリの誤用がないか確認し、その種の問題をプロジェクト全体から排除します。
 
-## 2. Investigation Techniques
+## 2. 調査テクニック
 
-### 🪵 Instrumentation (Visualization via Logs)
+### 🪵 計測（ログによる可視化 / Instrumentation）
 
-If the cause of the error is not immediately apparent from the logs, do not stare at the code, but **make the code speak**.
+エラー原因がログから即座に分からない場合、コードを見つめ続けるのではなく、**コードに喋らせてください**。
 
-- **Console Logging**: Output variable values, function entry/exit, and conditional branch results to logs.
-- **Trace IDs**: When multiple asynchronous processes are running, attach request IDs etc. to make logs traceable.
+- **コンソールログ**: 変数値、関数の入出力、条件分岐結果をログに出す。
+- **トレース ID**: 非同期処理が複数走る場合、リクエスト ID 等を付けて追跡可能にする。
 
-> **Rule**: Debug logs must be deleted after resolution or changed to an appropriate log level (e.g., DEBUG).
+> **ルール**: デバッグログは解決後に削除するか、適切なログレベル（例：DEBUG）へ変更しなければなりません。
 
-### ⏳ Timing & Concurrency (Reproduction of Timing Issues)
+### ⏳ タイミング & 並行性（Timing Issues の再現）
 
-Race Conditions and asynchronous timing issues may be difficult to reproduce in normal execution.
-In such cases, **intentionally insert delays (Sleep) to support your hypothesis**.
+レースコンディションや非同期タイミング問題は、通常実行では再現が難しいことがあります。
+その場合、**仮説を支えるために意図的に遅延（Sleep）を挿入**します。
 
-- **Hypothesis**: "Does the error occur because Process A finishes before Process B?"
-- **Verification**: Insert `sleep(5000)` immediately after Process A to intentionally let Process B precede.
-- **Judgment**: If the error is reliably reproduced with this, the hypothesis is correct. Implement exclusive control or appropriate waiting processes.
+- **仮説**: 「プロセス A がプロセス B より先に終了するためエラーが起きているのでは？」
+- **検証**: プロセス A 直後に `sleep(5000)` を入れ、意図的にプロセス B を先行させる。
+- **判断**: これで確実に再現できるなら仮説は正しい。排他制御や適切な待機処理を実装する。
 
-### ✂️ Bisection Method
+### ✂️ 二分探索法（Bisection Method）
 
-Identifying "when it broke" is a shortcut to identifying the cause.
+「いつ壊れたか」を特定することは、原因特定の近道です。
 
-- **Git Bisect**: Use the bisect feature of the version control system to identify the commit (culprit) where the bug was introduced.
+- **Git Bisect**: バージョン管理の bisect 機能で、バグ混入コミット（culprit）を特定する。
 
-### 🔍 Pattern Search (Search for Similar Patterns)
+### 🔍 パターン検索（類似パターンの探索）
 
-Use IDE search functions or `grep` for horizontal expansion.
+横展開のために IDE の検索機能や `grep` を使います。
 
-- **Regex Search**: Search for specific description patterns that caused the bug (e.g., forgotten `await`, misuse of specific functions) using regular expressions.
-- **Structural Search**: If it cannot be found by simple string search, consider searching based on AST (Abstract Syntax Tree).
+- **正規表現検索**: そのバグを起こした記述パターン（例：`await` の忘れ、特定関数の誤用）を正規表現で検索する。
+- **構造検索**: 単純な文字列検索で見つからない場合、AST（抽象構文木）ベースの検索を検討する。
 
-## 3. Workflow for @Debugger
+## 3. @Debugger のワークフロー
 
-AI Agents (`@Debugger`) and human developers must follow the flow below:
+AI エージェント（`@Debugger`）および人間開発者は、以下のフローに従わなければなりません。
 
-1.  **Observation**
-    - Read error messages, logs, and user reports.
-2.  **Hypothesis**
-    - Formulate a hypothesis like "Because XX is YY, error ZZ is occurring".
-3.  **Experiment (Reproduction)**
-    - **Before writing fix code based on guesses**, verify the hypothesis.
-    - Insert logs, `sleep`, or write reproduction tests if necessary.
-4.  **Analysis**
-    - Identify the specific cause location (file, line number) and logic flaw.
-5.  **Impact Analysis**
-    - Check where the fix target is referenced from (dependent relationships) and evaluate the risk of regression.
-6.  **Fix Planning**
-    - Formulate a fix that removes the root cause and minimizes side effects.
-7.  **Horizontal Expansion (Yokoten)**
-    - **Step**: Identify the code pattern that caused the bug.
-    - **Action**: Search the entire project to check if similar patterns exist.
-    - **Fix**: If found, include them in the scope of this fix (or raise as a separate Issue).
-8.  **Verification (Verification & Regression Testing)**
-    - **Step 1: Confirm Fix**: Confirm that the bug is fixed.
-    - **Step 2: Confirm No Regression**: Confirm that "related functions" identified in the impact analysis work normally.
+1.  **観察（Observation）**
+    - エラーメッセージ、ログ、ユーザー報告を読む。
+2.  **仮説（Hypothesis）**
+    - 「XX が YY であるため、ZZ のエラーが起きている」のように仮説を立てる。
+3.  **実験（再現 / Experiment）**
+    - **推測で修正コードを書く前に**、仮説を検証する。
+    - 必要に応じてログ、`sleep`、再現テストを書く。
+4.  **分析（Analysis）**
+    - 具体的な原因箇所（ファイル、行番号）とロジック欠陥を特定する。
+5.  **影響分析（Impact Analysis）**
+    - 修正対象がどこから参照されているか（依存関係）を確認し、回帰リスクを評価する。
+6.  **修正計画（Fix Planning）**
+    - 根本原因を除去し、副作用を最小化する修正案を作る。
+7.  **横展開（Yokoten / Horizontal Expansion）**
+    - **Step**: バグを引き起こしたコードパターンを特定する。
+    - **Action**: プロジェクト全体を検索して同様パターンの有無を確認する。
+    - **Fix**: 見つかった場合、この修正スコープに含める（または別 Issue として起票する）。
+8.  **検証（Verification & Regression Testing）**
+    - **Step 1: 修正確認**: バグが直ったことを確認する。
+    - **Step 2: 回帰なし確認**: 影響分析で特定した「関連機能」が正常動作することを確認する。
 
-## 4. Checklist for Reviewers
+## 4. レビュアー向けチェックリスト
 
-When reviewing pull requests (PR) for debug fixes, check the following:
+デバッグ修正の Pull Request（PR）をレビューする際は、次を確認します。
 
-- [ ] **Is the cause clear?**: Is it not just "fixed somehow"?
-- [ ] **Is there a reproduction procedure?**: Is it described how the bug was confirmed?
-- [ ] **Is the impact range considered?**: Is there mention of the impact on other functions using the fixed part?
-- [ ] **Was Horizontal Expansion (Yokoten) performed?**: Is there evidence that "other similar bugs" were checked?
-- [ ] **Is testing sufficient?**:
-  - Test proving the bug is fixed (Positive Test)
-  - Test proving existing functionality is not broken (Regression Test)
+- [ ] **原因が明確か？**: 「なんとなく直った」になっていないか？
+- [ ] **再現手順があるか？**: どのようにバグを確認したかが記述されているか？
+- [ ] **影響範囲が考慮されているか？**: 修正箇所を利用する他機能への影響に言及があるか？
+- [ ] **横展開（Yokoten）が行われたか？**: 「他の類似バグ」も確認した証跡があるか？
+- [ ] **テストが十分か？**:
+  - バグが直ったことを示すテスト（Positive Test）
+  - 既存機能が壊れていないことを示すテスト（Regression Test）

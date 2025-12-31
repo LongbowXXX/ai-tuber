@@ -1,119 +1,121 @@
-# AI Literacy: Human AI-Readiness
+# AI リテラシー: 人間の AI-Ready 度
 
-## 🛑 Why this matters?
+## 🛑 なぜ重要か？
 
-> **"A codebase can only be as 'AI-Ready' as the humans who work on it."**
+> **「コードベースが 'AI-Ready' である度合いは、そこで働く人間の 'AI-Ready' 度を超えられない」**
 
-The Terraformer project transforms your legacy codebase into an **AI-Ready** environment. However, providing AI with the perfect context (`AGENTS.md`) and tools is only half the battle. If the humans collaborating with the AI don't know how to interact with it effectively, the potential is lost.
+Terraformer プロジェクトは、レガシーコードベースを **AI-Ready** な環境へ変換します。しかし、AI に完璧なコンテキスト（`AGENTS.md`）とツールを提供することは戦いの半分に過ぎません。AI と協働する人間が、AI と効果的にやり取りする方法を知らなければ、潜在能力は失われます。
 
-This document is designed to **upgrade human skills**. Its purpose is to make **YOU** "AI-Ready" — enabling you to lead, direct, and collaborate with your new AI agents efficiently.
+このドキュメントは **人間のスキルをアップグレード** するためのものです。目的は、**あなた** を「AI-Ready」にし、新しい AI エージェントを効率的にリード/指揮/協働できるようにすることです。
 
 ---
 
-## 🧠 Level 0: The Mindset (Continuous Evolution)
+## 🧠 レベル 0: マインドセット（継続的進化）
 
-> **"Be the Chef, not just a Cook."**
+> **「Cook ではなく Chef になれ」**
 
-In the age of AI, "coding" (writing syntax) is becoming a commodity—like chopping onions. To survive as a professional engineer, you must evolve from a "Cook" (who follows recipes) to a "Chef" (who designs menus and creates value).
+AI の時代、「コーディング」（構文を書くこと）は玉ねぎを刻むのと同じようにコモディティ化しています。プロのエンジニアとして生き残るには、レシピをなぞる「Cook」から、メニューを設計して価値を生み出す「Chef」へ進化しなければなりません。
 
-- **The Cook**: Follows instructions, writes code as specified. **Replaceable by AI**.
-- **The Chef**: Designs intent, orchestrates AI, and verifies quality. **Irreplaceable**.
+- **Cook**: 指示に従い、指定どおりにコードを書く。**AI に置き換え可能**。
+- **Chef**: 意図を設計し、AI をオーケストレーションし、品質を検証する。**置き換え困難**。
 
 ### The Survival Strategy
 
-Technology skills have a half-life of **< 2.5 years**. If you only learn during business hours (performance time), you will become obsolete. You must invest in "practice time" (self-study) outside of work to maintain your market value.
+技術スキルの半減期は **2.5 年未満** です。業務時間（performance time）の学習だけでは陳腐化します。市場価値を維持するために、業務外の「練習時間」（自己学習）へ投資しなければなりません。
 
-👉 **Required Reading**: [The Survival Strategy: Chef vs Cook](./self-study.md)
-
----
-
-## 🎯 Level 1: Paradigm Shift (Beginner)
-
-Stop treating AI as a "search engine" or a "chatbot." Treat it as a **junior teammate** who has read every line of code but lacks "common sense" or "business context."
-
-### Recommended Actions
-
-1.  **Don't Search, Ask**: Instead of Googling specific syntax, ask the AI to write it for your specific context.
-2.  **Delegation Logic**: Instead of "writing code," shift to "reviewing code."
-    - _Old Way_: Write the boilerplate, then fill in logic.
-    - _New Way_: "Generate the boilerplate for a user service in clean architecture," then refine the logic.
-3.  **Explain the "Why" (Intent)**: Just as you clarify "Why" and "What" rather than just "How" when gathering business requirements, you must provide this context to the AI (the implementer). If the AI doesn't understand the goal, it can't choose the best implementation. _(Don't become the "incompetent client" for your AI! 😜)_
+👉 **必読**: [生存戦略: Chef vs Cook](./self-study.md)
 
 ---
 
-## 🚀 Level 2: Mastery of Command (Intermediate)
+## 🎯 レベル 1: パラダイムシフト（初心者）
 
-Once you are comfortable, you must learn to **direct** the AI with precision. This is where "Prompt Engineering" (Inter-species Communication) comes in.
+AI を「検索エンジン」や「チャットボット」として扱うのをやめてください。AI は、コードを隅々まで読んでいるが「常識」や「ビジネスコンテキスト」を欠く **ジュニア同僚** として扱います。
 
-> **💡 Pro Tip**: For advanced prompting strategies including the **SSG Framework (Situation, Source, Goal)**, see [Advanced Strategies](./advanced-strategies.md).
+### 推奨アクション
 
-### 1. The Art of Direction (Prompting)
+1.  **検索するな、聞け**: 特定構文をググる代わりに、あなたの具体的コンテキストに合わせて AI に書かせる。
+2.  **委任ロジック**: 「コードを書く」から「コードをレビューする」へシフトする。
 
-Your results are directly proportional to the clarity of your instructions.
+- _旧来_: ボイラープレートを書き、ロジックを埋める。
+- _新来_: "Generate the boilerplate for a user service in clean architecture," と指示し、その後ロジックを洗練する。
 
-- **Be Specific**: "Make it fast" -> "Optimize for O(n) complexity."
-- **Provide Persona**: "Act as a Software Architect" yields very different results than "Act as a Developer." (The former focuses on design patterns and trade-offs, while the latter focuses on implementation details.)
-- **Chain of Thought**: Ask the AI to "think step-by-step" to reduce errors in complex tasks.
-
-👉 **Deep Dive**: Refer to [Prompting Techniques](../prompting/README.md) for advanced strategies.
-
-### 2. Context Engineering (Giving AI the "Map")
-
-AI is like a super-skilled new hire who joined the team **today**. They know how to write code perfectly, but they know **nothing** about _this_ project.
-
-- **Why it matters**: Without context, AI guesses. It might suggest a library you aren't using, violate architecture rules, or reinvent the wheel.
-- **Context is King**: The quality of the output is 100% dependent on the quality of context you provide.
-- **How to provide context**:
-  - **Reference Files**: Don't just ask "fix this." Open the relevant files so the AI can "see" them (or tag them like `#Main.ts`).
-  - **Background Info**: Explain _why_ you are doing this task. "To improve performance" vs "To fix a crash" leads to different code.
-  - **Project Knowledge**: This project uses `AGENTS.md` and `docs/` to automate some context, but your specific task context must come from **YOU**.
-  - **Mechanics**: Learn how to use [Neighboring Tabs & @workspace vs #file](./context-management.md) to control what the AI sees.
-
-### 3. Understanding Your Teammate (LLM Characteristics)
-
-To lead effectively, you must know your team's strengths and weaknesses.
-
-- **Context Window**: It doesn't remember _everything_ forever. Remind it of critical rules if the conversation gets long.
-- **Hallucinations**: It is a creative engine, not a database. It can invent plausible-looking libraries. **Always Verify.**
-- **Bias**: It mimics the patterns it was trained on. If you write messy code, it will suggest messy code.
+3.  **Why（意図）を説明する**: 要件収集で How だけでなく Why と What を明確化するのと同様に、この文脈を実装者である AI に提供しなければなりません。AI がゴールを理解しなければ、最適な実装を選べません。_(AI にとっての「無能なクライアント」になるな！ 😜)_
 
 ---
 
-## 🛡️ Level 3: Defensive AI Programming (Security & Safety)
+## 🚀 レベル 2: 指揮の習熟（中級）
 
-As your trust in AI grows, so does the risk. You must learn to treat AI generated code with the same suspicion as code found on a random forum.
+慣れてきたら、AI を精密に **指揮** することを学ぶ必要があります。ここで「プロンプトエンジニアリング」（種族間コミュニケーション）が重要になります。
 
-> **🛡️ Full Protocol**: For detailed security checklists, "Vibe Coding" prevention, and anti-slopsquatting rules, read [Advanced Strategies & Security Protocols](./advanced-strategies.md).
+> **💡 Pro Tip**: **SSG フレームワーク（Situation, Source, Goal）** を含む高度なプロンプティング戦略は、[Advanced Strategies](./advanced-strategies.md) を参照してください。
 
-### Core Principle: Zero Trust
+### 1. 指揮の技法（Prompting）
 
-Treat all AI output as **"Untrusted External Input"**.
+成果は、指示の明確さに比例します。
 
-- Code generated by AI is NOT secure by default.
-- It may contain vulnerabilities, bugs, or subtle logical errors.
-- **Rule**: Never commit code you haven't read, understood, and verified.
+- **具体化する**: "Make it fast" -> "Optimize for O(n) complexity."
+- **ペルソナを与える**: "Act as a Software Architect" と "Act as a Developer" では結果が大きく異なります。（前者は設計パターンやトレードオフ、後者は実装詳細に寄る。）
+- **Chain of Thought**: 複雑タスクの誤りを減らすため、AI に "think step-by-step" させる。
+
+👉 **Deep Dive**: 高度な戦略は [Prompting Techniques](../prompting/README.md) を参照。
+
+### 2. コンテキストエンジニアリング（AI に「地図」を渡す）
+
+AI は、チームに **今日** 入った超優秀な新人のようなものです。完璧にコードは書けますが、このプロジェクトについては **何も** 知りません。
+
+- **重要性**: コンテキストがなければ AI は推測します。未採用ライブラリの提案、アーキテクチャ違反、車輪の再発明が起き得ます。
+- **Context is King**: 出力品質は、あなたが提供するコンテキストの品質に 100% 依存します。
+- **コンテキスト提供方法**:
+  - **参照ファイル**: "fix this" だけで頼まない。関連ファイルを開いて AI に「見せる」（または `#Main.ts` のようにタグ付け）
+  - **背景情報**: なぜこの作業をしているのか（why）を説明する。"To improve performance" と "To fix a crash" ではコードが変わります。
+  - **プロジェクト知識**: このプロジェクトでは `AGENTS.md` と `docs/` で一部コンテキストを自動化しますが、タスク固有の文脈は **あなた** から来る必要があります。
+  - **仕組み**: AI が何を見るかを制御するために、[Neighboring Tabs & @workspace vs #file](./context-management.md) の使い方を学ぶ。
+
+### 3. 同僚を理解する（LLM の特性）
+
+効果的にリードするには、チームの強みと弱みを知る必要があります。
+
+- **コンテキストウィンドウ**: 永遠に _すべて_ を覚えているわけではありません。会話が長くなったら重要ルールをリマインドしてください。
+- **ハルシネーション**: データベースではなく創造エンジンです。もっともらしいライブラリを捏造することがあります。**必ず検証する。**
+- **バイアス**: 学習したパターンを模倣します。あなたが汚いコードを書けば、汚いコードを提案します。
 
 ---
 
-## 🛠 Project Recommended Tools
+## 🛡️ レベル 3: 防御的 AI プログラミング（セキュリティと安全）
 
-To effectively work in an AI-Ready environment, we recommend:
+AI への信頼が高まるほど、リスクも増します。AI が生成したコードを、どこかのフォーラムで拾ったコードと同程度に疑って扱う必要があります。
 
-- **GitHub Copilot**: Your pair programmer.
+> **🛡️ Full Protocol**: 詳細なセキュリティチェックリスト、"Vibe Coding" 防止、slopsquatting 対策ルールは、[Advanced Strategies & Security Protocols](./advanced-strategies.md) を読んでください。
 
-### Learning Resources (Level Up)
+### コア原則: ゼロトラスト
+
+AI の出力はすべて **「信頼できない外部入力（Untrusted External Input）」** として扱います。
+
+- AI が生成したコードはデフォルトで安全ではありません。
+- 脆弱性、バグ、微妙な論理エラーが含まれ得ます。
+- **ルール**: 読んで理解し、検証していないコードは絶対にコミットしない。
+
+---
+
+## 🛠 プロジェクト推奨ツール
+
+AI-Ready 環境で効果的に作業するため、次を推奨します:
+
+- **GitHub Copilot**: ペアプログラマ。
+
+### 学習リソース（レベルアップ）
 
 - [Microsoft Learn: Copilot Training](https://learn.microsoft.com/en-us/training/browse/?products=ms-copilot)
-  - Official training modules for Microsoft Copilot products.
+  - Microsoft Copilot 製品向けの公式トレーニングモジュール。
 - [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
-  - Official documentation containing features, guides, and best practices.
+  - 機能、ガイド、ベストプラクティスを含む公式ドキュメント。
 - [VS Code Copilot Overview](https://code.visualstudio.com/docs/copilot/overview)
-  - Comprehensive guide for using Copilot within VS Code.
+  - VS Code 内で Copilot を使うための包括的ガイド。
 - [Awesome Copilot](https://github.com/github/awesome-copilot)
-  - A curated list of useful resources, demos, and tools for GitHub Copilot.
+  - GitHub Copilot の有用リソース/デモ/ツールのキュレーションリスト。
 - [AGENTS.md Specification](https://github.com/openai/agents.md)
-  - The open standard format for defining AI agent context used in this project.
+  - このプロジェクトで使う AI エージェントコンテキスト定義のオープン標準フォーマット。
 - [VS Code Repository](https://github.com/microsoft/vscode)
-  - VS Code is developed using VS Code and Copilot. A great reference for settings and Copilot prompts.
+  - VS Code 自体が VS Code と Copilot で開発されています。設定や Copilot プロンプトの良い参考になります。
 - [VS Code GitHub Copilot Extension](https://github.com/microsoft/vscode-copilot-chat)
-  - The official GitHub Copilot Chat extension for VS Code. Source code and implementation details.
+  - VS Code 向け公式 GitHub Copilot Chat 拡張。ソースコードと実装詳細。

@@ -1,226 +1,246 @@
-[← Back to Workflow](./workflow.md)
+[← ワークフローへ戻る](./workflow.md)
 
-# Feature Task Details
+# 機能タスク詳細
 
-## Task List
+## タスクリスト
 
-1. [Requirement Definition](#1-requirement-definition)
-2. [Spec Creation & Agreement](#2-spec-creation--agreement)
-3. [Define Exit Criteria](#3-define-exit-criteria)
-4. [Design](#4-design)
-5. [Update Sanity Checklist](#5-update-sanity-checklist)
-6. [Create Test Spec](#6-create-test-spec)
-7. [Implementation & Tests](#7-implementation--tests)
-8. [Run Sanity Tests](#8-run-sanity-tests)
-9. [Run Feature Check](#9-run-feature-check)
-10. [Verify Exit Criteria](#10-verify-exit-criteria)
-
----
-
-### 1. Requirement Definition
-
-**Deliverable**: Requirement Definition (Issue), Requirements Doc (Git)
-
-**Goal**: Clarify WHY we are doing this and WHAT problem we are solving.
-
-**Activities**:
-
-- Define background and purpose.
-- Identify user stories.
-- Define acceptance criteria.
-- **Template**: [Requirement Definition Task](../templates/issues/task_requirement.md)
-
-**Checkpoints**:
-
-- [ ] Verify using [Requirement Definition Task](../templates/issues/task_requirement.md).
+1. [要件定義](#1-requirement-definition)
+2. [仕様作成と合意](#2-spec-creation--agreement)
+3. [完了条件の定義](#3-define-exit-criteria)
+4. [設計](#4-design)
+5. [サニティチェックリスト更新](#5-update-sanity-checklist)
+6. [テスト仕様の作成](#6-create-test-spec)
+7. [実装とテスト](#7-implementation--tests)
+8. [サニティテスト実施](#8-run-sanity-tests)
+9. [機能確認の実施](#9-run-feature-check)
+10. [完了条件の検証](#10-verify-exit-criteria)
 
 ---
 
-### 2. Spec Creation & Agreement
+<a id="1-requirement-definition"></a>
 
-**Deliverable**: Updated Specification (Git)
+### 1. 要件定義
 
-**Goal**: Clarify the requirements of the feature and form a common understanding within the team.
+**成果物**: 要件定義（Issue）、要件ドキュメント（Git）
 
-**Activities**:
+**目的**: なぜ行うのか（WHY）と、どの問題を解決するのか（WHAT）を明確にします。
 
-- Clarify the purpose and background of the feature.
-- Identify user stories and requirements.
-- Create/Update specifications.
-  - **Template**: [Specification Template](../templates/artifacts/specification.template.md)
-- Reach agreement with the Product Owner.
-- Manage specifications in Git.
+**作業内容**:
 
-**Checkpoints**:
+- 背景と目的を定義する。
+- ユーザーストーリーを特定する。
+- 受け入れ基準を定義する。
+- **テンプレート**: [要件定義タスク](../templates/issues/task_requirement.md)
 
-- [ ] Verify using [Specification Template](../templates/artifacts/specification.template.md).
-- [ ] See Issue Template for sign-off criteria.
+**チェックポイント**:
 
----
-
-### 3. Define Exit Criteria
-
-**Deliverable**: Exit Criteria Document (Issue/Project Management Tool)
-
-- **Template**: [Define Exit Criteria](../templates/issues/task_define_exit_criteria.md)
-
-**Goal**: Clarify the criteria for story completion and ensure quality.
-
-**Activities**:
-
-- Define completion criteria based on specifications.
-- List validation items.
-- Create Exit Criteria document.
-
-**Checkpoints**:
-
-- [ ] Verify using [Define Exit Criteria](../templates/issues/task_define_exit_criteria.md).
-
-### 4. Design
-
-**Deliverable**: Updated Design Document (Git)
-
-**Goal**: Clarify implementation direction and ensure quality and maintainability.
-
-**Activities**:
-
-- Technical design based on specifications.
-- Architecture design.
-- Interface design.
-- Data model design.
-- Design review.
-- Team consensus.
-- **Template**: [Design Template](../templates/artifacts/design.template.md)
-
-**Important Notes**:
-
-- If there are ambiguities or defects in the spec, **always confirm instead of guessing**.
-- If spec revision or doc improvement is needed, **create a ticket**.
-
-**Checkpoints**:
-
-- [ ] Verify using [Design Template](../templates/artifacts/design.template.md).
-- [ ] See Issue Template for review criteria.
+- [ ] [要件定義タスク](../templates/issues/task_requirement.md) を使って検証する。
 
 ---
 
-### 5. Update Sanity Checklist
+<a id="2-spec-creation--agreement"></a>
 
-**Deliverable**: Updated Sanity Test Items
+### 2. 仕様作成と合意
 
-**Goal**: Keep the checklist up-to-date for easy system-wide checks before release.
+**成果物**: 更新済み仕様（Git）
 
-**Activities**:
+**目的**: 機能の要件を明確化し、チーム内の共通理解を形成します。
 
-- Add/Update check items based on spec/design.
-- Review existing items (remove obsolete, modify content).
-- Update the checklist file.
-  - **File**: `docs/tests/sanity.md`
-  - **Issue Template**: [Update Sanity Checklist](../templates/issues/task_update_sanity_checklist.md)
-- Commit to Git.
+**作業内容**:
 
-**Checkpoints**:
+- 機能の目的と背景を明確化する。
+- ユーザーストーリーと要件を特定する。
+- 仕様を作成/更新する。
+  - **テンプレート**: [仕様テンプレート](../templates/artifacts/specification.template.md)
+- プロダクトオーナーと合意する。
+- 仕様を Git で管理する。
 
-- [ ] Verify using [Update Sanity Checklist](../templates/issues/task_update_sanity_checklist.md).
+**チェックポイント**:
 
----
-
-### 6. Create Test Spec
-
-**Deliverable**: Feature Implementation Verification Items (Issue)
-
-**Goal**: Clarify criteria to judge the completion of feature implementation.
-
-**Activities**:
-
-- Create check items based on spec/design.
-  - **Template**: [Test Spec](../templates/artifacts/test_spec.template.md)
-  - **Issue Template**: [Create Test Spec](../templates/issues/task_create_test_spec.md)
-- Define normal and abnormal test cases.
-- Define boundary value tests.
-
-**Checkpoints**:
-
-- [ ] Verify using [Create Test Spec](../templates/issues/task_create_test_spec.md).
+- [ ] [仕様テンプレート](../templates/artifacts/specification.template.md) を使って検証する。
+- [ ] 署名（Sign-off）基準は Issue テンプレートを参照する。
 
 ---
 
-### 7. Implementation & Tests
+<a id="3-define-exit-criteria"></a>
 
-**Deliverable**: Source Code, Test Code (Git)
+### 3. 完了条件の定義
 
-**Goal**: Implement functionality based on design and ensure quality.
+**成果物**: 完了条件ドキュメント（Issue/プロジェクト管理ツール）
 
-**Activities**:
+- **テンプレート**: [完了条件の定義](../templates/issues/task_define_exit_criteria.md)
 
-- Implementation based on design.
-- Creation of unit tests.
-  - **Template**: [Implementation Task](../templates/issues/task_implementation.md)
-- Code review.
-- Continuous Integration.
+**目的**: ストーリー完了の基準を明確化し、品質を担保します。
 
-**Implementation Principles**:
+**作業内容**:
 
-- **Large volume**: Split tickets appropriately.
-- **Splitting tickets**: Consider introducing skeleton classes first.
-- **Breaking changes**: Create a feature branch (never leave main branch in broken state).
+- 仕様に基づいて完了基準を定義する。
+- 検証項目を列挙する。
+- 完了条件ドキュメントを作成する。
 
-**Checkpoints**:
+**チェックポイント**:
 
-- [ ] Verify using [Implementation Task](../templates/issues/task_implementation.md).
+- [ ] [完了条件の定義](../templates/issues/task_define_exit_criteria.md) を使って検証する。
 
----
+<a id="4-design"></a>
 
-### 8. Run Sanity Tests
+### 4. 設計
 
-**Deliverable**: Sanity Test Results (Issue)
+**成果物**: 更新済み設計ドキュメント（Git）
 
-**Goal**: Perform a quick system-wide check to ensure no regression.
+**目的**: 実装方針を明確化し、品質と保守性を担保します。
 
-**Activities**:
+**作業内容**:
 
-- Operation check based on updated Sanity Checklist.
-  - **Checklist**: `docs/tests/sanity.md`
-- Record results (Ticket Comment).
-  - **Template**: [Sanity Test Task](../templates/issues/task_test_sanity.md)
+- 仕様に基づく技術設計。
+- アーキテクチャ設計。
+- インターフェース設計。
+- データモデル設計。
+- 設計レビュー。
+- チーム合意。
+- **テンプレート**: [設計テンプレート](../templates/artifacts/design.template.md)
 
-**Checkpoints**:
+**重要事項**:
 
-- [ ] Verify using [Sanity Test Task](../templates/issues/task_test_sanity.md).
+- 仕様に曖昧さや欠陥がある場合、**推測せず必ず確認**する。
+- 仕様改訂やドキュメント改善が必要なら、**チケットを作成**する。
 
----
+**チェックポイント**:
 
-### 9. Run Feature Check
-
-**Deliverable**: Feature Implementation Verification Results (Issue)
-
-**Goal**: Confirm the completion of feature implementation.
-
-**Activities**:
-
-- Operation check based on created check items.
-- Record results (Ticket Comment).
-  - **Template**: [Functional Test Task](../templates/issues/task_test_functional.md)
-
-**Checkpoints**:
-
-- [ ] Verify using [Functional Test Task](../templates/issues/task_test_functional.md).
+- [ ] [設計テンプレート](../templates/artifacts/design.template.md) を使って検証する。
+- [ ] レビュー基準は Issue テンプレートを参照する。
 
 ---
 
-### 10. Verify Exit Criteria
+<a id="5-update-sanity-checklist"></a>
 
-**Deliverable**: Verification Record on Project Management Tool
+### 5. サニティチェックリスト更新
 
-**Goal**: Confirm that the story meets the completion criteria.
+**成果物**: 更新済みサニティテスト項目
 
-**Activities**:
+**目的**: リリース前にシステム全体の確認を簡単に行えるよう、チェックリストを最新に保ちます。
 
-- Final check based on Exit Criteria document.
-  - **Template**: [Verify Exit Criteria](../templates/issues/task_verify_exit_criteria.md)
-- Verification of all deliverables.
-- Record confirmation results as a comment on the ticket.
+**作業内容**:
 
-**Checkpoints**:
+- 仕様/設計に基づき、チェック項目を追加/更新する。
+- 既存項目を見直す（不要項目の削除、内容修正）。
+- チェックリストファイルを更新する。
+  - **ファイル**: `docs/tests/sanity.md`
+  - **Issue テンプレート**: [サニティチェックリスト更新](../templates/issues/task_update_sanity_checklist.md)
+- Git にコミットする。
 
-- [ ] Verify using [Verify Exit Criteria](../templates/issues/task_verify_exit_criteria.md).
+**チェックポイント**:
+
+- [ ] [サニティチェックリスト更新](../templates/issues/task_update_sanity_checklist.md) を使って検証する。
+
+---
+
+<a id="6-create-test-spec"></a>
+
+### 6. テスト仕様の作成
+
+**成果物**: 機能実装の検証項目（Issue）
+
+**目的**: 機能実装の完了を判断する基準を明確化します。
+
+**作業内容**:
+
+- 仕様/設計に基づいてチェック項目を作る。
+  - **テンプレート**: [テスト仕様](../templates/artifacts/test_spec.template.md)
+  - **Issue テンプレート**: [テスト仕様作成](../templates/issues/task_create_test_spec.md)
+- 正常/異常系のテストケースを定義する。
+- 境界値テストを定義する。
+
+**チェックポイント**:
+
+- [ ] [テスト仕様作成](../templates/issues/task_create_test_spec.md) を使って検証する。
+
+---
+
+<a id="7-implementation--tests"></a>
+
+### 7. 実装とテスト
+
+**成果物**: ソースコード、テストコード（Git）
+
+**目的**: 設計に基づいて機能を実装し、品質を担保します。
+
+**作業内容**:
+
+- 設計に基づいた実装。
+- ユニットテストの作成。
+  - **テンプレート**: [実装タスク](../templates/issues/task_implementation.md)
+- コードレビュー。
+- 継続的インテグレーション。
+
+**実装の原則**:
+
+- **分量が大きい場合**: 適切にチケットを分割する。
+- **チケット分割**: まず骨組み（スケルトン）クラスの導入を検討する。
+- **破壊的変更**: フィーチャーブランチを作る（main ブランチを壊れた状態で放置しない）。
+
+**チェックポイント**:
+
+- [ ] [実装タスク](../templates/issues/task_implementation.md) を使って検証する。
+
+---
+
+<a id="8-run-sanity-tests"></a>
+
+### 8. サニティテスト実施
+
+**成果物**: サニティテスト結果（Issue）
+
+**目的**: 回帰がないことを確認するため、システム全体の簡易チェックを行います。
+
+**作業内容**:
+
+- 更新済みサニティチェックリストに基づく動作確認。
+  - **チェックリスト**: `docs/tests/sanity.md`
+- 結果を記録する（チケットコメント）。
+  - **テンプレート**: [サニティテストタスク](../templates/issues/task_test_sanity.md)
+
+**チェックポイント**:
+
+- [ ] [サニティテストタスク](../templates/issues/task_test_sanity.md) を使って検証する。
+
+---
+
+<a id="9-run-feature-check"></a>
+
+### 9. 機能確認の実施
+
+**成果物**: 機能実装の検証結果（Issue）
+
+**目的**: 機能実装の完了を確認します。
+
+**作業内容**:
+
+- 作成したチェック項目に基づく動作確認。
+- 結果を記録する（チケットコメント）。
+  - **テンプレート**: [機能テストタスク](../templates/issues/task_test_functional.md)
+
+**チェックポイント**:
+
+- [ ] [機能テストタスク](../templates/issues/task_test_functional.md) を使って検証する。
+
+---
+
+<a id="10-verify-exit-criteria"></a>
+
+### 10. 完了条件の検証
+
+**成果物**: プロジェクト管理ツール上の検証記録
+
+**目的**: ストーリーが完了基準を満たしていることを確認します。
+
+**作業内容**:
+
+- 完了条件ドキュメントに基づく最終確認。
+  - **テンプレート**: [完了条件の検証](../templates/issues/task_verify_exit_criteria.md)
+- すべての成果物の検証。
+- 確認結果をチケットのコメントとして記録する。
+
+**チェックポイント**:
+
+- [ ] [完了条件の検証](../templates/issues/task_verify_exit_criteria.md) を使って検証する。

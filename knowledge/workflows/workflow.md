@@ -1,136 +1,136 @@
-# Workflow (AI Collaborative Model)
+# ワークフロー（AI 協働モデル）
 
-This is a new workflow for collaboration between AI and human engineers.
-In each phase, AI performs tasks such as "Proposing", "Drafting", "Implementing", and "Verifying", while humans focus on "Decision Making", "Reviewing", and "Final Approval".
+これは、AI と人間エンジニアが協働するための新しいワークフローです。
+各フェーズにおいて、AI は「提案」「ドラフト作成」「実装」「検証」などの作業を担い、人間は「意思決定」「レビュー」「最終承認」に集中します。
 
-## Overview
+## 概要
 
-### Concepts
+### 概念
 
-- **Process in Issue**: Records of discussions, decision-making processes, and considerations are kept in GitHub Issues.
-- **Result in Git**: Final artifacts such as specifications, designs, code, and test results are managed in the Git repository.
-- **AI as a Partner**: AI acts not just as a tool, but as a partner in pair programming.
+- **Issue 上のプロセス**: 議論の記録、意思決定プロセス、検討事項は GitHub Issues に残します。
+- **Git 上の成果物**: 仕様、設計、コード、テスト結果などの最終成果物は Git リポジトリで管理します。
+- **パートナーとしての AI**: AI は単なるツールではなく、ペアプログラミングの相棒として振る舞います。
 
-## Phase Definitions
+## フェーズ定義
 
 ```mermaid
 graph TD
-    Start([Start]) --> Req
-    Req["1. Requirement Phase"] --> Design
-    Design["2. Design Phase"] --> Impl
-    Impl["3. Implementation Phase"] --> Verify
-    Verify["4. Verification Phase"] --> Release
-    Release["5. Release Phase"] --> End
+  Start([開始]) --> Req
+  Req["1. 要件フェーズ"] --> Design
+  Design["2. 設計フェーズ"] --> Impl
+  Impl["3. 実装フェーズ"] --> Verify
+  Verify["4. 検証フェーズ"] --> Release
+  Release["5. リリースフェーズ"] --> End
 
-    Verify -.->|Bug Fix| Impl
-    Impl -.->|Spec Change| Design
-    End([End])
+  Verify -.->|バグ修正| Impl
+  Impl -.->|仕様変更| Design
+  End([終了])
 ```
 
-### 0. Issue Reporting
+### 0. Issue 報告
 
-**Goal**: Report problems, request features, or ask questions to initiate the workflow.
+**目的**: 問題の報告、機能要望、質問の起票によってワークフローを開始します。
 
-- **Key Deliverables**:
-  - [Bug Report](../templates/issues/report_bug.md) -> Triggers **Bug Fix Story**
-  - [Feature Request](../templates/issues/report_feature.md) -> Triggers **Feature Story**
-  - [Question](../templates/issues/report_question.md) -> May trigger a **Task** (e.g., for a documentation update)
+- **主要成果物**:
+  - [バグ報告](../templates/issues/report_bug.md) -> **バグ修正ストーリー**を開始
+  - [機能要望](../templates/issues/report_feature.md) -> **機能ストーリー**を開始
+  - [質問](../templates/issues/report_question.md) -> **タスク**（例: ドキュメント更新）を開始する場合があります
 
-### 1. Requirement Phase
+### 1. 要件フェーズ
 
-**Goal**: Clarify WHY we are doing this and WHAT problem we are solving.
+**目的**: なぜこれを行うのか（WHY）と、どの問題を解決するのか（WHAT）を明確にします。
 
-- **AI Role**: **@BusinessAnalyst** (Skill: `/requirements`)
-  - Organizing requirements, identifying unknowns, researching similar features, drafting user stories.
-- **Human Role**: Presenting requirements, defining scope, judging business value.
-- **Key Deliverables**:
-  - [Requirement Definition Task](../templates/issues/task_requirement.md) (Purpose, Context, Scope, Exit Criteria)
-  - **Artifact**: `docs/specs/[FeatureName]/requirements.md`
+- **AI の役割**: **@BusinessAnalyst**（スキル: `/requirements`）
+  - 要件整理、不明点の抽出、類似機能の調査、ユーザーストーリーのドラフト作成。
+- **人間の役割**: 要件提示、スコープ定義、ビジネス価値の判断。
+- **主要成果物**:
+  - [要件定義タスク](../templates/issues/task_requirement.md)（目的、コンテキスト、スコープ、完了条件）
+  - **成果物**: `docs/specs/[FeatureName]/requirements.md`
 
-### 2. Design Phase
+### 2. 設計フェーズ
 
-**Goal**: Concretize HOW to achieve it and prevent rework.
+**目的**: どう実現するか（HOW）を具体化し、手戻りを防ぎます。
 
-- **AI Role**: **@Architect** (Skill: `/design`)
-  - Drafting specifications, proposing architecture, defining interfaces.
-- **Human Role**: Design decisions, security risk assessment, specification approval.
-- **Key Deliverables**:
-  - [Design Discussion Task](../templates/issues/task_design.md)
-  - **Artifact**: `docs/specs/[FeatureName]/specification.md`
-  - **Artifact**: `docs/specs/[FeatureName]/design.md`
-  - **Artifact**: `docs/specs/[FeatureName]/implementation_plan.md`
+- **AI の役割**: **@Architect**（スキル: `/design`）
+  - 仕様のドラフト作成、アーキテクチャ提案、インターフェース定義。
+- **人間の役割**: 設計判断、セキュリティリスク評価、仕様承認。
+- **主要成果物**:
+  - [設計議論タスク](../templates/issues/task_design.md)
+  - **成果物**: `docs/specs/[FeatureName]/specification.md`
+  - **成果物**: `docs/specs/[FeatureName]/design.md`
+  - **成果物**: `docs/specs/[FeatureName]/implementation_plan.md`
 
-### 3. Implementation Phase
+### 3. 実装フェーズ
 
-**Goal**: Create code that works as designed.
+**目的**: 設計どおりに動作するコードを作成します。
 
-- **AI Role**:
-  - **@Developer** (Skill: `/implement`)
-    - Implementing code, creating unit tests, updating documentation, drafting commit messages.
-  - **@Gardener** (Skill: `/refactor`)
-    - Performing safe refactoring to improve code structure without changing behavior.
-- **Human Role**: Code review, assisting with complex logic, directing AI.
-- **Key Deliverables**:
-  - Source Code, Test Code (Git)
-  - Pull Request (Git)
-  - [Implementation Task](../templates/issues/task_implementation.md)
+- **AI の役割**:
+  - **@Developer**（スキル: `/implement`）
+    - 実装、ユニットテスト作成、ドキュメント更新、コミットメッセージのドラフト。
+  - **@Gardener**（スキル: `/refactor`）
+    - 挙動を変えずに構造を改善する、安全なリファクタリング。
+- **人間の役割**: コードレビュー、複雑ロジックの補助、AI の指揮。
+- **主要成果物**:
+  - ソースコード、テストコード（Git）
+  - Pull Request（Git）
+  - [実装タスク](../templates/issues/task_implementation.md)
 
-### 4. Verification Phase (QA)
+### 4. 検証フェーズ（QA）
 
-**Goal**: Guarantee quality and decide on release.
+**目的**: 品質を担保し、リリース可否を判断します。
 
-- **AI Role**:
-  - **@QualityGuard** (Skill: `/test-spec`, `/audit`, `/sanity-test`)
-    - Creating Test Specifications.
-  - **@Debugger** (Skill: `/debug`)
-    - Analyzing bugs found during verification and proposing fixes.
-    - **Ref**: [Debugging Guidelines](../guidelines/debugging.md)
-  - Assisting test case execution, identifying bugs, and proposing fixes.
-- **Human Role**: Exploratory testing, usability checks, release decision.
-- **Key Deliverables**:
-  - **Artifact**: `docs/specs/[FeatureName]/test-specs/*.md` (Test Specifications)
-  - **Artifact**: `docs/specs/fixes/[IssueID]/fix-plan.md` (Bug Fix Plans)
-  - [Sanity Test Result](../templates/issues/task_test_sanity.md)
-  - [Functional Test Result](../templates/issues/task_test_functional.md)
-  - [Exit Criteria Check Task](../templates/issues/task_verify_exit_criteria.md)
+- **AI の役割**:
+  - **@QualityGuard**（スキル: `/test-spec`、`/audit`、`/sanity-test`）
+    - テスト仕様の作成。
+  - **@Debugger**（スキル: `/debug`）
+    - 検証中に見つかったバグの分析と修正提案。
+    - **参照**: [デバッグガイドライン](../guidelines/debugging.md)
+  - テストケース実行の補助、バグの特定、修正提案。
+- **人間の役割**: 探索的テスト、ユーザビリティ確認、リリース判断。
+- **主要成果物**:
+  - **成果物**: `docs/specs/[FeatureName]/test-specs/*.md`（テスト仕様）
+  - **成果物**: `docs/specs/fixes/[IssueID]/fix-plan.md`（バグ修正計画）
+  - [サニティテスト結果](../templates/issues/task_test_sanity.md)
+  - [機能テスト結果](../templates/issues/task_test_functional.md)
+  - [完了条件チェックタスク](../templates/issues/task_verify_exit_criteria.md)
 
-### 5. Release Phase
+### 5. リリースフェーズ
 
-**Goal**: Deliver value to the user.
+**目的**: ユーザーに価値を届けます。
 
-- **AI Role**: **@Librarian** (Skill: `/release-new-version`)
-  - Generating CHANGELOG, creating release notes, automating tagging.
-- **Human Role**: Final approval, pushing the release button (or approving).
-- **Key Deliverables**:
-  - Release Notes (GitHub Releases)
-  - Tags (Git)
+- **AI の役割**: **@Librarian**（スキル: `/release-new-version`）
+  - CHANGELOG 生成、リリースノート作成、タグ付けの自動化。
+- **人間の役割**: 最終承認、リリース実行（または承認）。
+- **主要成果物**:
+  - リリースノート（GitHub Releases）
+  - タグ（Git）
 
-## Work Breakdown Structure (WBS)
+## 作業分解構造（WBS）
 
-To ensure high quality, we follow a concrete "Story" structure for execution.
+高品質を担保するため、実行は具体的な「ストーリー」構造に従います。
 
-### Feature Story
+### 機能ストーリー
 
-One story per independent feature. If dependencies exist, reconsider the story boundaries.
+独立した機能ごとに 1 ストーリーとします。依存がある場合は、ストーリー境界の再検討を行ってください。
 
 ```mermaid
 graph TD
-    Start([Start]) --> T0
-    T0["1. Requirement Definition<br/>📄 Issue (Requirement)"] --> T1
-    T1["2. Spec Creation & Agreement<br/>📄 Git (Spec)"] --> T2
+  Start([開始]) --> T0
+  T0["1. 要件定義<br/>📄 Issue（要件）"] --> T1
+  T1["2. 仕様作成と合意<br/>📄 Git（仕様）"] --> T2
     T1 --> T3
-    T2["3. Define Exit Criteria<br/>📋 Issue (Exit Criteria)"] --> T10
-    T3["4. Design<br/>📐 Git (Docs)"] --> T4
+  T2["3. 完了条件の定義<br/>📋 Issue（完了条件）"] --> T10
+  T3["4. 設計<br/>📐 Git（ドキュメント）"] --> T4
     T3 --> T5
     T5 --> T6
-    T4["5. Update Sanity Checklist<br/>📋 Git (Sanity)"] --> T7
-    T5["6. Create Test Spec<br/>✓ Git (Test Spec)"] --> T8
-    T6["7. Implementation & Tests<br/>💻 Git (Code)"] --> T7
+  T4["5. サニティチェックリスト更新<br/>📋 Git（サニティ）"] --> T7
+  T5["6. テスト仕様の作成<br/>✓ Git（テスト仕様）"] --> T8
+  T6["7. 実装とテスト<br/>💻 Git（コード）"] --> T7
     T6 --> T8
-    T7["8. Run Sanity Tests<br/>📊 Issue (Result)"] --> T10
-    T8["9. Run Feature Check<br/>📊 Issue (Result)"] --> T10
-    T10["10. Verify Exit Criteria<br/>✅ Issue (Record)"] --> End
-    End([Completed])
+  T7["8. サニティテスト実施<br/>📊 Issue（結果）"] --> T10
+  T8["9. 機能確認の実施<br/>📊 Issue（結果）"] --> T10
+  T10["10. 完了条件の検証<br/>✅ Issue（記録）"] --> End
+  End([完了])
 
     classDef startEnd fill:#e1f5e1,stroke:#4caf50,stroke-width:2px,color:#000
     classDef task fill:#e3f2fd,stroke:#2196f3,stroke-width:2px,color:#000
@@ -141,30 +141,30 @@ graph TD
     class T7,T8,T10 check
 ```
 
-**Legend**:
+**凡例**:
 
-- 🟢 Green: Start/End
-- 🔵 Blue: Task (Creating Artifacts)
-- 🟠 Orange: Verification/Check Task
+- 🟢 緑: 開始/終了
+- 🔵 青: タスク（成果物の作成）
+- 🟠 オレンジ: 検証/チェックタスク
 
-**Detailed Steps**: Refer to [Feature Task Details](./feature_task_details.md).
+**詳細手順**: [機能タスク詳細](./feature_task_details.md) を参照してください。
 
-### Bug Fix Story
+### バグ修正ストーリー
 
-For fixing bugs, emphasizing "Reproduction" and "Prevention".
+バグ修正では「再現」と「再発防止」を重視します。
 
 ```mermaid
 graph TD
-    Start([Start]) --> T1
-    T1["1. Analyze & Plan<br/>📄 Issue (Comment)"] --> T2
-    T2["2. Create Reproduction Test<br/>💻 Git (Test)"] --> T3
-    T3["3. Implement Fix<br/>💻 Git (Code)"] --> T4
-    T4["4. Verify Fix (Test)<br/>📊 Issue (Result)"] --> T5
+  Start([開始]) --> T1
+  T1["1. 分析と計画<br/>📄 Issue（コメント）"] --> T2
+  T2["2. 再現テストの作成<br/>💻 Git（テスト）"] --> T3
+  T3["3. 修正の実装<br/>💻 Git（コード）"] --> T4
+  T4["4. 修正確認（テスト）<br/>📊 Issue（結果）"] --> T5
     T4 --> T6
-    T5["5. Verify Side Effects<br/>👀 Issue (Result)"] --> T7
-    T6["6. Update Documentation<br/>📚 Git (Docs)"] --> T7
-    T7["7. Verify Exit Criteria<br/>✅ Issue (Record)"] --> End
-    End([Resolved])
+  T5["5. 副作用確認<br/>👀 Issue（結果）"] --> T7
+  T6["6. ドキュメント更新<br/>📚 Git（ドキュメント）"] --> T7
+  T7["7. 完了条件の検証<br/>✅ Issue（記録）"] --> End
+  End([解決])
 
     classDef startEnd fill:#e1f5e1,stroke:#4caf50,stroke-width:2px,color:#000
     classDef task fill:#e3f2fd,stroke:#2196f3,stroke-width:2px,color:#000
@@ -175,40 +175,40 @@ graph TD
     class T4,T5,T7 check
 ```
 
-**Legend**:
+**凡例**:
 
-- 🟢 Green: Start/End
-- 🔵 Blue: Task
-- 🟠 Orange: Verification
+- 🟢 緑: 開始/終了
+- 🔵 青: タスク
+- 🟠 オレンジ: 検証
 
-**Detailed Steps**: Refer to [Bug Fix Task Details](./bug_fix_task_details.md).
+**詳細手順**: [バグ修正タスク詳細](./bug_fix_task_details.md) を参照してください。
 
-### Release Story
+### リリースストーリー
 
-Create a specific story for releasing the application.
+アプリケーションをリリースするための専用ストーリーを作成します。
 
 ```mermaid
 graph TD
-    Start([Start]) --> T1
-    Features[Feature Stories Completed] --> T2
+  Start([開始]) --> T1
+  Features[機能ストーリー完了] --> T2
 
-    T1["1. Agree on Version & Tag<br/>📄 Issue (Spec)"] --> T6
+  T1["1. バージョンとタグ名の合意<br/>📄 Issue（仕様）"] --> T6
     T1 --> T7
-    T2["2. Verify Related Fixes<br/>📋 Issue (Record)"] --> T3
-    T3["3. Run Sanity Test<br/>🧪 Issue (Result)"] --> T4
+  T2["2. 関連修正の確認<br/>📋 Issue（記録）"] --> T3
+  T3["3. サニティテスト実施<br/>🧪 Issue（結果）"] --> T4
     T3 --> T5
-    T4["4. Vulnerability Check<br/>🔒 Issue (Result)"] --> T9
-    T5["5. Static Analysis<br/>🔍 Issue (Result)"] --> T9
-    T6["6. Update Documentation<br/>📚 Git (Docs)"] --> T9
-    T7["7. License Check<br/>⚖️ Issue/Git (Record)"] --> T9
-    T8["8. Create Release Checklist<br/>✓ Issue (Checklist)"] --> T9
+  T4["4. 脆弱性チェック<br/>🔒 Issue（結果）"] --> T9
+  T5["5. 静的解析<br/>🔍 Issue（結果）"] --> T9
+  T6["6. ドキュメント更新<br/>📚 Git（ドキュメント）"] --> T9
+  T7["7. ライセンスチェック<br/>⚖️ Issue/Git（記録）"] --> T9
+  T8["8. リリースチェックリスト作成<br/>✓ Issue（チェックリスト）"] --> T9
     Features --> T8
     T8 --> T10
-    T9["9. Run Pre-release Checks<br/>📊 Issue (Result)"] --> T11
-    T10["10. Define Exit Criteria<br/>📋 Issue (Exit Criteria)"] --> T12
-    T11["11. Execute Release<br/>🚀 Git (Tag/Artifact)"] --> T12
-    T12["12. Verify Exit Criteria<br/>✅ Issue (Record)"] --> End
-    End([Released])
+  T9["9. プレリリースチェック実行<br/>📊 Issue（結果）"] --> T11
+  T10["10. 完了条件の定義<br/>📋 Issue（完了条件）"] --> T12
+  T11["11. リリース実行<br/>🚀 Git（タグ／成果物）"] --> T12
+  T12["12. 完了条件の検証<br/>✅ Issue（記録）"] --> End
+  End([リリース完了])
 
     classDef startEnd fill:#e1f5e1,stroke:#4caf50,stroke-width:2px,color:#000
     classDef prereq fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px,color:#000
@@ -223,17 +223,17 @@ graph TD
     class T11 release
 ```
 
-**Legend**:
+**凡例**:
 
-- 🟢 Green: Start/End
-- 🟣 Purple: Prerequisite
-- 🔵 Blue: Task
-- 🟠 Orange: Verification
-- 🔴 Red: Release Criteria
+- 🟢 緑: 開始/終了
+- 🟣 紫: 前提条件
+- 🔵 青: タスク
+- 🟠 オレンジ: 検証
+- 🔴 赤: リリース条件
 
-**Detailed Steps**: Refer to [Release Task Details](./release_task_details.md).
+**詳細手順**: [リリースタスク詳細](./release_task_details.md) を参照してください。
 
-## Related Documents
+## 関連ドキュメント
 
-- [Deliverables List](./deliverables.md)
-- [Template List](../templates/)
+- [成果物一覧](./deliverables.md)
+- [テンプレート一覧](../templates/)

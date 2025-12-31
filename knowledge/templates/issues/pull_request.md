@@ -1,65 +1,65 @@
-# Pull Request Template
+# Pull Request テンプレート
 
-## 1. Context (The "Why")
+## 1. コンテキスト（Why）
 
-- **Link to Issue:** Fixes #{Issue Number}
-- **Motivation/Background:**
-  - {Briefly explain the motivation. OMIT if details are already in the linked issue.}
-  - {Highlight what is specific to this implementation or differs from the ticket.}
+- **Issue へのリンク:** Fixes #{Issue Number}
+- **動機/背景:**
+  - {動機を簡潔に説明する。詳細がリンク先 Issue にある場合は省略してよい。}
+  - {この実装に固有の点、またはチケットと異なる点を強調する。}
 
-## 2. Changes (The "What")
+## 2. 変更点（What）
 
-- **Summary:**
+- **サマリー:**
 
-  - {High-level bullet points of specific changes}
-  - {Do not narrate the diff line-by-line}
+  - {変更点を高レベルの箇条書きで列挙する}
+  - {diff を行単位で逐次説明しない}
 
-- **Impact Scope:**
-  - {Explicitly list the functional and technical areas affected}
+- **影響範囲:**
+  - {影響を受ける機能面/技術面の領域を明示的に列挙する}
 
 <!-- SECTION: FOR BUG FIXES (Delete if not applicable) -->
 <!-- See: knowledge/guidelines/debugging.md -->
 
-- **Root Cause:** {Why did it happen?}
-- **Countermeasure:** {How the fix addresses the root cause}
-- **Horizontal Expansion (Yokoten):** {Confirm if similar patterns were checked/fixed elsewhere}
+- **根本原因:** {なぜ起きたか？}
+- **対策:** {修正が根本原因にどう効くか}
+- **横展開（Yokoten）:** {類似パターンが他箇所にもないか確認/修正したか}
 <!-- END SECTION -->
 
-- **Technical Decisions:**
+- **技術的判断:**
 
-  - {Explain why a specific approach was chosen if alternatives existed}
+  - {代替案がある場合、なぜこのアプローチを選んだかを説明する}
 
-- **Migration/Breaking Changes:**
-  - {Database migrations, config updates, API breaks? or "None"}
+- **移行/破壊的変更:**
+  - {DB マイグレーション、設定更新、API 破壊はあるか？なければ "None"}
 
-## 3. Verification (The "Proof")
+## 3. 検証（Proof）
 
-- **Coverage:** {Verification steps covering Impact Scope and Root Cause}
+- **カバレッジ:** {影響範囲と根本原因をカバーする検証手順}
 
 ### Manual Tests
 
-- {Focus on WHAT was verified, not detailed steps}
-- [ ] {Example: Verified that clicking button A triggers the correct API call and updates the UI state}
+- {詳細手順ではなく、何を検証したか（WHAT）に焦点を当てる}
+- [ ] {例: ボタン A のクリックで正しい API が呼ばれ、UI 状態が更新されることを確認した}
 
 ### Automated Tests
 
-- [ ] {Which tests were run?}
-- [ ] {Were new tests added?}
+- [ ] {どのテストを実行したか？}
+- [ ] {新しいテストを追加したか？}
 
 ### Screenshots/Media
 
 <!-- MANDATORY for UI/Visual changes -->
 
-- {Include "Before" and "After" comparisons if applicable}
+- {必要に応じて "Before" / "After" の比較を含める}
 
-## 4. Risks
+## 4. リスク
 
-- {Potential risks, side effects, or areas that need extra careful review}
+- {想定されるリスク、副作用、重点的にレビューすべき箇所}
 
-## 5. Self-Check
+## 5. セルフチェック
 
-- [ ] Title is clear and concise.
-- [ ] Description is complete and follows the structure above.
-- [ ] Code has been linted and formatted.
-- [ ] Tests pass locally.
-- [ ] No extraneous files (debug logs, temp files) are included.
+- [ ] タイトルが明確で簡潔である。
+- [ ] 説明が完成しており、上記の構造に従っている。
+- [ ] コードが lint/format 済みである。
+- [ ] テストがローカルで通る。
+- [ ] 余計なファイル（デバッグログ、テンポラリファイルなど）が含まれていない。

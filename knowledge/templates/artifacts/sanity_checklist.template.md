@@ -1,15 +1,15 @@
-# Sanity Test Checklist
+# サニティテストチェックリスト
 
-**This file is a persistent checklist managed in Git.**
+**このファイルは Git で管理される永続的なチェックリストです。**
 
-## Overview
+## 概要
 
-A list of minimum test items to verify the health of the project.
-Update this file when check items increase or decrease due to spec changes or new features.
+プロジェクトの健全性を検証するための、最小限のテスト項目一覧です。
+仕様変更や新機能によりチェック項目が増減した場合は、このファイルを更新してください。
 
 ## [Feature Name]
 
-- [ ] **[Action]**: [Expected Result] (e.g., Navigate to /login -> Login page loads)
+- [ ] **[Action]**: [Expected Result]（例: /login に遷移 -> ログインページが表示される）
 - [ ] ...
 
 ## [Another Feature]

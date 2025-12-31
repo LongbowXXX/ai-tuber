@@ -1,32 +1,32 @@
 ---
-name: Release Version Agreement
-about: Agree on version number and tag name
-title: "📄 Release Version Agreement: [Target Release]"
+name: リリース版の合意
+about: バージョン番号とタグ名を合意する
+title: "📄 リリース版の合意: [対象リリース]"
 labels: ["release", "discussion"]
 assignees: []
 ---
 
-## 🎯 Objective
+## 🎯 目的
 
-Decide on the version number and tag name for the upcoming release, adhering to Semantic Versioning.
+セマンティックバージョニング（SemVer）に従い、次回リリースのバージョン番号とタグ名を決定します。
 
-## 📝 Proposal
+## 📝 提案
 
-- **Current Version**:
-- **Target Version**:
-- **Tag Name**: (e.g., `v1.2.0`)
-- **Release Date (Plan)**:
+- **現行バージョン**:
+- **対象バージョン**:
+- **タグ名**:（例: `v1.2.0`）
+- **リリース日（予定）**:
 
-## 📊 Changes Overview
+## 📊 変更概要
 
-> Briefly list the main changes (Feature/Bug Fix)
+> 主な変更（機能/バグ修正）を簡潔に列挙してください
 
-- Feature: ...
-- Fix: ...
+- 機能: ...
+- 修正: ...
 
-## ✅ Exit Criteria
+## ✅ 完了条件
 
-- [ ] Version number agreed upon (SemVer).
-- [ ] Tag name agreed upon.
-- [ ] Team agreement obtained.
-- [ ] Agreement recorded in this Issue.
+- [ ] バージョン番号（SemVer）が合意されている。
+- [ ] タグ名が合意されている。
+- [ ] チーム合意が得られている。
+- [ ] 合意内容がこの Issue に記録されている。

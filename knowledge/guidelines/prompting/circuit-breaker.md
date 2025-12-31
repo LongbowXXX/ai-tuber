@@ -1,35 +1,35 @@
-# Stop and Ask (Circuit Breaker)
+# Stop and Ask（サーキットブレーカー）
 
-## Problem
+## 問題
 
-Agents can sometimes get stuck in a loop of trying seeing errors, trying a guess fix, seeing errors again, and repeating. Or they may proceed with a fix based on a weak assumption that turns out to be wrong, wasting time and potentially damaging code.
+エージェントは、エラーを見る → 推測で修正する → またエラーを見る → 繰り返す、というループにハマることがあります。あるいは、弱い仮定に基づいた修正を進めてしまい、それが誤りだと判明して時間を浪費し、場合によってはコードを破壊する可能性もあります。
 
-## Solution
+## 解決策
 
-Explicitly instruct the agent to **STOP** and **ASK** the user if it cannot verify the root cause or if it has failed multiple times.
+根本原因を検証できない場合、または複数回失敗した場合は、エージェントに **STOP** してユーザーに **ASK** することを明示的に指示します。
 
-## Implementation Steps
+## 実装手順
 
-1.  **Define Stop Conditions**:
-    Decide on a reasonable number of attempts (e.g., 3 tries) or specific uncertainty triggers (e.g., "cannot reproduce").
+1.  **停止条件を定義する**:
+    合理的な試行回数（例: 3 回）や、特定の不確実性トリガー（例:「再現できない」）を決めます。
 
-2.  **Add "Constraints" or "Stop Condition" Section**:
-    In the prompt or agent template, add a clear rule that overrides the "fix it" mandate.
+2.  **「制約」または「停止条件」セクションを追加する**:
+    プロンプトまたはエージェントテンプレートに、「修正せよ」という命令より優先される明確なルールを追加します。
 
-## Example Template
+## テンプレ例
 
 ```markdown
 ## ⛔ Stop Condition
 
-If you cannot identify the root cause after **3 attempts** or if the fix requires making unverified assumptions:
+**3 回の試行**の後でも根本原因を特定できない場合、または修正が未検証の仮定を必要とする場合:
 
 1.  **STOP** execution.
 2.  **Report** your findings and what you have tried so far.
 3.  **Ask** the user for further guidance or more information.
 ```
 
-## Benefits
+## 利点
 
-- **Efficiency**: Prevents "flailing" where the agent burns tokens and time on bad paths.
-- **Safety**: Reduces the chance of hallucinated "fixes" breaking things further.
-- **Collaboration**: Brings the human back in the loop exactly when needed.
+- **効率（Efficiency）**: 悪い経路にトークンと時間を費やす「空回り（flailing）」を防ぎます。
+- **安全性（Safety）**: ハルシネーションによる「修正」が状況を悪化させる可能性を低減します。
+- **協働（Collaboration）**: 必要なタイミングで人間をループに戻します。

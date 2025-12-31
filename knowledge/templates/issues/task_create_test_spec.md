@@ -1,34 +1,34 @@
 ---
-name: Create Test Spec
-about: Create functional test cases based on specs
-title: "✅ Create Test Spec: [Feature Name]"
+name: テスト仕様作成
+about: 仕様に基づく機能テストケースを作成する
+title: "✅ テスト仕様作成: [機能名]"
 labels: ["test", "verification"]
 assignees: []
 ---
 
-## 🎯 Objective
+## 🎯 目的
 
-Create a detailed list of validation items (Test Spec) for the new feature, covering both normal and abnormal cases.
+新機能の検証項目（テスト仕様）を、正常系と異常系の両方をカバーする形で詳細に列挙します。
 
-## 📝 Activities
+## 📝 作業内容
 
-- [ ] Create Test Spec based on Specifications and Design.
-- [ ] Define Boundary Value Analysis cases.
-- [ ] Define Abnormal/Error Handling cases.
+- [ ] 仕様と設計に基づいてテスト仕様を作成する。
+- [ ] 境界値分析（BVA）のケースを定義する。
+- [ ] 異常系/エラーハンドリングのケースを定義する。
 
-## 📊 Test Spec Items
+## 📊 テスト仕様項目
 
-### Normal Scenarios
-
-- [ ] ...
-
-### Abnormal/Edge Scenarios
+### 正常系シナリオ
 
 - [ ] ...
 
-## ✅ Exit Criteria
+### 異常系/エッジケースシナリオ
 
-- [ ] Test Spec covers all acceptance criteria.
-- [ ] Normal cases covered.
-- [ ] Abnormal/Edge cases covered.
-- [ ] Test Spec is recorded in Git (`docs/specs/[Feature]/test-specs/`).
+- [ ] ...
+
+## ✅ 完了条件
+
+- [ ] テスト仕様がすべての受け入れ基準をカバーしている。
+- [ ] 正常系がカバーされている。
+- [ ] 異常系/エッジケースがカバーされている。
+- [ ] テスト仕様が Git（`docs/specs/[Feature]/test-specs/`）に記録されている。

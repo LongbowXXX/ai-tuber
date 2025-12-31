@@ -1,33 +1,33 @@
 ---
-name: Update Documentation
-about: Update project documentation for release
-title: "📚 Update Documentation: [Version]"
+name: ドキュメント更新
+about: リリースに向けてプロジェクトドキュメントを更新する
+title: "📚 ドキュメント更新: [バージョン]"
 labels: ["documentation", "release"]
 assignees: []
 ---
 
-## 🎯 Objective
+## 🎯 目的
 
-Ensure all project documentation reflects the changes in the new release.
+新しいリリースの変更内容が、プロジェクトドキュメント全体へ反映されていることを保証します。
 
-## 📝 Activities
+## 📝 作業内容
 
-- [ ] **Update README.md**:
-  - [ ] New features description
-  - [ ] Usage instructions updates
-- [ ] **Update CHANGELOG.md**:
-  - [ ] Add entry for the new version
-  - [ ] List all significant changes
-- [ ] **Update API/Usage Docs**:
-  - [ ] Reflect interface changes
-- [ ] **Update Dependency List**:
-  - [ ] Reflect added/removed libraries
+- [ ] **README.md を更新**:
+  - [ ] 新機能の説明
+  - [ ] 利用手順の更新
+- [ ] **CHANGELOG.md を更新**:
+  - [ ] 新バージョンのエントリを追加
+  - [ ] 重要な変更点を列挙
+- [ ] **API/利用ドキュメントを更新**:
+  - [ ] インターフェース変更を反映
+- [ ] **依存関係一覧を更新**:
+  - [ ] 追加/削除したライブラリを反映
 
-## ✅ Exit Criteria
+## ✅ 完了条件
 
-- [ ] All relevant documents are updated.
-- [ ] README.md updated.
-- [ ] CHANGELOG.md updated.
-- [ ] Version numbers consistent.
-- [ ] Breaking changes noted.
-- [ ] Documents committed to Git.
+- [ ] 関連するドキュメントがすべて更新されている。
+- [ ] README.md が更新されている。
+- [ ] CHANGELOG.md が更新されている。
+- [ ] バージョン番号が整合している。
+- [ ] 破壊的変更が明記されている。
+- [ ] ドキュメントが Git へコミットされている。

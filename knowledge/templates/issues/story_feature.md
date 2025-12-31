@@ -1,48 +1,48 @@
-# Story: [Feature Name]
+# ストーリー: [Feature Name]
 
-## 1. Overview
+## 1. 概要
 
-**Goal**: [Briefly describe the feature and its value]
-**Owner**: @[Assignee]
+**目的**: [機能とその価値を簡潔に記述]
+**オーナー**: @[Assignee]
 
-## 2. Work Breakdown Structure (WBS)
+## 2. 作業分解構造（WBS）
 
-Check off items as you create the corresponding Child Task Issues.
+対応する子タスク Issue を作成したら、項目をチェックしてください。
 
-### 1. Requirement Phase
+### 1. 要件フェーズ
 
-- [ ] Requirements Definition Task (`task_requirement.md`)
-  - **Deliverable**: `docs/specs/[FeatureName]/requirements.md`
-  - **Exit Criteria**: Requirements approved by Product Owner.
-- [ ] Define Exit Criteria Task (`task_define_exit_criteria.md`)
-  - **Deliverable**: Exit Criteria Document
+- [ ] 要件定義タスク（`task_requirement.md`）
+  - **成果物**: `docs/specs/[FeatureName]/requirements.md`
+  - **完了条件**: 要件がプロダクトオーナーに承認されている。
+- [ ] 完了条件 定義タスク（`task_define_exit_criteria.md`）
+  - **成果物**: 完了条件ドキュメント
 
-### 2. Design Phase
+### 2. 設計フェーズ
 
-- [ ] Design Discussion Task (`task_design.md`)
-  - **Deliverable**: `docs/specs/[FeatureName]/design.md`
-  - **Deliverable**: `docs/specs/[FeatureName]/implementation_plan.md`
-  - **Check**: Update Sanity Checklist (`task_update_sanity_checklist.md`)
-  - **Check**: Create Test Spec (`task_create_test_spec.md`)
-  - **Exit Criteria**: Design approved by Architect.
+- [ ] 設計議論タスク（`task_design.md`）
+  - **成果物**: `docs/specs/[FeatureName]/design.md`
+  - **成果物**: `docs/specs/[FeatureName]/implementation_plan.md`
+  - **チェック**: サニティチェックリスト更新（`task_update_sanity_checklist.md`）
+  - **チェック**: テスト仕様作成（`task_create_test_spec.md`）
+  - **完了条件**: 設計がアーキテクトに承認されている。
 
-### 3. Implementation Phase
+### 3. 実装フェーズ
 
-- [ ] Implementation Task (`task_implementation.md`)
-  - **Deliverable**: Pull Request (Merged)
-  - **Deliverable**: `src/` and `tests/` updated.
+- [ ] 実装タスク（`task_implementation.md`）
+  - **成果物**: Pull Request（マージ済み）
+  - **成果物**: `src/` と `tests/` が更新されている。
 
-### 4. Verification Phase
+### 4. 検証フェーズ
 
-- [ ] Test Case Creation (Part of Design/Impl)
-  - **Deliverable**: `docs/specs/[FeatureName]/test-specs/`
-- [ ] Sanity Test Task (`task_test_sanity.md`)
-  - **Deliverable**: Sanity Check Result
-- [ ] Functional Test Task (`task_test_functional.md`)
-  - **Deliverable**: Test Execution Result
+- [ ] テストケース作成（設計/実装の一部）
+  - **成果物**: `docs/specs/[FeatureName]/test-specs/`
+- [ ] サニティテストタスク（`task_test_sanity.md`）
+  - **成果物**: サニティチェック結果
+- [ ] 機能テストタスク（`task_test_functional.md`）
+  - **成果物**: テスト実行結果
 
-### 5. Exit Criteria & Completion
+### 5. 完了条件と完了
 
-- [ ] Exit Criteria Confirmation Task (`task_verify_exit_criteria.md`)
-  - **Check**: All critical bugs fixed.
-  - **Check**: All docs updated.
+- [ ] 完了条件 確認タスク（`task_verify_exit_criteria.md`）
+  - **チェック**: 重大なバグがすべて修正されている。
+  - **チェック**: ドキュメントがすべて更新されている。

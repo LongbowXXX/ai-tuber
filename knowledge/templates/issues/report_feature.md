@@ -1,25 +1,25 @@
-# Feature Request
+# 機能要望
 
-## Description
+## 説明
 
-[Describe the feature you want.]
+[要望する機能を説明してください。]
 
-## Motivation / Problem Solved
+## 動機 / 解決したい問題
 
-[Why is this feature needed?]
+[なぜこの機能が必要ですか？]
 
-## Expected Behavior
+## 期待される挙動
 
-[Describe how the feature should work.]
+[その機能がどのように動作すべきかを説明してください。]
 
-## Alternatives Considered (Optional)
+## 検討した代替案（任意）
 
-[Have you considered any alternative solutions or features?]
+[他の解決策や機能案を検討しましたか？]
 
-## Additional Context (Optional)
+## 追加コンテキスト（任意）
 
-[Add any other context or screenshots about the feature request here.]
+[機能要望に関する追加情報やスクリーンショットがあれば記載してください。]
 
-## Related Story Link
+## 関連ストーリーリンク
 
-[Link to the created Feature Story (e.g. #124) - To be filled by Maintainer]
+[作成された機能ストーリーへのリンク（例: #124） - メンテナーが記入]

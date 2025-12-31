@@ -1,111 +1,111 @@
-# Specification Guidelines: XML + Gherkin + Mermaid
+# 仕様ガイドライン: XML + Gherkin + Mermaid
 
-This document explains the philosophy and usage of the structured specification format used in `specification.template.md`.
+このドキュメントは、`specification.template.md` で使用される構造化仕様フォーマットの思想と使い方を説明します。
 
-## 1. Philosophy: Why this combination now?
+## 1. 思想: なぜ今この組み合わせなのか？
 
-Traditionally, Gherkin was treated merely as an "intermediate language for automated tests". However, in the era of AI coding, its value has changed dramatically.
+従来、Gherkin は「自動テストのための中間言語」として扱われがちでした。しかし AI コーディングの時代では、その価値が劇的に変化しています。
 
-### The "Ultimate Prompt" for AI
+### AI にとっての「究極のプロンプト」
 
-LLMs (Large Language Models) prefer structured text. Compared to ambiguous natural language specifications, Gherkin (segmented by Given/When/Then) allows the AI to accurately understand context and generate high-precision code. The process of writing Gherkin itself functions as **Chain-of-Thought** prompting, enhancing the AI's reasoning accuracy.
+LLM（Large Language Model）は構造化テキストを好みます。曖昧な自然言語仕様と比べ、Given/When/Then で区切られた Gherkin は、AI が文脈を正確に理解し、高精度なコードを生成する助けになります。さらに、Gherkin を書くプロセス自体が **Chain-of-Thought** 的なプロンプティングとして機能し、AI の推論精度を高めます。
 
-### Understanding "Diagrams" as Code
+### 「図」をコードとして理解する
 
-Explaining complex flows or state transitions with text alone is difficult. By using **Mermaid** notation, diagrams can be written as "text (code)". GitHub Copilot understands Mermaid syntax, enabling it to read visualized logic (branching and state transitions) and reflect it in implementation code and test cases.
+複雑なフローや状態遷移をテキストだけで説明するのは困難です。**Mermaid** 記法を使えば、図を「テキスト（コード）」として記述できます。GitHub Copilot は Mermaid 構文を理解できるため、可視化されたロジック（分岐や状態遷移）を読み取り、実装コードやテストケースへ反映できます。
 
-### Preventing Divergence (Living Documentation)
+### 乖離を防ぐ（Living Documentation）
 
-By co-locating Diagrams (Mermaid) and Behavior (Gherkin) within the specification (Feature file), the document is version-controlled alongside the code, preventing it from becoming stale.
+仕様（Feature ファイル）内に図（Mermaid）と振る舞い（Gherkin）を同居させることで、ドキュメントはコードと同じくバージョン管理され、陳腐化を防げます。
 
-## 2. Component Guide
+## 2. コンポーネントガイド
 
-### XML Containers
+### XML コンテナ
 
-Use these tags to wrap content sections. This helps the AI parser locate specific information types.
+これらのタグでセクションを包みます。AI パーサーが情報種別を見つけやすくなります。
 
-- `<requirements>`: Business rules and user needs.
-- `<technical_design>`: Engineering specifications.
-- `<gherkin>`: Specific block for BDD scenarios.
-- `<mermaid_diagram>`: Specific block for visual diagrams.
+- `<requirements>`: ビジネスルールとユーザーニーズ。
+- `<technical_design>`: エンジニアリング仕様。
+- `<gherkin>`: BDD シナリオ用の専用ブロック。
+- `<mermaid_diagram>`: 図（ビジュアル）用の専用ブロック。
 
-### Gherkin (Behavioral Specs)
+### Gherkin（振る舞い仕様）
 
-Used for Acceptance Criteria.
+受け入れ基準に使用します。
 
-- **Feature**: High-level functionality.
-- **Scenario**: Concrete examples of behavior.
-- **Given/When/Then**: Preconditions, Actions, Outcomes.
+- **Feature（機能）**: 高レベルな機能。
+- **Scenario（シナリオ）**: 振る舞いの具体例。
+- **Given/When/Then**: 前提、行動、結果。
 
-### Mermaid (Visual Specs)
+### Mermaid（ビジュアル仕様）
 
-Used for Architecture and Logic Flow.
+アーキテクチャやロジックフローに使用します。
 
-- **Flowchart**: Decision trees, process flows.
-- **Sequence Diagram**: Async processes, API interactions.
-- **State Diagram**: Lifecycle management (e.g., Order statuses).
+- **Flowchart（フローチャート）**: 判断分岐、処理フロー。
+- **Sequence Diagram（シーケンス図）**: 非同期プロセス、API 連携。
+- **State Diagram（状態遷移図）**: ライフサイクル管理（例：注文ステータス）。
 
-## 3. Guide for Handling Complexity
+## 3. 複雑さを扱うためのガイド
 
-When specifications become complex (many branches, deep logic), simple Gherkin lists become unreadable. Use these three patterns to manage complexity.
+仕様が複雑（分岐が多い、ロジックが深い）になると、単純な Gherkin の羅列は読めなくなります。複雑さを管理するために次の 3 パターンを使います。
 
-### Pattern A: Structure with `Rule` (Gherkin 6.0)
+### パターン A: `Rule` で構造化する（Gherkin 6.0）
 
-For complex business logic with many variations, do not list Scenarios flatly. Use the `Rule` keyword to group them.
+バリエーションが多い複雑なビジネスロジックでは、Scenario を平坦に並べません。`Rule` キーワードでグルーピングします。
 
-**Bad (Flat List):**
+**悪い例（フラットなリスト）:**
 
 ```gherkin
-Scenario: User under 20 cannot buy
-Scenario: User over 20 can buy
-Scenario: Member gets discount
-Scenario: Non-member pays full price
+シナリオ: 20歳未満のユーザーは購入できない
+シナリオ: 20歳以上のユーザーは購入できる
+シナリオ: 会員は割引を受けられる
+シナリオ: 非会員は定価で支払う
 ```
 
-**Good (Structured with Rule):**
+**良い例（Rule による構造化）:**
 
 ```gherkin
-Feature: Product Purchase
+機能: 商品購入
 
-Rule: Age Restriction
-  Scenario: User under 20 cannot buy
+ルール: 年齢制限
+  シナリオ: 20歳未満のユーザーは購入できない
     ...
-  Scenario: User over 20 can buy
+  シナリオ: 20歳以上のユーザーは購入できる
     ...
 
-Rule: Pricing
-  Scenario: Member gets discount
+ルール: 価格
+  シナリオ: 会員は割引を受けられる
     ...
 ```
 
-_Benefit: AI understands the logical grouping, reducing conditional logic errors._
+_利点: AI が論理的なグルーピングを理解でき、条件分岐ロジックのミスが減ります。_
 
-### Pattern B: Visual BDD (Mermaid)
+### パターン B: Visual BDD（Mermaid）
 
-For cyclic flows, complex asynchronous processes, or state machines, text is insufficient.
+循環フロー、複雑な非同期プロセス、状態機械（ステートマシン）ではテキストだけでは不十分です。
 
-- **Strategy**: Use Gherkin only for the "Happy Path" and "Representative Errors".
-- **Full Logic**: Delegate the strict exhaustive logic to a Mermaid diagram.
-- **Instruction to AI**: "Implement edge cases based on the Mermaid diagram."
+- **戦略**: Gherkin は「ハッピーパス」と「代表的なエラー」だけに使う。
+- **全ロジック**: 網羅的な厳密ロジックは Mermaid 図に委譲する。
+- **AI への指示**: 「Mermaid 図に基づいてエッジケースを実装してください。」
 
-### Pattern C: Declarative Steps (Screenplay Pattern)
+### パターン C: 宣言的ステップ（Screenplay パターン）
 
-Avoid imperative, low-level UI details in specifications. Focus on User Intent (**What**), not Implementation Details (**How**).
+仕様に命令的で低レベルな UI 詳細を持ち込まないでください。実装詳細（How）ではなく、ユーザー意図（**What**）に集中します。
 
-**Bad (Imperative):**
-
-```gherkin
-When I click the ID field
-And I type "user"
-And I click the password field
-And I type "pass"
-And I click the Login button
-```
-
-**Good (Declarative - Screenplay Style):**
+**悪い例（命令的）:**
 
 ```gherkin
-When I login as a standard user
+もし ID フィールドをクリックしたとき
+かつ "user" と入力したとき
+かつ パスワードフィールドをクリックしたとき
+かつ "pass" と入力したとき
+かつ ログインボタンをクリックしたとき
 ```
 
-_Benefit: Decouples specification from UI implementation. Agents like `@Developer` are excellent at translating high-level intents ("login") into specific code (Playwright/Puppeteer actions)._
+**良い例（宣言的 - Screenplay 風）:**
+
+```gherkin
+もし 標準ユーザーとしてログインしたとき
+```
+
+_利点: 仕様を UI 実装から分離できます。`@Developer` のようなエージェントは、高レベル意図（"login"）を具体的コード（Playwright/Puppeteer の操作）へ落とし込むのが得意です。_

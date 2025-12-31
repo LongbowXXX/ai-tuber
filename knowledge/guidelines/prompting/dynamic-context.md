@@ -1,40 +1,40 @@
-# Dynamic Context Protocol
+# Dynamic Context Protocol（動的コンテキスト・プロトコル）
 
-## Problem
+## 問題
 
-Relying solely on a single context file (like `AGENTS.md` or a system prompt) limits the AI's depth of understanding. It can lead to outdated information usage or hallucinations if the central index is not exhaustive. Including everything in one file also consumes excessive context window.
+単一のコンテキストファイル（例: `AGENTS.md` やシステムプロンプト）だけに依存すると、AI の理解の深さが制限されます。中央の索引が網羅的でない場合、古い情報を使ったり、ハルシネーションを起こしたりする原因になります。また、すべてを 1 ファイルに含めるとコンテキストウィンドウを過剰に消費します。
 
-## Solution
+## 解決策
 
-Implement a "Research Phase" where the AI is explicitly instructed to perform keyword/semantic searches and follow file links to gather specific, relevant details from the knowledge base before starting a task.
+タスクを開始する前に、AI に対してキーワード検索/セマンティック検索の実行とファイルリンクの追跡を明示的に指示し、ナレッジベースから具体的で関連性の高い詳細を収集させる「調査フェーズ（Research Phase）」を実装します。
 
-## Implementation Steps
+## 実装手順
 
-1.  **Define Phase**:
-    Create a distinct "Research Phase" at the start of the prompt.
+1.  **フェーズ定義**:
+    プロンプトの冒頭に、明確に分離された「調査フェーズ（Research Phase）」を作成します。
 
-2.  **Explicit Instructions**:
-    Command the AI to:
-    - **Search**: Use tools to find docs (keyword/semantic).
-    - **Follow Links**: Traverse from the summary index to detailed files.
-    - **Read**: Load the content.
-    - **Cross-Reference**: Verify assumptions.
+2.  **明示的な指示**:
+    AI に次を命令します:
+    - **Search**: ツールを使ってドキュメントを見つける（キーワード/セマンティック）。
+    - **Follow Links**: サマリー索引から詳細ファイルへ辿る。
+    - **Read**: 内容を読み込みコンテキストにロードする。
+    - **Cross-Reference**: 仮定を検証する。
 
-## Example Template
+## テンプレ例
 
 ```markdown
-### 🔍 Dynamic Context Protocol (Research Phase)
+### 🔍 Dynamic Context Protocol（調査フェーズ）
 
-**Before starting any task, you MUST:**
+**タスクを開始する前に、必ず次を行うこと:**
 
-1.  **Search**: Use your available tools to perform **keyword/regex searches** or **semantic searches** to find specific documentation in `docs/` or `knowledge/` relevant to the user's request.
-2.  **Follow Links**: Since this file serves as a summary index, you MUST follow links to obtain detailed information.
-3.  **Read**: Load the content of these detailed documents into your context.
-4.  **Cross-Reference**: Do NOT rely on assumptions. Always verify against the official documentation found.
+1.  **検索（Search）**: 利用可能なツールを使って、ユーザー要求に関連する `docs/` または `knowledge/` 内の特定ドキュメントを見つける（**キーワード/正規表現検索** または **セマンティック検索**）。
+2.  **リンク追跡（Follow Links）**: このファイルはサマリー索引として機能するため、詳細情報を得るためにリンクを必ず辿る。
+3.  **読了（Read）**: 詳細ドキュメントの内容をコンテキストにロードする。
+4.  **相互参照（Cross-Reference）**: 仮定に頼らない。見つけた公式ドキュメントに照らして常に検証する。
 ```
 
-## Benefits
+## 利点
 
-- **Accuracy**: Ensures the AI uses the most specific and detailed information available.
-- **Scalability**: Allows the knowledge base to grow without bloating the primary context file.
-- **Autonomy**: Encourages the AI to actively seek information rather than passively relying on pre-loaded context.
+- **正確性（Accuracy）**: AI が利用可能な中で最も具体的で詳細な情報を使うことを保証します。
+- **スケーラビリティ（Scalability）**: 主要コンテキストファイルを肥大化させずに、ナレッジベースを成長させられます。
+- **自律性（Autonomy）**: 事前にロードされたコンテキストへ受動的に依存するのではなく、AI が能動的に情報を探すことを促します。

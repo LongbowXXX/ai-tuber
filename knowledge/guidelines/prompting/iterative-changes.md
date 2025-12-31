@@ -1,25 +1,25 @@
-# Iterative Changes for High-Impact Configs
+# 影響度の高い設定の反復的変更
 
-## Problem
+## 問題
 
-When generating configuration files (like `.vscode/tasks.json` or `settings.json`) or managing lists (like extensions), generating the entire file at once forces the user to review a large block of changes. This often leads to "information overload," making it difficult for the user to accept partial suggestions or verify correctness.
+設定ファイル（例: `.vscode/tasks.json` や `settings.json`）を生成する場合や、拡張機能などのリストを管理する場合に、ファイル全体を一度に生成すると、ユーザーは大きな変更ブロックをレビューする必要があります。これは「情報過多」を招きやすく、ユーザーが提案を部分的に採用したり、正しさを検証したりすることが難しくなります。
 
-## Solution
+## 解決策
 
-Adopt an **Iterative Proposal Loop**. Instead of generating the final file immediately, instruct the agent to propose changes **one by one** (or in small logical groups), explain the rationale, and ask for user confirmation before proceeding to the next item.
+**反復的提案ループ（Iterative Proposal Loop）** を採用します。最終ファイルをすぐに生成するのではなく、変更を **1 つずつ**（または小さな論理グループ単位で）提案し、根拠を説明し、次の項目へ進む前にユーザーの確認を求めるようにエージェントへ指示します。
 
-## Implementation Steps
+## 実装手順
 
-1.  **Define the Loop**:
-    Explicitly instruct the agent to loop through items and "STOP" to ask for confirmation.
+1.  **ループを定義する**:
+    エージェントに、項目を順に処理し、確認のために「STOP」するよう明示的に指示します。
 
-2.  **Propose, Don't Just Do**:
-    Frame the interaction as a dialogue: "Should I add X?" rather than "I added X".
+2.  **実行ではなく提案をする**:
+    「X を追加しました」ではなく「X を追加することを推奨します。よいですか？」という対話として進めます。
 
-3.  **Batch Final Output**:
-    Only generate the final file content _after_ the user has confirmed the list of items.
+3.  **最終出力はまとめて行う**:
+    ユーザーが項目リストを確認した _後_ にのみ、最終ファイル内容を生成します。
 
-## Example Template
+## テンプレ例
 
 ```markdown
 ## 2. Iterative Configuration (Loop)
@@ -32,8 +32,8 @@ Adopt an **Iterative Proposal Loop**. Instead of generating the final file immed
 4.  **Repeat**: Continue to the next item.
 ```
 
-## Benefits
+## 利点
 
-- **Cognitive Load**: Reduces the effort required to review changes.
-- **Selective Adoption**: Allows users to easily say "Yes" to some items and "No" to others.
-- **Safety**: Prevents accidental overwriting of complex configurations with a "good enough" AI generation.
+- **認知負荷（Cognitive Load）**: 変更レビューに必要な労力を減らします。
+- **選択的採用（Selective Adoption）**: 「これは OK / これは NG」をユーザーが簡単に判断できます。
+- **安全性（Safety）**: 「それなり」の AI 生成で複雑な設定を誤って上書きすることを防ぎます。

@@ -1,40 +1,40 @@
-# Bug Report
+# バグ報告
 
-## Environment
+## 環境
 
-- **Environment**: [e.g. Released App / Dev Environment]
-- **Version**: [e.g. v1.0.0]
+- **環境**: [例: リリース版アプリ / 開発環境]
+- **バージョン**: [例: v1.0.0]
 
-## Problem Description
+## 問題の説明
 
-[Describe the bug clearly.]
+[バグを明確に説明してください。]
 
-## Reproduction Steps
+## 再現手順
 
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
+1. [手順 1]
+2. [手順 2]
+3. [手順 3]
 
-## Reproducibility
+## 再現性
 
-[e.g. 5/5 (Always), 2/5 (Sometimes), 1/5 (Rarely)]
+[例: 5/5（毎回）, 2/5（ときどき）, 1/5（まれ）]
 
-## Severity
+## 重大度
 
-[e.g. Critical / High / Medium / Low]
+[例: Critical / High / Medium / Low]
 
-## Expected Behavior
+## 期待される挙動
 
-[Describe what you expected to happen.]
+[期待していた挙動を説明してください。]
 
-## Actual Behavior
+## 実際の挙動
 
-[Describe what actually happened.]
+[実際に起きたことを説明してください。]
 
-## Screenshots / Logs
+## スクリーンショット / ログ
 
-[If applicable, add screenshots or log snippets to help explain your problem.]
+[可能であれば、問題の説明に役立つスクリーンショットやログ断片を追加してください。]
 
-## Related Story Link
+## 関連ストーリーリンク
 
-[Link to the created Bug Fix Story (e.g. #123) - To be filled by Maintainer]
+[作成されたバグ修正ストーリーへのリンク（例: #123） - メンテナーが記入]

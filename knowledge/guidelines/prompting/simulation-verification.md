@@ -1,27 +1,27 @@
-# Simulation-Based Verification (Perspective Taking & Evidence)
+# Simulation-Based Verification（視点取得とエビデンス）
 
-## Problem
+## 問題
 
-When simply asking the AI to "check for consistency" or "review documents," it often performs a superficial pattern match. It may miss deep logical gaps. Furthermore, without explicit evidence logs, the user cannot easily verify _what_ the AI actually checked, forcing them to blindly trust the summary or read verbose internal thought logs.
+AI に単に「整合性をチェックして」「ドキュメントをレビューして」と頼むだけでは、表面的なパターンマッチに終わりがちです。深い論理的な欠落を見逃す可能性があります。さらに、明示的なエビデンスログがなければ、ユーザーは AI が実際に _何_ を確認したのかを簡単に検証できず、要約を盲信するか冗長な内部思考ログを読むしかなくなります。
 
-## Solution
+## 解決策
 
-Instruct the AI to **Simulate** a specific scenario from a specific **Perspective** (e.g., "New Developer") and **Record Evidence** for every check. Force it to perform a "Mental Walkthrough" step-by-step. For each step, it must explicitly log the **Input** (what it found), the **Verdict** (Pass/Fail), and the **Evidence** (specific file/line or logic) in the final output.
+特定の **視点（Perspective）**（例:「新しく参加した開発者」）から、特定のシナリオを **シミュレーション（Simulate）** し、各チェックについて **エビデンス（Record Evidence）** を記録するよう AI に指示します。「メンタル・ウォークスルー（Mental Walkthrough）」をステップバイステップで実行させます。各ステップで、**入力（Input）**（見つけたもの）、**判定（Verdict）**（Pass/Fail）、**根拠（Evidence）**（具体的なファイル/行、またはロジック）を最終出力に明示的に記録させます。
 
-## Implementation Steps
+## 実装手順
 
-1.  **Define the Perspective**: Explicitly state who the AI is simulating (e.g., "You are a new developer joining the team").
-2.  **Define the Scenario**: logical flow to simulate (e.g., "Adding a new feature").
-3.  **Mandate Evidence Logging**: Explicitly instruct the AI to write down _what_ it checked in the final report (e.g., "Checked file X, found Y") rather than just "Checked: OK".
-4.  **Step-by-Step Verification**: Ask the AI to list the steps and for each, check Input, Process, and Output.
+1.  **視点を定義する**: AI が誰をシミュレーションするのかを明示します（例:「あなたはチームに参加した新しい開発者である」）。
+2.  **シナリオを定義する**: シミュレーションする論理フローを定義します（例:「新機能を追加する」）。
+3.  **エビデンス記録を義務化する**: 「Checked: OK」ではなく、最終レポートに _何_ をチェックしたか（例:「ファイル X を確認し、Y を発見した」）を書き出すよう明示的に指示します。
+4.  **段階的検証**: 手順を列挙させ、各手順で Input / Process / Output を確認させます。
 
-## Example Template
+## テンプレ例
 
 ```markdown
 ## Simulation: New Feature Implementation
 
-Perform a "Mental Walkthrough" acting as a **New Developer**.
-For each step, you MUST log your findings in the report as **Evidence**:
+**新しい開発者（New Developer）** として「メンタル・ウォークスルー（Mental Walkthrough）」を実行します。
+各ステップについて、レポートに **エビデンス（Evidence）** として発見事項を MUST で記録してください:
 
 1.  **Requirement Definition**
 
@@ -37,11 +37,11 @@ For each step, you MUST log your findings in the report as **Evidence**:
     - **Evidence**:
       - `design.prompt.md` references `{{requirements_files}}` variable. Linkage is valid. (✅ PASS)
 
-**Report**: Check that each output template and directory is defined. Log specific evidence for every check.
+**Report**: 各出力テンプレートとディレクトリが定義されていることを確認してください。すべてのチェックについて具体的なエビデンスを記録してください。
 ```
 
-## Benefits
+## 利点
 
-- **High Recall**: Finds logic holes that static analysis misses.
-- **User Empathy**: Identifies "friction" or frustration points in the process.
-- **Auditability**: The user can verify the AI's work by reading the evidence log, building trust without high cognitive load.
+- **高再現率（High Recall）**: 静的分析が見逃すロジックの穴を見つけます。
+- **ユーザー共感（User Empathy）**: プロセス上の「摩擦」やフラストレーションポイントを特定します。
+- **監査可能性（Auditability）**: ユーザーはエビデンスログを読むことで AI の作業を検証でき、高い認知負荷なしに信頼を構築できます。

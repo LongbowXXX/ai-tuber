@@ -1,31 +1,31 @@
-# Explicit Parallelism (Efficiency)
+# Explicit Parallelism（明示的パラレリズム / 効率化）
 
-## Problem
+## 問題
 
-Agents often execute search or retrieval tools sequentially (one after another), waiting for each round-trip to complete. This unnecessarily prolongs the "thinking" time and can lead to timeouts or user frustration.
+エージェントは検索や取得ツールを逐次（1 つずつ）実行し、各往復が完了するまで待ちがちです。これにより「思考」時間が不必要に長くなり、タイムアウトやユーザーのフラストレーションにつながります。
 
-## Solution
+## 解決策
 
-Explicitly instruct the agent to run independent tool calls **in parallel** (or in a single batch) whenever possible.
+可能な限り、独立したツール呼び出しを **並列**（または単一のバッチ）で実行するように、エージェントへ明示的に指示します。
 
-## Implementation Steps
+## 実装手順
 
-1.  **Identify Independent Tasks**: Look for searches or reads that do not depend on each other.
-2.  **Instruction**: Add a "Parallel Execution" rule.
+1.  **独立タスクの特定**: 相互依存しない検索や読み取りを見つけます。
+2.  **指示**: 「並列実行」ルールを追加します。
 
-## Example Template
+## テンプレ例
 
 ```markdown
 ## Source Analysis
 
-Perform a **parallel search** strategy:
+**並列検索**戦略を実行する:
 
 1. Identify key domain terms.
 2. Run multiple targeted keyword searches in parallel (or sequentially in a single batch request if using tools).
-3. Do not stop at the first result; gather comprehensive evidence before concluding.
+3. 最初の結果で止めず、結論を出す前に包括的な根拠を収集する。
 ```
 
-## Benefits
+## 利点
 
-- **Speed**: Drastically reduces total execution time.
-- **Breadth**: Encourages covering more ground since the "cost" (in time) feels lower to the model.
+- **速度（Speed）**: 総実行時間を大幅に短縮します。
+- **網羅性（Breadth）**: モデルにとって（時間の）「コスト」が下がるため、より広い範囲をカバーしやすくなります。

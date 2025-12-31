@@ -1,35 +1,35 @@
-# Story: Release v[Version]
+# ストーリー: リリース v[Version]
 
-## 1. Overview
+## 1. 概要
 
-**Goal**: Release version [Version] to production.
-**Owner**: @[ReliabilityEngineer]
+**目的**: バージョン [Version] を本番へリリースする。
+**オーナー**: @[ReliabilityEngineer]
 
-## 2. Release WBS
+## 2. リリース WBS
 
-### 1. New Version Agreement
+### 1. 新バージョンの合意
 
-- [ ] Determine Version Number (`task_version_agreement.md`)
-- [ ] Update `CHANGELOG.md` with planned changes.
+- [ ] バージョン番号の決定（`task_version_agreement.md`）
+- [ ] 予定変更点で `CHANGELOG.md` を更新する。
 
-### 2. Pre-Release Checks
+### 2. プレリリースチェック
 
-- [ ] **Merge Check**: Verify related fixes (`task_verify_related_fixes.md`).
-- [ ] **Sanity Check**: Run Sanity Test (`task_test_sanity.md`).
-- [ ] **Vulnerability Check**: Run security audit (`task_vulnerability_check.md`).
-- [ ] **Static Analysis**: Run static analysis (`task_static_analysis.md`).
-- [ ] **License Check**: Run license check (`task_license_check.md`).
-- [ ] **Release Checklist**: Create checklist (`task_release_checklist.md`).
-- [ ] **Define Exit Criteria**: Define criteria (`task_define_exit_criteria.md`).
+- [ ] **マージ確認**: 関連修正の確認（`task_verify_related_fixes.md`）。
+- [ ] **サニティ確認**: サニティテスト実施（`task_test_sanity.md`）。
+- [ ] **脆弱性確認**: セキュリティ監査実施（`task_vulnerability_check.md`）。
+- [ ] **静的解析**: 静的解析の実行（`task_static_analysis.md`）。
+- [ ] **ライセンス確認**: ライセンスチェック実施（`task_license_check.md`）。
+- [ ] **リリースチェックリスト**: チェックリスト作成（`task_release_checklist.md`）。
+- [ ] **完了条件の定義**: 基準の定義（`task_define_exit_criteria.md`）。
 
-### 3. Release Execution
+### 3. リリース実行
 
-- [ ] Execute Release (`task_release_execution.md`).
-- [ ] Create GitHub Release.
-- [ ] Update Documentation (`task_docs_update.md`).
+- [ ] リリース実行（`task_release_execution.md`）。
+- [ ] GitHub Release を作成する。
+- [ ] ドキュメント更新（`task_docs_update.md`）。
 
-### 4. Post-Release
+### 4. リリース後
 
-- [ ] Verify deployment.
-- [ ] Verify Exit Criteria (`task_verify_exit_criteria.md`).
-- [ ] Close this Story.
+- [ ] デプロイを確認する。
+- [ ] 完了条件の検証（`task_verify_exit_criteria.md`）。
+- [ ] このストーリーをクローズする。

@@ -1,20 +1,20 @@
-# Requirement Definition Issue Template
+# 要件定義 Issue テンプレート
 
-## Overview
+## 概要
 
-This Issue is for clarifying the purpose, context, and scope of a new feature or change.
+この Issue は、新機能または変更の目的（Purpose）、コンテキスト（Context）、スコープ（Scope）を明確化するためのものです。
 
-## Structure
+## 構造
 
-Please create the requirements document using the following template:
+次のテンプレートを使用して要件ドキュメントを作成してください:
 
-- **Template**: [Requirements Template](../artifacts/requirements.template.md)
-- **Destination**: `docs/specs/[FeatureName]/requirements.md`
+- **テンプレート**: [要件テンプレート](../artifacts/requirements.template.md)
+- **保存先**: `docs/specs/[FeatureName]/requirements.md`
 
-## ✅ Exit Criteria
+## ✅ 完了条件
 
-- [ ] Requirements document created in Git.
-- [ ] Requirements approved by Product Owner.
-- [ ] The purpose of the feature is clear.
-- [ ] User stories are defined.
-- [ ] Non-functional requirements are included.
+- [ ] 要件ドキュメントが Git 上に作成されている。
+- [ ] 要件がプロダクトオーナーに承認されている。
+- [ ] 機能の目的が明確である。
+- [ ] ユーザーストーリーが定義されている。
+- [ ] 非機能要件が含まれている。

@@ -1,52 +1,52 @@
 ---
 name: Release Checklist
-about: Final pre-release verification
-title: "🚀 Release Checklist: [Version]"
+about: 最終プレリリース検証
+title: "🚀 リリースチェックリスト: [バージョン]"
 labels: ["release", "verification"]
 assignees: []
 ---
 
-## 🎯 Objective
+## 🎯 目的
 
-Perform final verification before executing the release to ensure quality and completeness.
+品質と完全性を担保するため、リリース実行前に最終検証を行います。
 
 ## ✅ Checklist
 
-### 1. Operation Check
+### 1. 運用確認
 
-- [ ] Feature Verification: All features in this release are verified.
-- [ ] Regression: Sanity tests passed?
-- [ ] Specific Release Scenarios:
+- [ ] 機能検証: このリリースに含まれる機能がすべて検証済みである。
+- [ ] 回帰: サニティテストは通っているか？
+- [ ] リリース固有シナリオ:
 
-### 2. Quality & Security
+### 2. 品質とセキュリティ
 
-- [ ] Vulnerability Check completed? (Link: #IssueID)
-- [ ] Static Analysis completed? (Link: #IssueID)
-- [ ] License Check completed? (Link: #IssueID)
+- [ ] 脆弱性チェックは完了しているか？（リンク: #IssueID）
+- [ ] 静的解析は完了しているか？（リンク: #IssueID）
+- [ ] ライセンスチェックは完了しているか？（リンク: #IssueID）
 
-### 3. Documentation
+### 3. ドキュメント
 
-- [ ] `README.md` updated?
-- [ ] `CHANGELOG.md` updated?
-- [ ] Version numbers in docs match the release version?
+- [ ] `README.md` は更新されているか？
+- [ ] `CHANGELOG.md` は更新されているか？
+- [ ] ドキュメント内のバージョン番号はリリース版と一致しているか？
 
-### 4. Artifacts
+### 4. 成果物
 
-- [ ] Build successful?
-- [ ] Artifacts (binaries/packages) generated correctly?
+- [ ] ビルドは成功しているか？
+- [ ] 成果物（バイナリ/パッケージ）は正しく生成されているか？
 
-### 5. Version Control
+### 5. バージョン管理
 
-- [ ] Version number in code updated (e.g., `package.json`, `pyproject.toml`)?
-- [ ] All changes committed?
+- [ ] コード内のバージョン番号は更新されているか（例: `package.json`, `pyproject.toml`）？
+- [ ] 変更はすべてコミットされているか？
 
-## 🏁 Conclusion
+## 🏁 結論
 
-- [ ] **GO**: Ready for Release
-- [ ] **NO GO**: Release Aborted (Reason: )
+- [ ] **GO**: リリース実行可能
+- [ ] **NO GO**: リリース中止（理由: ）
 
-## ✅ Exit Criteria
+## ✅ 完了条件
 
-- [ ] All check items covered.
-- [ ] Check items are specific and executable.
-- [ ] Check items recorded on ticket.
+- [ ] すべてのチェック項目が網羅されている。
+- [ ] チェック項目が具体的かつ実行可能である。
+- [ ] チェック項目がチケットに記録されている。

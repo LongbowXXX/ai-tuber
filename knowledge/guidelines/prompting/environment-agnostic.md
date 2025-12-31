@@ -1,31 +1,31 @@
-# Environment-Agnostic Tool Support
+# Environment-Agnostic Tool Support（環境非依存のツールサポート）
 
-## Problem
+## 問題
 
-Official GitHub Copilot best practices suggest explicitly defining the `tools` available to an agent or prompt. However, this approach has significant downsides when generating prompts automatically:
+GitHub Copilot の公式ベストプラクティスでは、エージェントやプロンプトで利用可能な `tools` を明示的に定義することが推奨されます。しかし、プロンプトを自動生成する場合、このアプローチには大きな欠点があります:
 
-- **Environment Variability**: Developers' environments vary significantly (different Extensions, MCP servers). Hardcoding tools inadvertently disables access to context-specific tools that the user might have installed.
-- **Hallucinations**: AI models frequently hallucinate tool names that do not exist explicitly or use incorrect names, leading to broken prompts or errors.
+- **環境の多様性**: 開発者の環境は大きく異なります（拡張機能や MCP サーバーが異なる）。ツールをハードコードすると、ユーザーが導入しているかもしれないコンテキスト固有ツールへのアクセスを意図せず無効化してしまいます。
+- **ハルシネーション**: AI モデルは、実在しないツール名をハルシネーションしたり誤った名前を使ったりしがちで、プロンプトの破綻やエラーにつながります。
 
-If an AI-generated prompt explicitly hardcodes a list of `tools`, it limits flexibility and increases the risk of including invalid tools.
+AI 生成プロンプトが `tools` のリストを明示的にハードコードすると、柔軟性が低下し、無効なツールを含めるリスクが高まります。
 
-## Solution
+## 解決策
 
-**Deliberately ignore** the best practice of explicit tool specification when generating new custom prompts or agents. Instead, omit the `tools` property entirely. This allows the default behavior to take over, which generally permits access to all tools available in the current context (including those from Extensions and MCP servers).
+新しいカスタムプロンプトやエージェントを生成するときは、ツールを明示的に指定するベストプラクティスを **意図的に無視** します。代わりに `tools` プロパティを完全に省略します。これにより既定の挙動が適用され、通常は現在のコンテキストで利用可能なすべてのツール（拡張機能や MCP サーバー由来のツールを含む）へアクセスできるようになります。
 
-**Exception**: If you are basing a new prompt on a specific existing reference (e.g., copying a strict agent definition), it is acceptable to copy the `tools` list to maintain the intended behavior of that reference.
+**例外**: 特定の既存リファレンス（例: 厳格なエージェント定義）をベースに新しいプロンプトを作る場合は、そのリファレンスの意図した挙動を維持するために `tools` リストをコピーしても構いません。
 
-## Implementation Steps
+## 実装手順
 
-1.  **Omit `tools` Property**:
-    When creating `.prompt.md` or `.agent.md` files, do not generate a `tools: [...]` section.
+1.  **`tools` プロパティを省略する**:
+    `.prompt.md` や `.agent.md` を作成するとき、`tools: [...]` セクションを生成しません。
 
-2.  **User Delegation**:
-    If specific tools must be restricted or strictly managed, leave that configuration to the human user.
+2.  **ユーザーへ委譲する**:
+    特定ツールを制限したり厳密に管理したりする必要がある場合、その設定は人間のユーザーに任せます。
 
-## Example Template
+## テンプレ例
 
-**Avoid this (unless copying strict reference):**
+**避ける（厳格なリファレンスをコピーする場合を除く）:**
 
 ```markdown
 ---
@@ -35,7 +35,7 @@ tools: ["search", "fetch"]
 ---
 ```
 
-**Prefer this (Environment-Agnostic):**
+**推奨（環境非依存）:**
 
 ```markdown
 ---
@@ -44,8 +44,8 @@ description: An agent that can use whatever tools the user has installed.
 ---
 ```
 
-## Benefits
+## 利点
 
-- **Flexibility**: Automatically supports new tools added by extensions or MCP servers without code changes.
-- **Portability**: The prompt works across different developer setups without breaking due to missing or extra tools.
-- **Power**: Allows the agent to leverage the full capabilities of the user's IDE.
+- **柔軟性**: 拡張機能や MCP サーバーで追加された新しいツールを、コード変更なしで自動的に利用できます。
+- **可搬性**: ツールの不足/追加によって壊れることなく、異なる開発環境でもプロンプトが動作します。
+- **能力**: エージェントがユーザーの IDE の能力を最大限活用できます。

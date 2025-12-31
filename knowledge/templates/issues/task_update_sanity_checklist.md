@@ -1,35 +1,35 @@
 ---
-name: Update Sanity Checklist
-about: Update the system-wide sanity checklist
-title: "📋 Update Sanity Checklist: [Feature Name]"
+name: サニティチェックリスト更新
+about: システム全体のサニティチェックリストを更新する
+title: "📋 サニティチェックリスト更新: [機能名]"
 labels: ["documentation", "test", "verification"]
 assignees: []
 ---
 
-## 🎯 Objective
+## 🎯 目的
 
-Update `docs/tests/sanity.md` to ensure the new feature is covered and obsolete items are removed.
+`docs/tests/sanity.md` を更新し、新機能がカバーされ、不要になった項目が削除されることを保証します。
 
-## 📝 Activities
+## 📝 作業内容
 
-- [ ] **Add**: Items to verify the new feature's core functionality.
-- [ ] **Review**: Check if any existing items are affected by this change.
-- [ ] **Update**: Modify `docs/tests/sanity.md`.
-- [ ] **Commit**: Push changes to Git.
+- [ ] **追加**: 新機能のコア機能を検証する項目を追加する。
+- [ ] **確認**: この変更によって既存項目へ影響があるか確認する。
+- [ ] **更新**: `docs/tests/sanity.md` を修正する。
+- [ ] **コミット**: 変更を Git に push する。
 
-## 📊 Changes
+## 📊 変更内容
 
-### Added Items
-
-- [ ] ...
-
-### Removed/Modified Items
+### 追加項目
 
 - [ ] ...
 
-## ✅ Exit Criteria
+### 削除/変更項目
 
-- [ ] Sanity Checklist file is updated and committed.
-- [ ] New feature items added.
-- [ ] Impact on existing features check included.
-- [ ] Obsolete items removed/updated.
+- [ ] ...
+
+## ✅ 完了条件
+
+- [ ] サニティチェックリストファイルが更新され、コミットされている。
+- [ ] 新機能の項目が追加されている。
+- [ ] 既存機能への影響確認が含まれている。
+- [ ] 不要な項目が削除/更新されている。

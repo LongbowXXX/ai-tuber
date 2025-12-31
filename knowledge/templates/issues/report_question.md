@@ -1,13 +1,13 @@
-# Question
+# 質問
 
-## Question
+## 質問内容
 
-[Ask your question here.]
+[ここに質問を記入してください。]
 
-## What you've tried
+## 試したこと
 
-[Describe what you have tried to find an answer to your question.]
+[回答を得るために試したことを説明してください。]
 
-## Context
+## 背景
 
-[Any background information or context.]
+[背景情報や補足コンテキストがあれば記載してください。]

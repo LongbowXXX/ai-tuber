@@ -1,30 +1,30 @@
 ---
-name: Verify Related Fixes
-about: Ensure all related changes are merged and conflict-free
-title: "📋 Verify Related Fixes: [Version]"
+name: 関連修正の確認
+about: 関連変更がすべてマージ済みで競合がないことを確認する
+title: "📋 関連修正の確認: [バージョン]"
 labels: ["release", "verification"]
 assignees: []
 ---
 
-## 🎯 Objective
+## 🎯 目的
 
-Confirm that all features and bug fixes planned for this release are correctly merged into the release branch/main branch.
+このリリースに予定されている機能とバグ修正が、リリースブランチ/メインブランチへ正しくマージされていることを確認します。
 
-## 📝 Activities
+## 📝 作業内容
 
-- [ ] **Check Issues**: Ensure all related issues are Closed or Ready for Release.
-- [ ] **Check PRs**: Ensure all related PRs are Merged.
-- [ ] **Check Conflicts**: Ensure there are no unresolved merge conflicts.
-- [ ] **Check Omissions**: Verify no intended changes were left out.
+- [ ] **Issue 確認**: 関連 Issue がすべて Closed または Ready for Release である。
+- [ ] **PR 確認**: 関連 PR がすべて Merged である。
+- [ ] **競合確認**: 未解決のマージ競合がない。
+- [ ] **漏れ確認**: 意図した変更が取りこぼされていない。
 
-## 📊 Findings
+## 📊 確認結果
 
-- [ ] All intended changes included?
-- [ ] Any unexpected changes?
+- [ ] 意図した変更がすべて含まれているか？
+- [ ] 想定外の変更がないか？
 
-## ✅ Exit Criteria
+## ✅ 完了条件
 
-- [ ] All related tickets closed.
-- [ ] All PRs merged.
-- [ ] Branch conflicts resolved.
-- [ ] Confirmation recorded on ticket.
+- [ ] 関連チケットがすべてクローズされている。
+- [ ] 関連 PR がすべてマージされている。
+- [ ] ブランチ競合が解消されている。
+- [ ] 確認結果がチケットに記録されている。
