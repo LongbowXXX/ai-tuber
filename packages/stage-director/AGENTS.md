@@ -18,8 +18,8 @@
 | :------------- | :------------ | :--------- | :---------------------- |
 | 言語           | Python        | 3.11+      | メイン開発言語          |
 | フレームワーク | FastAPI       | 0.120.0    | WebSocket サーバー      |
-| プロトコル     | MCP (FastMCP) | 1.19.0     | AI エージェントとの通信 |
-| バリデーション | Pydantic      | 2.12.3     | データモデル            |
+| プロトコル     | MCP (FastMCP) | 1.19.0+    | AI エージェントとの通信 |
+| バリデーション | Pydantic      | 2.12.3+    | データモデル            |
 
 ### アーキテクチャパターン
 
@@ -37,7 +37,10 @@
 │   └── stage_director/ # ソースコード
 │       ├── main.py                     # エントリーポイント
 │       ├── stage_director_mcp_server.py # MCP サーバー実装
-│       └── websocket_handler.py        # WebSocket 通信
+│       ├── stage_director_server.py    # WebSocket サーバー実装
+│       ├── websocket_handler.py        # WebSocket 通信
+│       ├── command_queue.py            # コマンドキュー管理
+│       └── models.py                   # データモデル
 └── tests/              # テストコード
 ```
 
@@ -55,8 +58,8 @@
 | :-------------------- | :--------------------------------- | :------------------------------- |
 | **Stage Director**    | 本システム。AI と舞台の橋渡し役。  | -                                |
 | **vtube-stage**       | リアルタイムレンダリングエンジン。 | -                                |
-| **Speak**             | 発話と口パクを伴うアクション。     | `speak(text="こんにちは")`       |
-| **Trigger Animation** | 特定のアニメーション再生。         | `trigger_animation(name="wave")` |
+| **Speak**             | 発話と口パクを伴うアクション。     | `speak(character_id="default", message="こんにちは", caption="こんにちは", emotion="neutral")` |
+| **Trigger Animation** | 特定のアニメーション再生。         | `trigger_animation(character_id="default", animation_name="wave")` |
 
 ## 5. エントリーポイント
 

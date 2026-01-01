@@ -37,6 +37,8 @@ MCP Server としてツールを提供し、AI エージェントがキャラク
 ## ドキュメント
 
 - [セットアップガイド](SetupGuide.md) - VS Code + uv での開発環境構築
+- [AGENTS.md](AGENTS.md) - AI エージェント向けの開発ガイド・コンテキスト
+- [docs/](docs/) - アーキテクチャ詳細、コーディング規約、用語集など
 
 ## 前提条件
 
@@ -45,14 +47,12 @@ MCP Server としてツールを提供し、AI エージェントがキャラク
 
 ## インストール
 
+詳細な手順については [セットアップガイド](SetupGuide.md) を参照してください。
+
 1. **`uv` を使用して仮想環境を作成します:**
 
    ```bash
    uv venv
-   # Windows
-   .venv\Scripts\activate
-   # Linux/macOS
-   source .venv/bin/activate
    ```
 
 2. **依存関係をインストールします:**
