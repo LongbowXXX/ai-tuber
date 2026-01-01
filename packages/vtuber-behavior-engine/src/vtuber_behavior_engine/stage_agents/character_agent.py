@@ -18,10 +18,10 @@ from vtuber_behavior_engine.stage_agents.agent_constants import (
     OUTPUT_LLM_MODEL,
     STATE_AGENT_SPEECH_BASE,
     STATE_DISPLAY_MARKDOWN_TEXT,
+    STATE_USER_SPEECH,
 )
 from vtuber_behavior_engine.services.speech_recognition import SpeechRecognitionTool
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
-from vtuber_behavior_engine.stage_agents.news.news_agent_constants import STATE_USER_SPEECH
 from vtuber_behavior_engine.stage_agents.resources import character_prompt, character_output_prompt
 
 logger = logging.getLogger(__name__)
@@ -32,6 +32,9 @@ def create_character_agent(
 ) -> BaseAgent:
     def get_user_speech(callback_context: CallbackContext) -> Optional[types.Content]:
         """音声認識ツールからユーザーの発話を取得して状態に保存"""
+        if STATE_USER_SPEECH not in callback_context.state:
+            callback_context.state[STATE_USER_SPEECH] = []
+
         if speech_tool is None:
             return None
 

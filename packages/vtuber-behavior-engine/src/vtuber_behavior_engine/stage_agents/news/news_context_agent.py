@@ -19,13 +19,13 @@ from vtuber_behavior_engine.stage_agents.agent_constants import (
     STATE_CONVERSATION_CONTEXT,
     STATE_CURRENT_TIME,
     STATE_DISPLAY_MARKDOWN_TEXT,
+    STATE_USER_SPEECH,
 )
 from vtuber_behavior_engine.stage_agents.display_utils import to_grounding_markdown_text
 from vtuber_behavior_engine.stage_agents.news.news_agent_constants import (
     INITIAL_TOPIC_LLM_MODEL,
     UPDATE_TOPIC_LLM_MODEL,
     STATE_LATEST_NEWS,
-    STATE_USER_SPEECH,
 )
 from vtuber_behavior_engine.stage_agents.resources import (
     initial_news_context,
@@ -106,7 +106,7 @@ def create_update_news_context_agent(speech_tool: SpeechRecognitionTool) -> Base
         instruction=update_news_context(),
         description="Updates the conversation context based on history.",
         output_key=STATE_CONVERSATION_CONTEXT,
-        tools=[google_search, speech_tool],
+        tools=[google_search],
         disallow_transfer_to_parent=True,
         disallow_transfer_to_peers=True,
         before_agent_callback=get_user_speech,
