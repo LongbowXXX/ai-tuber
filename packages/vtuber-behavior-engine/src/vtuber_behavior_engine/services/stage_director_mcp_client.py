@@ -69,7 +69,7 @@ class StageDirectorMCPClient:
                 },
             )
         except Exception as e:
-            logger.error(f"Error in display_markdown_text: {e}")
+            logger.exception(f"Error in display_markdown_text: {e}")
         finally:
             logger.info("Finished displaying markdown text.")
 
