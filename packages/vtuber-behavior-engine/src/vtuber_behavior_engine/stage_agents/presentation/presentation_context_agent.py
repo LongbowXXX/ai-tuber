@@ -35,7 +35,9 @@ def create_initial_presentation_context_agent() -> BaseAgent:
     def provide_presentation(callback_context: CallbackContext) -> Optional[types.Content]:
         # presentation_json = how_to_use_ai_slides_json()
         presentation_json = logical_thinking_slides_json()
-        callback_context.state[STATE_PRESENTATION_ALL_DATA] = PresentationAll.model_validate_json(presentation_json)
+        callback_context.state[STATE_PRESENTATION_ALL_DATA] = PresentationAll.model_validate_json(
+            presentation_json
+        ).model_dump()
         logger.info(f"provide_presentation(): {presentation_json}")
         callback_context.state[STATE_CURRENT_TIME] = get_current_time()
         return None
