@@ -9,5 +9,6 @@ from vtuber_behavior_engine.stage_agents.news.news_root_agent_builder import bui
 root_agent = build_root_news_agent(
     AgentsConfig(
         max_iterations=20,
+        use_speech_recognition=False,
     )
 )
