@@ -87,6 +87,6 @@ def test_agents_config_validation() -> None:
     # 不正な型 (Pydantic が変換を試みるが、明らかに無理な場合はエラーになるはず)
     # bool フィールドに文字列を入れると Pydantic V2 では "true"/"false" などは変換されるが、
     # 全く関係ない文字列などはエラーになる可能性がある。
-    with pytest.raises(Exception):
+    with pytest.raises(ValidationError):
         # Pydantic のバリデーションエラーを期待
         AgentsConfig(use_speech_recognition={"invalid": "type"})  # type: ignore[arg-type, unused-ignore]
