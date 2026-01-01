@@ -32,7 +32,7 @@ async def main() -> None:
         # 3. エージェントを作成してツールを登録する方法については
         # agent_runner.py の run_agent_standalone() を参照してください
         # 例: agent = LlmAgent(
-        #   model="gemini-2.0-flash-exp",
+        #   model="gemini-3-flash-preview",
         #   instruction="...",
         #   tools=[speech_tool],
         # )

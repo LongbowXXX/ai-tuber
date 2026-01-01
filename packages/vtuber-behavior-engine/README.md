@@ -85,7 +85,7 @@ uv run python src/vtuber_behavior_engine/main.py
 ADK Web UI を使用して、ブラウザからエージェントをデバッグ・操作できます。
 
 ```bash
-adk web --port=8090 src/vtuber_behavior_engine
+uv run adk web --port=8090 src/vtuber_behavior_engine
 ```
 
 1. `http://localhost:8090/` にアクセス

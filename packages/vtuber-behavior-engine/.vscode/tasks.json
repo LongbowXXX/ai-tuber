@@ -1,0 +1,83 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Application",
+      "type": "shell",
+      "command": "uv run python src/vtuber_behavior_engine/main.py",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "ADK Web UI",
+      "type": "shell",
+      "command": "uv run adk web --port=8090 src/vtuber_behavior_engine",
+      "group": "none",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Format (black)",
+      "type": "shell",
+      "command": "uv run black .",
+      "group": "none",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint (flake8)",
+      "type": "shell",
+      "command": "uv run flake8",
+      "group": "none",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Type Check (mypy)",
+      "type": "shell",
+      "command": "uv run mypy .",
+      "group": "none",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Test (pytest)",
+      "type": "shell",
+      "command": "uv run pytest",
+      "group": "test",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Check All (Format, Lint, Type, Test)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Format (black)",
+        "Lint (flake8)",
+        "Type Check (mypy)",
+        "Test (pytest)"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}

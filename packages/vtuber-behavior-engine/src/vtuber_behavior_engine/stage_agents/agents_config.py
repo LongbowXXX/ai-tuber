@@ -7,3 +7,4 @@ from pydantic import BaseModel, Field
 
 class AgentsConfig(BaseModel):
     max_iterations: int = Field(default=5)
+    use_speech_recognition: bool = Field(default=True)

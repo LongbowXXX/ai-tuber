@@ -4,7 +4,7 @@
 #  http://opensource.org/licenses/mit-license.php
 
 from google.adk.agents import BaseAgent, LlmAgent
-from google.adk.tools import load_memory
+from google.adk.tools.load_memory_tool import load_memory
 
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     STATE_CONVERSATION_RECALL,

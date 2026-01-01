@@ -16,6 +16,10 @@ from vtuber_behavior_engine.stage_agents.agent_constants import (
     AGENT_SYSTEM_USER_ID,
     AGENT1_CHARACTER_ID,
     AGENT2_CHARACTER_ID,
+    STATE_CONVERSATION_CONTEXT,
+    STATE_CONVERSATION_RECALL,
+    STATE_CURRENT_TIME,
+    STATE_USER_SPEECH,
 )
 
 logger = logging.getLogger(__name__)
@@ -41,7 +45,14 @@ async def run_agent_standalone(agent: BaseAgent, initial_message: str) -> str:
         memory_service=memory_service,
     )
     session = await session_service.create_session(
-        state={}, app_name=AGENT_SYSTEM_AAP_NAME, user_id=AGENT_SYSTEM_USER_ID
+        state={
+            STATE_CONVERSATION_CONTEXT: "",
+            STATE_CONVERSATION_RECALL: "",
+            STATE_CURRENT_TIME: "",
+            STATE_USER_SPEECH: [],
+        },
+        app_name=AGENT_SYSTEM_AAP_NAME,
+        user_id=AGENT_SYSTEM_USER_ID,
     )
     logger.info(f"Running agent with session: '{session}'")
 

@@ -25,3 +25,21 @@
 
 - **プロンプトの分離**: プロンプトは Python コード内にハードコードせず、`src/.../resources/` 内の Markdown ファイルとして管理すること。
 - **ADK の活用**: エージェント間の通信や状態管理には Google ADK の仕組みを優先的に使用すること。
+
+## 修正後の確認
+
+コードを修正した後は、必ず以下のコマンドを実行して、Lint エラーやテストの失敗がないことを確認してください。
+
+```bash
+# フォーマット (black)
+uv run black .
+
+# リント (flake8)
+uv run flake8
+
+# 型チェック (mypy)
+uv run mypy .
+
+# テスト (pytest)
+uv run pytest
+```

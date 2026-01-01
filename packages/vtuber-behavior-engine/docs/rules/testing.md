@@ -23,6 +23,24 @@ uv run pytest tests/tests_vtuber_behavior_engine/test_speech_recognition_tool.py
 uv run pytest --cov=src
 ```
 
+## 修正後の検証
+
+コードの修正を行った際は、テストだけでなく静的解析も含めた全体チェックを行ってください。
+
+```bash
+# フォーマット (black)
+uv run black .
+
+# リント (flake8)
+uv run flake8
+
+# 型チェック (mypy)
+uv run mypy .
+
+# テスト (pytest)
+uv run pytest
+```
+
 ## テスト作成のガイドライン
 
 - **非同期テスト**: `pytest-asyncio` を使用し、`@pytest.mark.asyncio` デコレータを付与する。
