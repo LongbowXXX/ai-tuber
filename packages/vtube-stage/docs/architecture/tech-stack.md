@@ -20,6 +20,7 @@
 - **Emotion / Styled Components**: CSS-in-JS スタイリング。
 - **Axios**: TTS サービス等との HTTP 通信。
 - **class-validator / class-transformer**: 受信コマンドのバリデーションとクラス変換。
+- **React Markdown / Remark GFM**: 吹き出し内などのテキストレンダリング。
 
 ## 外部サービス・連携
 
