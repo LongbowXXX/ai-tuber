@@ -11,6 +11,7 @@ from vtuber_behavior_engine.services.speech_recognition import (
 )
 from vtuber_behavior_engine.stage_agents.agents_config import AgentsConfig
 from vtuber_behavior_engine.stage_agents.news.news_root_agent_builder import build_root_news_agent
+from pydantic import ValidationError
 
 
 @pytest.mark.asyncio
