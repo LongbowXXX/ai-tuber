@@ -1,4 +1,4 @@
-<!-- This document is generated and updated by .github/prompts/doc-sync.prompt.md -->
+<!-- このドキュメントは .github/prompts/doc-sync.prompt.md によって生成および更新されています -->
 
 # アーキテクチャ概要
 
@@ -18,6 +18,27 @@
   - **Speech Recognition**: Google Cloud Speech API を使用した音声入力処理。
   - **Stage Director MCP Client**: `stage-director` (MCP Server) と通信し、キャラクターの動作（発話、アニメーション）を指示。
   - **Memory Service**: ChromaDB を使用した長期・短期記憶の管理。
+
+## アーキテクチャ図
+
+```mermaid
+graph TD
+    User((ユーザー)) <--> Speech[Speech Recognition Service]
+    Speech --> Runner[Agent Runner]
+    Runner <--> ADK[Multi-Agent System / ADK]
+
+    subgraph Agents
+        ADK <--> Char[Character Agent]
+        ADK <--> News[News Agent]
+        ADK <--> Pres[Presentation Agent]
+        ADK <--> Context[Context Agent]
+    end
+
+    ADK <--> Memory[ChromaDB Memory Service]
+    ADK --> MCP[Stage Director MCP Client]
+    MCP --> Stage[Stage Director / MCP Server]
+    Stage --> VTuber((VTuber Character))
+```
 
 ## 設計方針
 
