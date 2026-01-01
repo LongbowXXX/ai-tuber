@@ -85,7 +85,9 @@ def build_root_agent(
             logger.info(f"Tools initialized and injected. Count: {len(tools)}")
             callback_context.state["is_tools_initialized"] = True
         except Exception as e:
-            logger.error(f"Failed to initialize tools: {e}")
+            # Log with traceback and propagate to avoid silent failures and repeated retries.
+            logger.exception(f"Failed to initialize tools: {e}")
+            raise
         return None
 
     root_agent = SequentialAgent(
