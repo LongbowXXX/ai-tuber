@@ -36,7 +36,7 @@ handoffs:
 
 以下のルールに違反するコードは拒否しなければなりません。
 
-- [Software Review Perspectives](../../knowledge/software-review-perspectives.md)
+- [Software Review Perspectives](../../knowledge/guidelines/software-review.md)
 
 ### 🚨 自己修正メカニズム
 
