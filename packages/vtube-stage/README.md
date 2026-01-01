@@ -8,7 +8,7 @@ AI V-Tuber システムのフロントエンドであり、VRM モデルの描�
 
 ## アーキテクチャにおける役割
 
-[アーキテクチャドキュメント](./agents-docs/architecture.md) で説明されているように、`vtube-stage` は以下の役割を担います:
+`vtube-stage` は以下の役割を担います:
 
 1.  VRM モデルの読み込みとレンダリング。
 2.  `stage-director` からの WebSocket コマンドを受信し、キャラクターの表情、ポーズ、視線をリアルタイムで更新。
@@ -46,7 +46,13 @@ AI V-Tuber システムのフロントエンドであり、VRM モデルの描�
 
 2. **環境変数の設定:**
 
-   必要に応じて `.env` ファイルを作成し、設定を追加します。
+   `.env` ファイルを作成し、以下の設定を追加します。
+
+   ```env
+   # Stage Director の WebSocket エンドポイント
+   # 注意: 変数名は DIRECTOR ではなく DIRECTER (E) です
+   VITE_STAGE_DIRECTER_ENDPOINT=ws://localhost:8000/ws
+   ```
 
 ## サービスの実行
 
@@ -82,17 +88,15 @@ npm run lint
 npm run format
 ```
 
-## 詳細ドキュメント
+## ドキュメント
 
-開発者向けの詳細なドキュメントは `agents-docs/` ディレクトリを参照してください:
+プロジェクトの詳細な仕様や設計については、以下のドキュメントを参照してください：
 
-- [アーキテクチャ](./agents-docs/architecture.md) - システム構成とコンポーネント設計
-- [ディレクトリ構造](./agents-docs/directory-structure.md) - ファイル配置ガイド
-- [技術スタック](./agents-docs/tech-stack.md) - 使用ライブラリと環境変数
-- [コーディング規約](./agents-docs/coding-conventions.md) - 命名規則とスタイルガイド
-- [主要フロー](./agents-docs/key-flows.md) - 処理フローの詳細
-- [制約と注意事項](./agents-docs/constraints-and-gotchas.md) - 既知の問題とトラブルシューティング
-- [テスト戦略](./agents-docs/testing.md) - テスト導入ガイド
+- [AGENTS.md](AGENTS.md) - AI エージェント向けプロジェクトマップ
+- [アーキテクチャ概要](docs/architecture/overview.md)
+- [ディレクトリ構造](docs/architecture/directory-structure.md)
+- [技術スタック](docs/architecture/tech-stack.md)
+- [用語集](docs/glossary.md)
 
 ## ライセンス
 

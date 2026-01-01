@@ -135,6 +135,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# GitHub Copilot Prompts - Junction managed
-# Only root .github/prompts/ is tracked, package junctions are ignored
-packages/*/.github/prompts/
+# Shared knowledge is linked into packages via junctions (do not track per-package view)
+/packages/*/knowledge/

@@ -65,25 +65,17 @@ graph LR
    cd ai-tuber
    ```
 
-2. **GitHub Copilot Prompts のセットアップ** (Windows):
-
-   ```powershell
-   .\setup-prompts-junctions.ps1
-   ```
-
-   詳細は [.github/PROMPTS_MANAGEMENT.md](.github/PROMPTS_MANAGEMENT.md) を参照。
-
-3. **VoiceVox のセットアップ**:
+2. **VoiceVox のセットアップ**:
    VoiceVox をインストールし、起動してください（デフォルトポート: 50021）。
 
-4. **各パッケージのセットアップ**:
+3. **各パッケージのセットアップ**:
    各ディレクトリ (`packages/*`) の `README.md` に従って、依存関係のインストールと環境変数の設定を行ってください。
 
    - `packages/stage-director`: `uv sync`
    - `packages/vtuber-behavior-engine`: `uv sync`
    - `packages/vtube-stage`: `npm install`
 
-5. **実行**:
+4. **実行**:
    以下の順序でコンポーネントを起動します。
 
    1. **VoiceVox**: アプリケーションを起動
@@ -100,13 +92,29 @@ graph LR
 │   ├── stage-director/         # Orchestration (MCP Server, WebSocket)
 │   └── vtube-stage/            # Frontend (React, Three.js)
 ├── docs/                       # Documentation
-│   ├── architecture.md         # Architecture details
+│   ├── architecture/           # Architecture details (Overview, Tech Stack, etc.)
+│   ├── rules/                  # Coding conventions and Testing
 │   └── ...
 ├── README.md                   # This file
 └── LICENSE                     # License
 ```
 
-詳細なアーキテクチャについては `docs/architecture.md` を参照してください。
+## ドキュメント (Documentation)
+
+詳細なドキュメントは `docs/` ディレクトリにあります。
+
+- **アーキテクチャ**:
+  - [アーキテクチャ概要](docs/architecture/overview.md)
+  - [ディレクトリ構成](docs/architecture/directory-structure.md)
+  - [技術スタック](docs/architecture/tech-stack.md)
+  - [主要フロー](docs/architecture/key-flows.md)
+  - [制約・落とし穴](docs/architecture/constraints.md)
+- **開発ルール**:
+  - [コーディング規約](docs/rules/coding-conventions.md)
+  - [テスト方針](docs/rules/testing.md)
+- **その他**:
+  - [用語集](docs/glossary.md)
+  - [MCP/ADK 解説](docs/mcp_adk_explanation.md)
 
 ## ライセンス (License)
 

@@ -9,7 +9,7 @@ MCP Server としてツールを提供し、AI エージェントがキャラク
 
 ## アーキテクチャにおける役割
 
-詳細は [アーキテクチャドキュメント](agents-docs/architecture.md) を参照してください。`stage-director` は以下の役割を担います:
+`stage-director` は以下の役割を担います:
 
 1. **MCP Server**: `vtuber-behavior-engine` に対して、以下のツールを提供します。
    - `speak`: キャラクターの発話と感情表現
@@ -34,17 +34,11 @@ MCP Server としてツールを提供し、AI エージェントがキャラク
 - **uvicorn**: ASGI サーバー
 - **pydantic**: データバリデーション
 
-詳細は [技術スタックと依存関係](agents-docs/tech-stack.md) を参照してください。
-
 ## ドキュメント
 
 - [セットアップガイド](SetupGuide.md) - VS Code + uv での開発環境構築
-- [アーキテクチャ概要](agents-docs/architecture.md) - システム設計と主要コンポーネント
-- [ディレクトリ構造](agents-docs/directory-structure.md) - ファイル配置と責務
-- [設計原則とコーディング規約](agents-docs/coding-conventions.md) - 開発ルール
-- [主要な機能フロー](agents-docs/key-flows.md) - ユースケースとシーケンス
-- [テスト戦略](agents-docs/testing.md) - テストの書き方と実行方法
-- [技術的制約と注意事項](agents-docs/constraints-and-gotchas.md) - 既知の問題とトラブルシューティング
+- [AGENTS.md](AGENTS.md) - AI エージェント向けの開発ガイド・コンテキスト
+- [docs/](docs/) - アーキテクチャ詳細、コーディング規約、用語集など
 
 ## 前提条件
 
@@ -53,14 +47,12 @@ MCP Server としてツールを提供し、AI エージェントがキャラク
 
 ## インストール
 
+詳細な手順については [セットアップガイド](SetupGuide.md) を参照してください。
+
 1. **`uv` を使用して仮想環境を作成します:**
 
    ```bash
    uv venv
-   # Windows
-   .venv\Scripts\activate
-   # Linux/macOS
-   source .venv/bin/activate
    ```
 
 2. **依存関係をインストールします:**
