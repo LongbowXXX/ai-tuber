@@ -89,7 +89,7 @@ speech_tool.start_recognition()
 
 # 3. エージェントにツールを登録
 agent = LlmAgent(
-    model="gemini-2.0-flash-exp",
+    model="gemini-3-flash-preview",
     system_instruction=(
         "あなたは音声認識アシスタントです。"
         "定期的に get_user_speech ツールでユーザー発話を確認してください。"

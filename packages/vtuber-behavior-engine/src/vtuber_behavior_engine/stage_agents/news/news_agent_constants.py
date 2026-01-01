@@ -7,5 +7,5 @@ STATE_LATEST_NEWS = "latest_news"
 STATE_USER_SPEECH = "user_speech"
 
 # INITIAL_TOPIC_LLM_MODEL = LiteLlm("ollama_chat/gemma3:27b")
-INITIAL_TOPIC_LLM_MODEL = "gemini-2.5-flash"
-UPDATE_TOPIC_LLM_MODEL = "gemini-2.5-flash"
+INITIAL_TOPIC_LLM_MODEL = "gemini-3-flash-preview"
+UPDATE_TOPIC_LLM_MODEL = "gemini-3-flash-preview"
