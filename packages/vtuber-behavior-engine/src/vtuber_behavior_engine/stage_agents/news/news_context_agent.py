@@ -9,7 +9,7 @@ from google.adk.agents import BaseAgent, LlmAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.models.llm_response import LlmResponse
 from google.adk.planners import BuiltInPlanner
-from google.adk.tools import google_search
+from google.adk.tools.google_search_tool import google_search
 from google.genai import types
 
 from vtuber_behavior_engine.services.current_time_provider import get_current_time

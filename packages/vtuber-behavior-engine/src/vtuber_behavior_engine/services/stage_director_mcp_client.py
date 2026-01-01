@@ -13,7 +13,8 @@ from collections.abc import Iterable
 from contextlib import AsyncExitStack
 from typing import cast
 
-from google.adk.tools import McpToolset, BaseTool
+from google.adk.tools.base_tool import BaseTool
+from google.adk.tools.mcp_tool.mcp_toolset import McpToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams, MCPSessionManager
 
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
@@ -34,6 +35,7 @@ class StageDirectorMCPClient:
         )
         toolset = McpToolset(
             connection_params=connection_params,
+            require_confirmation=False,
         )
         async_exit_stack.push_async_callback(toolset.close)
         mcp_session_manager = MCPSessionManager(
@@ -49,14 +51,17 @@ class StageDirectorMCPClient:
 
     async def load_tools(self) -> list[BaseTool]:
         logger.info("tools")
-        tools = await self._toolset.get_tools()
-        return list(cast(Iterable[BaseTool], tools))
+        try:
+            tools = await self._toolset.get_tools()
+            return list(cast(Iterable[BaseTool], tools))
+        except Exception as e:
+            logger.warning(f"Failed to load tools from MCP server: {e}. Running without MCP tools.")
+            return []
 
     async def display_markdown_text(self, text: str) -> None:
         logger.info(f"Displaying markdown text: {text}")
-        session = await self._mcp_session_manager.create_session()
-
         try:
+            session = await self._mcp_session_manager.create_session()
             await session.call_tool(
                 "display_markdown_text",
                 arguments={
@@ -64,7 +69,7 @@ class StageDirectorMCPClient:
                 },
             )
         except Exception as e:
-            logger.error(f"Error in display_markdown_text-call_tool: {e}", exc_info=True)
+            logger.error(f"Error in display_markdown_text: {e}")
         finally:
             logger.info("Finished displaying markdown text.")
 
@@ -84,7 +89,12 @@ class StageDirectorMCPClient:
         )
 
     async def speak_all(self, speech: AgentSpeech) -> None:
-        session = await self._mcp_session_manager.create_session()
+        try:
+            session = await self._mcp_session_manager.create_session()
+        except Exception as e:
+            logger.error(f"Failed to create MCP session for speaking: {e}")
+            return
+
         for item in speech.speeches:
             logger.info(f"Speaking {item.tts_text} with emotion {item.emotion}")
             try:
@@ -98,7 +108,7 @@ class StageDirectorMCPClient:
                     },
                 )
             except Exception as e:
-                logger.error(f"Error in speak_all-call_tool: {e}", exc_info=True)
+                logger.error(f"Error in speak_all-call_tool: {e}")
             finally:
                 logger.info(f"Finished speaking {item.tts_text} with emotion {item.emotion}")
 

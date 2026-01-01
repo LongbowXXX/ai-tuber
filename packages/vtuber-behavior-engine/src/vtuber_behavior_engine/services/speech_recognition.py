@@ -9,7 +9,7 @@ from types import TracebackType
 from typing import Generator, Optional, Iterable, Type
 
 import pyaudio
-from google.adk.tools import BaseTool
+from google.adk.tools.base_tool import BaseTool
 from google.cloud import speech
 
 logger = logging.getLogger(__name__)
