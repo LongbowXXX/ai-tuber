@@ -54,7 +54,7 @@ ai-tuber-system/
 | `packages/stage-director`         | 舞台監督（MCP/WS）    | `src/stage_director/main.py`, `stage_director_mcp_server.py`, `websocket_handler.py` |
 | `packages/vtuber-behavior-engine` | AI コア（ADK）        | `src/vtuber_behavior_engine/main.py`, `agent_runner.py`                              |
 | `packages/vtube-stage`            | 描画・TTS・表示       | `src/main.tsx`, `src/hooks/useWebSocket.ts`, `src/hooks/useStageCommandHandler.ts`   |
-| `docs`                            | 設計/運用ドキュメント | `architecture.md`, `mcp_adk_explanation.md`, `architecture/*`, `rules/*`             |
+| `docs`                            | 設計/運用ドキュメント | `mcp_adk_explanation.md`, `architecture/*`, `rules/*`                                |
 | `knowledge`                       | 開発プロセスの標準    | `workflows/workflow.md`, `templates/*`, `guidelines/*`                               |
 
 ## 4. 主要概念（ユビキタス言語）
@@ -134,7 +134,7 @@ uv run python src/vtuber_behavior_engine/main.py
 | Purpose                 | File                              |
 | ----------------------- | --------------------------------- |
 | Project Rules           | `.github/copilot-instructions.md` |
-| High-level Architecture | `docs/architecture.md`            |
+| High-level Architecture | `docs/architecture/overview.md`   |
 | MCP/ADK Explanation     | `docs/mcp_adk_explanation.md`     |
 | Generated Docs Index    | `docs/architecture/overview.md`   |
 
@@ -142,7 +142,6 @@ uv run python src/vtuber_behavior_engine/main.py
 
 詳細は以下を参照してください。
 
-- `docs/architecture.md`
 - `docs/mcp_adk_explanation.md`
 - `docs/architecture/overview.md`
 - `docs/architecture/directory-structure.md`

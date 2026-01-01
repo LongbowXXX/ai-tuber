@@ -1,4 +1,4 @@
-<!-- This document is generated and updated by .github/prompts/doc-sync.prompt.md -->
+<!-- このドキュメントは .github/prompts/doc-sync.prompt.md によって生成および更新されています -->
 
 # 用語集（Glossary）
 

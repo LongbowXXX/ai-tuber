@@ -1,4 +1,4 @@
-<!-- This document is generated and updated by .github/prompts/doc-sync.prompt.md -->
+<!-- このドキュメントは .github/prompts/doc-sync.prompt.md によって生成および更新されています -->
 
 # ディレクトリ構成
 
@@ -19,7 +19,6 @@ ai-tuber-system/
 │       ├── src/                   # hooks/components/services/types
 │       └── public/                # VRM/VRMA/設定 JSON（例: avatars.json）
 ├── docs/                          # プロジェクトドキュメント
-│   ├── architecture.md            # 既存: 全体アーキテクチャ説明
 │   ├── mcp_adk_explanation.md     # 既存: MCP/ADK 解説
 │   ├── architecture/              # 生成: アーキテクチャ分割ドキュメント
 │   └── rules/                     # 生成: ルール/規約
@@ -34,7 +33,7 @@ ai-tuber-system/
 | `packages/stage-director`         | MCP ツール提供 + WebSocket 配信      | `src/stage_director/main.py`, `stage_director_mcp_server.py`, `websocket_handler.py` |
 | `packages/vtuber-behavior-engine` | ADK エージェント実行、ツール呼び出し | `src/vtuber_behavior_engine/main.py`, `agent_runner.py`                              |
 | `packages/vtube-stage`            | VRM 描画、コマンド受信、TTS          | `src/main.tsx`, `src/hooks/useWebSocket.ts`, `src/hooks/useStageCommandHandler.ts`   |
-| `docs`                            | プロジェクト説明                     | `architecture.md`, `mcp_adk_explanation.md`                                          |
+| `docs`                            | プロジェクト説明                     | `architecture/overview.md`, `mcp_adk_explanation.md`                                 |
 | `knowledge`                       | 標準ワークフロー/テンプレ            | `knowledge/workflows/workflow.md`                                                    |
 
 ## 依存関係の方向（高レベル）

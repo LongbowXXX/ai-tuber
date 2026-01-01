@@ -1,52 +1,61 @@
-<!-- This document is generated and updated by .github/prompts/doc-sync.prompt.md -->
+<!-- このドキュメントは .github/prompts/doc-sync.prompt.md によって生成および更新されています -->
 
-# 技術スタック
+# 技術スタック (Tech Stack)
 
-## 全体
+## 1. 言語とランタイム
 
-| カテゴリ       | 技術                                      | 用途                                                            |
-| -------------- | ----------------------------------------- | --------------------------------------------------------------- |
-| 言語           | Python 3.11+                              | AI バックエンド（Behavior Engine / Stage Director）             |
-| 言語           | TypeScript (TS 5.7)                       | フロントエンド（vtube-stage）                                   |
-| フレームワーク | FastAPI (0.120.0)                         | stage-director の WebSocket/HTTP サーバー                       |
-| プロトコル     | WebSocket                                 | stage-director ↔ vtube-stage のリアルタイム制御                 |
-| プロトコル     | MCP (Model Context Protocol)              | vtuber-behavior-engine → stage-director のツール呼び出し（SSE） |
-| フレームワーク | Google ADK (>= 1.17.0)                    | vtuber-behavior-engine のマルチエージェント実行                 |
-| フロント       | React 19 / Vite 6                         | vtube-stage UI/ビルド                                           |
-| 3D             | Three.js (0.175) / @pixiv/three-vrm (3.4) | VRM モデル描画/制御                                             |
-| TTS            | VoiceVox                                  | 音声合成（HTTP API）                                            |
-| 配信           | OBS Studio                                | ウィンドウキャプチャ（現状 obs-websocket 制御は未実装）         |
+| カテゴリ       | 技術       | バージョン | 用途                              |
+| :------------- | :--------- | :--------- | :-------------------------------- |
+| **言語**       | Python     | >= 3.11    | AI バックエンド、舞台監督サーバー |
+| **言語**       | TypeScript | ~5.7       | フロントエンド (Stage)            |
+| **ランタイム** | Node.js    | >= 20.x    | フロントエンドビルド・実行        |
 
-## stage-director（Python）
+## 2. 主要フレームワークとライブラリ
 
-- サーバ: `uvicorn[standard]`, `fastapi`
-- MCP: `mcp`（FastMCP, SSE）
-- モデル: `pydantic`
-- 補助: `python-dotenv`, `websockets`
+### 2.1. AI Backend (`vtuber-behavior-engine`)
 
-## vtuber-behavior-engine（Python）
+| ライブラリ              | バージョン | 用途                                     |
+| :---------------------- | :--------- | :--------------------------------------- |
+| **Google ADK**          | >= 1.17.0  | マルチエージェントオーケストレーション   |
+| **google-genai**        | -          | Gemini API クライアント                  |
+| **mcp**                 | -          | MCP Client (Stage Director との通信)     |
+| **chromadb**            | -          | ベクトルデータベース (長期記憶/知識検索) |
+| **google-cloud-speech** | -          | 音声認識 (STT)                           |
 
-- エージェント: `google-adk`
-- LLM クライアント: `google-genai`（Gemini）
-- 音声認識: `google-cloud-speech`, `pyaudio`
-- MCP Client: `mcp`
-- メモリ/検索: `chromadb`
+### 2.2. Stage Director (`stage-director`)
 
-## vtube-stage（TypeScript）
+| ライブラリ   | バージョン | 用途                    |
+| :----------- | :--------- | :---------------------- |
+| **FastAPI**  | 0.120.0    | WebSocket/HTTP サーバー |
+| **FastMCP**  | >= 1.19.0  | MCP Server (SSE) 実装   |
+| **Pydantic** | 2.x        | データバリデーション    |
+| **Uvicorn**  | -          | ASGI サーバー           |
 
-- UI: `react`, `react-dom`
-- 3D: `three`, `@react-three/fiber`, `@react-three/drei`, `@pixiv/three-vrm`
-- Markdown: `react-markdown`, `remark-gfm`
-- HTTP: `axios`
-- 検証: `class-validator`, `class-transformer`, `reflect-metadata`
-- 品質: `eslint`, `prettier`, `typescript-eslint`
+### 2.3. VTube Stage (`vtube-stage`)
 
-## ビルド/実行ツール
+| ライブラリ           | バージョン | 用途                         |
+| :------------------- | :--------- | :--------------------------- |
+| **React**            | 19.x       | UI フレームワーク            |
+| **Vite**             | 6.x        | ビルドツール / 開発サーバー  |
+| **Three.js**         | ^0.175     | 3D レンダリングエンジン      |
+| **@pixiv/three-vrm** | ^3.4       | VRM モデル制御               |
+| **react-markdown**   | -          | Markdown テキスト表示        |
+| **class-validator**  | -          | 受信コマンドのバリデーション |
 
-- Python: `uv`（README で `uv sync`, `uv run` を使用）
-- Node: `npm`（`npm install`, `npm run dev/build/lint/format`）
+## 3. 通信プロトコル
 
-## テスト
+- **MCP (Model Context Protocol)**: AI (`vtuber-behavior-engine`) から舞台監督 (`stage-director`) へのツール呼び出しに使用。SSE (Server-Sent Events) 経由。
+- **WebSocket**: 舞台監督 (`stage-director`) から配信ステージ (`vtube-stage`) へのリアルタイム演出コマンド送信に使用。
+- **HTTP/JSON**: TTS (VoiceVox) 連携や、一部のメタデータ取得に使用。
 
-- Python: `pytest`, `pytest-asyncio`, `pytest-cov`
-- TypeScript:（現状テストフレームワークは依存に含まれていない。品質は eslint/prettier 中心）
+## 4. 外部サービス・ツール
+
+- **VoiceVox**: 音声合成 (TTS) エンジン。HTTP API 経由で利用。
+- **OBS Studio**: 配信ソフトウェア。`vtube-stage` の画面をウィンドウキャプチャして配信。
+- **Gemini API**: LLM (Large Language Model) エンジン。
+
+## 5. 開発・ビルドツール
+
+- **uv**: Python のパッケージ管理・実行ツール。
+- **npm**: Node.js のパッケージ管理ツール。
+- **ESLint / Prettier**: コード品質管理とフォーマット。

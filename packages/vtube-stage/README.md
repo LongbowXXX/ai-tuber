@@ -46,7 +46,13 @@ AI V-Tuber システムのフロントエンドであり、VRM モデルの描�
 
 2. **環境変数の設定:**
 
-   必要に応じて `.env` ファイルを作成し、設定を追加します。
+   `.env` ファイルを作成し、以下の設定を追加します。
+
+   ```env
+   # Stage Director の WebSocket エンドポイント
+   # 注意: 変数名は DIRECTOR ではなく DIRECTER (E) です
+   VITE_STAGE_DIRECTER_ENDPOINT=ws://localhost:8000/ws
+   ```
 
 ## サービスの実行
 

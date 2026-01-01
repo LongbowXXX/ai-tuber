@@ -92,13 +92,29 @@ graph LR
 │   ├── stage-director/         # Orchestration (MCP Server, WebSocket)
 │   └── vtube-stage/            # Frontend (React, Three.js)
 ├── docs/                       # Documentation
-│   ├── architecture.md         # Architecture details
+│   ├── architecture/           # Architecture details (Overview, Tech Stack, etc.)
+│   ├── rules/                  # Coding conventions and Testing
 │   └── ...
 ├── README.md                   # This file
 └── LICENSE                     # License
 ```
 
-詳細なアーキテクチャについては `docs/architecture.md` を参照してください。
+## ドキュメント (Documentation)
+
+詳細なドキュメントは `docs/` ディレクトリにあります。
+
+- **アーキテクチャ**:
+  - [アーキテクチャ概要](docs/architecture/overview.md)
+  - [ディレクトリ構成](docs/architecture/directory-structure.md)
+  - [技術スタック](docs/architecture/tech-stack.md)
+  - [主要フロー](docs/architecture/key-flows.md)
+  - [制約・落とし穴](docs/architecture/constraints.md)
+- **開発ルール**:
+  - [コーディング規約](docs/rules/coding-conventions.md)
+  - [テスト方針](docs/rules/testing.md)
+- **その他**:
+  - [用語集](docs/glossary.md)
+  - [MCP/ADK 解説](docs/mcp_adk_explanation.md)
 
 ## ライセンス (License)
 

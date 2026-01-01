@@ -9,7 +9,7 @@ MCP (Model Context Protocol) Client として `stage-director` に接続し、�
 
 ## アーキテクチャにおける役割
 
-メインの [アーキテクチャドキュメント](../../docs/architecture.md) で説明されているように、`vtuber-behavior-engine` は以下の役割を担います:
+メインの [アーキテクチャ概要](../../docs/architecture/overview.md) で説明されているように、`vtuber-behavior-engine` は以下の役割を担います:
 
 1. **マルチエージェントシステム**: 役割の異なる複数のエージェント（キャラクター、ニュース、プレゼンテーションなど）を協調動作させます。
 2. **MCP Client**: `stage-director` の MCP Server に接続し、以下のツールを使用してキャラクターを制御します。
