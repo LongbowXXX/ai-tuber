@@ -15,7 +15,7 @@
     {
       "label": "ADK Web UI",
       "type": "shell",
-      "command": "adk web --port=8090 src/vtuber_behavior_engine",
+      "command": "uv run adk web --port=8090 src/vtuber_behavior_engine",
       "group": "none",
       "isBackground": true,
       "presentation": {
