@@ -43,10 +43,10 @@ vtube-stage/
 
 ### 主要ディレクトリ
 
-| ディレクトリ     | 用途                      | 主要ファイル                                  |
-| :--------------- | :------------------------ | :-------------------------------------------- |
-| `src/components` | UI および 3D オブジェクト | `VRMAvatar.tsx`, `SceneContent.tsx`           |
-| `src/hooks`      | ビジネスロジック          | `useStageCommandHandler.ts`, `useVrmModel.ts` |
+| ディレクトリ     | 用途                      | 主要ファイル                                                     |
+| :--------------- | :------------------------ | :--------------------------------------------------------------- |
+| `src/components` | UI および 3D オブジェクト | `VRMAvatar.tsx`, `SceneContent.tsx`                              |
+| `src/hooks`      | ビジネスロジック          | `useStageCommandHandler.ts`, `useVrmModel.ts`, `useWebSocket.ts` |
 
 ## 4. 主要概念 (ユビキタス言語)
 
