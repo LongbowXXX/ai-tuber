@@ -8,7 +8,10 @@ from contextlib import AsyncExitStack
 
 from google.adk.agents import BaseAgent
 
-from vtuber_behavior_engine.services.speech_recognition import SpeechRecognitionTool
+from vtuber_behavior_engine.services.speech_recognition import (
+    SpeechRecognitionTool,
+    DummySpeechRecognitionTool,
+)
 from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
 from vtuber_behavior_engine.stage_agents.agent_builder import build_root_agent
 from vtuber_behavior_engine.stage_agents.agents_config import AgentsConfig
@@ -26,8 +29,15 @@ async def build_root_news_agent(agent_config: AgentsConfig) -> tuple[BaseAgent, 
     stage_director_client = await StageDirectorMCPClient.create_async(exit_stack)
     exit_stack.callback(lambda: logger.info("build_root_news_agent(): exit_stack closed."))
 
-    # 音声認識ツールを初期化して開始
-    speech_tool = SpeechRecognitionTool()
+    # 音声認識ツールの初期化
+    if agent_config.use_speech_recognition:
+        logger.info("Speech recognition is enabled.")
+        speech_tool = SpeechRecognitionTool()
+    else:
+        logger.info("Speech recognition is disabled. Using DummySpeechRecognitionTool.")
+        speech_tool = DummySpeechRecognitionTool()
+
+    # 音声認識を開始
     speech_tool.start_recognition()
     exit_stack.callback(speech_tool.stop_recognition)
 

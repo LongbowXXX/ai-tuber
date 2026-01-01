@@ -225,3 +225,26 @@ class SpeechRecognitionTool(BaseTool):
             self._manager = None
         else:
             logger.warning("[SpeechRecognitionTool] 音声認識は既に停止しています。")
+
+
+class DummySpeechRecognitionTool(SpeechRecognitionTool):
+    """
+    音声認識を行わないダミーツール。
+    マイクの初期化や Google STT への接続を行わず、常に空の発話を返す。
+    """
+
+    def __init__(self) -> None:
+        super().__init__()
+        logger.info("[DummySpeechRecognitionTool] 初期化完了")
+
+    async def __call__(self) -> dict[str, list[str]]:
+        """常に空の発話リストを返す"""
+        return {"transcripts": []}
+
+    def start_recognition(self) -> None:
+        """何もしない"""
+        logger.info("[DummySpeechRecognitionTool] start_recognition() が呼ばれましたが、何もしません。")
+
+    def stop_recognition(self) -> None:
+        """何もしない"""
+        logger.info("[DummySpeechRecognitionTool] stop_recognition() が呼ばれましたが、何もしません。")
