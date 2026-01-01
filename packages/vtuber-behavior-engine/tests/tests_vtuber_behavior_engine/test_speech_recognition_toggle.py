@@ -34,7 +34,7 @@ async def test_build_root_news_agent_with_speech_disabled() -> None:
 
     # StageDirectorMCPClient.create_async をモック
     with patch(
-        "vtuber_behavior_engine.stage_agents.news.news_root_agent_builder.StageDirectorMCPClient.create_async"
+        "vtuber_behavior_engine.stage_agents.news.news_root_agent_builder.StageDirectorMCPClient.create"
     ) as mock_create:
         mock_client = AsyncMock()
         mock_client.load_tools.return_value = []
@@ -44,17 +44,15 @@ async def test_build_root_news_agent_with_speech_disabled() -> None:
         with patch(
             "vtuber_behavior_engine.stage_agents.news.news_root_agent_builder.SpeechRecognitionTool"
         ) as mock_real_tool:
-            result = await build_root_news_agent(config)
+
+            result = build_root_news_agent(config)
             assert result is not None
-            agent, exit_stack = result
+            agent = result
 
             assert agent is not None
-            assert exit_stack is not None
 
             # Real tool は呼ばれていないはず
             mock_real_tool.assert_not_called()
-
-            await exit_stack.aclose()
 
 
 @pytest.mark.asyncio
@@ -63,7 +61,7 @@ async def test_build_root_news_agent_with_speech_enabled_default() -> None:
     config = AgentsConfig()  # default use_speech_recognition=True
 
     with patch(
-        "vtuber_behavior_engine.stage_agents.news.news_root_agent_builder.StageDirectorMCPClient.create_async"
+        "vtuber_behavior_engine.stage_agents.news.news_root_agent_builder.StageDirectorMCPClient.create"
     ) as mock_create:
         mock_client = AsyncMock()
         mock_client.load_tools.return_value = []
@@ -71,15 +69,13 @@ async def test_build_root_news_agent_with_speech_enabled_default() -> None:
 
         # SpeechRecognitionTool の初期化でマイクが動かないようにモック
         with patch("vtuber_behavior_engine.services.speech_recognition.SpeechRecognitionManager") as mock_manager:
-            result = await build_root_news_agent(config)
+            result = build_root_news_agent(config)
             assert result is not None
-            agent, exit_stack = result
+            agent = result
 
             assert agent is not None
             # Manager が作成されているはず
             mock_manager.assert_called_once()
-
-            await exit_stack.aclose()
 
 
 def test_agents_config_validation() -> None:

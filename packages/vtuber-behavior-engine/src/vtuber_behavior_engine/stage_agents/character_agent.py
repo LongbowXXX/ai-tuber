@@ -69,7 +69,7 @@ def create_character_agent(
     return agent
 
 
-async def create_character_output_agent(character_id: str, stage_director_client: StageDirectorMCPClient) -> BaseAgent:
+def create_character_output_agent(character_id: str, stage_director_client: StageDirectorMCPClient) -> BaseAgent:
     async def handle_speech(callback_context: CallbackContext) -> Optional[types.Content]:
         markdown_text = callback_context.state[STATE_DISPLAY_MARKDOWN_TEXT]
 
@@ -84,8 +84,8 @@ async def create_character_output_agent(character_id: str, stage_director_client
             callback_context.state[STATE_AGENT_SPEECH_BASE + character_id] = None
             return None
 
-    all_tools = await stage_director_client.load_tools()
-    tools = list(filter(lambda tool: tool.name == "trigger_animation", all_tools))
+    # Tools will be loaded lazily by the root agent initializer
+    tools: list[ToolUnion] = []
     agent = LlmAgent(
         model=OUTPUT_LLM_MODEL,
         name=f"CharacterOutput_{character_id}",

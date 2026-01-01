@@ -4,7 +4,7 @@
 #  http://opensource.org/licenses/mit-license.php
 import asyncio
 import logging
-from contextlib import AsyncExitStack
+
 
 from dotenv import load_dotenv
 
@@ -18,19 +18,14 @@ logger = logging.getLogger(__name__)
 async def main() -> None:
     from vtuber_behavior_engine.news_agent.agent import root_agent
 
-    exit_stack: AsyncExitStack | None = None
-    try:
-        agent_tuple = await root_agent
-        if agent_tuple is None:
-            logger.error("Failed to create root agent.")
-            raise Exception("Failed to create root agent.")
-        character_agent, exit_stack = agent_tuple
-        # initial message
-        message = initial_message()
-        await run_agent_standalone(character_agent, message)
-    finally:
-        if exit_stack is not None:
-            await exit_stack.aclose()
+    character_agent = root_agent
+    if character_agent is None:
+        logger.error("Failed to create root agent.")
+        raise Exception("Failed to create root agent.")
+
+    # initial message
+    message = initial_message()
+    await run_agent_standalone(character_agent, message)
 
 
 if __name__ == "__main__":

@@ -23,10 +23,10 @@ from vtuber_behavior_engine.stage_agents.news.news_context_agent import (
 logger = logging.getLogger(__name__)
 
 
-async def build_root_news_agent(agent_config: AgentsConfig) -> tuple[BaseAgent, AsyncExitStack] | None:
+def build_root_news_agent(agent_config: AgentsConfig) -> BaseAgent | None:
     logger.info(f"Building root agent. agent_config={agent_config}")
     exit_stack = AsyncExitStack()
-    stage_director_client = await StageDirectorMCPClient.create_async(exit_stack)
+    stage_director_client = StageDirectorMCPClient.create(exit_stack)
     exit_stack.callback(lambda: logger.info("build_root_news_agent(): exit_stack closed."))
 
     # 音声認識ツールの初期化
@@ -44,10 +44,10 @@ async def build_root_news_agent(agent_config: AgentsConfig) -> tuple[BaseAgent, 
     try:
         initial_context_agent = create_initial_news_context_agent()
         update_context_agent = create_update_news_context_agent(speech_tool)
-        character_agent = await build_root_agent(
-            initial_context_agent, update_context_agent, stage_director_client, agent_config, speech_tool
+        character_agent = build_root_agent(
+            initial_context_agent, update_context_agent, stage_director_client, agent_config, exit_stack, speech_tool
         )
-        return character_agent, exit_stack
+        return character_agent
     except Exception as e:
         logger.error(f"Error building root agent: {e}", exc_info=e)
         raise

@@ -25,8 +25,8 @@ STAGE_DIRECTOR_MCP_SERVER_URL = os.getenv("STAGE_DIRECTOR_MCP_SERVER_URL")
 
 class StageDirectorMCPClient:
     @classmethod
-    async def create_async(cls, async_exit_stack: AsyncExitStack) -> "StageDirectorMCPClient":
-        logger.info("create_async")
+    def create(cls, async_exit_stack: AsyncExitStack) -> "StageDirectorMCPClient":
+        logger.info("create")
         if not STAGE_DIRECTOR_MCP_SERVER_URL:
             logger.error("STAGE_DIRECTOR_MCP_SERVER_URL is not set.")
             raise ValueError("STAGE_DIRECTOR_MCP_SERVER_URL is not set.")

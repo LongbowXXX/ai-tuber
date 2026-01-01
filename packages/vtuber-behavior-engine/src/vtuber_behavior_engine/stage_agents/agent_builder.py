@@ -10,6 +10,7 @@ from google.adk.agents import LoopAgent, SequentialAgent, BaseAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.genai import types
 
+from contextlib import AsyncExitStack
 from vtuber_behavior_engine.services.speech_recognition import SpeechRecognitionTool
 from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
 from vtuber_behavior_engine.stage_agents.agent_constants import (
@@ -29,19 +30,20 @@ from vtuber_behavior_engine.stage_agents.resources import (
 logger = logging.getLogger(__name__)
 
 
-async def build_root_agent(
+def build_root_agent(
     initial_context_agent: BaseAgent,
     update_context_agent: BaseAgent,
     stage_director_client: StageDirectorMCPClient,
     agent_config: AgentsConfig,
+    exit_stack: AsyncExitStack,
     speech_tool: Optional[SpeechRecognitionTool] = None,
 ) -> BaseAgent:
     logger.info(f"Creating root agent. agent_config={agent_config}")
     agent1_thought = create_character_agent(AGENT1_CHARACTER_ID, character1(), speech_tool)
     agent2_thought = create_character_agent(AGENT2_CHARACTER_ID, character2(), speech_tool)
 
-    agent1_output = await create_character_output_agent(AGENT1_CHARACTER_ID, stage_director_client)
-    agent2_output = await create_character_output_agent(AGENT2_CHARACTER_ID, stage_director_client)
+    agent1_output = create_character_output_agent(AGENT1_CHARACTER_ID, stage_director_client)
+    agent2_output = create_character_output_agent(AGENT2_CHARACTER_ID, stage_director_client)
 
     recall_conversation_agent = create_conversation_recall_agent()
 
@@ -62,6 +64,28 @@ async def build_root_agent(
     async def teardown_root_agent(callback_context: CallbackContext) -> Optional[types.Content]:
         logger.debug(f"teardown_root_agent {callback_context.state}")
         await stage_director_client.wait_for_current_speak_end()
+        await exit_stack.aclose()
+        return None
+
+    async def initialize_tools(callback_context: CallbackContext) -> Optional[types.Content]:
+        if callback_context.state.get("is_tools_initialized"):
+            return None
+        logger.info("Initializing tools...")
+        try:
+            all_tools = await stage_director_client.load_tools()
+            tools = list(filter(lambda tool: tool.name == "trigger_animation", all_tools))
+
+            # Inject tools into output agents
+            # Note: We assume LlmAgent exposes a 'tools' attribute that can be updated.
+            if hasattr(agent1_output, "tools"):
+                agent1_output.tools = tools
+            if hasattr(agent2_output, "tools"):
+                agent2_output.tools = tools
+
+            logger.info(f"Tools initialized and injected. Count: {len(tools)}")
+            callback_context.state["is_tools_initialized"] = True
+        except Exception as e:
+            logger.error(f"Failed to initialize tools: {e}")
         return None
 
     root_agent = SequentialAgent(
@@ -71,6 +95,7 @@ async def build_root_agent(
             agent_conversation_loop,
         ],
         description="Manages the conversation flow with multiple agents.",
+        before_agent_callback=initialize_tools,
         after_agent_callback=teardown_root_agent,
     )
     logger.info(f"Root agent created: {root_agent}")
