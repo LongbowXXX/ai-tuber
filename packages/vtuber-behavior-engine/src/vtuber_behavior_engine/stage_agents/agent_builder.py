@@ -4,10 +4,11 @@
 #  http://opensource.org/licenses/mit-license.php
 
 import logging
-from typing import Optional
+from typing import Optional, cast
 
 from google.adk.agents import LoopAgent, SequentialAgent, BaseAgent
 from google.adk.agents.callback_context import CallbackContext
+from google.adk.agents.llm_agent import ToolUnion
 from google.genai import types
 
 from contextlib import AsyncExitStack
@@ -76,11 +77,8 @@ def build_root_agent(
             tools = list(filter(lambda tool: tool.name == "trigger_animation", all_tools))
 
             # Inject tools into output agents
-            # Note: We assume LlmAgent exposes a 'tools' attribute that can be updated.
-            if hasattr(agent1_output, "tools"):
-                agent1_output.tools = tools
-            if hasattr(agent2_output, "tools"):
-                agent2_output.tools = tools
+            agent1_output.tools = cast(list[ToolUnion], tools)
+            agent2_output.tools = cast(list[ToolUnion], tools)
 
             logger.info(f"Tools initialized and injected. Count: {len(tools)}")
             callback_context.state["is_tools_initialized"] = True

@@ -69,7 +69,7 @@ def create_character_agent(
     return agent
 
 
-def create_character_output_agent(character_id: str, stage_director_client: StageDirectorMCPClient) -> BaseAgent:
+def create_character_output_agent(character_id: str, stage_director_client: StageDirectorMCPClient) -> LlmAgent:
     async def handle_speech(callback_context: CallbackContext) -> Optional[types.Content]:
         markdown_text = callback_context.state[STATE_DISPLAY_MARKDOWN_TEXT]
 
