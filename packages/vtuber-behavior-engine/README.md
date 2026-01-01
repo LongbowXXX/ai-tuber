@@ -9,7 +9,7 @@ MCP (Model Context Protocol) Client として `stage-director` に接続し、�
 
 ## アーキテクチャにおける役割
 
-メインの [アーキテクチャ概要](../../docs/architecture/overview.md) で説明されているように、`vtuber-behavior-engine` は以下の役割を担います:
+メインの [アーキテクチャ概要](docs/architecture/overview.md) で説明されているように、`vtuber-behavior-engine` は以下の役割を担います:
 
 1. **マルチエージェントシステム**: 役割の異なる複数のエージェント（キャラクター、ニュース、プレゼンテーションなど）を協調動作させます。
 2. **MCP Client**: `stage-director` の MCP Server に接続し、以下のツールを使用してキャラクターを制御します。
@@ -98,6 +98,19 @@ adk web --port=8090 src/vtuber_behavior_engine
 
 - `resources/presentation/slides` にある JSON ファイルをスライドとして読み込みます。
 - `resources/presentation/create_presentation_slides_json_template.md` のプロンプトを使用して、LLM で新しいスライド JSON を生成できます。
+
+## ドキュメント
+
+詳細については、以下のドキュメントを参照してください。
+
+- [アーキテクチャ概要](docs/architecture/overview.md)
+- [ディレクトリ構造](docs/architecture/directory-structure.md)
+- [技術スタック](docs/architecture/tech-stack.md)
+- [主要なフロー](docs/architecture/key-flows.md)
+- [制約事項](docs/architecture/constraints.md)
+- [コーディング規約](docs/rules/coding-conventions.md)
+- [テスト](docs/rules/testing.md)
+- [用語集](docs/glossary.md)
 
 ## 開発
 
