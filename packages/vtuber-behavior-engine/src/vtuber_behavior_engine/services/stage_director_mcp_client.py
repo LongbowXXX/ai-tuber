@@ -108,7 +108,7 @@ class StageDirectorMCPClient:
                     },
                 )
             except Exception as e:
-                logger.error(f"Error in speak_all-call_tool: {e}")
+                logger.exception(f"Error in speak_all-call_tool: {e}")
             finally:
                 logger.info(f"Finished speaking {item.tts_text} with emotion {item.emotion}")
 
