@@ -22,14 +22,14 @@
 ## テンプレ例
 
 ```markdown
-## 2. Iterative Configuration (Loop)
+## 2. 反復的設定（ループ）
 
-**DO NOT** generate the full file immediately. You must propose items **one at a time** to avoid overwhelming the user.
+フルファイルをすぐに生成しては **いけません（DO NOT）**。ユーザーを圧倒しないよう、項目を **1 つずつ** 提案しなければなりません。
 
-1.  **Pick an Item**: Select one setting or task to propose.
-2.  **Propose**: Ask the user: "I recommend adding [Setting X] because [Reason]. Do you agree?"
-3.  **Wait**: Wait for user confirmation.
-4.  **Repeat**: Continue to the next item.
+1.  **項目を選択（Pick an Item）**: 提案する設定またはタスクを 1 つ選択する。
+2.  **提案（Propose）**: ユーザーに尋ねる: 「[理由] のため、[設定 X] を追加することを推奨します。よろしいですか？」
+3.  **待機（Wait）**: ユーザーの確認を待つ。
+4.  **繰り返す（Repeat）**: 次の項目へ進む。
 ```
 
 ## 利点

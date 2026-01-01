@@ -16,12 +16,12 @@
 ## テンプレ例
 
 ```markdown
-## Source Analysis
+## ソース分析（Source Analysis）
 
 **並列検索**戦略を実行する:
 
-1. Identify key domain terms.
-2. Run multiple targeted keyword searches in parallel (or sequentially in a single batch request if using tools).
+1. 主要なドメイン用語を特定する。
+2. 複数のターゲットキーワード検索を並列（またはツールを使用している場合は単一のバッチリクエストで逐次的）に実行する。
 3. 最初の結果で止めず、結論を出す前に包括的な根拠を収集する。
 ```
 

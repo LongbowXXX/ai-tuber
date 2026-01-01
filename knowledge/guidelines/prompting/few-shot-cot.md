@@ -17,15 +17,15 @@
 
 ```xml
 <example_thinking>
-User asked: "Refactor the login function."
+ユーザーの質問: "login 関数をリファクタリングして。"
 
-1.  **Analyze**: I see the `login` function in `auth.ts`. It uses a callback pattern.
-2.  **Critique**: Callbacks are outdated. I should use async/await.
-3.  **Safety Check**: Are there any existing tests? Yes, `auth.test.ts`. I must ensure they pass.
-4.  **Plan**:
-    - Update signature to return Promise.
-    - Wrap legacy code.
-    - Update tests.
+1.  **分析（Analyze）**: `auth.ts` に `login` 関数がある。コールバックパターンを使っている。
+2.  **批判（Critique）**: コールバックは古い。async/await を使うべきだ。
+3.  **安全性チェック（Safety Check）**: 既存のテストはあるか？ はい、`auth.test.ts` がある。これらが通ることを確認しなければならない。
+4.  **計画（Plan）**:
+    - シグネチャを Promise を返すように更新する。
+    - レガシーコードをラップする。
+    - テストを更新する。
 </example_thinking>
 ```
 

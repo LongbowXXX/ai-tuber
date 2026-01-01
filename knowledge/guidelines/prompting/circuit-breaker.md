@@ -19,13 +19,13 @@
 ## テンプレ例
 
 ```markdown
-## ⛔ Stop Condition
+## ⛔ 停止条件
 
 **3 回の試行**の後でも根本原因を特定できない場合、または修正が未検証の仮定を必要とする場合:
 
-1.  **STOP** execution.
-2.  **Report** your findings and what you have tried so far.
-3.  **Ask** the user for further guidance or more information.
+1.  実行を **停止（STOP）** してください。
+2.  これまでの調査結果と試行した内容を **報告（Report）** してください。
+3.  さらなるガイダンスや詳細情報について、ユーザーに **質問（Ask）** してください。
 ```
 
 ## 利点

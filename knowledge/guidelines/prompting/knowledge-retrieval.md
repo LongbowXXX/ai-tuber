@@ -19,14 +19,14 @@ Copilot の学習データにはカットオフがあるため、VS Code Copilot
 ## テンプレ例
 
 ```markdown
-## 🚨 PREREQUISITE: Knowledge Retrieval
+## 🚨 前提条件: 知識取得（Knowledge Retrieval）
 
-**Before generating or updating, you MUST:**
+**生成または更新を行う前に、必ず以下を行わなければなりません（MUST）:**
 
-1.  **Fetch Latest Docs**:
-    - `https://code.visualstudio.com/docs/copilot/customization/prompt-files` (for prompt file structure).
-    - `https://code.visualstudio.com/docs/copilot/reference/copilot-vscode-features#_chat-tools` (for available tools).
-    - `https://code.visualstudio.com/docs/copilot/customization/custom-agents` (for custom agent structure).
+1.  **最新ドキュメントの取得（Fetch Latest Docs）**:
+    - `https://code.visualstudio.com/docs/copilot/customization/prompt-files` (プロンプトファイルの構造について)。
+    - `https://code.visualstudio.com/docs/copilot/reference/copilot-vscode-features#_chat-tools` (利用可能なツールについて)。
+    - `https://code.visualstudio.com/docs/copilot/customization/custom-agents` (カスタムエージェントの構造について)。
 ```
 
 ## 利点
