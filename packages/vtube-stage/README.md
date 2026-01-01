@@ -88,6 +88,16 @@ npm run lint
 npm run format
 ```
 
+## ドキュメント
+
+プロジェクトの詳細な仕様や設計については、以下のドキュメントを参照してください：
+
+- [AGENTS.md](AGENTS.md) - AI エージェント向けプロジェクトマップ
+- [アーキテクチャ概要](docs/architecture/overview.md)
+- [ディレクトリ構造](docs/architecture/directory-structure.md)
+- [技術スタック](docs/architecture/tech-stack.md)
+- [用語集](docs/glossary.md)
+
 ## ライセンス
 
 このプロジェクトは MIT ライセンスの下でライセンスされています。
