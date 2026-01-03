@@ -66,7 +66,7 @@ export function useStageCommandHandler() {
             ...prevScene,
             camera: {
               mode: command.payload.mode,
-              targetId: command.payload.characterId,
+              targetId: command.payload.targetId,
               duration: command.payload.duration,
               timestamp: Date.now(),
             },
