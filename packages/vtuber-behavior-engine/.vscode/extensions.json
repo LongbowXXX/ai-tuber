@@ -7,6 +7,7 @@
         "ms-python.flake8",
         "ms-python.mypy-type-checker",
         "github.vscode-pull-request-github",
-        "github.vscode-github-actions"
+        "github.vscode-github-actions",
+        "redhat.vscode-xml"
     ]
 }

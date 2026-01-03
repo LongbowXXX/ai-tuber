@@ -48,11 +48,11 @@ def logical_thinking_slides_json() -> str:
 
 
 def character1() -> str:
-    return Path(__file__, "../resources/characters/character1.md").resolve().read_text(encoding="utf-8")
+    return Path(__file__, "../resources/characters/character1.xml").resolve().read_text(encoding="utf-8")
 
 
 def character2() -> str:
-    return Path(__file__, "../resources/characters/character2.md").resolve().read_text(encoding="utf-8")
+    return Path(__file__, "../resources/characters/character2.xml").resolve().read_text(encoding="utf-8")
 
 
 def character_prompt(character_id: str, character_detail: str) -> str:
