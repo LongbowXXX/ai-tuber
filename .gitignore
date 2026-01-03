@@ -137,3 +137,6 @@ dist
 
 # Shared knowledge is linked into packages via junctions (do not track per-package view)
 /packages/*/knowledge/
+
+# Ignore ADK files in stage agents
+packages/vtuber-behavior-engine/src/vtuber_behavior_engine/*_agent/.adk/*
