@@ -7,6 +7,7 @@ import {
   SpeakCommand, // Add SpeakCommand
   StageCommand,
   TriggerAnimationCommand,
+  ControlCameraCommand,
 } from '../types/command';
 
 // コマンドクラスのマッピング
@@ -16,6 +17,7 @@ const commandRegistry: { [key: string]: ClassConstructor<StageCommand> } = {
   triggerAnimation: TriggerAnimationCommand,
   speak: SpeakCommand,
   displayMarkdown: DisplayMarkdownCommand,
+  controlCamera: ControlCameraCommand,
 };
 
 /**

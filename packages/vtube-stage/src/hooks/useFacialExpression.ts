@@ -37,7 +37,7 @@ export function useFacialExpression(vrm: VRM | null, currentEmotion: string, isV
     // ON時: 一定間隔で口形状を切り替え
     idxRef.current = 0;
     vrm.expressionManager?.setValue(LIPSYNC_MOUTH_LIST[0], 0.8);
-    intervalRef.current = setInterval(() => {
+    intervalRef.current = window.setInterval(() => {
       // 全て0に
       LIPSYNC_MOUTH_LIST.forEach(name => {
         vrm.expressionManager?.setValue(name, 0);

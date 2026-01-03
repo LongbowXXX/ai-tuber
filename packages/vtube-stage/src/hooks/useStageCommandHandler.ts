@@ -11,7 +11,9 @@ export function useStageCommandHandler() {
   const [stage, setStage] = useState<StageState>({
     // currentMarkdownText:
     //   '### Grounding Web Sites\n- sourceA\n  - url\n### Grounding Web Search Queries\n- hoge\n- fuga',
+    //   '### Grounding Web Sites\n- sourceA\n  - url\n### Grounding Web Search Queries\n- hoge\n- fuga',
     currentMarkdownText: null,
+    camera: null,
   });
 
   const handleWebSocketMessage = useCallback(async (data: unknown) => {
@@ -57,6 +59,18 @@ export function useStageCommandHandler() {
               return a;
             })
           );
+          break;
+        case 'controlCamera':
+          console.log(`Received controlCamera: Mode=${command.payload.mode}`);
+          setStage(prevScene => ({
+            ...prevScene,
+            camera: {
+              mode: command.payload.mode,
+              targetId: command.payload.characterId,
+              duration: command.payload.duration,
+              timestamp: Date.now(),
+            },
+          }));
           break;
         case 'displayMarkdown':
           console.log(`Received displayMarkdown: ${command.payload.text}`);

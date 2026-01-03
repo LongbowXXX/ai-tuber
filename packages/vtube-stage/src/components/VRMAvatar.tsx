@@ -112,7 +112,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
           currentMixer.addEventListener('finished', onFinished);
 
           // 3秒後にidleへ強制遷移
-          animationTimeoutRef.current = setTimeout(() => {
+          animationTimeoutRef.current = window.setTimeout(() => {
             if (currentAction.current === newAction && currentAnimationName !== 'idle') {
               if (currentAction.current) {
                 currentAction.current.fadeOut(ANIMATION_FADE_DURATION);

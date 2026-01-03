@@ -117,10 +117,6 @@ const CameraInit: React.FC = () => {
 };
 
 const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, lastMessage, isConnected }) => {
-  // OrbitControls有効化のためのフラグ
-  const [cameraAnimated, setCameraAnimated] = React.useState(false);
-  // カメラアニメーション開始トリガー
-  const [startCameraAnimation, setStartCameraAnimation] = React.useState(false);
   // Startボタンを押したかどうか
   const [started, setStarted] = React.useState(false);
   // 各アバターのロード完了IDを管理
@@ -131,19 +127,8 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, lastM
     setLoadedAvatarIds(prev => (prev.includes(id) ? prev : [...prev, id]));
   }, []);
 
-  // 全員ロード完了でカメラアニメーション開始
+  // 全員ロード完了
   const allLoaded = avatars.length > 0 && loadedAvatarIds.length === avatars.length;
-
-  // 全員ロード完了でカメラアニメーション開始（ディレイ付き）
-  React.useEffect(() => {
-    if (allLoaded && started && !startCameraAnimation && !cameraAnimated) {
-      setStartCameraAnimation(true);
-    }
-    // allLoadedやstartedがfalseになったらリセット
-    if (!allLoaded || !started) {
-      setStartCameraAnimation(false);
-    }
-  }, [allLoaded, started, startCameraAnimation, cameraAnimated]);
 
   return (
     <Root>
@@ -151,13 +136,34 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, lastM
       <CanvasArea>
         <Canvas camera={{ position: [0, 5, 10], fov: 50 }} shadows>
           {/* CameraInitコンポーネントを追加 */}
+          {/* CameraInitコンポーネントを追加 (初期化時のみ) */}
           <CameraInit />
-          {/* AnimatedCameraは常にマウントし、内部でアニメーション状態を管理 */}
-          <AnimatedCamera
-            active={allLoaded && startCameraAnimation && !cameraAnimated}
-            onFinish={() => setCameraAnimated(true)}
-          />
-          <SceneContent avatars={avatars} controlsEnabled={cameraAnimated} onAvatarLoad={handleAvatarLoad} />
+
+          {/* AnimatedCamera: stage.camera に基づいて制御 */}
+          {(() => {
+            // カメラ状態の構築
+            let cameraState = null;
+            if (stage.camera) {
+              let targetPos: [number, number, number] | undefined = undefined;
+              if (stage.camera.targetId) {
+                const targetAvatar = avatars.find(a => a.id === stage.camera!.targetId);
+                if (targetAvatar) {
+                  targetPos = targetAvatar.position;
+                }
+              }
+              cameraState = {
+                mode: stage.camera.mode,
+                targetId: stage.camera.targetId,
+                targetPosition: targetPos,
+                duration: stage.camera.duration,
+                timestamp: stage.camera.timestamp,
+              };
+            }
+
+            return <AnimatedCamera cameraState={cameraState} />;
+          })()}
+
+          <SceneContent avatars={avatars} controlsEnabled={true} onAvatarLoad={handleAvatarLoad} />
         </Canvas>
         {/* Markdown Overlay */}
         {stage.currentMarkdownText && (

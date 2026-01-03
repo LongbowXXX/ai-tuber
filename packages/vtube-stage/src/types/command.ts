@@ -111,10 +111,32 @@ export class DisplayMarkdownCommand extends BaseCommand<'displayMarkdown', Displ
   declare payload: DisplayMarkdownPayload;
 }
 
+// controlCamera コマンドのペイロードクラス
+export class ControlCameraPayload {
+  @IsString()
+  @IsDefined()
+  mode!: 'default' | 'intro' | 'closeUp';
+
+  @IsString()
+  characterId?: string; // closeUpモード時のターゲットID
+
+  @IsDefined()
+  duration!: number;
+}
+export class ControlCameraCommand extends BaseCommand<'controlCamera', ControlCameraPayload> {
+  declare command: 'controlCamera';
+
+  @ValidateNested()
+  @Type(() => ControlCameraPayload)
+  @IsDefined()
+  declare payload: ControlCameraPayload;
+}
+
 // 受け取る可能性のある全てのコマンドの Union 型 (クラスの Union に変更)
 export type StageCommand =
   | LogMessageCommand
   | SetPoseCommand
   | TriggerAnimationCommand
   | SpeakCommand
-  | DisplayMarkdownCommand;
+  | DisplayMarkdownCommand
+  | ControlCameraCommand;
