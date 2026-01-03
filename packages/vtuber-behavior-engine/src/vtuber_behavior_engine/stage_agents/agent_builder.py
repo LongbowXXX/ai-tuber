@@ -74,7 +74,12 @@ def build_root_agent(
         logger.info("Initializing tools...")
         try:
             all_tools = await stage_director_client.load_tools()
-            tools = list(filter(lambda tool: tool.name == "trigger_animation", all_tools))
+            tools = list(
+                filter(
+                    lambda tool: tool.name in ["trigger_animation", "control_camera"],
+                    all_tools,
+                )
+            )
 
             # Inject tools into output agents
             agent1_output.tools = cast(list[ToolUnion], tools)
