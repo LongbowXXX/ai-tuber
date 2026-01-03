@@ -146,9 +146,25 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, lastM
             if (stage.camera) {
               let targetPos: [number, number, number] | undefined = undefined;
               if (stage.camera.targetId) {
-                const targetAvatar = avatars.find(a => a.id === stage.camera!.targetId);
+                // IDマッチング: 完全一致 -> "avatarX" == "targetId"
+                // または "CharacterX" -> "avatarX" のようなマッピング、あるいは数値部分の一致など
+                // 現状: "Character1" が来るが、アバターIDは "avatar1"
+                let targetAvatar = avatars.find(a => a.id === stage.camera!.targetId);
+
+                if (!targetAvatar) {
+                  // Fallback: CharacterX -> avatarX の変換を試みる
+                  // 数値を抽出して、avatar + 数値 で検索
+                  const match = stage.camera!.targetId!.match(/\d+$/);
+                  if (match) {
+                    const num = match[0];
+                    targetAvatar = avatars.find(a => a.id === `avatar${num}`);
+                  }
+                }
+
                 if (targetAvatar) {
                   targetPos = targetAvatar.position;
+                } else {
+                  console.warn(`Camera target not found: ${stage.camera.targetId}`);
                 }
               }
               cameraState = {
