@@ -27,3 +27,21 @@
 ## Pydantic の利用
 
 - 外部からの入力および WebSocket で送信するデータには Pydantic モデルを使用し、バリデーションを強制する。
+
+## 修正後の確認
+
+コードを修正した後は、必ず以下のコマンドを実行して、Lint エラーやテストの失敗がないことを確認してください。
+
+```bash
+# フォーマット (black)
+uv run black .
+
+# リント (flake8)
+uv run flake8
+
+# 型チェック (mypy)
+uv run mypy .
+
+# テスト (pytest)
+uv run pytest
+```

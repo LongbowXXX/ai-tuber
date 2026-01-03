@@ -49,11 +49,24 @@ class DisplayMarkdownTextCommand(BaseModel):
     payload: DisplayMarkdownTextPayload
 
 
+# --- New Camera Control Models ---
+class ControlCameraPayload(BaseModel):
+    mode: str
+    targetId: str = ""
+    duration: float = 1.0
+
+
+class ControlCameraCommand(BaseModel):
+    command: Literal["controlCamera"] = "controlCamera"
+    payload: ControlCameraPayload
+
+
 StageCommand = Union[
     TriggerAnimationCommand,
     SpeakCommand,
     SpeakEndCommand,
     DisplayMarkdownTextCommand,
+    ControlCameraCommand,
 ]
 
 
