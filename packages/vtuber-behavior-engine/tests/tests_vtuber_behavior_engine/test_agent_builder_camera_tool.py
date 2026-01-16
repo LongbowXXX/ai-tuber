@@ -1,4 +1,5 @@
 from unittest.mock import MagicMock, AsyncMock
+import inspect
 
 import pytest
 from google.adk.tools.base_tool import BaseTool
@@ -55,7 +56,16 @@ async def test_agent_builder_includes_camera_tool() -> None:
     callback_context.state = {}
 
     # Run the initialization
-    await root_agent.before_agent_callback(callback_context)
+    if root_agent.before_agent_callback:
+        callbacks = (
+            root_agent.before_agent_callback
+            if isinstance(root_agent.before_agent_callback, list)
+            else [root_agent.before_agent_callback]
+        )
+        for callback in callbacks:
+            res = callback(callback_context)
+            if inspect.isawaitable(res):
+                await res
 
     # access the sub-agents to verify tool injection
     # Implementation detail: root agent is SequentialAgent, sub_agents[1] is LoopAgent
