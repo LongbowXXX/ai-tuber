@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Chip, Select, MenuItem, FormControl, InputLabel, Button, Box } from '@mui/material';
+import { Typography, Chip, Select, MenuItem, FormControl, InputLabel, Button, Box, TextField } from '@mui/material';
 import styled from 'styled-components';
 import { VRMController } from './VRMController';
 import { AvatarState } from '../types/avatar_types';
@@ -72,6 +72,38 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
     }));
   };
 
+  // 吹き出しコントロール用ローカル状態
+  const [speechText, setSpeechText] = React.useState<string>('');
+  const [speechTargetId, setSpeechTargetId] = React.useState<string>('');
+
+  // アバターリストが更新されたらデフォルトターゲットを設定
+  React.useEffect(() => {
+    if (avatars.length > 0 && !speechTargetId) {
+      setSpeechTargetId(avatars[0].id);
+    }
+  }, [avatars, speechTargetId]);
+
+  // 吹き出し表示
+  const handleSpeak = () => {
+    if (!speechTargetId || !speechText) return;
+
+    setAvatars(prevAvatars =>
+      prevAvatars.map(avatar => {
+        if (avatar.id === speechTargetId) {
+          return {
+            ...avatar,
+            speechText: {
+              id: Date.now().toString(),
+              text: speechText,
+              caption: speechText,
+            },
+          };
+        }
+        return avatar;
+      })
+    );
+  };
+
   return (
     <SidebarContainer>
       <Typography variant="h6" component="h3">
@@ -136,6 +168,43 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
               ? `${stage.camera.mode}${stage.camera.targetId ? ` → ${stage.camera.targetId}` : ''}`
               : 'None'}
           </Typography>
+        </Box>
+      </CameraControlBox>
+
+      {/* Speech Controls */}
+      <CameraControlBox>
+        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
+          Speech Controls
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+          <FormControl size="small" fullWidth>
+            <InputLabel id="speech-target-label">Target Avatar</InputLabel>
+            <Select
+              labelId="speech-target-label"
+              value={speechTargetId}
+              label="Target Avatar"
+              onChange={e => setSpeechTargetId(e.target.value)}
+            >
+              {avatars.map(avatar => (
+                <MenuItem key={avatar.id} value={avatar.id}>
+                  {avatar.id}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            label="Bubble Text"
+            variant="outlined"
+            size="small"
+            fullWidth
+            multiline
+            rows={2}
+            value={speechText}
+            onChange={e => setSpeechText(e.target.value)}
+          />
+          <Button variant="contained" size="small" color="secondary" onClick={handleSpeak}>
+            Speak
+          </Button>
         </Box>
       </CameraControlBox>
 
