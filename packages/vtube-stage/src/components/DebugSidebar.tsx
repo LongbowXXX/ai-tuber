@@ -104,6 +104,19 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
     );
   };
 
+  // Markdownコントロール用ローカル状態
+  const [markdownText, setMarkdownText] = React.useState<string>(
+    '# Hello\n- item 1 long long long long long long long long long long long long long long long long long long long long long long text.\n- item 2\n## Subtitle\n- item 1\n- item 2\n- item 3\n- item 4\n- item 5\n- item 6\n- item 7\n- item 8\n- item 9\n- item 10\n- item 11\n- item 12\n- item 13\n- item 14\n- item 15\n- item 16\n- item 17\n- item 18\n- item 19\n- item 20\n- item 21\n- item 22\n- item 23\n- item 24\n- item 25\n- item 26\n- item 27\n- item 28\n- item 29\n- item 30'
+  );
+
+  const handleShowMarkdown = () => {
+    setStage(prev => ({ ...prev, currentMarkdownText: markdownText }));
+  };
+
+  const handleHideMarkdown = () => {
+    setStage(prev => ({ ...prev, currentMarkdownText: null }));
+  };
+
   return (
     <SidebarContainer>
       <Typography variant="h6" component="h3">
@@ -205,6 +218,33 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
           <Button variant="contained" size="small" color="secondary" onClick={handleSpeak}>
             Speak
           </Button>
+        </Box>
+      </CameraControlBox>
+
+      {/* Markdown Controls */}
+      <CameraControlBox>
+        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
+          Markdown Controls
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+          <TextField
+            label="Markdown Text"
+            variant="outlined"
+            size="small"
+            fullWidth
+            multiline
+            rows={4}
+            value={markdownText}
+            onChange={e => setMarkdownText(e.target.value)}
+          />
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button variant="contained" size="small" fullWidth onClick={handleShowMarkdown}>
+              Show
+            </Button>
+            <Button variant="outlined" size="small" fullWidth onClick={handleHideMarkdown}>
+              Hide
+            </Button>
+          </Box>
         </Box>
       </CameraControlBox>
 
