@@ -47,11 +47,11 @@ const LoadingOverlay = styled.div`
   color: #333;
 `;
 
-const MarkdownOverlay = styled.div`
+const MarkdownOverlay = styled.div<{ isCloseUp?: boolean }>`
   position: absolute;
   bottom: 2%;
-  left: 50%;
-  transform: translateX(-50%);
+  left: ${props => (props.isCloseUp ? '20px' : '50%')};
+  transform: ${props => (props.isCloseUp ? 'none' : 'translateX(-50%)')};
   background: rgba(0, 80, 0, 0.7);
   color: white;
   a:link { color: white; }
@@ -60,12 +60,13 @@ const MarkdownOverlay = styled.div`
   a:active { color: white; }
   padding: 8px;
   border-radius: 8px;
-  max-width: 80%;
+  max-width: ${props => (props.isCloseUp ? '40%' : '80%')};
   max-height: 80%;
   text-align: left;
   font-size: 1.0rem;
   line-height: 1.1;
   overflow-y: auto;
+  transition: all 0.3s ease; // スムーズな移動アニメーション
 `;
 
 const CameraInit: React.FC = () => {
@@ -98,12 +99,15 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, setSt
   const [loadedAvatarIds, setLoadedAvatarIds] = React.useState<string[]>([]);
 
   // アバターのonLoadコールバック
-  const handleAvatarLoad = React.useCallback((id: string) => {
-    setLoadedAvatarIds(prev => (prev.includes(id) ? prev : [...prev, id]));
-  }, []);
+  const handleAvatarLoad = (id: string) => {
+    setLoadedAvatarIds(prev => {
+      if (prev.includes(id)) return prev;
+      return [...prev, id];
+    });
+  };
 
   // 全員ロード完了
-  const allLoaded = avatars.length > 0 && loadedAvatarIds.length === avatars.length;
+  const allLoaded = loadedAvatarIds.length === avatars.length && avatars.length > 0;
 
   return (
     <Root>
@@ -161,7 +165,7 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, setSt
         </Canvas>
         {/* Markdown Overlay */}
         {stage.currentMarkdownText && (
-          <MarkdownOverlay>
+          <MarkdownOverlay isCloseUp={stage.camera?.mode === 'closeUp'}>
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{stage.currentMarkdownText}</ReactMarkdown>
           </MarkdownOverlay>
         )}
