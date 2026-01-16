@@ -1,5 +1,5 @@
 import { useThree, useFrame } from '@react-three/fiber';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 
@@ -43,12 +43,12 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
   const lastTimestampRef = useRef<number>(0);
 
   // OrbitControls への参照を取得
-  const getOrbitControls = (): OrbitControlsImpl | null => {
+  const getOrbitControls = useCallback((): OrbitControlsImpl | null => {
     if (controls && controls instanceof OrbitControlsImpl) {
       return controls;
     }
     return null;
-  };
+  }, [controls]);
 
   // カメラ状態が更新されたらアニメーション開始
   useEffect(() => {
@@ -131,7 +131,7 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
 
     startTimeRef.current = null; // 次のフレームで開始時刻設定
     setAnimating(true);
-  }, [cameraState, camera, controls]);
+  }, [cameraState, camera, getOrbitControls]);
 
   useFrame(() => {
     if (!animating) return;
