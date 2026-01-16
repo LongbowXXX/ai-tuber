@@ -158,6 +158,7 @@ export function useStageCommandHandler() {
     avatars,
     setAvatars,
     stage,
+    setStage,
     lastMessage,
     isConnected,
   };

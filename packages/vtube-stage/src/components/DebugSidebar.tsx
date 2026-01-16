@@ -1,12 +1,15 @@
 import React from 'react';
-import { Typography, Chip } from '@mui/material';
+import { Typography, Chip, Select, MenuItem, FormControl, InputLabel, Button, Box } from '@mui/material';
 import styled from 'styled-components';
 import { VRMController } from './VRMController';
 import { AvatarState } from '../types/avatar_types';
+import { StageState } from '../types/scene_types';
 
 interface DebugSidebarProps {
   avatars: AvatarState[];
   setAvatars: React.Dispatch<React.SetStateAction<AvatarState[]>>;
+  stage: StageState;
+  setStage: React.Dispatch<React.SetStateAction<StageState>>;
   lastMessage: unknown;
   isConnected: boolean;
 }
@@ -37,7 +40,38 @@ const LastMessagePaper = styled.div`
   border-radius: 4px;
 `;
 
-export const DebugSidebar: React.FC<DebugSidebarProps> = ({ avatars, setAvatars, lastMessage, isConnected }) => {
+const CameraControlBox = styled.div`
+  padding: 12px;
+  background: #f0f4f8;
+  border: 1px solid #d0d8e0;
+  border-radius: 8px;
+`;
+
+export const DebugSidebar: React.FC<DebugSidebarProps> = ({
+  avatars,
+  setAvatars,
+  stage,
+  setStage,
+  lastMessage,
+  isConnected,
+}) => {
+  // カメラコントロール用ローカル状態
+  const [cameraMode, setCameraMode] = React.useState<'default' | 'intro' | 'closeUp'>('default');
+  const [targetId, setTargetId] = React.useState<string>('');
+
+  // カメラ位置変更を適用
+  const handleApplyCamera = () => {
+    setStage(prevStage => ({
+      ...prevStage,
+      camera: {
+        mode: cameraMode,
+        targetId: cameraMode === 'closeUp' ? targetId : undefined,
+        duration: 1, // 秒単位
+        timestamp: Date.now(),
+      },
+    }));
+  };
+
   return (
     <SidebarContainer>
       <Typography variant="h6" component="h3">
@@ -55,6 +89,55 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({ avatars, setAvatars,
           size="small"
         />
       </StatusBox>
+
+      {/* Camera Controls */}
+      <CameraControlBox>
+        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
+          Camera Controls
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+          <FormControl size="small" fullWidth>
+            <InputLabel id="camera-mode-label">Mode</InputLabel>
+            <Select
+              labelId="camera-mode-label"
+              value={cameraMode}
+              label="Mode"
+              onChange={e => setCameraMode(e.target.value as 'default' | 'intro' | 'closeUp')}
+            >
+              <MenuItem value="default">Default</MenuItem>
+              <MenuItem value="intro">Intro</MenuItem>
+              <MenuItem value="closeUp">Close Up</MenuItem>
+            </Select>
+          </FormControl>
+          {cameraMode === 'closeUp' && (
+            <FormControl size="small" fullWidth>
+              <InputLabel id="target-id-label">Target</InputLabel>
+              <Select
+                labelId="target-id-label"
+                value={targetId}
+                label="Target"
+                onChange={e => setTargetId(e.target.value)}
+              >
+                {avatars.map(avatar => (
+                  <MenuItem key={avatar.id} value={avatar.id}>
+                    {avatar.id}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+          <Button variant="contained" size="small" onClick={handleApplyCamera}>
+            Apply Camera
+          </Button>
+          {/* 現在のカメラ状態表示 */}
+          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            Current:{' '}
+            {stage.camera
+              ? `${stage.camera.mode}${stage.camera.targetId ? ` → ${stage.camera.targetId}` : ''}`
+              : 'None'}
+          </Typography>
+        </Box>
+      </CameraControlBox>
 
       {/* Last Received Message */}
       <LastMessageBox>

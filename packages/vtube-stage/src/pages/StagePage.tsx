@@ -15,6 +15,7 @@ interface StagePageProps {
   avatars: AvatarState[];
   setAvatars: React.Dispatch<React.SetStateAction<AvatarState[]>>;
   stage: StageState;
+  setStage: React.Dispatch<React.SetStateAction<StageState>>;
   lastMessage: unknown;
   isConnected: boolean;
 }
@@ -90,7 +91,7 @@ const CameraInit: React.FC = () => {
   return null;
 };
 
-const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, lastMessage, isConnected }) => {
+const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, setStage, lastMessage, isConnected }) => {
   // Startボタンを押したかどうか
   const [started, setStarted] = React.useState(false);
   // 各アバターのロード完了IDを管理
@@ -186,7 +187,14 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, lastM
       </CanvasArea>
       {/* Controller/Sidebar Area */}
       {import.meta.env.VITE_DEBUG_SIDEBAR === 'true' && (
-        <DebugSidebar avatars={avatars} setAvatars={setAvatars} lastMessage={lastMessage} isConnected={isConnected} />
+        <DebugSidebar
+          avatars={avatars}
+          setAvatars={setAvatars}
+          stage={stage}
+          setStage={setStage}
+          lastMessage={lastMessage}
+          isConnected={isConnected}
+        />
       )}
     </Root>
   );
