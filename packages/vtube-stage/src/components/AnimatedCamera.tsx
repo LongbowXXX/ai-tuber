@@ -14,7 +14,7 @@ const DEFAULT_FOV = 50;
 const INTRO_START_POS = new THREE.Vector3(0, 5, 10);
 
 // CloseUp 設定
-const CLOSEUP_FOV = 35; // ズームイン時のFOV（狭い = ズーム）
+const CLOSEUP_FOV = 40; // ズームイン時のFOV（狭い = ズーム）
 
 interface CameraState {
   mode: string;
@@ -102,13 +102,13 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
         if (cameraState.targetPosition) {
           const [tx, ty, tz] = cameraState.targetPosition;
 
-          // キャラの顔の高さ（Y=1.4m程度と仮定）
-          const faceHeight = ty + 1.4;
+          // キャラの顔の高さ（顔の中心あたり Y=1.25〜1.3m程度と仮定）
+          const faceHeight = ty + 1.25;
 
           // カメラ位置: ターゲットの正面に移動（少し離れた位置）
           // Z軸正方向がカメラ側と仮定
-          targetPosRef.current.set(tx, faceHeight, tz + 1.2);
-          targetLookAtRef.current.set(tx, faceHeight - 0.05, tz); // 少し下を見て顔全体を捉える
+          targetPosRef.current.set(tx, faceHeight, tz + 1.5);
+          targetLookAtRef.current.set(tx, faceHeight, tz); // 顔の高さを直接見る
 
           // ズームイン（FOVを狭くする）
           targetFovRef.current = CLOSEUP_FOV;
