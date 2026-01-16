@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsString, ValidateNested, IsDefined, IsOptional } from 'class-validator';
+import { IsString, ValidateNested, IsDefined, IsOptional, IsNumber } from 'class-validator';
 
 // 基本的なコマンド構造 (クラスに変更)
 export class BaseCommand<T extends string, P> {
@@ -121,8 +121,9 @@ export class ControlCameraPayload {
   @IsOptional()
   targetId?: string; // closeUpモード時のターゲットID
 
-  @IsDefined()
-  duration!: number;
+  @IsOptional()
+  @IsNumber()
+  duration?: number;
 }
 export class ControlCameraCommand extends BaseCommand<'controlCamera', ControlCameraPayload> {
   declare command: 'controlCamera';

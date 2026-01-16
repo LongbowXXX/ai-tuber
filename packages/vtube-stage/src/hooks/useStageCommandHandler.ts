@@ -11,7 +11,7 @@ export function useStageCommandHandler() {
   const [stage, setStage] = useState<StageState>({
     // currentMarkdownText:
     //   '### Grounding Web Sites\n- sourceA\n  - url\n### Grounding Web Search Queries\n- hoge\n- fuga',
-    //   '### Grounding Web Sites\n- sourceA\n  - url\n### Grounding Web Search Queries\n- hoge\n- fuga',
+
     currentMarkdownText: null,
     camera: null,
   });

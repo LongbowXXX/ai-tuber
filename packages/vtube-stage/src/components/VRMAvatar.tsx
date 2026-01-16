@@ -210,7 +210,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   return isLoaded && vrmRef.current ? (
     <primitive object={gltf.scene} position={position} dispose={null}>
       {/* Add SpeechBubble as a child, positioned relative to the avatar */}
-      {/* Add SpeechBubble as a child, positioned relative to the avatar */}
+
       {bubbleText && <SpeechBubble message={bubbleText} position={[0, height || 1.8, 0]} />}
     </primitive>
   ) : null;

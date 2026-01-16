@@ -109,57 +109,48 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, setSt
   // 全員ロード完了
   const allLoaded = loadedAvatarIds.length === avatars.length && avatars.length > 0;
 
+  const cameraState = React.useMemo(() => {
+    if (!stage.camera) return null;
+    let targetPos: [number, number, number] | undefined = undefined;
+    let targetAvatar: AvatarState | undefined = undefined;
+
+    if (stage.camera.targetId) {
+      targetAvatar = avatars.find(a => a.id === stage.camera!.targetId);
+
+      if (!targetAvatar) {
+        const match = stage.camera!.targetId!.match(/\d+$/);
+        if (match) {
+          const num = match[0];
+          targetAvatar = avatars.find(a => a.id === `avatar${num}`);
+        }
+      }
+
+      if (targetAvatar) {
+        targetPos = targetAvatar.position;
+      } else {
+        console.warn(`Camera target not found: ${stage.camera.targetId}`);
+      }
+    }
+    return {
+      mode: stage.camera.mode,
+      targetId: stage.camera.targetId,
+      targetPosition: targetPos,
+      targetHeight: targetAvatar?.height,
+      duration: stage.camera.duration,
+      timestamp: stage.camera.timestamp,
+    };
+  }, [stage.camera, avatars]);
+
   return (
     <Root>
       {/* Canvas Area */}
       <CanvasArea>
         <Canvas camera={{ position: [0, 1.2, 3], fov: 50 }} shadows>
-          {/* CameraInitコンポーネントを追加 */}
           {/* CameraInitコンポーネントを追加 (初期化時のみ) */}
           <CameraInit />
 
           {/* AnimatedCamera: stage.camera に基づいて制御 */}
-          {(() => {
-            // カメラ状態の構築
-            let cameraState = null;
-            if (stage.camera) {
-              let targetPos: [number, number, number] | undefined = undefined;
-              let targetAvatar: AvatarState | undefined = undefined; // Declare outside
-
-              if (stage.camera.targetId) {
-                // IDマッチング: 完全一致 -> "avatarX" == "targetId"
-                // または "CharacterX" -> "avatarX" のようなマッピング、あるいは数値部分の一致など
-                // 現状: "Character1" が来るが、アバターIDは "avatar1"
-                targetAvatar = avatars.find(a => a.id === stage.camera!.targetId);
-
-                if (!targetAvatar) {
-                  // Fallback: CharacterX -> avatarX の変換を試みる
-                  // 数値を抽出して、avatar + 数値 で検索
-                  const match = stage.camera!.targetId!.match(/\d+$/);
-                  if (match) {
-                    const num = match[0];
-                    targetAvatar = avatars.find(a => a.id === `avatar${num}`);
-                  }
-                }
-
-                if (targetAvatar) {
-                  targetPos = targetAvatar.position;
-                } else {
-                  console.warn(`Camera target not found: ${stage.camera.targetId}`);
-                }
-              }
-              cameraState = {
-                mode: stage.camera.mode,
-                targetId: stage.camera.targetId,
-                targetPosition: targetPos,
-                targetHeight: targetAvatar?.height, // アバターの身長を渡す
-                duration: stage.camera.duration,
-                timestamp: stage.camera.timestamp,
-              };
-            }
-
-            return <AnimatedCamera cameraState={cameraState} />;
-          })()}
+          <AnimatedCamera cameraState={cameraState} />
 
           <SceneContent avatars={avatars} controlsEnabled={true} onAvatarLoad={handleAvatarLoad} />
         </Canvas>
