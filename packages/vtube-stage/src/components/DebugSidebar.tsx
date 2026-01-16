@@ -40,7 +40,7 @@ const LastMessagePaper = styled.div`
   border-radius: 4px;
 `;
 
-const CameraControlBox = styled.div`
+const SelectionBox = styled.div`
   padding: 12px;
   background: #f0f4f8;
   border: 1px solid #d0d8e0;
@@ -136,7 +136,7 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
       </StatusBox>
 
       {/* Camera Controls */}
-      <CameraControlBox>
+      <SelectionBox>
         <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
           Camera Controls
         </Typography>
@@ -182,10 +182,10 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
               : 'None'}
           </Typography>
         </Box>
-      </CameraControlBox>
+      </SelectionBox>
 
       {/* Speech Controls */}
-      <CameraControlBox>
+      <SelectionBox>
         <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
           Speech Controls
         </Typography>
@@ -219,10 +219,10 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
             Speak
           </Button>
         </Box>
-      </CameraControlBox>
+      </SelectionBox>
 
       {/* Markdown Controls */}
-      <CameraControlBox>
+      <SelectionBox>
         <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
           Markdown Controls
         </Typography>
@@ -246,7 +246,7 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
             </Button>
           </Box>
         </Box>
-      </CameraControlBox>
+      </SelectionBox>
 
       {/* Last Received Message */}
       <LastMessageBox>
