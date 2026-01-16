@@ -20,6 +20,7 @@ interface CameraState {
   mode: string;
   targetId?: string;
   targetPosition?: [number, number, number]; // ターゲットアバターの位置
+  targetHeight?: number; // ターゲットアバターの身長（または高さ）
   duration?: number;
   timestamp: number; // 更新検知用
 }
@@ -102,8 +103,8 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
         if (cameraState.targetPosition) {
           const [tx, ty, tz] = cameraState.targetPosition;
 
-          // キャラの顔の高さ（顔の中心あたり Y=1.25〜1.3m程度と仮定）
-          const faceHeight = ty + 1.25;
+          // キャラの顔の高さ（身長から0.2m程度下と仮定、またはデフォルト1.25m）
+          const faceHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight - 0.2 : 1.25);
 
           // カメラ位置: ターゲットの正面に移動（少し離れた位置）
           // Z軸正方向がカメラ側と仮定

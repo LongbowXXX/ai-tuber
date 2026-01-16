@@ -23,6 +23,7 @@ export interface VRMAvatarProps {
   onLoad?: (vrm: VRM) => void;
   onTTSComplete?: (speakId: string) => void;
   onAnimationEnd?: (animationName: string) => void;
+  height?: number;
 }
 
 export const VRMAvatar: React.FC<VRMAvatarProps> = ({
@@ -36,6 +37,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   onLoad,
   onTTSComplete,
   onAnimationEnd,
+  height,
 }) => {
   const { gltf, vrmRef, mixer, isLoaded, loadedAnimationNames, createAnimationClipFromVRMA } = useVrmModel(
     vrmUrl,
@@ -208,7 +210,8 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   return isLoaded && vrmRef.current ? (
     <primitive object={gltf.scene} position={position} dispose={null}>
       {/* Add SpeechBubble as a child, positioned relative to the avatar */}
-      {bubbleText && <SpeechBubble message={bubbleText} />}
+      {/* Add SpeechBubble as a child, positioned relative to the avatar */}
+      {bubbleText && <SpeechBubble message={bubbleText} position={[0, height || 1.8, 0]} />}
     </primitive>
   ) : null;
 };

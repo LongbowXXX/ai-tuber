@@ -120,11 +120,13 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, setSt
             let cameraState = null;
             if (stage.camera) {
               let targetPos: [number, number, number] | undefined = undefined;
+              let targetAvatar: AvatarState | undefined = undefined; // Declare outside
+
               if (stage.camera.targetId) {
                 // IDマッチング: 完全一致 -> "avatarX" == "targetId"
                 // または "CharacterX" -> "avatarX" のようなマッピング、あるいは数値部分の一致など
                 // 現状: "Character1" が来るが、アバターIDは "avatar1"
-                let targetAvatar = avatars.find(a => a.id === stage.camera!.targetId);
+                targetAvatar = avatars.find(a => a.id === stage.camera!.targetId);
 
                 if (!targetAvatar) {
                   // Fallback: CharacterX -> avatarX の変換を試みる
@@ -146,6 +148,7 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, setSt
                 mode: stage.camera.mode,
                 targetId: stage.camera.targetId,
                 targetPosition: targetPos,
+                targetHeight: targetAvatar?.height, // アバターの身長を渡す
                 duration: stage.camera.duration,
                 timestamp: stage.camera.timestamp,
               };
