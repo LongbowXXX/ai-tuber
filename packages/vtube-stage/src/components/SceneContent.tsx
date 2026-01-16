@@ -1,9 +1,10 @@
 // src/components/SceneContent.tsx
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { OrbitControls, Environment } from '@react-three/drei'; // Import Environment
 import { VRMAvatar } from './VRMAvatar';
 import { VRM } from '@pixiv/three-vrm'; // Keep VRM type for AvatarData
 import { AvatarState } from '../types/avatar_types';
+import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 
 // Define a type for the data needed for each avatar
 interface AvatarData extends AvatarState {
@@ -17,6 +18,16 @@ interface SceneContentProps {
 }
 
 export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEnabled = true, onAvatarLoad }) => {
+  const controlsRef = useRef<OrbitControlsImpl>(null);
+
+  // 初期ターゲットを設定（一度だけ）
+  useEffect(() => {
+    if (controlsRef.current) {
+      controlsRef.current.target.set(0, 1, 0);
+      controlsRef.current.update();
+    }
+  }, []);
+
   // --- Scene elements rendering ---
   return (
     <>
@@ -49,7 +60,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
       ))}
 
       {/* Camera Controls */}
-      {controlsEnabled && <OrbitControls target={[0, 1, 0]} />}
+      {controlsEnabled && <OrbitControls ref={controlsRef} makeDefault />}
     </>
   );
 };

@@ -1,15 +1,20 @@
 import { useThree, useFrame } from '@react-three/fiber';
 import { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
+import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 
 // カメラアニメーションのデフォルト所要時間（秒）
 const DEFAULT_DURATION = 1.0;
 // デフォルト (定位置)
 const DEFAULT_POS = new THREE.Vector3(0, 1.2, 3);
 const DEFAULT_LOOKAT = new THREE.Vector3(0, 1, 0);
+const DEFAULT_FOV = 50;
 
 // Intro (上空)
 const INTRO_START_POS = new THREE.Vector3(0, 5, 10);
+
+// CloseUp 設定
+const CLOSEUP_FOV = 35; // ズームイン時のFOV（狭い = ズーム）
 
 interface CameraState {
   mode: string;
@@ -20,7 +25,7 @@ interface CameraState {
 }
 
 export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ cameraState }) => {
-  const { camera } = useThree();
+  const { camera, controls } = useThree();
   const [animating, setAnimating] = useState(false);
 
   const startTimeRef = useRef<number | null>(null);
@@ -30,7 +35,19 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
   const targetLookAtRef = useRef<THREE.Vector3>(new THREE.Vector3());
   const durationRef = useRef(DEFAULT_DURATION);
 
+  // FOV アニメーション用
+  const startFovRef = useRef<number>(DEFAULT_FOV);
+  const targetFovRef = useRef<number>(DEFAULT_FOV);
+
   const lastTimestampRef = useRef<number>(0);
+
+  // OrbitControls への参照を取得
+  const getOrbitControls = (): OrbitControlsImpl | null => {
+    if (controls && controls instanceof OrbitControlsImpl) {
+      return controls;
+    }
+    return null;
+  };
 
   // カメラ状態が更新されたらアニメーション開始
   useEffect(() => {
@@ -40,26 +57,41 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
 
     console.log('Camera state updated:', cameraState);
 
+    const orbitControls = getOrbitControls();
+
+    // アニメーション開始時に OrbitControls を無効化
+    if (orbitControls) {
+      orbitControls.enabled = false;
+    }
+
     // 現在のカメラ位置・視点を開始点とする
     startPosRef.current.copy(camera.position);
-    // カメラの向いている方向を取得 (概略)
-    const direction = new THREE.Vector3();
-    camera.getWorldDirection(direction);
-    startLookAtRef.current.copy(camera.position).add(direction);
+
+    // OrbitControls がある場合はそのターゲットを使用、なければカメラの向きから計算
+    if (orbitControls) {
+      startLookAtRef.current.copy(orbitControls.target);
+    } else {
+      const direction = new THREE.Vector3();
+      camera.getWorldDirection(direction);
+      startLookAtRef.current.copy(camera.position).add(direction);
+    }
+
+    // 現在のFOVを保存
+    if (camera instanceof THREE.PerspectiveCamera) {
+      startFovRef.current = camera.fov;
+    }
 
     // モードに応じた目標位置・視点設定
     durationRef.current = cameraState.duration || DEFAULT_DURATION;
 
     switch (cameraState.mode) {
       case 'intro':
-        // Intro: 上空から定位置へ (仕様変更: 現在位置から定位置へ動くか、一度上空に飛ぶか。ここでは要望通り上空から定位置へ)
-        // ただし、アニメーションとして「上空セット -> 定位置へ」なのか「現在地 -> 定位置」なのか。
-        // Issueの記述「ズームアウトからのイン」など演出。
-        // 実装プランに従い: 上空(START) -> 定位置(END) への移動を行う
-        // ※ 瞬間移動を伴うため、現在位置からの補間ではなく、一度リセットする挙動になる
+        // Intro: 上空から定位置へ
         startPosRef.current.copy(INTRO_START_POS);
+        startLookAtRef.current.copy(DEFAULT_LOOKAT);
         targetPosRef.current.copy(DEFAULT_POS);
         targetLookAtRef.current.copy(DEFAULT_LOOKAT);
+        targetFovRef.current = DEFAULT_FOV;
 
         // 瞬間移動させる
         camera.position.copy(INTRO_START_POS);
@@ -68,19 +100,23 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
 
       case 'closeUp':
         if (cameraState.targetPosition) {
-          const [tx, , tz] = cameraState.targetPosition;
+          const [tx, ty, tz] = cameraState.targetPosition;
 
-          // ターゲットの少し前、少し上
-          // 顔の高さ(約1.4mと仮定)に合わせて調整
-          // VRM原点は足元。顔はY=1.3~1.5くらい。
+          // キャラの顔の高さ（Y=1.4m程度と仮定）
+          const faceHeight = ty + 1.4;
 
-          // カメラ位置: ターゲットの正面 0.6m, 高さ 1.4m
-          targetPosRef.current.set(tx, 1.4, tz + 0.7);
-          targetLookAtRef.current.set(tx, 1.35, tz); // 顔を見る
+          // カメラ位置: ターゲットの正面に移動（少し離れた位置）
+          // Z軸正方向がカメラ側と仮定
+          targetPosRef.current.set(tx, faceHeight, tz + 1.2);
+          targetLookAtRef.current.set(tx, faceHeight - 0.05, tz); // 少し下を見て顔全体を捉える
+
+          // ズームイン（FOVを狭くする）
+          targetFovRef.current = CLOSEUP_FOV;
         } else {
           // ターゲットなしならデフォルトへ
           targetPosRef.current.copy(DEFAULT_POS);
           targetLookAtRef.current.copy(DEFAULT_LOOKAT);
+          targetFovRef.current = DEFAULT_FOV;
         }
         break;
 
@@ -88,12 +124,13 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
       default:
         targetPosRef.current.copy(DEFAULT_POS);
         targetLookAtRef.current.copy(DEFAULT_LOOKAT);
+        targetFovRef.current = DEFAULT_FOV;
         break;
     }
 
     startTimeRef.current = null; // 次のフレームで開始時刻設定
     setAnimating(true);
-  }, [cameraState, camera]);
+  }, [cameraState, camera, controls]);
 
   useFrame(() => {
     if (!animating) return;
@@ -107,21 +144,39 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
     const t = Math.min(elapsed / durationRef.current, 1);
 
     // Easing (SmoothStep)
-    // t * t * (3 - 2 * t)
     const smoothT = t * t * (3 - 2 * t);
 
     camera.position.lerpVectors(startPosRef.current, targetPosRef.current, smoothT);
 
-    // LookAtの補間は難しい (Quaternion slerpが良い) が、簡易的にターゲット位置をLerpしてLookAtする
-    // 現在のLookAtターゲット
+    // LookAtの補間
     const currentLookAt = new THREE.Vector3().lerpVectors(startLookAtRef.current, targetLookAtRef.current, smoothT);
     camera.lookAt(currentLookAt);
 
+    // FOVの補間（PerspectiveCameraの場合のみ）
+    if (camera instanceof THREE.PerspectiveCamera) {
+      camera.fov = THREE.MathUtils.lerp(startFovRef.current, targetFovRef.current, smoothT);
+      camera.updateProjectionMatrix();
+    }
+
     if (t >= 1) {
       setAnimating(false);
-      // 念のため最終位置合わせ
+
+      // 最終位置合わせ
       camera.position.copy(targetPosRef.current);
       camera.lookAt(targetLookAtRef.current);
+
+      if (camera instanceof THREE.PerspectiveCamera) {
+        camera.fov = targetFovRef.current;
+        camera.updateProjectionMatrix();
+      }
+
+      // OrbitControls のターゲットを設定してから再有効化
+      const orbitControls = getOrbitControls();
+      if (orbitControls) {
+        orbitControls.target.copy(targetLookAtRef.current);
+        orbitControls.update();
+        orbitControls.enabled = true;
+      }
     }
   });
 
