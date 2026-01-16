@@ -99,7 +99,7 @@ const CameraInit: React.FC = () => {
     let frame = 0;
     let raf: number;
     const setCamera = () => {
-      camera.position.set(0, 5, 10);
+      camera.position.set(0, 1.2, 3);
       camera.lookAt(0, 1, 0);
       frame++;
       if (frame < 10) {
@@ -134,7 +134,7 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, lastM
     <Root>
       {/* Canvas Area */}
       <CanvasArea>
-        <Canvas camera={{ position: [0, 5, 10], fov: 50 }} shadows>
+        <Canvas camera={{ position: [0, 1.2, 3], fov: 50 }} shadows>
           {/* CameraInitコンポーネントを追加 */}
           {/* CameraInitコンポーネントを追加 (初期化時のみ) */}
           <CameraInit />
