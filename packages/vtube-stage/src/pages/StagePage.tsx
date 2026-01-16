@@ -1,8 +1,7 @@
 import React from 'react';
 import { Canvas } from '@react-three/fiber';
-import { VRMController } from '../components/VRMController';
 import { SceneContent } from '../components/SceneContent';
-import { Typography, Chip } from '@mui/material';
+import { DebugSidebar } from '../components/DebugSidebar';
 import styled from 'styled-components';
 import { AnimatedCamera } from '../components/AnimatedCamera';
 import { useThree } from '@react-three/fiber';
@@ -29,31 +28,6 @@ const Root = styled.div`
 const CanvasArea = styled.div`
   flex-grow: 1;
   position: relative;
-`;
-
-const Sidebar = styled.div`
-  width: 350px;
-  padding: 16px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  background: #fff;
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-`;
-
-const StatusBox = styled.div``;
-
-const LastMessageBox = styled.div``;
-
-const LastMessagePaper = styled.div`
-  padding: 8px;
-  max-height: 150px;
-  overflow-y: auto;
-  background: #f5f5f5;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
 `;
 
 const LoadingOverlay = styled.div`
@@ -212,62 +186,7 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, lastM
       </CanvasArea>
       {/* Controller/Sidebar Area */}
       {import.meta.env.VITE_DEBUG_SIDEBAR === 'true' && (
-        <Sidebar>
-          <Typography variant="h6" component="h3">
-            Stage Controls & Status
-          </Typography>
-
-          {/* Connection Status */}
-          <StatusBox>
-            <Typography component="span" variant="body1" sx={{ fontWeight: 'bold' }}>
-              Connection Status:{' '}
-            </Typography>
-            <Chip
-              label={isConnected ? 'Connected' : 'Disconnected'}
-              color={isConnected ? 'success' : 'error'}
-              size="small"
-            />
-          </StatusBox>
-
-          {/* Last Received Message */}
-          <LastMessageBox>
-            <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>
-              Last Command from Server:
-            </Typography>
-            <LastMessagePaper>
-              <Typography component="pre" sx={{ wordBreak: 'break-all', whiteSpace: 'pre-wrap', fontSize: '0.8rem' }}>
-                {lastMessage ? JSON.stringify(lastMessage, null, 2) : 'N/A'}
-              </Typography>
-            </LastMessagePaper>
-          </LastMessageBox>
-
-          {/* VRM Controllers */}
-          {avatars.map(avatar => (
-            <VRMController
-              key={avatar.id}
-              title={`Avatar ${avatar.id.replace('avatar', '')} Controls`}
-              onEmotionChange={name => {
-                setAvatars(prevAvatars =>
-                  prevAvatars.map(a =>
-                    a.id === avatar.id
-                      ? {
-                          ...a,
-                          currentEmotion: name,
-                        }
-                      : a
-                  )
-                );
-              }}
-              onAnimationChange={animationName => {
-                setAvatars(prevAvatars =>
-                  prevAvatars.map(a => (a.id === avatar.id ? { ...a, currentAnimationName: animationName } : a))
-                );
-              }}
-              availableAnimations={Object.keys(avatar.animationUrls)}
-              currentEmotion={avatar.currentEmotion}
-            />
-          ))}
-        </Sidebar>
+        <DebugSidebar avatars={avatars} setAvatars={setAvatars} lastMessage={lastMessage} isConnected={isConnected} />
       )}
     </Root>
   );
