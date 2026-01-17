@@ -1,8 +1,9 @@
 // src/components/SceneContent.tsx
 import React, { useRef, useEffect } from 'react';
-import { OrbitControls, Environment } from '@react-three/drei'; // Import Environment
+import { OrbitControls, Environment, Sparkles, ContactShadows } from '@react-three/drei';
+import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import { VRMAvatar } from './VRMAvatar';
-import { VRM } from '@pixiv/three-vrm'; // Keep VRM type for AvatarData
+import { VRM } from '@pixiv/three-vrm';
 import { AvatarState } from '../types/avatar_types';
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 
@@ -13,8 +14,8 @@ interface AvatarData extends AvatarState {
 
 interface SceneContentProps {
   avatars: AvatarData[]; // Array of avatar data objects
-  controlsEnabled?: boolean; // OrbitControls有効化フラグ追加
-  onAvatarLoad?: (id: string) => void; // 追加
+  controlsEnabled?: boolean; // OrbitControls有効化フラグ
+  onAvatarLoad?: (id: string) => void;
 }
 
 export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEnabled = true, onAvatarLoad }) => {
@@ -31,12 +32,12 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
   // --- Scene elements rendering ---
   return (
     <>
-      {/* Environment and Background */}
+      {/* 1. 環境・背景設定 */}
+      <color attach="background" args={['#202020']} />
       <Environment files="/background.jpg" background />
 
-      {/* Environment Light */}
-      <ambientLight intensity={0.8} />
-      {/* Directional Light */}
+      {/* 2. ライティング強化 */}
+      <ambientLight intensity={0.6} />
       <directionalLight
         position={[3, 5, 2]}
         intensity={1.5}
@@ -44,21 +45,45 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
       />
-      {/* Floor */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[3, 3]} />
-        <meshStandardMaterial color="grey" />
-      </mesh>
 
-      {/* Render each VRM Avatar based on the avatars prop */}
+      {/* 3. エフェクト（パーティクル）: アイドル/配信空間のようなキラキラ感 */}
+      <Sparkles
+        count={50}
+        scale={4}
+        size={4}
+        speed={0.4}
+        opacity={0.5}
+        color="#CEF" // 水色っぽいサイバー感
+        position={[0, 1, 0]}
+      />
+
+      {/* 4. 床の改善: PlaneGeometryの代わりにContactShadowsを使用 */}
+      {/* 元のmesh床は削除または非表示にし、より自然な影を落とす */}
+      <ContactShadows
+        opacity={0.7}
+        scale={10}
+        blur={1.5}
+        far={4}
+        resolution={512}
+        color="#000000"
+        position={[0, 0.01, 0]}
+      />
+      {/* アバター描画 */}
       {avatars.map(avatar => (
-        <VRMAvatar
-          key={avatar.id} // Use unique ID as key
-          {...avatar}
-          onLoad={onAvatarLoad ? () => onAvatarLoad(avatar.id) : undefined}
-        />
+        <VRMAvatar key={avatar.id} {...avatar} onLoad={onAvatarLoad ? () => onAvatarLoad(avatar.id) : undefined} />
       ))}
-
+      {/* 5. ポストプロセス効果: 画面全体のクオリティアップ */}
+      <EffectComposer>
+        {/* Bloom: 明るい部分を光らせる（アニメ調の肌や目に効果的） */}
+        <Bloom
+          luminanceThreshold={1.2} // 光り始める閾値
+          mipmapBlur
+          intensity={0.4}
+          radius={0.6}
+        />
+        {/* Vignette: 四隅を暗くしてシネマティックに */}
+        <Vignette eskil={false} offset={0.2} darkness={0.7} />
+      </EffectComposer>
       {/* Camera Controls */}
       {controlsEnabled && <OrbitControls ref={controlsRef} makeDefault />}
     </>
