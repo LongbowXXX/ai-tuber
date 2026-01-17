@@ -1,6 +1,6 @@
 // src/components/SceneContent.tsx
 import React, { useRef, useEffect, useMemo } from 'react';
-import { OrbitControls, Environment, MeshReflectorMaterial, Float, Text } from '@react-three/drei';
+import { OrbitControls, Environment, MeshReflectorMaterial, Float, Text3D } from '@react-three/drei';
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import { VRMAvatar } from './VRMAvatar';
 import { VRM } from '@pixiv/three-vrm';
@@ -91,17 +91,28 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
 
       {/* 5. 空間演出: 浮遊するテキストとオブジェクト */}
       <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-        <Text
-          fontSize={0.5}
-          color="#00FFFF"
-          position={[-2, 1.5, -2]}
-          rotation={[0, 0.5, 0]}
-          font="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYAZ9hjp-Ek-_EeA.woff"
-          anchorX="center"
-          anchorY="middle"
+        <Text3D
+          font="https://unpkg.com/three@0.170.0/examples/fonts/helvetiker_bold.typeface.json"
+          size={0.5}
+          height={0.09} // 奥行き (Thickness)
+          curveSegments={12}
+          bevelEnabled
+          bevelThickness={0.01}
+          bevelSize={0.01}
+          bevelOffset={0}
+          bevelSegments={5}
+          position={[-2.5, 1.5, -2]} // 中央揃えがText3Dは難しいので位置調整
+          rotation={[-0.2, 0.3, 0]}
         >
           ON AIR
-        </Text>
+          <meshStandardMaterial
+            color="#00FFFF"
+            emissive="#00FFFF"
+            emissiveIntensity={2.5}
+            roughness={0.2}
+            metalness={0.8}
+          />
+        </Text3D>
       </Float>
 
       <Float speed={3} rotationIntensity={1} floatIntensity={0.5}>
