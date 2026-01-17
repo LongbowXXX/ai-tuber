@@ -19,6 +19,29 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "type": "shell",
+      "command": "npm run dev",
+      "label": "dev (デバッグサイドバー有効)",
+      "detail": "VITE_DEBUG_SIDEBAR=true で vite を起動",
+      "options": {
+        "env": {
+          "VITE_DEBUG_SIDEBAR": "true"
+        }
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "vite",
+        "pattern": {
+          "regexp": "^$"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "VITE v",
+          "endsPattern": "ready in \\d+"
+        }
+      }
     }
   ]
 }

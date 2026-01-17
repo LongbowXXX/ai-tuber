@@ -1,0 +1,56 @@
+{
+    // VS Code デバッグ設定
+    // 詳細: https://code.visualstudio.com/docs/python/debugging
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // メインスクリプトを実行
+            "name": "Python: Main",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/vtuber_behavior_engine/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "justMyCode": true
+        },
+        {
+            // ADK Web UI を起動
+            "name": "Python: ADK Web UI",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "google.adk.cli",
+            "args": [
+                "web",
+                "--port=8090",
+                "src/vtuber_behavior_engine"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "justMyCode": true
+        },
+        {
+            // pytest で全テストを実行
+            "name": "Python: Pytest",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "tests",
+                "-v",
+                "--no-cov"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "justMyCode": true
+        }
+    ]
+}

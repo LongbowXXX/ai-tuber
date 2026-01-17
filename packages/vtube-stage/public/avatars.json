@@ -14,7 +14,8 @@
     "currentEmotion": "neutral",
     "headYaw": 0,
     "currentAnimationName": "idle",
-    "position": [-0.5, 0, 0]
+    "position": [-0.5, 0, 0],
+    "height": 1.45
   },
   {
     "id": "avatar2",
@@ -31,6 +32,7 @@
     "currentEmotion": "neutral",
     "headYaw": 0,
     "currentAnimationName": "idle",
-    "position": [0.5, 0, 0]
+    "position": [0.5, 0, 0],
+    "height": 1.65
   }
 ]

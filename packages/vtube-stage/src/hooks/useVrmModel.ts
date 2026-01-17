@@ -3,7 +3,12 @@ import { VRM, VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { useLoader } from '@react-three/fiber';
-import { createVRMAnimationClip, VRMAnimation, VRMAnimationLoaderPlugin } from '@pixiv/three-vrm-animation';
+import {
+  createVRMAnimationClip,
+  VRMAnimation,
+  VRMAnimationLoaderPlugin,
+  VRMLookAtQuaternionProxy,
+} from '@pixiv/three-vrm-animation';
 /**
  * Custom hook to load and manage a VRM model.
  * @param {string} vrmUrl - The URL to the VRM file.
@@ -72,6 +77,14 @@ export function useVrmModel(vrmUrl: string, animationUrls: Record<string, string
         }
       });
       console.log(`VRM loaded from ${vrmUrl}:`, vrm);
+
+      // LookAtQuaternionProxyを手動作成して警告を抑制
+      if (vrm.lookAt) {
+        const lookAtProxy = new VRMLookAtQuaternionProxy(vrm.lookAt);
+        lookAtProxy.name = 'VRMLookAtQuaternionProxy';
+        vrm.scene.add(lookAtProxy);
+      }
+
       vrmRef.current = vrm;
       mixer.current = new THREE.AnimationMixer(vrm.scene); // Create mixer here
       // setIsLoaded(true); // Mark VRM as loaded (旧処理)

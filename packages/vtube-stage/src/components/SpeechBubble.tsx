@@ -25,7 +25,7 @@ export const SpeechBubble: React.FC<SpeechBubbleProps> = ({ message, position = 
   }
 
   return (
-    <Html position={position} center distanceFactor={10} zIndexRange={[100, 0]}>
+    <Html position={position} center zIndexRange={[100, 0]}>
       <div className="speech-bubble-container">
         <div className="speech-bubble">{message.caption}</div>
       </div>

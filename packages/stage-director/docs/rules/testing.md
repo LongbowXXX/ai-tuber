@@ -24,3 +24,21 @@ uv run pytest --cov=src/stage_director
 - `pytest-asyncio` を使用して非同期関数のテストを行う。
 - 重要なビジネスロジック（キューの順序、タイムアウト処理等）は重点的にテストする。
 - テストコードも `black` および `mypy` のチェック対象とする。
+
+## 修正後の検証
+
+コードの修正を行った際は、テストだけでなく静的解析も含めた全体チェックを行ってください。
+
+```bash
+# フォーマット (black)
+uv run black .
+
+# リント (flake8)
+uv run flake8
+
+# 型チェック (mypy)
+uv run mypy .
+
+# テスト (pytest)
+uv run pytest
+```

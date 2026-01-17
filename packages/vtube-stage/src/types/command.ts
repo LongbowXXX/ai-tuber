@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsString, ValidateNested, IsDefined } from 'class-validator';
+import { IsString, ValidateNested, IsDefined, IsOptional, IsNumber } from 'class-validator';
 
 // 基本的なコマンド構造 (クラスに変更)
 export class BaseCommand<T extends string, P> {
@@ -111,10 +111,34 @@ export class DisplayMarkdownCommand extends BaseCommand<'displayMarkdown', Displ
   declare payload: DisplayMarkdownPayload;
 }
 
+// controlCamera コマンドのペイロードクラス
+export class ControlCameraPayload {
+  @IsString()
+  @IsDefined()
+  mode!: 'default' | 'intro' | 'closeUp';
+
+  @IsString()
+  @IsOptional()
+  targetId?: string; // closeUpモード時のターゲットID
+
+  @IsOptional()
+  @IsNumber()
+  duration?: number;
+}
+export class ControlCameraCommand extends BaseCommand<'controlCamera', ControlCameraPayload> {
+  declare command: 'controlCamera';
+
+  @ValidateNested()
+  @Type(() => ControlCameraPayload)
+  @IsDefined()
+  declare payload: ControlCameraPayload;
+}
+
 // 受け取る可能性のある全てのコマンドの Union 型 (クラスの Union に変更)
 export type StageCommand =
   | LogMessageCommand
   | SetPoseCommand
   | TriggerAnimationCommand
   | SpeakCommand
-  | DisplayMarkdownCommand;
+  | DisplayMarkdownCommand
+  | ControlCameraCommand;

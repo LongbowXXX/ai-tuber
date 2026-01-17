@@ -16,4 +16,5 @@ export interface AvatarState {
   position: [number, number, number];
   onTTSComplete?: (speakId: string) => void;
   onAnimationEnd?: (animationName: string) => void;
+  height?: number;
 }

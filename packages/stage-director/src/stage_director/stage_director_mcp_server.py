@@ -16,6 +16,8 @@ from stage_director.models import (
     SpeakCommand,
     DisplayMarkdownTextPayload,
     DisplayMarkdownTextCommand,
+    ControlCameraPayload,
+    ControlCameraCommand,
 )
 
 logger = logging.getLogger("stage-director.mcp")
@@ -73,6 +75,28 @@ async def display_markdown_text(text: str) -> str:
     except Exception as e:
         logger.error(f"Error in display_markdown_text tool: {e}", exc_info=True)
         return f"Failed to display_markdown_text: {e}"
+
+
+@mcp.tool()
+async def control_camera(mode: str, target_id: str = "", duration: float = 1.0) -> str:
+    """
+    Control the vtube-stage camera.
+
+    Args:
+        mode: The camera mode (e.g., "default", "closeUp", "intro").
+        target_id: The ID of the target to focus on (optional).
+        duration: The duration of the camera transition in seconds (default: 1.0).
+    """
+    logger.info(f"MCP Tool 'control_camera' called: mode={mode}, target_id={target_id}, duration={duration}")
+    payload = ControlCameraPayload(mode=mode, targetId=target_id, duration=duration)
+
+    try:
+        command = ControlCameraCommand(payload=payload)
+        await enqueue_command(command)
+        return "Success"
+    except Exception as e:
+        logger.error(f"Error in control_camera tool: {e}", exc_info=True)
+        return f"Failed to control camera: {e}"
 
 
 async def run_stage_director_mcp_server() -> None:

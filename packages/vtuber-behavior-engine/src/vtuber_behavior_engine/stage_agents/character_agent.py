@@ -3,12 +3,14 @@
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
 import logging
-from typing import Optional, Iterable, cast
+from typing import Optional, Iterable, cast, Any
 
 from google.adk.agents import LlmAgent, BaseAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.llm_agent import ToolUnion
 from google.adk.planners import BuiltInPlanner
+from google.adk.tools.tool_context import ToolContext
+from google.adk.tools.base_tool import BaseTool
 from google.genai import types
 from google.genai.types import Part
 
@@ -71,18 +73,30 @@ def create_character_agent(
 
 def create_character_output_agent(character_id: str, stage_director_client: StageDirectorMCPClient) -> LlmAgent:
     async def handle_speech(callback_context: CallbackContext) -> Optional[types.Content]:
-        markdown_text = callback_context.state[STATE_DISPLAY_MARKDOWN_TEXT]
-
         if STATE_AGENT_SPEECH_BASE + character_id not in callback_context.state:
             logger.info("No speech data found in state. skipping output.")
             return types.ModelContent(parts=[Part.from_text(text="Nothing to do.")])
-        else:
+
+        return None
+
+    async def execute_speech(callback_context: CallbackContext) -> Optional[types.Content]:
+        markdown_text = callback_context.state.get(STATE_DISPLAY_MARKDOWN_TEXT)
+        if STATE_AGENT_SPEECH_BASE + character_id in callback_context.state:
             speech_data = callback_context.state[STATE_AGENT_SPEECH_BASE + character_id]
             logger.info(f"speak(): {speech_data}")
-            speech_model = AgentSpeech.model_validate(speech_data)
-            await stage_director_client.speak(speech_model, markdown_text)
-            callback_context.state[STATE_AGENT_SPEECH_BASE + character_id] = None
-            return None
+            if speech_data:
+                speech_model = AgentSpeech.model_validate(speech_data)
+                await stage_director_client.speak(speech_model, markdown_text)
+                callback_context.state[STATE_AGENT_SPEECH_BASE + character_id] = None
+        return None
+
+    async def wait_for_speech_before_tool(
+        tool: BaseTool, args: dict[str, Any], tool_context: ToolContext
+    ) -> Optional[dict[str, Any]]:
+        # ツール実行前に前のキャラのセリフが終わるのを待つ
+        logger.info(f"Waiting for speech before executing tool: {tool.name}")
+        await stage_director_client.wait_for_current_speak_end()
+        return None
 
     # Tools will be loaded lazily by the root agent initializer
     tools: list[ToolUnion] = []
@@ -93,6 +107,8 @@ def create_character_output_agent(character_id: str, stage_director_client: Stag
         description=f"Character {character_id} output",
         tools=list(cast(Iterable[ToolUnion], tools)),
         before_agent_callback=handle_speech,
+        after_agent_callback=execute_speech,
+        before_tool_callback=wait_for_speech_before_tool,
         disallow_transfer_to_parent=True,
         disallow_transfer_to_peers=True,
         planner=BuiltInPlanner(
