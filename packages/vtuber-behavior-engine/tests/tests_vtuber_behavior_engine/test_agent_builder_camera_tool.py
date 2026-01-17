@@ -82,10 +82,10 @@ async def test_agent_builder_includes_camera_tool() -> None:
         return any(t.name == tool_name for t in agent.tools)
 
     # Verify agent1 has camera tool
-    assert has_tool(agent1_output, "control_camera"), "Agent 1 should have controlCamera tool"
+    assert has_tool(agent1_output, "control_camera"), "Agent 1 should have control_camera tool"
     assert has_tool(agent1_output, "trigger_animation"), "Agent 1 should have trigger_animation tool"
     assert not has_tool(agent1_output, "other_tool"), "Agent 1 should NOT have other_tool"
 
     # Verify agent2 has camera tool
-    assert has_tool(agent2_output, "control_camera"), "Agent 2 should have controlCamera tool"
+    assert has_tool(agent2_output, "control_camera"), "Agent 2 should have control_camera tool"
     assert has_tool(agent2_output, "trigger_animation"), "Agent 2 should have trigger_animation tool"
