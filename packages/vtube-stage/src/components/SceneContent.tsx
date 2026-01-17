@@ -46,16 +46,30 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
         shadow-mapSize-height={1024}
       />
 
-      {/* 3. エフェクト（パーティクル）: アイドル/配信空間のようなキラキラ感 */}
-      <Sparkles
-        count={50}
-        scale={4}
-        size={4}
-        speed={0.4}
-        opacity={0.5}
-        color="#CEF" // 水色っぽいサイバー感
-        position={[0, 1, 0]}
-      />
+      {/* 3. エフェクト（パーティクル）: エモーションに合わせて色変化 */}
+      {(() => {
+        // "neutral" 以外のエモーションを持つアバターを優先し、後勝ち（リストの後ろの方）で採用
+        // 見つからなければ最後のアバター（全員 neutral なら誰でも同じなので）
+        const emotionalAvatar = [...avatars].reverse().find(a => a.currentEmotion && a.currentEmotion !== 'neutral');
+        const activeAvatar = emotionalAvatar || avatars[avatars.length - 1];
+
+        const emotion = activeAvatar?.currentEmotion || 'neutral';
+
+        const EMOTION_COLORS: { [key: string]: string } = {
+          neutral: '#CEF', // 水色 (Default)
+          happy: '#FFD700', // Gold
+          sad: '#4169E1', // Royal Blue
+          angry: '#FF4500', // Red Orange
+          relaxed: '#98FB98', // Pale Green
+          Surprised: '#FFFF00', // Yellow
+        };
+
+        const sparkleColor = EMOTION_COLORS[emotion] || '#CEF';
+
+        return (
+          <Sparkles count={50} scale={4} size={4} speed={0.4} opacity={0.5} color={sparkleColor} position={[0, 1, 0]} />
+        );
+      })()}
 
       {/* 4. 床の改善: PlaneGeometryの代わりにContactShadowsを使用 */}
       {/* 元のmesh床は削除または非表示にし、より自然な影を落とす */}
