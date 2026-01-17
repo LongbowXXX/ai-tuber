@@ -92,22 +92,22 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
       {/* 5. 空間演出: 浮遊するテキストとオブジェクト */}
       <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
         <Text3D
-          font="https://unpkg.com/three@0.170.0/examples/fonts/helvetiker_bold.typeface.json"
+          font="/fonts/rounded_mplus_1c_regular.json"
           size={0.5}
-          height={0.09} // 奥行き (Thickness)
+          height={0.15} // 奥行き (Thickness)
           curveSegments={12}
           bevelEnabled
-          bevelThickness={0.01}
-          bevelSize={0.01}
+          bevelThickness={0.02}
+          bevelSize={0.02}
           bevelOffset={0}
           bevelSegments={5}
           position={[-2.5, 1.5, -2]} // 中央揃えがText3Dは難しいので位置調整
-          rotation={[-0.2, 0.3, 0]}
+          rotation={[-0.3, 0.4, 0]}
         >
           ON AIR
           <meshStandardMaterial
             color="#00FFFF"
-            emissive="#00FFFF"
+            emissive="#0055FF"
             emissiveIntensity={2.5}
             roughness={0.2}
             metalness={0.8}
@@ -116,9 +116,9 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
       </Float>
 
       <Float speed={3} rotationIntensity={1} floatIntensity={0.5}>
-        <mesh position={[2, 1, -1]}>
+        <mesh position={[2, 1, -1]} rotation={[-0.2, -0.5, 0]}>
           <torusGeometry args={[0.3, 0.1, 16, 32]} />
-          <meshStandardMaterial color="hotpink" emissive="hotpink" emissiveIntensity={2} />
+          <meshStandardMaterial color="#E8ABBE" emissive="#FF69B4" emissiveIntensity={2} />
         </mesh>
       </Float>
 
