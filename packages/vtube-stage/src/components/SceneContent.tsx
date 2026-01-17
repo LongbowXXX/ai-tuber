@@ -1,5 +1,5 @@
 // src/components/SceneContent.tsx
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { OrbitControls, Environment, Sparkles, ContactShadows } from '@react-three/drei';
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import { VRMAvatar } from './VRMAvatar';
@@ -18,6 +18,15 @@ interface SceneContentProps {
   onAvatarLoad?: (id: string) => void;
 }
 
+const EMOTION_COLORS: { [key: string]: string } = {
+  neutral: '#CEF', // 水色 (Default)
+  happy: '#FFD700', // Gold
+  sad: '#4169E1', // Royal Blue
+  angry: '#FF4500', // Red Orange
+  relaxed: '#98FB98', // Pale Green
+  Surprised: '#FFFF00', // Yellow
+};
+
 export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEnabled = true, onAvatarLoad }) => {
   const controlsRef = useRef<OrbitControlsImpl>(null);
 
@@ -28,6 +37,17 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
       controlsRef.current.update();
     }
   }, []);
+
+  // エモーションに合わせて色変化
+  const sparkleColor = useMemo(() => {
+    // "neutral" 以外のエモーションを持つアバターを優先し、後勝ち（リストの後ろの方）で採用
+    // 見つからなければ最後のアバター（全員 neutral なら誰でも同じなので）
+    const emotionalAvatar = [...avatars].reverse().find(a => a.currentEmotion && a.currentEmotion !== 'neutral');
+    const activeAvatar = emotionalAvatar || avatars[avatars.length - 1];
+    const emotion = activeAvatar?.currentEmotion || 'neutral';
+
+    return EMOTION_COLORS[emotion] || '#CEF';
+  }, [avatars]);
 
   // --- Scene elements rendering ---
   return (
@@ -46,30 +66,8 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
         shadow-mapSize-height={1024}
       />
 
-      {/* 3. エフェクト（パーティクル）: エモーションに合わせて色変化 */}
-      {(() => {
-        // "neutral" 以外のエモーションを持つアバターを優先し、後勝ち（リストの後ろの方）で採用
-        // 見つからなければ最後のアバター（全員 neutral なら誰でも同じなので）
-        const emotionalAvatar = [...avatars].reverse().find(a => a.currentEmotion && a.currentEmotion !== 'neutral');
-        const activeAvatar = emotionalAvatar || avatars[avatars.length - 1];
-
-        const emotion = activeAvatar?.currentEmotion || 'neutral';
-
-        const EMOTION_COLORS: { [key: string]: string } = {
-          neutral: '#CEF', // 水色 (Default)
-          happy: '#FFD700', // Gold
-          sad: '#4169E1', // Royal Blue
-          angry: '#FF4500', // Red Orange
-          relaxed: '#98FB98', // Pale Green
-          Surprised: '#FFFF00', // Yellow
-        };
-
-        const sparkleColor = EMOTION_COLORS[emotion] || '#CEF';
-
-        return (
-          <Sparkles count={50} scale={4} size={4} speed={0.4} opacity={0.5} color={sparkleColor} position={[0, 1, 0]} />
-        );
-      })()}
+      {/* 3. エフェクト（パーティクル） */}
+      <Sparkles count={50} scale={4} size={4} speed={0.4} opacity={0.5} color={sparkleColor} position={[0, 1, 0]} />
 
       {/* 4. 床の改善: PlaneGeometryの代わりにContactShadowsを使用 */}
       {/* 元のmesh床は削除または非表示にし、より自然な影を落とす */}
