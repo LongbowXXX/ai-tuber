@@ -156,7 +156,7 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, setSt
         </Canvas>
         {/* Markdown Overlay */}
         {stage.currentMarkdownText && (
-          <MarkdownOverlay $isCloseUp={stage.camera?.mode === 'closeUp'}>
+          <MarkdownOverlay $isCloseUp={stage.camera?.mode !== 'default' && stage.camera?.mode !== 'intro'}>
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{stage.currentMarkdownText}</ReactMarkdown>
           </MarkdownOverlay>
         )}
