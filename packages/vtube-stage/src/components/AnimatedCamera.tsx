@@ -20,6 +20,18 @@ import {
   HIGH_ANGLE_LOOKAT,
   SIDE_RIGHT_POS,
   SIDE_LEFT_POS,
+  FACE_HEIGHT_OFFSET,
+  DEFAULT_FACE_HEIGHT,
+  CENTER_HEIGHT_RATIO,
+  SIDE_HEIGHT_RATIO,
+  DEFAULT_CENTER_HEIGHT,
+  SIDE_CENTER_HEIGHT_DEFAULT,
+  CLOSEUP_OFFSET_Z,
+  FULLBODY_OFFSET_Z,
+  LOW_ANGLE_OFFSET_Z,
+  HIGH_ANGLE_OFFSET_Z,
+  SIDE_ANGLE_OFFSET_X,
+  SIDE_ANGLE_OFFSET_Z,
 } from './CameraConfig';
 
 export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ cameraState }) => {
@@ -151,20 +163,26 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
     // シェイク設定の更新
     updateShakeConfig(cameraState.mode);
 
+    // Helper functions for height calculation
+    const calculateFaceHeight = (ty: number, h?: number) => {
+      return ty + (h !== undefined ? h - FACE_HEIGHT_OFFSET : DEFAULT_FACE_HEIGHT);
+    };
+
+    const calculateCenterHeight = (ty: number, h: number | undefined, ratio: number, defaultVal: number) => {
+      return ty + (h !== undefined ? h * ratio : defaultVal);
+    };
+
     switch (cameraState.mode) {
       case 'intro':
         // Intro: 上空から定位置へ (Spiral Crane Shot)
-        // 始点を Config から取得
         startPosRef.current.copy(INTRO_START_POS);
         startLookAtRef.current.copy(DEFAULT_LOOKAT);
         targetPosRef.current.copy(DEFAULT_POS);
         targetLookAtRef.current.copy(DEFAULT_LOOKAT);
         targetFovRef.current = DEFAULT_FOV;
 
-        // ベジェ曲線の生成 (Start -> Control -> End)
         introCurveRef.current = new THREE.QuadraticBezierCurve3(INTRO_START_POS, INTRO_CONTROL_POINT, DEFAULT_POS);
 
-        // 瞬間移動 (Start)
         camera.position.copy(INTRO_START_POS);
         camera.lookAt(DEFAULT_LOOKAT);
         break;
@@ -172,10 +190,9 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
       case 'closeUp':
         if (cameraState.targetPosition) {
           const [tx, ty, tz] = cameraState.targetPosition;
-          // キャラの顔の高さ
-          const faceHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight - 0.2 : 1.25);
+          const faceHeight = calculateFaceHeight(ty, cameraState.targetHeight);
 
-          targetPosRef.current.set(tx, faceHeight, tz + 1.5);
+          targetPosRef.current.set(tx, faceHeight, tz + CLOSEUP_OFFSET_Z);
           targetLookAtRef.current.set(tx, faceHeight, tz);
           targetFovRef.current = CLOSEUP_FOV;
         } else {
@@ -188,8 +205,14 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
       case 'fullBody':
         if (cameraState.targetPosition) {
           const [tx, ty, tz] = cameraState.targetPosition;
-          const centerHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight * 0.5 : 0.8);
-          targetPosRef.current.set(tx, centerHeight, tz + 3.5);
+          const centerHeight = calculateCenterHeight(
+            ty,
+            cameraState.targetHeight,
+            CENTER_HEIGHT_RATIO,
+            DEFAULT_CENTER_HEIGHT
+          );
+
+          targetPosRef.current.set(tx, centerHeight, tz + FULLBODY_OFFSET_Z);
           targetLookAtRef.current.set(tx, centerHeight, tz);
           targetFovRef.current = FULLBODY_FOV;
         } else {
@@ -202,57 +225,67 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
       case 'lowAngle':
         if (cameraState.targetPosition) {
           const [tx, ty, tz] = cameraState.targetPosition;
-          const faceHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight - 0.2 : 1.25);
-          targetPosRef.current.set(tx, 0.5, tz + 2.0);
+          const faceHeight = calculateFaceHeight(ty, cameraState.targetHeight);
+
+          targetPosRef.current.set(tx, 0.5, tz + LOW_ANGLE_OFFSET_Z);
           targetLookAtRef.current.set(tx, faceHeight, tz);
           targetFovRef.current = CLOSEUP_FOV;
         } else {
           targetPosRef.current.copy(LOW_ANGLE_POS);
           targetLookAtRef.current.copy(LOW_ANGLE_LOOKAT);
-          targetFovRef.current = DEFAULT_FOV;
+          // Review Feedback: Consistency in FOV for angle shots
+          targetFovRef.current = CLOSEUP_FOV;
         }
         break;
 
       case 'highAngle':
         if (cameraState.targetPosition) {
           const [tx, ty, tz] = cameraState.targetPosition;
-          const centerHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight * 0.5 : 0.8);
-          const faceHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight - 0.2 : 1.25);
-          targetPosRef.current.set(tx, faceHeight + 0.5, tz + 1.5);
+          const centerHeight = calculateCenterHeight(
+            ty,
+            cameraState.targetHeight,
+            CENTER_HEIGHT_RATIO,
+            DEFAULT_CENTER_HEIGHT
+          );
+          const faceHeight = calculateFaceHeight(ty, cameraState.targetHeight);
+
+          targetPosRef.current.set(tx, faceHeight + 0.5, tz + HIGH_ANGLE_OFFSET_Z);
           targetLookAtRef.current.set(tx, centerHeight, tz);
           targetFovRef.current = CLOSEUP_FOV;
         } else {
           targetPosRef.current.copy(HIGH_ANGLE_POS);
           targetLookAtRef.current.copy(HIGH_ANGLE_LOOKAT);
-          targetFovRef.current = DEFAULT_FOV;
+          // Review Feedback: Consistency in FOV
+          targetFovRef.current = CLOSEUP_FOV;
         }
         break;
 
       case 'sideRight':
-        if (cameraState.targetPosition) {
-          const [tx, ty, tz] = cameraState.targetPosition;
-          const centerHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight * 0.6 : 1.0);
-          targetPosRef.current.set(tx + 1.2, centerHeight, tz + 2.0);
-          targetLookAtRef.current.set(tx, centerHeight, tz);
-          targetFovRef.current = CLOSEUP_FOV;
-        } else {
-          targetPosRef.current.copy(SIDE_RIGHT_POS);
-          targetLookAtRef.current.copy(DEFAULT_LOOKAT);
-          targetFovRef.current = DEFAULT_FOV;
-        }
-        break;
-
       case 'sideLeft':
         if (cameraState.targetPosition) {
           const [tx, ty, tz] = cameraState.targetPosition;
-          const centerHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight * 0.6 : 1.0);
-          targetPosRef.current.set(tx - 1.2, centerHeight, tz + 2.0);
+          const centerHeight = calculateCenterHeight(
+            ty,
+            cameraState.targetHeight,
+            SIDE_HEIGHT_RATIO,
+            SIDE_CENTER_HEIGHT_DEFAULT
+          );
+          const isRight = cameraState.mode === 'sideRight';
+          const directionMultiplier = isRight ? 1 : -1;
+
+          targetPosRef.current.set(
+            tx + SIDE_ANGLE_OFFSET_X * directionMultiplier,
+            centerHeight,
+            tz + SIDE_ANGLE_OFFSET_Z
+          );
           targetLookAtRef.current.set(tx, centerHeight, tz);
           targetFovRef.current = CLOSEUP_FOV;
         } else {
-          targetPosRef.current.copy(SIDE_LEFT_POS);
+          const pos = cameraState.mode === 'sideRight' ? SIDE_RIGHT_POS : SIDE_LEFT_POS;
+          targetPosRef.current.copy(pos);
           targetLookAtRef.current.copy(DEFAULT_LOOKAT);
-          targetFovRef.current = DEFAULT_FOV;
+          // Review Feedback: Consistency in FOV
+          targetFovRef.current = CLOSEUP_FOV;
         }
         break;
 
