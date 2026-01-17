@@ -16,6 +16,22 @@ const INTRO_START_POS = new THREE.Vector3(0, 5, 10);
 // CloseUp 設定
 const CLOSEUP_FOV = 40; // ズームイン時のFOV（狭い = ズーム）
 
+// FullBody (全身)
+const FULLBODY_POS = new THREE.Vector3(0, 1.0, 4.5);
+const FULLBODY_FOV = 50;
+
+// Low Angle (ローアングル/煽り)
+const LOW_ANGLE_POS = new THREE.Vector3(0, 0.5, 2.5);
+const LOW_ANGLE_LOOKAT = new THREE.Vector3(0, 1.3, 0);
+
+// High Angle (ハイアングル/俯瞰)
+const HIGH_ANGLE_POS = new THREE.Vector3(0, 1.8, 2.0);
+const HIGH_ANGLE_LOOKAT = new THREE.Vector3(0, 1.0, 0);
+
+// Side (斜め)
+const SIDE_RIGHT_POS = new THREE.Vector3(1.5, 1.2, 2.5);
+const SIDE_LEFT_POS = new THREE.Vector3(-1.5, 1.2, 2.5);
+
 interface CameraState {
   mode: string;
   targetId?: string;
@@ -116,6 +132,77 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
         } else {
           // ターゲットなしならデフォルトへ
           targetPosRef.current.copy(DEFAULT_POS);
+          targetLookAtRef.current.copy(DEFAULT_LOOKAT);
+          targetFovRef.current = DEFAULT_FOV;
+        }
+        break;
+
+      case 'fullBody':
+        if (cameraState.targetPosition) {
+          const [tx, ty, tz] = cameraState.targetPosition;
+          const centerHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight * 0.5 : 0.8);
+          targetPosRef.current.set(tx, centerHeight, tz + 3.5);
+          targetLookAtRef.current.set(tx, centerHeight, tz);
+          targetFovRef.current = 40;
+        } else {
+          targetPosRef.current.copy(FULLBODY_POS);
+          targetLookAtRef.current.copy(DEFAULT_LOOKAT);
+          targetFovRef.current = FULLBODY_FOV;
+        }
+        break;
+
+      case 'lowAngle':
+        if (cameraState.targetPosition) {
+          const [tx, ty, tz] = cameraState.targetPosition;
+          const faceHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight - 0.2 : 1.25);
+          targetPosRef.current.set(tx, 0.5, tz + 2.0);
+          targetLookAtRef.current.set(tx, faceHeight, tz);
+          targetFovRef.current = 40;
+        } else {
+          targetPosRef.current.copy(LOW_ANGLE_POS);
+          targetLookAtRef.current.copy(LOW_ANGLE_LOOKAT);
+          targetFovRef.current = DEFAULT_FOV;
+        }
+        break;
+
+      case 'highAngle':
+        if (cameraState.targetPosition) {
+          const [tx, ty, tz] = cameraState.targetPosition;
+          const centerHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight * 0.5 : 0.8);
+          const faceHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight - 0.2 : 1.25);
+          targetPosRef.current.set(tx, faceHeight + 0.5, tz + 1.5);
+          targetLookAtRef.current.set(tx, centerHeight, tz);
+          targetFovRef.current = 40;
+        } else {
+          targetPosRef.current.copy(HIGH_ANGLE_POS);
+          targetLookAtRef.current.copy(HIGH_ANGLE_LOOKAT);
+          targetFovRef.current = DEFAULT_FOV;
+        }
+        break;
+
+      case 'sideRight':
+        if (cameraState.targetPosition) {
+          const [tx, ty, tz] = cameraState.targetPosition;
+          const centerHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight * 0.6 : 1.0);
+          targetPosRef.current.set(tx + 1.2, centerHeight, tz + 2.0);
+          targetLookAtRef.current.set(tx, centerHeight, tz);
+          targetFovRef.current = 40;
+        } else {
+          targetPosRef.current.copy(SIDE_RIGHT_POS);
+          targetLookAtRef.current.copy(DEFAULT_LOOKAT);
+          targetFovRef.current = DEFAULT_FOV;
+        }
+        break;
+
+      case 'sideLeft':
+        if (cameraState.targetPosition) {
+          const [tx, ty, tz] = cameraState.targetPosition;
+          const centerHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight * 0.6 : 1.0);
+          targetPosRef.current.set(tx - 1.2, centerHeight, tz + 2.0);
+          targetLookAtRef.current.set(tx, centerHeight, tz);
+          targetFovRef.current = 40;
+        } else {
+          targetPosRef.current.copy(SIDE_LEFT_POS);
           targetLookAtRef.current.copy(DEFAULT_LOOKAT);
           targetFovRef.current = DEFAULT_FOV;
         }

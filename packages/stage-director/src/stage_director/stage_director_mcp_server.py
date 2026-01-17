@@ -83,7 +83,8 @@ async def control_camera(mode: str, target_id: str = "", duration: float = 1.0) 
     Control the vtube-stage camera.
 
     Args:
-        mode: The camera mode (e.g., "default", "closeUp", "intro").
+        mode: The camera mode ("default", "intro", "closeUp", "fullBody", "lowAngle", "highAngle", "sideRight",
+              "sideLeft").
         target_id: The ID of the target to focus on (optional).
         duration: The duration of the camera transition in seconds (default: 1.0).
     """
