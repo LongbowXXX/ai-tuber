@@ -120,7 +120,7 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
   return (
     <SidebarContainer>
       <Typography variant="h6" component="h3">
-        Stage Controls &amp; Status
+        Stage Controls & Status
       </Typography>
 
       {/* Connection Status */}
