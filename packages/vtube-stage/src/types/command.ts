@@ -115,7 +115,7 @@ export class DisplayMarkdownCommand extends BaseCommand<'displayMarkdown', Displ
 export class ControlCameraPayload {
   @IsString()
   @IsDefined()
-  mode!: 'default' | 'intro' | 'closeUp';
+  mode!: 'default' | 'intro' | 'closeUp' | 'fullBody' | 'lowAngle' | 'highAngle' | 'sideRight' | 'sideLeft';
 
   @IsString()
   @IsOptional()

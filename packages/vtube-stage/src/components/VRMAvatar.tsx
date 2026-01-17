@@ -8,6 +8,8 @@ import { playVoice } from '../services/tts_service';
 import { useVrmModel } from '../hooks/useVrmModel';
 import { SpeakMessage } from '../types/avatar_types';
 import { useFacialExpression } from '../hooks/useFacialExpression';
+import { useAvatarLookAt } from '../hooks/useAvatarLookAt';
+import { useAvatarBlink } from '../hooks/useAvatarBlink';
 
 // --- Constants ---
 const ANIMATION_FADE_DURATION = 0.3;
@@ -167,15 +169,19 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   }, [currentAnimationName, loadedAnimationNames, id, onAnimationEnd, createAnimationClipFromVRMA]);
 
   const { updateExpressions } = useFacialExpression(isLoaded ? vrmRef.current : null, current_emotion, isTtsSpeaking);
+  const { lookAtTargetRef, updateLookAt } = useAvatarLookAt(isLoaded ? vrmRef.current : null, isLoaded);
+  const { updateBlink } = useAvatarBlink(isLoaded ? vrmRef.current : null, current_emotion);
 
   // --- Frame Update ---
-  useFrame((_state, delta) => {
+  useFrame((state, delta) => {
     const vrm = vrmRef.current;
-    if (vrm) {
+    if (vrm && lookAtTargetRef.current) {
       updateExpressions();
       mixer.current?.update(delta); // Update animation mixer
+      updateLookAt(state);
+      updateBlink(delta);
       vrm.update(delta); // Update VRM internal state (expressions, lookAt, physics)
-    } // <-- Added missing closing brace
+    }
   });
 
   // TTS再生関数（onPlayコールバック対応）
@@ -209,8 +215,10 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   // Render only when VRM is loaded, applying the position
   return isLoaded && vrmRef.current ? (
     <primitive object={gltf.scene} position={position} dispose={null}>
-      {/* Add SpeechBubble as a child, positioned relative to the avatar */}
+      {/* LookAt Target Object (Scene Graphに追加しておくことでworldMatrixが更新される) */}
+      <primitive object={lookAtTargetRef.current} />
 
+      {/* Add SpeechBubble as a child, positioned relative to the avatar */}
       {bubbleText && <SpeechBubble message={bubbleText} position={[0, height || 1.8, 0]} />}
     </primitive>
   ) : null;

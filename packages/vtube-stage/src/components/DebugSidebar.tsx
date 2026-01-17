@@ -56,7 +56,7 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
   isConnected,
 }) => {
   // カメラコントロール用ローカル状態
-  const [cameraMode, setCameraMode] = React.useState<'default' | 'intro' | 'closeUp'>('default');
+  const [cameraMode, setCameraMode] = React.useState<string>('default');
   const [targetId, setTargetId] = React.useState<string>('');
 
   // カメラ位置変更を適用
@@ -65,7 +65,7 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
       ...prevStage,
       camera: {
         mode: cameraMode,
-        targetId: cameraMode === 'closeUp' ? targetId : undefined,
+        targetId: cameraMode !== 'default' && cameraMode !== 'intro' ? targetId : undefined,
         duration: 1, // 秒単位
         timestamp: Date.now(),
       },
@@ -147,14 +147,19 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
               labelId="camera-mode-label"
               value={cameraMode}
               label="Mode"
-              onChange={e => setCameraMode(e.target.value as 'default' | 'intro' | 'closeUp')}
+              onChange={e => setCameraMode(e.target.value)}
             >
               <MenuItem value="default">Default</MenuItem>
               <MenuItem value="intro">Intro</MenuItem>
               <MenuItem value="closeUp">Close Up</MenuItem>
+              <MenuItem value="fullBody">Full Body</MenuItem>
+              <MenuItem value="lowAngle">Low Angle</MenuItem>
+              <MenuItem value="highAngle">High Angle</MenuItem>
+              <MenuItem value="sideRight">Side Right</MenuItem>
+              <MenuItem value="sideLeft">Side Left</MenuItem>
             </Select>
           </FormControl>
-          {cameraMode === 'closeUp' && (
+          {cameraMode !== 'default' && cameraMode !== 'intro' && (
             <FormControl size="small" fullWidth>
               <InputLabel id="target-id-label">Target</InputLabel>
               <Select
