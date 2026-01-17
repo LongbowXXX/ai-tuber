@@ -1,11 +1,12 @@
 // src/components/SceneContent.tsx
 import React, { useRef, useEffect, useMemo } from 'react';
-import { OrbitControls, Environment, Sparkles, ContactShadows } from '@react-three/drei';
+import { OrbitControls, Environment, MeshReflectorMaterial, Float, Text } from '@react-three/drei';
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import { VRMAvatar } from './VRMAvatar';
 import { VRM } from '@pixiv/three-vrm';
 import { AvatarState } from '../types/avatar_types';
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import { CustomSparkles } from './CustomSparkles';
 
 // Define a type for the data needed for each avatar
 interface AvatarData extends AvatarState {
@@ -67,24 +68,55 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
       />
 
       {/* 3. エフェクト（パーティクル） */}
-      <Sparkles count={50} scale={4} size={4} speed={0.4} opacity={0.5} color={sparkleColor} position={[0, 1, 0]} />
+      {/* CustomSparkles に置き換え: 四角い枠問題を解消 */}
+      <CustomSparkles color={sparkleColor} count={60} />
 
-      {/* 4. 床の改善: PlaneGeometryの代わりにContactShadowsを使用 */}
-      {/* 元のmesh床は削除または非表示にし、より自然な影を落とす */}
-      <ContactShadows
-        opacity={0.7}
-        scale={10}
-        blur={1.5}
-        far={4}
-        resolution={512}
-        color="#000000"
-        position={[0, 0.01, 0]}
-      />
+      {/* 4. 床の改善: MeshReflectorMaterialで鏡面反射 */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
+        <planeGeometry args={[10, 10]} />
+        <MeshReflectorMaterial
+          blur={[300, 100]}
+          resolution={1024}
+          mixBlur={1}
+          mixStrength={40}
+          roughness={1}
+          depthScale={1.2}
+          minDepthThreshold={0.4}
+          maxDepthThreshold={1.4}
+          color="#101010"
+          metalness={0.5}
+          mirror={0.5}
+        />
+      </mesh>
+
+      {/* 5. 空間演出: 浮遊するテキストとオブジェクト */}
+      <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+        <Text
+          fontSize={0.5}
+          color="#00FFFF"
+          position={[-2, 1.5, -2]}
+          rotation={[0, 0.5, 0]}
+          font="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYAZ9hjp-Ek-_EeA.woff"
+          anchorX="center"
+          anchorY="middle"
+        >
+          ON AIR
+        </Text>
+      </Float>
+
+      <Float speed={3} rotationIntensity={1} floatIntensity={0.5}>
+        <mesh position={[2, 1, -1]}>
+          <torusGeometry args={[0.3, 0.1, 16, 32]} />
+          <meshStandardMaterial color="hotpink" emissive="hotpink" emissiveIntensity={2} />
+        </mesh>
+      </Float>
+
       {/* アバター描画 */}
       {avatars.map(avatar => (
         <VRMAvatar key={avatar.id} {...avatar} onLoad={onAvatarLoad ? () => onAvatarLoad(avatar.id) : undefined} />
       ))}
-      {/* 5. ポストプロセス効果: 画面全体のクオリティアップ */}
+
+      {/* 6. ポストプロセス効果: 画面全体のクオリティアップ */}
       <EffectComposer>
         {/* Bloom: 明るい部分を光らせる（アニメ調の肌や目に効果的） */}
         <Bloom
