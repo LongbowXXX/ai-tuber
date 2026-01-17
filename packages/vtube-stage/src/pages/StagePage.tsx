@@ -47,11 +47,11 @@ const LoadingOverlay = styled.div`
   color: #333;
 `;
 
-const MarkdownOverlay = styled.div<{ isCloseUp?: boolean }>`
+const MarkdownOverlay = styled.div<{ $isCloseUp?: boolean }>`
   position: absolute;
   bottom: 2%;
-  left: ${props => (props.isCloseUp ? '20px' : '50%')};
-  transform: ${props => (props.isCloseUp ? 'none' : 'translateX(-50%)')};
+  left: ${props => (props.$isCloseUp ? '20px' : '50%')};
+  transform: ${props => (props.$isCloseUp ? 'none' : 'translateX(-50%)')};
   background: rgba(0, 80, 0, 0.7);
   color: white;
   a:link { color: white; }
@@ -60,7 +60,7 @@ const MarkdownOverlay = styled.div<{ isCloseUp?: boolean }>`
   a:active { color: white; }
   padding: 8px;
   border-radius: 8px;
-  max-width: ${props => (props.isCloseUp ? '40%' : '80%')};
+  max-width: ${props => (props.$isCloseUp ? '40%' : '80%')};
   max-height: 80%;
   text-align: left;
   font-size: 1.0rem;
@@ -156,7 +156,7 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, setSt
         </Canvas>
         {/* Markdown Overlay */}
         {stage.currentMarkdownText && (
-          <MarkdownOverlay isCloseUp={stage.camera?.mode === 'closeUp'}>
+          <MarkdownOverlay $isCloseUp={stage.camera?.mode === 'closeUp'}>
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{stage.currentMarkdownText}</ReactMarkdown>
           </MarkdownOverlay>
         )}
