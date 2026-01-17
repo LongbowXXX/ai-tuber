@@ -2,44 +2,24 @@ import { useThree, useFrame } from '@react-three/fiber';
 import { useRef, useEffect, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
-
-// カメラアニメーションのデフォルト所要時間（秒）
-const DEFAULT_DURATION = 1.0;
-// デフォルト (定位置)
-const DEFAULT_POS = new THREE.Vector3(0, 1.2, 3);
-const DEFAULT_LOOKAT = new THREE.Vector3(0, 1, 0);
-const DEFAULT_FOV = 50;
-
-// Intro (上空)
-const INTRO_START_POS = new THREE.Vector3(0, 5, 10);
-
-// CloseUp 設定
-const CLOSEUP_FOV = 40; // ズームイン時のFOV（狭い = ズーム）
-
-// FullBody (全身)
-const FULLBODY_POS = new THREE.Vector3(0, 1.0, 4.5);
-const FULLBODY_FOV = 50;
-
-// Low Angle (ローアングル/煽り)
-const LOW_ANGLE_POS = new THREE.Vector3(0, 0.5, 2.5);
-const LOW_ANGLE_LOOKAT = new THREE.Vector3(0, 1.3, 0);
-
-// High Angle (ハイアングル/俯瞰)
-const HIGH_ANGLE_POS = new THREE.Vector3(0, 1.8, 2.0);
-const HIGH_ANGLE_LOOKAT = new THREE.Vector3(0, 1.0, 0);
-
-// Side (斜め)
-const SIDE_RIGHT_POS = new THREE.Vector3(1.5, 1.2, 2.5);
-const SIDE_LEFT_POS = new THREE.Vector3(-1.5, 1.2, 2.5);
-
-interface CameraState {
-  mode: string;
-  targetId?: string;
-  targetPosition?: [number, number, number]; // ターゲットアバターの位置
-  targetHeight?: number; // ターゲットアバターの身長（または高さ）
-  duration?: number;
-  timestamp: number; // 更新検知用
-}
+import { CameraShake } from '@react-three/drei';
+import {
+  CameraState,
+  DEFAULT_DURATION,
+  DEFAULT_FOV,
+  DEFAULT_LOOKAT,
+  DEFAULT_POS,
+  INTRO_START_POS,
+  CLOSEUP_FOV,
+  FULLBODY_POS,
+  FULLBODY_FOV,
+  LOW_ANGLE_POS,
+  LOW_ANGLE_LOOKAT,
+  HIGH_ANGLE_POS,
+  HIGH_ANGLE_LOOKAT,
+  SIDE_RIGHT_POS,
+  SIDE_LEFT_POS,
+} from './CameraConfig';
 
 export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ cameraState }) => {
   const { camera, controls } = useThree();
@@ -58,6 +38,17 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
 
   const lastTimestampRef = useRef<number>(0);
 
+  // Shake Configuration State
+  const [shakeConfig, setShakeConfig] = useState({
+    maxYaw: 0.05,
+    maxPitch: 0.05,
+    maxRoll: 0.05,
+    yawFrequency: 0.5,
+    pitchFrequency: 0.5,
+    rollFrequency: 0.5,
+    intensity: 0, // Default to 0, enabled by mode
+  });
+
   // OrbitControls への参照を取得
   const getOrbitControls = useCallback((): OrbitControlsImpl | null => {
     if (controls && controls instanceof OrbitControlsImpl) {
@@ -65,6 +56,57 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
     }
     return null;
   }, [controls]);
+
+  // モードごとのシェイク設定を決定
+  const updateShakeConfig = useCallback((mode: string) => {
+    switch (mode) {
+      case 'intro':
+        // Intro時は揺らさない（または非常にゆっくり）
+        setShakeConfig(prev => ({ ...prev, intensity: 0 }));
+        break;
+      case 'closeUp':
+        // CloseUp: 緊張感のある手持ち感（小刻み）
+        setShakeConfig({
+          maxYaw: 0.02,
+          maxPitch: 0.02,
+          maxRoll: 0.02,
+          yawFrequency: 0.8,
+          pitchFrequency: 0.8,
+          rollFrequency: 0.8,
+          intensity: 1.0,
+        });
+        break;
+      case 'lowAngle':
+      case 'highAngle':
+      case 'sideRight':
+      case 'sideLeft':
+        // アングルショット: ゆったりとした浮遊感
+        setShakeConfig({
+          maxYaw: 0.05,
+          maxPitch: 0.05,
+          maxRoll: 0.05,
+          yawFrequency: 0.3,
+          pitchFrequency: 0.3,
+          rollFrequency: 0.3,
+          intensity: 0.8,
+        });
+        break;
+      case 'default':
+      case 'fullBody':
+      default:
+        // Default: 呼吸のような極めて微細な揺れ
+        setShakeConfig({
+          maxYaw: 0.01,
+          maxPitch: 0.01,
+          maxRoll: 0.01,
+          yawFrequency: 0.2,
+          pitchFrequency: 0.2,
+          rollFrequency: 0.2,
+          intensity: 0.5,
+        });
+        break;
+    }
+  }, []);
 
   // カメラ状態が更新されたらアニメーション開始
   useEffect(() => {
@@ -101,16 +143,20 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
     // モードに応じた目標位置・視点設定
     durationRef.current = cameraState.duration || DEFAULT_DURATION;
 
+    // シェイク設定の更新
+    updateShakeConfig(cameraState.mode);
+
     switch (cameraState.mode) {
       case 'intro':
-        // Intro: 上空から定位置へ
+        // Intro: 上空から定位置へ (Crane shot style)
+        // 始点を Config から取得
         startPosRef.current.copy(INTRO_START_POS);
-        startLookAtRef.current.copy(DEFAULT_LOOKAT);
+        startLookAtRef.current.copy(DEFAULT_LOOKAT); // 見下ろす
         targetPosRef.current.copy(DEFAULT_POS);
         targetLookAtRef.current.copy(DEFAULT_LOOKAT);
         targetFovRef.current = DEFAULT_FOV;
 
-        // 瞬間移動させる
+        // 瞬間移動させる (アニメーションスタート地点へ)
         camera.position.copy(INTRO_START_POS);
         camera.lookAt(DEFAULT_LOOKAT);
         break;
@@ -118,19 +164,13 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
       case 'closeUp':
         if (cameraState.targetPosition) {
           const [tx, ty, tz] = cameraState.targetPosition;
-
-          // キャラの顔の高さ（身長から0.2m程度下と仮定、またはデフォルト1.25m）
+          // キャラの顔の高さ
           const faceHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight - 0.2 : 1.25);
 
-          // カメラ位置: ターゲットの正面に移動（少し離れた位置）
-          // Z軸正方向がカメラ側と仮定
           targetPosRef.current.set(tx, faceHeight, tz + 1.5);
-          targetLookAtRef.current.set(tx, faceHeight, tz); // 顔の高さを直接見る
-
-          // ズームイン（FOVを狭くする）
+          targetLookAtRef.current.set(tx, faceHeight, tz);
           targetFovRef.current = CLOSEUP_FOV;
         } else {
-          // ターゲットなしならデフォルトへ
           targetPosRef.current.copy(DEFAULT_POS);
           targetLookAtRef.current.copy(DEFAULT_LOOKAT);
           targetFovRef.current = DEFAULT_FOV;
@@ -143,7 +183,7 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
           const centerHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight * 0.5 : 0.8);
           targetPosRef.current.set(tx, centerHeight, tz + 3.5);
           targetLookAtRef.current.set(tx, centerHeight, tz);
-          targetFovRef.current = 40;
+          targetFovRef.current = FULLBODY_FOV;
         } else {
           targetPosRef.current.copy(FULLBODY_POS);
           targetLookAtRef.current.copy(DEFAULT_LOOKAT);
@@ -157,7 +197,7 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
           const faceHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight - 0.2 : 1.25);
           targetPosRef.current.set(tx, 0.5, tz + 2.0);
           targetLookAtRef.current.set(tx, faceHeight, tz);
-          targetFovRef.current = 40;
+          targetFovRef.current = CLOSEUP_FOV;
         } else {
           targetPosRef.current.copy(LOW_ANGLE_POS);
           targetLookAtRef.current.copy(LOW_ANGLE_LOOKAT);
@@ -172,7 +212,7 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
           const faceHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight - 0.2 : 1.25);
           targetPosRef.current.set(tx, faceHeight + 0.5, tz + 1.5);
           targetLookAtRef.current.set(tx, centerHeight, tz);
-          targetFovRef.current = 40;
+          targetFovRef.current = CLOSEUP_FOV;
         } else {
           targetPosRef.current.copy(HIGH_ANGLE_POS);
           targetLookAtRef.current.copy(HIGH_ANGLE_LOOKAT);
@@ -186,7 +226,7 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
           const centerHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight * 0.6 : 1.0);
           targetPosRef.current.set(tx + 1.2, centerHeight, tz + 2.0);
           targetLookAtRef.current.set(tx, centerHeight, tz);
-          targetFovRef.current = 40;
+          targetFovRef.current = CLOSEUP_FOV;
         } else {
           targetPosRef.current.copy(SIDE_RIGHT_POS);
           targetLookAtRef.current.copy(DEFAULT_LOOKAT);
@@ -200,7 +240,7 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
           const centerHeight = ty + (cameraState.targetHeight ? cameraState.targetHeight * 0.6 : 1.0);
           targetPosRef.current.set(tx - 1.2, centerHeight, tz + 2.0);
           targetLookAtRef.current.set(tx, centerHeight, tz);
-          targetFovRef.current = 40;
+          targetFovRef.current = CLOSEUP_FOV;
         } else {
           targetPosRef.current.copy(SIDE_LEFT_POS);
           targetLookAtRef.current.copy(DEFAULT_LOOKAT);
@@ -218,7 +258,7 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
 
     startTimeRef.current = null; // 次のフレームで開始時刻設定
     setAnimating(true);
-  }, [cameraState, camera, getOrbitControls]);
+  }, [cameraState, camera, getOrbitControls, updateShakeConfig]);
 
   useFrame(() => {
     if (!animating) return;
@@ -231,8 +271,9 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
     const elapsed = (performance.now() - startTimeRef.current) / 1000;
     const t = Math.min(elapsed / durationRef.current, 1);
 
-    // Easing (SmoothStep)
-    const smoothT = t * t * (3 - 2 * t);
+    // Improved Easing: SmootherStep (Ken Perlin's version)
+    // t * t * t * (t * (t * 6 - 15) + 10)
+    const smoothT = t * t * t * (t * (t * 6 - 15) + 10);
 
     camera.position.lerpVectors(startPosRef.current, targetPosRef.current, smoothT);
 
@@ -268,5 +309,15 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
     }
   });
 
-  return null;
+  return (
+    <CameraShake
+      maxYaw={shakeConfig.maxYaw}
+      maxPitch={shakeConfig.maxPitch}
+      maxRoll={shakeConfig.maxRoll}
+      yawFrequency={shakeConfig.yawFrequency}
+      pitchFrequency={shakeConfig.pitchFrequency}
+      rollFrequency={shakeConfig.rollFrequency}
+      intensity={shakeConfig.intensity}
+    />
+  );
 };
