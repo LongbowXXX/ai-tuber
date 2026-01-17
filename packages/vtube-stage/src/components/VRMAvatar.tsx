@@ -8,6 +8,8 @@ import { playVoice } from '../services/tts_service';
 import { useVrmModel } from '../hooks/useVrmModel';
 import { SpeakMessage } from '../types/avatar_types';
 import { useFacialExpression } from '../hooks/useFacialExpression';
+import { useAvatarLookAt } from '../hooks/useAvatarLookAt';
+import { useAvatarBlink } from '../hooks/useAvatarBlink';
 
 // --- Constants ---
 const ANIMATION_FADE_DURATION = 0.3;
@@ -47,9 +49,6 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   const currentAction = useRef<THREE.AnimationAction | null>(null);
   const [bubbleText, setBubbleText] = useState<SpeakMessage | null>(null);
   const animationTimeoutRef = useRef<number | null>(null); // 3秒タイマー用ref: number型に修正
-  const blinkTimerRef = useRef<number>(Math.random() * 2 + 1); // 瞬きタイマー
-  const isBlinkingRef = useRef<boolean>(false);
-  const blinkProgressRef = useRef<number>(0);
 
   const [isTtsSpeaking, setIsTtsSpeaking] = useState(false);
 
@@ -170,19 +169,8 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   }, [currentAnimationName, loadedAnimationNames, id, onAnimationEnd, createAnimationClipFromVRMA]);
 
   const { updateExpressions } = useFacialExpression(isLoaded ? vrmRef.current : null, current_emotion, isTtsSpeaking);
-
-  // --- LookAt Target Setup ---
-  const lookAtTargetRef = useRef<THREE.Object3D>(new THREE.Object3D());
-
-  useEffect(() => {
-    if (isLoaded && vrmRef.current) {
-      const vrm = vrmRef.current;
-      if (vrm.lookAt) {
-        vrm.lookAt.target = lookAtTargetRef.current;
-      }
-      console.log('Set vrm.lookAt.target');
-    }
-  }, [isLoaded, vrmRef]);
+  const { lookAtTargetRef, updateLookAt } = useAvatarLookAt(isLoaded ? vrmRef.current : null, isLoaded);
+  const { updateBlink } = useAvatarBlink(isLoaded ? vrmRef.current : null, current_emotion);
 
   // --- Frame Update ---
   useFrame((state, delta) => {
@@ -190,105 +178,8 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     if (vrm && lookAtTargetRef.current) {
       updateExpressions();
       mixer.current?.update(delta); // Update animation mixer
-
-      // --- LookAt Logic with Limits ---
-      const camera = state.camera;
-      const headNode = vrm.humanoid.getNormalizedBoneNode('head');
-
-      if (headNode) {
-        // カメラのワールド位置を取得
-        const cameraPos = camera.position.clone();
-
-        // アバターのルート（VRMのシーン）の逆行列を使って、カメラ位置をローカル座標系に変換
-        // これにより、アバターが回転していても正しく相対角度を計算できる
-        const localCameraPos = vrm.scene.worldToLocal(cameraPos);
-
-        // 球面座標系に変換して角度制限をかける
-        // VRMの座標系（VRM0.0はZ+向きが正面となるようロード時に回転されている前提だが、要調整）
-        // three-vrmでロードし RotateVRM0 している場合、Z+が正面
-
-        // より正確には、Headボーンのワールド位置をルートローカルに変換して差分をとるのが良い
-        const headWorldPos = new THREE.Vector3();
-        headNode.getWorldPosition(headWorldPos);
-        const localHeadPos = vrm.scene.worldToLocal(headWorldPos);
-
-        const targetDir = new THREE.Vector3().subVectors(localCameraPos, localHeadPos);
-
-        // Yaw (左右) 計算
-        let yaw = Math.atan2(targetDir.x, targetDir.z);
-        // Pitch (上下) 計算
-        const xzLen = Math.sqrt(targetDir.x * targetDir.x + targetDir.z * targetDir.z);
-        let pitch = Math.atan2(targetDir.y, xzLen);
-
-        // 角度制限 (ラジアン)
-        const YAW_LIMIT = 50 * (Math.PI / 180); // 左右 50度
-        const PITCH_LIMIT = 30 * (Math.PI / 180); // 上下 30度
-
-        yaw = THREE.MathUtils.clamp(yaw, -YAW_LIMIT, YAW_LIMIT);
-        pitch = THREE.MathUtils.clamp(pitch, -PITCH_LIMIT, PITCH_LIMIT);
-
-        // 制限した角度から位置を再計算 (距離は元のままでよい、あるいは一定距離前方に置く)
-        // ここではターゲット位置を実際のカメラ距離と同じにして視差ボケ等を自然にする
-        const distance = targetDir.length();
-
-        const clampedDir = new THREE.Vector3(
-          Math.sin(yaw) * Math.cos(pitch),
-          Math.sin(pitch),
-          Math.cos(yaw) * Math.cos(pitch)
-        ).multiplyScalar(distance);
-
-        // 最終的なターゲット位置（ローカル）
-        const finalLocalPos = new THREE.Vector3().addVectors(localHeadPos, clampedDir);
-
-        // lookAtTargetRefの位置を更新
-        lookAtTargetRef.current.position.copy(finalLocalPos);
-      }
-
-      // --- Blinking Logic ---
-      if (current_emotion === 'happy') {
-        // happyのときは瞬きしない（笑顔で目が細くなっているため干渉を防ぐ）
-        if (vrm.expressionManager) {
-          vrm.expressionManager.setValue('blink', 0);
-        }
-        // 次の瞬きまでの時間をリセット
-        blinkTimerRef.current = Math.random() * 2 + 1;
-      } else {
-        // happy以外のときはランダムに瞬き
-        if (blinkTimerRef.current > 0) {
-          blinkTimerRef.current -= delta;
-          vrm.expressionManager?.setValue('blink', 0); // 待機中は0
-        } else {
-          // 瞬き開始
-          if (!isBlinkingRef.current) {
-            isBlinkingRef.current = true;
-            blinkProgressRef.current = 0;
-          }
-
-          blinkProgressRef.current += delta;
-          // 瞬きアニメーション (閉じる -> 開く) Total 0.2sくらい
-          const BLINK_DURATION = 0.2;
-          if (blinkProgressRef.current < BLINK_DURATION) {
-            // 0.0 -> 0.1 (閉じ) -> 0.2 (開き)
-            // 0.1の時点で1.0(完閉)になるように
-            let weight = 0;
-            if (blinkProgressRef.current < BLINK_DURATION / 2) {
-              // 閉じていく
-              weight = blinkProgressRef.current / (BLINK_DURATION / 2);
-            } else {
-              // 開いていく
-              weight = 1 - (blinkProgressRef.current - BLINK_DURATION / 2) / (BLINK_DURATION / 2);
-            }
-            vrm.expressionManager?.setValue('blink', Math.min(1.0, Math.max(0, weight)));
-          } else {
-            // 瞬き完了
-            isBlinkingRef.current = false;
-            vrm.expressionManager?.setValue('blink', 0);
-            // 次の瞬き時間をセット (2~6秒後)
-            blinkTimerRef.current = Math.random() * 4 + 2;
-          }
-        }
-      }
-
+      updateLookAt(state);
+      updateBlink(delta);
       vrm.update(delta); // Update VRM internal state (expressions, lookAt, physics)
     }
   });
