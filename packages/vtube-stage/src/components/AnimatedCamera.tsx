@@ -10,6 +10,7 @@ import {
   DEFAULT_LOOKAT,
   DEFAULT_POS,
   INTRO_START_POS,
+  INTRO_CONTROL_POINT,
   CLOSEUP_FOV,
   FULLBODY_POS,
   FULLBODY_FOV,
@@ -27,10 +28,14 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
 
   const startTimeRef = useRef<number | null>(null);
   const startPosRef = useRef<THREE.Vector3>(new THREE.Vector3());
+
   const startLookAtRef = useRef<THREE.Vector3>(new THREE.Vector3());
   const targetPosRef = useRef<THREE.Vector3>(new THREE.Vector3());
   const targetLookAtRef = useRef<THREE.Vector3>(new THREE.Vector3());
   const durationRef = useRef(DEFAULT_DURATION);
+
+  // Curve for Intro
+  const introCurveRef = useRef<THREE.QuadraticBezierCurve3 | null>(null);
 
   // FOV アニメーション用
   const startFovRef = useRef<number>(DEFAULT_FOV);
@@ -148,15 +153,18 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
 
     switch (cameraState.mode) {
       case 'intro':
-        // Intro: 上空から定位置へ (Crane shot style)
+        // Intro: 上空から定位置へ (Spiral Crane Shot)
         // 始点を Config から取得
         startPosRef.current.copy(INTRO_START_POS);
-        startLookAtRef.current.copy(DEFAULT_LOOKAT); // 見下ろす
+        startLookAtRef.current.copy(DEFAULT_LOOKAT);
         targetPosRef.current.copy(DEFAULT_POS);
         targetLookAtRef.current.copy(DEFAULT_LOOKAT);
         targetFovRef.current = DEFAULT_FOV;
 
-        // 瞬間移動させる (アニメーションスタート地点へ)
+        // ベジェ曲線の生成 (Start -> Control -> End)
+        introCurveRef.current = new THREE.QuadraticBezierCurve3(INTRO_START_POS, INTRO_CONTROL_POINT, DEFAULT_POS);
+
+        // 瞬間移動 (Start)
         camera.position.copy(INTRO_START_POS);
         camera.lookAt(DEFAULT_LOOKAT);
         break;
@@ -273,9 +281,17 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
 
     // Improved Easing: SmootherStep (Ken Perlin's version)
     // t * t * t * (t * (t * 6 - 15) + 10)
+    // Introの場合は、少しゆっくり見せるために easeOutQuart (1 - (1-x)^4) なども良いが、まずは統一感を重視
     const smoothT = t * t * t * (t * (t * 6 - 15) + 10);
 
-    camera.position.lerpVectors(startPosRef.current, targetPosRef.current, smoothT);
+    if (cameraState?.mode === 'intro' && introCurveRef.current) {
+      // Curveに沿って移動
+      const point = introCurveRef.current.getPoint(smoothT);
+      camera.position.copy(point);
+    } else {
+      // 通常の直線移動
+      camera.position.lerpVectors(startPosRef.current, targetPosRef.current, smoothT);
+    }
 
     // LookAtの補間
     const currentLookAt = new THREE.Vector3().lerpVectors(startLookAtRef.current, targetLookAtRef.current, smoothT);

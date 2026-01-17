@@ -9,8 +9,10 @@ export const DEFAULT_LOOKAT = new THREE.Vector3(0, 1, 0);
 export const DEFAULT_FOV = 50;
 
 // Intro (Crane shot start position)
-// スタート位置をより高く、遠く設定して、クレーンショットのように降りてくる演出にする
-export const INTRO_START_POS = new THREE.Vector3(0, 6, 8);
+// スタート: ステージ斜め後方の上空 (Spiral Start)
+export const INTRO_START_POS = new THREE.Vector3(5, 4, 8);
+// ベジェ曲線の制御点 (大きく回り込むための点)
+export const INTRO_CONTROL_POINT = new THREE.Vector3(-4, 6, 6);
 
 // FullBody (全身)
 export const FULLBODY_POS = new THREE.Vector3(0, 1.0, 4.5);
