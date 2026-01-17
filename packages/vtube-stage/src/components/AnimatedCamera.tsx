@@ -249,7 +249,7 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
           );
           const faceHeight = calculateFaceHeight(ty, cameraState.targetHeight);
 
-          targetPosRef.current.set(tx, faceHeight + 0.5, tz + HIGH_ANGLE_OFFSET_Z);
+          targetPosRef.current.set(tx, faceHeight + 1.3, tz + HIGH_ANGLE_OFFSET_Z);
           targetLookAtRef.current.set(tx, centerHeight, tz);
           targetFovRef.current = CLOSEUP_FOV;
         } else {

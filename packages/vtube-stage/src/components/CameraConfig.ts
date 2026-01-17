@@ -23,7 +23,7 @@ export const LOW_ANGLE_POS = new THREE.Vector3(0, 0.5, 2.5);
 export const LOW_ANGLE_LOOKAT = new THREE.Vector3(0, 1.3, 0);
 
 // High Angle (ハイアングル/俯瞰)
-export const HIGH_ANGLE_POS = new THREE.Vector3(0, 1.8, 2.0);
+export const HIGH_ANGLE_POS = new THREE.Vector3(0, 2.5, 3.5);
 export const HIGH_ANGLE_LOOKAT = new THREE.Vector3(0, 1.0, 0);
 
 // Side (斜め)
@@ -42,7 +42,7 @@ export const SIDE_CENTER_HEIGHT_DEFAULT = 1.0; // Default center height for side
 export const CLOSEUP_OFFSET_Z = 1.5;
 export const FULLBODY_OFFSET_Z = 3.5;
 export const LOW_ANGLE_OFFSET_Z = 2.0;
-export const HIGH_ANGLE_OFFSET_Z = 1.5;
+export const HIGH_ANGLE_OFFSET_Z = 2.5;
 export const SIDE_ANGLE_OFFSET_X = 1.2;
 export const SIDE_ANGLE_OFFSET_Z = 2.0;
 
