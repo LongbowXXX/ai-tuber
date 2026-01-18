@@ -169,7 +169,11 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   }, [currentAnimationName, loadedAnimationNames, id, onAnimationEnd, createAnimationClipFromVRMA]);
 
   const { updateExpressions } = useFacialExpression(isLoaded ? vrmRef.current : null, current_emotion, isTtsSpeaking);
-  const { lookAtTargetRef, updateLookAt } = useAvatarLookAt(isLoaded ? vrmRef.current : null, isLoaded);
+  const { lookAtTargetRef, updateLookAt } = useAvatarLookAt(
+    isLoaded ? vrmRef.current : null,
+    isLoaded,
+    currentAnimationName
+  );
   const { updateBlink } = useAvatarBlink(isLoaded ? vrmRef.current : null, current_emotion);
 
   // --- Frame Update ---

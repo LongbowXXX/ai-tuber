@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { VRM } from '@pixiv/three-vrm';
 import { RootState } from '@react-three/fiber';
 
-export const useAvatarLookAt = (vrm: VRM | null, isLoaded: boolean) => {
+export const useAvatarLookAt = (vrm: VRM | null, isLoaded: boolean, currentAnimationName: string | null) => {
   const lookAtTargetRef = useRef<THREE.Object3D>(new THREE.Object3D());
 
   // 初期化時にVRMのtargetに割り当てる
@@ -21,6 +21,20 @@ export const useAvatarLookAt = (vrm: VRM | null, isLoaded: boolean) => {
       const neckNode = vrm.humanoid.getNormalizedBoneNode('neck');
       if (!headNode) return;
 
+      // Headボーンのワールド位置 -> ローカル位置
+      const headWorldPos = new THREE.Vector3();
+      headNode.getWorldPosition(headWorldPos);
+      const localHeadPos = vrm.scene.worldToLocal(headWorldPos);
+
+      // 特定のアニメーション（頷く、首を振る）の最中はLookAtを無効化し、正面を見るようにする
+      if (currentAnimationName === 'agree' || currentAnimationName === 'no') {
+        // ローカル座標系で正面(Z+)にターゲットを置く
+        const centerDir = new THREE.Vector3(0, 0, 1.0);
+        const centerPos = new THREE.Vector3().addVectors(localHeadPos, centerDir);
+        lookAtTargetRef.current.position.copy(centerPos);
+        return;
+      }
+
       const camera = state.camera;
 
       // カメラのワールド位置を取得
@@ -28,11 +42,6 @@ export const useAvatarLookAt = (vrm: VRM | null, isLoaded: boolean) => {
 
       // VRMのシーンローカル座標系におけるカメラ位置
       const localCameraPos = vrm.scene.worldToLocal(cameraPos);
-
-      // Headボーンのワールド位置 -> ローカル位置
-      const headWorldPos = new THREE.Vector3();
-      headNode.getWorldPosition(headWorldPos);
-      const localHeadPos = vrm.scene.worldToLocal(headWorldPos);
 
       const targetDir = new THREE.Vector3().subVectors(localCameraPos, localHeadPos);
 
@@ -113,7 +122,7 @@ export const useAvatarLookAt = (vrm: VRM | null, isLoaded: boolean) => {
       // なのでHead自体は自身の分だけ回せばよい。
       headNode.quaternion.slerp(headQuat, 0.8);
     },
-    [vrm]
+    [vrm, currentAnimationName]
   );
 
   return { lookAtTargetRef, updateLookAt };
