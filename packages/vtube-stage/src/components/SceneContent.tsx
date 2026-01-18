@@ -1,7 +1,17 @@
 // src/components/SceneContent.tsx
 import React, { useRef, useEffect, useMemo, Suspense, useState } from 'react';
 import * as THREE from 'three';
-import { OrbitControls, Sky, MeshReflectorMaterial, Float, Text3D, Cloud, Clouds, Grid } from '@react-three/drei';
+import {
+  OrbitControls,
+  Sky,
+  MeshReflectorMaterial,
+  Float,
+  Text3D,
+  Cloud,
+  Clouds,
+  Grid,
+  SpotLight,
+} from '@react-three/drei';
 import {
   EffectComposer,
   Bloom,
@@ -28,6 +38,7 @@ interface SceneContentProps {
   avatars: AvatarData[]; // Array of avatar data objects
   controlsEnabled?: boolean; // OrbitControls有効化フラグ
   onAvatarLoad?: (id: string) => void;
+  activeCharacterId?: string; // 現在注目されているキャラクターID
 }
 
 const EMOTION_COLORS: { [key: string]: string } = {
@@ -39,7 +50,12 @@ const EMOTION_COLORS: { [key: string]: string } = {
   Surprised: '#FFFF00', // Yellow
 };
 
-export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEnabled = true, onAvatarLoad }) => {
+export const SceneContent: React.FC<SceneContentProps> = ({
+  avatars,
+  controlsEnabled = true,
+  onAvatarLoad,
+  activeCharacterId,
+}) => {
   const controlsRef = useRef<OrbitControlsImpl>(null);
   const [effectsConfig, setEffectsConfig] = useState<VisualEffectsConfig | null>(null);
 
@@ -77,6 +93,22 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
     return EMOTION_COLORS[emotion] || '#CEF';
   }, [avatars]);
 
+  // アクティブなキャラクターの情報を取得
+  const activeAvatar = useMemo(() => {
+    if (!activeCharacterId) return null;
+    return avatars.find(a => a.id === activeCharacterId);
+  }, [avatars, activeCharacterId]);
+
+  // 安定したターゲットオブジェクトを作成（マウント時に一度だけ）
+  const [lightTarget] = useState(() => new THREE.Object3D());
+
+  // activeAvatarが変わったらターゲットの位置を更新
+  useEffect(() => {
+    if (activeAvatar) {
+      lightTarget.position.set(activeAvatar.position[0], 1.2, activeAvatar.position[2]);
+    }
+  }, [activeAvatar, lightTarget]);
+
   // --- Scene elements rendering ---
   return (
     <>
@@ -105,6 +137,29 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
       />
+
+      {/* スポットライトターゲット（常にシーンに存在させる） */}
+      <primitive object={lightTarget} />
+
+      {/* スポットライト (Active Character) - sad, angry, Surprised の時のみ点灯 */}
+      {(() => {
+        const shouldShowSpotlight =
+          activeAvatar && ['sad', 'angry', 'Surprised'].includes(activeAvatar.currentEmotion || '');
+
+        return (
+          <SpotLight
+            position={[activeAvatar?.position[0] ?? 0, 5, (activeAvatar?.position[2] ?? 0) + 0.5]} // キャラクターのほぼ直上（少し手前）
+            target={lightTarget}
+            angle={0.4} // 少し広げる
+            penumbra={0.5} // ぼかし
+            intensity={shouldShowSpotlight ? 8 : 0} // 条件に合致するときのみ点灯
+            color={sparkleColor}
+            castShadow={false}
+            distance={20}
+            opacity={shouldShowSpotlight ? 0.8 : 0} // 条件に合致するときのみボリューメトリック表示
+          />
+        );
+      })()}
 
       {/* 3. エフェクト（パーティクル） */}
       {/* CustomSparkles に置き換え: 四角い枠問題を解消 */}

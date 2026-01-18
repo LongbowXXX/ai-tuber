@@ -109,28 +109,36 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, setSt
   // 全員ロード完了
   const allLoaded = loadedAvatarIds.length === avatars.length && avatars.length > 0;
 
-  const cameraState = React.useMemo(() => {
-    if (!stage.camera) return null;
-    let targetPos: [number, number, number] | undefined = undefined;
-    let targetAvatar: AvatarState | undefined = undefined;
+  // カメラターゲットのアバターを特定（IDの揺らぎ "0" vs "avatar0" を吸収）
+  const targetAvatar = React.useMemo(() => {
+    if (!stage.camera?.targetId) return undefined;
 
-    if (stage.camera.targetId) {
-      targetAvatar = avatars.find(a => a.id === stage.camera!.targetId);
+    // 先ずは完全一致で検索
+    let avatar = avatars.find(a => a.id === stage.camera!.targetId);
 
-      if (!targetAvatar) {
-        const match = stage.camera!.targetId!.match(/\d+$/);
-        if (match) {
-          const num = match[0];
-          targetAvatar = avatars.find(a => a.id === `avatar${num}`);
-        }
-      }
-
-      if (targetAvatar) {
-        targetPos = targetAvatar.position;
-      } else {
-        console.warn(`Camera target not found: ${stage.camera.targetId}`);
+    // 見つからなければ、数値部分だけで検索 (例: targetId="0" -> id="avatar0")
+    if (!avatar) {
+      const match = stage.camera!.targetId.match(/\d+$/);
+      if (match) {
+        const num = match[0];
+        avatar = avatars.find(a => a.id === `avatar${num}`);
       }
     }
+    return avatar;
+  }, [stage.camera, avatars]);
+
+  const cameraState = React.useMemo(() => {
+    if (!stage.camera) return null;
+
+    // targetAvatar is already resolved above
+    let targetPos: [number, number, number] | undefined = undefined;
+
+    if (targetAvatar) {
+      targetPos = targetAvatar.position;
+    } else if (stage.camera.targetId) {
+      console.warn(`Camera target not found: ${stage.camera.targetId}`);
+    }
+
     return {
       mode: stage.camera.mode,
       targetId: stage.camera.targetId,
@@ -139,7 +147,7 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, setSt
       duration: stage.camera.duration,
       timestamp: stage.camera.timestamp,
     };
-  }, [stage.camera, avatars]);
+  }, [stage.camera, targetAvatar]);
 
   return (
     <Root>
@@ -152,7 +160,12 @@ const StagePage: React.FC<StagePageProps> = ({ avatars, setAvatars, stage, setSt
           {/* AnimatedCamera: stage.camera に基づいて制御 */}
           <AnimatedCamera cameraState={cameraState} />
 
-          <SceneContent avatars={avatars} controlsEnabled={true} onAvatarLoad={handleAvatarLoad} />
+          <SceneContent
+            avatars={avatars}
+            controlsEnabled={true}
+            onAvatarLoad={handleAvatarLoad}
+            activeCharacterId={targetAvatar?.id} // 解決済みの正式なIDを渡す
+          />
         </Canvas>
         {/* Markdown Overlay */}
         {stage.currentMarkdownText && (
