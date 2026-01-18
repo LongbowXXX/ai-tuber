@@ -36,18 +36,13 @@ export function splitAndMergeSentences(input: string): string[] {
 
 import { VOICE_VOX_SPEAKERS } from '../constants/voice_vox_speakers';
 
-function getSpeakerId(characterId: string, style?: string): number {
-  const charNameMap: Record<string, string> = {
-    avatar1: 'ずんだもん',
-    avatar2: '四国めたん',
-  };
-  const targetName = charNameMap[characterId];
+function getSpeakerId(voiceVoxSpeaker?: string, style?: string): number {
   // デフォルト: ずんだもん ノーマル (3)
   const DEFAULT_ID = 3;
 
-  if (!targetName) return DEFAULT_ID;
+  if (!voiceVoxSpeaker) return DEFAULT_ID;
 
-  const speaker = VOICE_VOX_SPEAKERS.find(s => s.name === targetName);
+  const speaker = VOICE_VOX_SPEAKERS.find(s => s.name === voiceVoxSpeaker);
   if (!speaker) return DEFAULT_ID;
 
   if (style) {
@@ -60,8 +55,13 @@ function getSpeakerId(characterId: string, style?: string): number {
   return normalStyle ? normalStyle.id : speaker.styles[0].id;
 }
 
-export async function playVoice(characterId: string, text: string, onPlay?: () => void, style?: string): Promise<void> {
-  const speakerId = getSpeakerId(characterId, style);
+export async function playVoice(
+  text: string,
+  onPlay?: () => void,
+  style?: string,
+  voiceVoxSpeaker?: string
+): Promise<void> {
+  const speakerId = getSpeakerId(voiceVoxSpeaker, style);
 
   const sentences = splitAndMergeSentences(text);
 

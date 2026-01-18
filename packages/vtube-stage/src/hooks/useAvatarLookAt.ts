@@ -2,8 +2,20 @@ import { useCallback, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { VRM } from '@pixiv/three-vrm';
 import { RootState } from '@react-three/fiber';
+import { DEFAULT_AVATAR_CONFIG } from '../constants/avatar_config';
 
-export const useAvatarLookAt = (vrm: VRM | null, isLoaded: boolean, currentAnimationName: string | null) => {
+export const useAvatarLookAt = (
+  vrm: VRM | null,
+  isLoaded: boolean,
+  currentAnimationName: string | null,
+  config?: {
+    yawLimitDeg: number;
+    pitchLimitDeg: number;
+    headWeight: number;
+    neckWeight: number;
+    disableLookAtAnimations?: string[];
+  }
+) => {
   const lookAtTargetRef = useRef<THREE.Object3D>(new THREE.Object3D());
 
   // 初期化時にVRMのtargetに割り当てる
@@ -26,8 +38,9 @@ export const useAvatarLookAt = (vrm: VRM | null, isLoaded: boolean, currentAnima
       headNode.getWorldPosition(headWorldPos);
       const localHeadPos = vrm.scene.worldToLocal(headWorldPos);
 
-      // 特定のアニメーション（頷く、首を振る）の最中はLookAtを無効化し、正面を見るようにする
-      if (currentAnimationName === 'agree' || currentAnimationName === 'no') {
+      // 特定のアニメーションの最中はLookAtを無効化し、正面を見るようにする
+      const disabledAnimations = config?.disableLookAtAnimations ?? DEFAULT_AVATAR_CONFIG.lookAt.disabledAnimations;
+      if (currentAnimationName && disabledAnimations.includes(currentAnimationName)) {
         // ローカル座標系で正面(Z+)にターゲットを置く
         const centerDir = new THREE.Vector3(0, 0, 1.0);
         const centerPos = new THREE.Vector3().addVectors(localHeadPos, centerDir);
@@ -52,16 +65,16 @@ export const useAvatarLookAt = (vrm: VRM | null, isLoaded: boolean, currentAnima
       let pitch = Math.atan2(targetDir.y, xzLen);
 
       // 角度制限 (ラジアン)
-      const YAW_LIMIT = 50 * (Math.PI / 180); // 左右 50度
-      const PITCH_LIMIT = 30 * (Math.PI / 180); // 上下 30度
+      const yawLimit = (config?.yawLimitDeg ?? 50) * (Math.PI / 180);
+      const pitchLimit = (config?.pitchLimitDeg ?? 30) * (Math.PI / 180);
 
-      yaw = THREE.MathUtils.clamp(yaw, -YAW_LIMIT, YAW_LIMIT);
-      pitch = THREE.MathUtils.clamp(pitch, -PITCH_LIMIT, PITCH_LIMIT);
+      yaw = THREE.MathUtils.clamp(yaw, -yawLimit, yawLimit);
+      pitch = THREE.MathUtils.clamp(pitch, -pitchLimit, pitchLimit);
 
       // --- Head & Neck Rotation Application ---
       // 回転をHeadとNeckに分配する比率 (例: Head 50%, Neck 50%)
-      const HEAD_WEIGHT = 0.5;
-      const NECK_WEIGHT = 0.5;
+      const headWt = config?.headWeight ?? 0.5;
+      const neckWt = config?.neckWeight ?? 0.5;
 
       // 目線 (VRM LookAt) 用のターゲット計算
       // 制限した角度から位置を再計算
@@ -99,14 +112,14 @@ export const useAvatarLookAt = (vrm: VRM | null, isLoaded: boolean, currentAnima
       const twist = 0; // 首のひねりは一旦0
 
       // Head Rotation
-      const headYaw = yaw * HEAD_WEIGHT;
-      const headPitch = pitch * HEAD_WEIGHT;
+      const headYaw = yaw * headWt;
+      const headPitch = pitch * headWt;
       const headQuat = new THREE.Quaternion().setFromEuler(new THREE.Euler(-headPitch, headYaw, twist, 'YXZ'));
 
       // Neck Rotation
       if (neckNode) {
-        const neckYaw = yaw * NECK_WEIGHT;
-        const neckPitch = pitch * NECK_WEIGHT;
+        const neckYaw = yaw * neckWt;
+        const neckPitch = pitch * neckWt;
         const neckQuat = new THREE.Quaternion().setFromEuler(new THREE.Euler(-neckPitch, neckYaw, twist, 'YXZ'));
         // もしくは直接代入: neckNode.quaternion.copy(neckQuat);
         // 既存アニメーションがあると update で上書きされるが、hooksの実行タイミングは mixer update 後。
@@ -121,7 +134,7 @@ export const useAvatarLookAt = (vrm: VRM | null, isLoaded: boolean, currentAnima
       // なのでHead自体は自身の分だけ回せばよい。
       headNode.quaternion.slerp(headQuat, 0.8);
     },
-    [vrm, currentAnimationName]
+    [vrm, currentAnimationName, config]
   );
 
   return { lookAtTargetRef, updateLookAt };

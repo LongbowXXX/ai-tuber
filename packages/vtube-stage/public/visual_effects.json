@@ -1,0 +1,39 @@
+{
+  "bloom": {
+    "enabled": true,
+    "luminanceThreshold": 1.2,
+    "mipmapBlur": true,
+    "intensity": 0.4,
+    "radius": 0.6
+  },
+  "vignette": {
+    "enabled": true,
+    "eskil": false,
+    "offset": 0.2,
+    "darkness": 0.7
+  },
+  "chromaticAberration": {
+    "enabled": true,
+    "offset": [0.002, 0.002],
+    "radialModulation": true,
+    "modulationOffset": 0.6
+  },
+  "glitch": {
+    "enabled": false,
+    "delay": [9, 15],
+    "duration": [0.025, 0.05],
+    "strength": [0.05, 0.1],
+    "mode": "SPORADIC",
+    "active": true,
+    "ratio": 0.85
+  },
+  "scanline": {
+    "enabled": false,
+    "density": 1.25,
+    "opacity": 0.1
+  },
+  "noise": {
+    "enabled": true,
+    "opacity": 0.05
+  }
+}
