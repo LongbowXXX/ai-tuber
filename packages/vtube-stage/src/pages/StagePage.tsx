@@ -61,7 +61,7 @@ const MarkdownOverlay = styled.div<{ $isCloseUp?: boolean }>`
   padding: 8px;
   border-radius: 8px;
   max-width: ${props => (props.$isCloseUp ? '40%' : '80%')};
-  max-height: 80%;
+  max-height: 40%;
   text-align: left;
   font-size: 1.0rem;
   line-height: 1.1;

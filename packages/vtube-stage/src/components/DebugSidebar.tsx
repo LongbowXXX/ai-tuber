@@ -94,14 +94,11 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
   // 選択中のターゲットに対応するスピーカー情報を取得（簡易マッピング）
   const currentSpeaker = React.useMemo(() => {
     if (!speechTargetId) return null;
-    // speechTargetId = 'avatar1' -> 'ずんだもん', 'avatar2' -> '四国めたん'
-    const nameMap: Record<string, string> = {
-      avatar1: 'ずんだもん',
-      avatar2: '四国めたん',
-    };
-    const targetName = nameMap[speechTargetId];
-    return VOICE_VOX_SPEAKERS.find(s => s.name === targetName);
-  }, [speechTargetId]);
+    const targetAvatar = avatars.find(a => a.id === speechTargetId);
+    if (!targetAvatar || !targetAvatar.voiceVoxSpeaker) return null;
+
+    return VOICE_VOX_SPEAKERS.find(s => s.name === targetAvatar.voiceVoxSpeaker);
+  }, [speechTargetId, avatars]);
 
   // 吹き出し表示
   const handleSpeak = () => {
@@ -127,7 +124,7 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
 
   // Markdownコントロール用ローカル状態
   const [markdownText, setMarkdownText] = React.useState<string>(
-    '# Hello\\n- item 1 long long long long long long long long long long long long long long long long long long long long long long text.\\n- item 2\\n## Subtitle\\n- item 1\\n- item 2\\n- item 3\\n- item 4\\n- item 5\\n- item 6\\n- item 7\\n- item 8\\n- item 9\\n- item 10\\n- item 11\\n- item 12\\n- item 13\\n- item 14\\n- item 15\\n- item 16\\n- item 17\\n- item 18\\n- item 19\\n- item 20\\n- item 21\\n- item 22\\n- item 23\\n- item 24\\n- item 25\\n- item 26\\n- item 27\\n- item 28\\n- item 29\\n- item 30'
+    '# Hello\n- item 1 long long long long long long long long long long long long long long long long long long long long long long text.\n- item 2\n## Subtitle\n- item 1\n- item 2\n- item 3\n- item 4\n- item 5\n- item 6\n- item 7\n- item 8\n- item 9\n- item 10\n- item 11\n- item 12\n- item 13\n- item 14\n- item 15\n- item 16\n- item 17\n- item 18\n- item 19\n- item 20\n- item 21\n- item 22\n- item 23\n- item 24\n- item 25\n- item 26\n- item 27\n- item 28\n- item 29\n- item 30'
   );
 
   const handleShowMarkdown = () => {
@@ -191,7 +188,7 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
               >
                 {avatars.map(avatar => (
                   <MenuItem key={avatar.id} value={avatar.id}>
-                    {avatar.id}
+                    {avatar.name || avatar.id}
                   </MenuItem>
                 ))}
               </Select>
@@ -226,7 +223,7 @@ export const DebugSidebar: React.FC<DebugSidebarProps> = ({
             >
               {avatars.map(avatar => (
                 <MenuItem key={avatar.id} value={avatar.id}>
-                  {avatar.id}
+                  {avatar.name || avatar.id}
                 </MenuItem>
               ))}
             </Select>

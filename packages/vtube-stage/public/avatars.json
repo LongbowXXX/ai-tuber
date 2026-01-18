@@ -1,6 +1,8 @@
 [
   {
     "id": "avatar1",
+    "name": "ずんだもん",
+    "voiceVoxSpeaker": "ずんだもん",
     "vrmUrl": "/avatar/avatar.vrm",
     "animationUrls": {
       "idle": "/vrma/idle_pose.vrma",
@@ -15,10 +17,22 @@
     "headYaw": 0,
     "currentAnimationName": "idle",
     "position": [-0.5, 0, 0],
-    "height": 1.45
+    "height": 1.45,
+    "lookAtConfig": {
+      "yawLimitDeg": 50,
+      "pitchLimitDeg": 30,
+      "headWeight": 0.5,
+      "neckWeight": 0.5
+    },
+    "blinkConfig": {
+      "disabledEmotions": ["happy"]
+    },
+    "autoReturnToIdleTimeout": 3000
   },
   {
     "id": "avatar2",
+    "name": "四国めたん",
+    "voiceVoxSpeaker": "四国めたん",
     "vrmUrl": "/avatar/avatar2.vrm",
     "animationUrls": {
       "idle": "/vrma/idle_pose.vrma",
@@ -33,6 +47,16 @@
     "headYaw": 0,
     "currentAnimationName": "idle",
     "position": [0.5, 0, 0],
-    "height": 1.65
+    "height": 1.65,
+    "lookAtConfig": {
+      "yawLimitDeg": 50,
+      "pitchLimitDeg": 30,
+      "headWeight": 0.5,
+      "neckWeight": 0.5
+    },
+    "blinkConfig": {
+      "disabledEmotions": ["happy"]
+    },
+    "autoReturnToIdleTimeout": 3000
   }
 ]

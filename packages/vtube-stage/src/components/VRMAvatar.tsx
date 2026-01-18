@@ -26,6 +26,18 @@ export interface VRMAvatarProps {
   onTTSComplete?: (speakId: string) => void;
   onAnimationEnd?: (animationName: string) => void;
   height?: number;
+  voiceVoxSpeaker?: string;
+  name?: string;
+  lookAtConfig?: {
+    yawLimitDeg: number;
+    pitchLimitDeg: number;
+    headWeight: number;
+    neckWeight: number;
+  };
+  blinkConfig?: {
+    disabledEmotions: string[];
+  };
+  autoReturnToIdleTimeout?: number;
 }
 
 export const VRMAvatar: React.FC<VRMAvatarProps> = ({
@@ -40,6 +52,10 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   onTTSComplete,
   onAnimationEnd,
   height,
+  voiceVoxSpeaker,
+  lookAtConfig,
+  blinkConfig,
+  autoReturnToIdleTimeout = 3000,
 }) => {
   const { gltf, vrmRef, mixer, isLoaded, loadedAnimationNames, createAnimationClipFromVRMA } = useVrmModel(
     vrmUrl,
@@ -115,7 +131,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
           currentAction.current = newAction;
           currentMixer.addEventListener('finished', onFinished);
 
-          // 3秒後にidleへ強制遷移
+          // 3秒後にidleへ強制遷移 (設定値を使用)
           animationTimeoutRef.current = window.setTimeout(() => {
             if (currentAction.current === newAction && currentAnimationName !== 'idle') {
               if (currentAction.current) {
@@ -131,7 +147,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
                   .fadeIn(ANIMATION_FADE_DURATION)
                   .play();
                 currentAction.current = idleAction;
-                console.log(`Avatar ${vrmUrl}: forcibly changed to idle after 3s`);
+                console.log(`Avatar ${vrmUrl}: forcibly changed to idle after ${autoReturnToIdleTimeout}ms`);
                 if (onAnimationEnd) {
                   onAnimationEnd(newAnimationName); // アニメーション終了を通知
                 }
@@ -140,7 +156,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
               currentMixer.removeEventListener('finished', onFinished);
             }
             animationTimeoutRef.current = null;
-          }, 3000);
+          }, autoReturnToIdleTimeout);
         } else {
           newAction.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(ANIMATION_FADE_DURATION).play();
           currentAction.current = newAction;
@@ -172,9 +188,10 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   const { lookAtTargetRef, updateLookAt } = useAvatarLookAt(
     isLoaded ? vrmRef.current : null,
     isLoaded,
-    currentAnimationName
+    currentAnimationName,
+    lookAtConfig
   );
-  const { updateBlink } = useAvatarBlink(isLoaded ? vrmRef.current : null, current_emotion);
+  const { updateBlink } = useAvatarBlink(isLoaded ? vrmRef.current : null, current_emotion, blinkConfig);
 
   // --- Frame Update ---
   useFrame((state, delta) => {
@@ -192,9 +209,9 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   const playTTS = useCallback(
     async (text: string, onPlay?: () => void, style?: string) => {
       console.log('[TTS] playTTS called with text:', text);
-      await playVoice(id, text, onPlay, style); // onPlayを渡す
+      await playVoice(text, onPlay, style, voiceVoxSpeaker); // onPlayを渡す, speakerPass
     },
-    [id]
+    [voiceVoxSpeaker]
   );
 
   // speechTextが変化したらTTS再生→終了後に吹き出しを閉じる

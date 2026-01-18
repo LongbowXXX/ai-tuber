@@ -9,6 +9,8 @@ export interface SpeakMessage {
 // AvatarState インターフェースの定義
 export interface AvatarState {
   id: string;
+  name?: string; // Display name
+  voiceVoxSpeaker?: string; // VoiceVox matching name
   vrmUrl: string;
   animationUrls: { [key: string]: string };
   currentEmotion: string;
@@ -18,4 +20,14 @@ export interface AvatarState {
   onTTSComplete?: (speakId: string) => void;
   onAnimationEnd?: (animationName: string) => void;
   height?: number;
+  lookAtConfig?: {
+    yawLimitDeg: number;
+    pitchLimitDeg: number;
+    headWeight: number;
+    neckWeight: number;
+  };
+  blinkConfig?: {
+    disabledEmotions: string[];
+  };
+  autoReturnToIdleTimeout?: number;
 }
