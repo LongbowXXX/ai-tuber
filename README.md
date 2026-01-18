@@ -5,6 +5,10 @@
 このプロジェクトは、AI（大規模言語モデル）によって制御される複数の V-Tuber キャラクターが対話し、YouTube などのプラットフォームで配信を行うシステムです。  
 Google ADK (Agent Development Kit) によるマルチエージェントシステムと、MCP (Model Context Protocol) によるツール統合を特徴としています。
 
+AI V-Tuber のデモ動画。エージェントの動きがわかりやすいように、左側に Google ADK の Web UI を表示させています。(OBS Studioで撮影）
+
+https://github.com/user-attachments/assets/43fb0abb-b206-4c88-a2a1-f888108d71e1
+
 ### システム構成図 (System Architecture Diagram)
 
 ```mermaid
