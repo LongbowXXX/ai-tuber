@@ -1,5 +1,5 @@
 // src/components/SceneContent.tsx
-import React, { useRef, useEffect, useMemo, Suspense } from 'react';
+import React, { useRef, useEffect, useMemo, Suspense, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls, Sky, MeshReflectorMaterial, Float, Text3D, Cloud, Clouds, Grid } from '@react-three/drei';
 import {
@@ -17,6 +17,7 @@ import { VRM } from '@pixiv/three-vrm';
 import { AvatarState } from '../types/avatar_types';
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { CustomSparkles } from './CustomSparkles';
+import { VisualEffectsConfig } from '../types/scene_types';
 
 // Define a type for the data needed for each avatar
 interface AvatarData extends AvatarState {
@@ -40,6 +41,7 @@ const EMOTION_COLORS: { [key: string]: string } = {
 
 export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEnabled = true, onAvatarLoad }) => {
   const controlsRef = useRef<OrbitControlsImpl>(null);
+  const [effectsConfig, setEffectsConfig] = useState<VisualEffectsConfig | null>(null);
 
   // 初期ターゲットを設定（一度だけ）
   useEffect(() => {
@@ -47,6 +49,21 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
       controlsRef.current.target.set(0, 1, 0);
       controlsRef.current.update();
     }
+  }, []);
+
+  // 設定ファイルの読み込み
+  useEffect(() => {
+    fetch('/visual_effects.json')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to load visual_effects.json');
+        return res.json();
+      })
+      .then(data => {
+        setEffectsConfig(data);
+      })
+      .catch(err => {
+        console.error('Failed to load visual effects config:', err);
+      });
   }, []);
 
   // エモーションに合わせて色変化
@@ -167,43 +184,61 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
 
       {/* 6. ポストプロセス効果: 画面全体のクオリティアップ */}
       <EffectComposer>
-        {/* Bloom: 明るい部分を光らせる（アニメ調の肌や目に効果的） */}
-        <Bloom
-          luminanceThreshold={1.2} // 光り始める閾値
-          mipmapBlur
-          intensity={0.4}
-          radius={0.6}
-        />
-        {/* Vignette: 四隅を暗くしてシネマティックに */}
-        <Vignette eskil={false} offset={0.2} darkness={0.7} />
+        <>
+          {/* Bloom: 明るい部分を光らせる（アニメ調の肌や目に効果的） */}
+          {effectsConfig?.bloom.enabled && (
+            <Bloom
+              luminanceThreshold={effectsConfig.bloom.luminanceThreshold} // 光り始める閾値
+              mipmapBlur={effectsConfig.bloom.mipmapBlur}
+              intensity={effectsConfig.bloom.intensity}
+              radius={effectsConfig.bloom.radius}
+            />
+          )}
+          {/* Vignette: 四隅を暗くしてシネマティックに */}
+          {effectsConfig?.vignette.enabled && (
+            <Vignette
+              eskil={effectsConfig.vignette.eskil}
+              offset={effectsConfig.vignette.offset}
+              darkness={effectsConfig.vignette.darkness}
+            />
+          )}
 
-        {/* 色収差 */}
-        <ChromaticAberration
-          offset={[0.002, 0.002]} // ずらす量（0.001~0.005くらいが上品）
-          radialModulation={true}
-          modulationOffset={0.6} // 中心からどれくらい離れたら収差が出始めるか
-        />
+          {/* 色収差 */}
+          {effectsConfig?.chromaticAberration.enabled && (
+            <ChromaticAberration
+              offset={effectsConfig.chromaticAberration.offset} // ずらす量（0.001~0.005くらいが上品）
+              radialModulation={effectsConfig.chromaticAberration.radialModulation}
+              modulationOffset={effectsConfig.chromaticAberration.modulationOffset} // 中心からどれくらい離れたら収差が出始めるか
+            />
+          )}
 
-        {/* 時々走るデジタルノイズ */}
-        <Glitch
-          delay={new THREE.Vector2(9, 15)} // ノイズが発生しない間隔（秒）のランダム範囲
-          duration={new THREE.Vector2(0.025, 0.05)} // ノイズが続いている時間（秒）。短めがおすすめ
-          strength={new THREE.Vector2(0.05, 0.1)} // ノイズの強さ。弱めにしておくと「通信障害」っぽくてリアル
-          mode={GlitchMode.SPORADIC} // SPORADIC = 間欠的（ランダム）に発生
-          active={true}
-          ratio={0.85} // ノイズの発生確率（しきい値）
-        />
+          {/* 時々走るデジタルノイズ */}
+          {effectsConfig?.glitch.enabled && (
+            <Glitch
+              delay={new THREE.Vector2(...effectsConfig.glitch.delay)} // ノイズが発生しない間隔（秒）のランダム範囲
+              duration={new THREE.Vector2(...effectsConfig.glitch.duration)} // ノイズが続いている時間（秒）。短めがおすすめ
+              strength={new THREE.Vector2(...effectsConfig.glitch.strength)} // ノイズの強さ。弱めにしておくと「通信障害」っぽくてリアル
+              mode={effectsConfig.glitch.mode === 'SPORADIC' ? GlitchMode.SPORADIC : GlitchMode.CONSTANT_MILD} // SPORADIC = 間欠的（ランダム）に発生
+              active={effectsConfig.glitch.active}
+              ratio={effectsConfig.glitch.ratio} // ノイズの発生確率（しきい値）
+            />
+          )}
 
-        {/* モニター風の走査線 */}
-        <Scanline
-          density={1.25} // 線の密度
-          opacity={0.1} // 0.05〜0.1 くらいのごく薄い値にするのがコツ
-        />
+          {/* モニター風の走査線 */}
+          {effectsConfig?.scanline.enabled && (
+            <Scanline
+              density={effectsConfig.scanline.density} // 線の密度
+              opacity={effectsConfig.scanline.opacity} // 0.05〜0.1 くらいのごく薄い値にするのがコツ
+            />
+          )}
 
-        {/* フィルム粒子のようなザラつき */}
-        <Noise
-          opacity={0.05} // こちらも0.02〜0.05くらいで「隠し味」程度に
-        />
+          {/* フィルム粒子のようなザラつき */}
+          {effectsConfig?.noise.enabled && (
+            <Noise
+              opacity={effectsConfig.noise.opacity} // こちらも0.02〜0.05くらいで「隠し味」程度に
+            />
+          )}
+        </>
       </EffectComposer>
       {/* Camera Controls */}
       {controlsEnabled && <OrbitControls ref={controlsRef} makeDefault />}
