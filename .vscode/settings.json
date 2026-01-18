@@ -1,4 +1,9 @@
 {
   "window.title": "[${rootName}]${separator}${dirty}${activeEditorShort}${separator}${profileName}${separator}${appName}",
-  "workbench.iconTheme": "vs-seti"
+  "workbench.iconTheme": "vs-seti",
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "text": "Use conventional commit message format in English."
+    }
+  ]
 }
