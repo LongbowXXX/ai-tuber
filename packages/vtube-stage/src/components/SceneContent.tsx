@@ -2,7 +2,16 @@
 import React, { useRef, useEffect, useMemo, Suspense } from 'react';
 import * as THREE from 'three';
 import { OrbitControls, Sky, MeshReflectorMaterial, Float, Text3D, Cloud, Clouds, Grid } from '@react-three/drei';
-import { EffectComposer, Bloom, Vignette, ChromaticAberration } from '@react-three/postprocessing';
+import {
+  EffectComposer,
+  Bloom,
+  Vignette,
+  ChromaticAberration,
+  Glitch,
+  Scanline,
+  Noise,
+} from '@react-three/postprocessing';
+import { GlitchMode } from 'postprocessing';
 import { VRMAvatar } from './VRMAvatar';
 import { VRM } from '@pixiv/three-vrm';
 import { AvatarState } from '../types/avatar_types';
@@ -168,11 +177,32 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
         {/* Vignette: 四隅を暗くしてシネマティックに */}
         <Vignette eskil={false} offset={0.2} darkness={0.7} />
 
-        {/* ▼▼▼ 追加: 色収差 ▼▼▼ */}
+        {/* 色収差 */}
         <ChromaticAberration
           offset={[0.002, 0.002]} // ずらす量（0.001~0.005くらいが上品）
           radialModulation={true}
           modulationOffset={0.6} // 中心からどれくらい離れたら収差が出始めるか
+        />
+
+        {/* 時々走るデジタルノイズ */}
+        <Glitch
+          delay={new THREE.Vector2(9, 15)} // ノイズが発生しない間隔（秒）のランダム範囲
+          duration={new THREE.Vector2(0.025, 0.05)} // ノイズが続いている時間（秒）。短めがおすすめ
+          strength={new THREE.Vector2(0.05, 0.1)} // ノイズの強さ。弱めにしておくと「通信障害」っぽくてリアル
+          mode={GlitchMode.SPORADIC} // SPORADIC = 間欠的（ランダム）に発生
+          active={true}
+          ratio={0.85} // ノイズの発生確率（しきい値）
+        />
+
+        {/* モニター風の走査線 */}
+        <Scanline
+          density={1.25} // 線の密度
+          opacity={0.1} // 0.05〜0.1 くらいのごく薄い値にするのがコツ
+        />
+
+        {/* フィルム粒子のようなザラつき */}
+        <Noise
+          opacity={0.05} // こちらも0.02〜0.05くらいで「隠し味」程度に
         />
       </EffectComposer>
       {/* Camera Controls */}
