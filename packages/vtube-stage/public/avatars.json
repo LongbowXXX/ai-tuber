@@ -22,7 +22,8 @@
       "yawLimitDeg": 50,
       "pitchLimitDeg": 30,
       "headWeight": 0.5,
-      "neckWeight": 0.5
+      "neckWeight": 0.5,
+      "disableLookAtAnimations": ["agree", "no"]
     },
     "blinkConfig": {
       "disabledEmotions": ["happy"]
@@ -52,7 +53,8 @@
       "yawLimitDeg": 50,
       "pitchLimitDeg": 30,
       "headWeight": 0.5,
-      "neckWeight": 0.5
+      "neckWeight": 0.5,
+      "disableLookAtAnimations": ["agree", "no"]
     },
     "blinkConfig": {
       "disabledEmotions": ["happy"]

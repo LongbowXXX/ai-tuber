@@ -33,6 +33,7 @@ export interface VRMAvatarProps {
     pitchLimitDeg: number;
     headWeight: number;
     neckWeight: number;
+    disableLookAtAnimations?: string[];
   };
   blinkConfig?: {
     disabledEmotions: string[];

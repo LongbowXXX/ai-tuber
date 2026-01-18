@@ -7,7 +7,13 @@ export const useAvatarLookAt = (
   vrm: VRM | null,
   isLoaded: boolean,
   currentAnimationName: string | null,
-  config?: { yawLimitDeg: number; pitchLimitDeg: number; headWeight: number; neckWeight: number }
+  config?: {
+    yawLimitDeg: number;
+    pitchLimitDeg: number;
+    headWeight: number;
+    neckWeight: number;
+    disableLookAtAnimations?: string[];
+  }
 ) => {
   const lookAtTargetRef = useRef<THREE.Object3D>(new THREE.Object3D());
 
@@ -31,8 +37,9 @@ export const useAvatarLookAt = (
       headNode.getWorldPosition(headWorldPos);
       const localHeadPos = vrm.scene.worldToLocal(headWorldPos);
 
-      // 特定のアニメーション（頷く、首を振る）の最中はLookAtを無効化し、正面を見るようにする
-      if (currentAnimationName === 'agree' || currentAnimationName === 'no') {
+      // 特定のアニメーションの最中はLookAtを無効化し、正面を見るようにする
+      const disabledAnimations = config?.disableLookAtAnimations ?? ['agree', 'no']; // Default to old hardcoded values if missing
+      if (currentAnimationName && disabledAnimations.includes(currentAnimationName)) {
         // ローカル座標系で正面(Z+)にターゲットを置く
         const centerDir = new THREE.Vector3(0, 0, 1.0);
         const centerPos = new THREE.Vector3().addVectors(localHeadPos, centerDir);

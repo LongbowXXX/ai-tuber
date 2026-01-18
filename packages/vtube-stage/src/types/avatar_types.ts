@@ -25,6 +25,7 @@ export interface AvatarState {
     pitchLimitDeg: number;
     headWeight: number;
     neckWeight: number;
+    disableLookAtAnimations?: string[];
   };
   blinkConfig?: {
     disabledEmotions: string[];
