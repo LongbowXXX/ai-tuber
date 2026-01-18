@@ -18,9 +18,12 @@ class AgentSpeechItem(BaseModel):
         default=None,
     )
     emotion: Literal["neutral", "happy", "sad", "angry", "relaxed", "surprised"] = Field(description="セリフの感情")
+    style: Literal["ノーマル", "あまあま", "ツンツン", "セクシー", "ささやき", "ヒソヒソ"] = Field(
+        default="ノーマル", description="セリフのスタイル"
+    )
 
     def __str__(self) -> str:
-        return f"Text: {self.tts_text}, Caption: {self.caption}, Emotion: {self.emotion}"
+        return f"Text: {self.tts_text}, Caption: {self.caption}, Emotion: {self.emotion}, Style: {self.style}"
 
 
 class AgentSpeech(BaseModel):
