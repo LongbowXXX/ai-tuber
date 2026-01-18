@@ -1,6 +1,7 @@
 // src/components/SceneContent.tsx
-import React, { useRef, useEffect, useMemo } from 'react';
-import { OrbitControls, Environment, MeshReflectorMaterial, Float, Text3D } from '@react-three/drei';
+import React, { useRef, useEffect, useMemo, Suspense } from 'react';
+import * as THREE from 'three';
+import { OrbitControls, Sky, MeshReflectorMaterial, Float, Text3D, Cloud, Clouds } from '@react-three/drei';
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import { VRMAvatar } from './VRMAvatar';
 import { VRM } from '@pixiv/three-vrm';
@@ -55,10 +56,22 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
     <>
       {/* 1. 環境・背景設定 */}
       <color attach="background" args={['#202020']} />
-      <Environment files="/background.jpg" background />
+      <Sky
+        sunPosition={[100, 2, 100]} // 地平線近くに設定
+        inclination={0}
+        azimuth={0.25}
+        rayleigh={5} // 夕焼けっぽく赤みを強める
+      />
+      <Suspense fallback={null}>
+        <Clouds material={THREE.MeshLambertMaterial}>
+          <Cloud position={[0, 10, -30]} speed={0.1} opacity={0.2} seed={1} scale={1} color="#ff7e5f" fade={10} />
+          <Cloud position={[10, 5, -20]} speed={0.2} opacity={0.1} seed={2} color="#feb47b" fade={10} />
+          <Cloud position={[-5, 3, -10]} speed={0.3} opacity={0.1} seed={3} color="#feb47b" fade={10} />
+        </Clouds>
+      </Suspense>
 
       {/* 2. ライティング強化 */}
-      <ambientLight intensity={0.6} />
+      <ambientLight intensity={0.5} color="#ffdfba" />
       <directionalLight
         position={[3, 5, 2]}
         intensity={1.5}

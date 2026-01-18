@@ -92,13 +92,15 @@ export const CustomSparkles: React.FC<CustomSparklesProps> = ({
     positionsAttribute.needsUpdate = true;
   });
 
+  // initialPositionsのコピーをuseMemoで作成し、レンダリング間で参照を維持する
+  // これにより、R3FがBufferAttributeを再生成するのを防ぐとともに、
+  // アニメーションループ内でのin-place変更がinitialPositions自身を汚染するのを防ぐ
+  const bufferPositions = useMemo(() => new Float32Array(initialPositions), [initialPositions]);
+
   return (
     <points ref={pointsRef}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[initialPositions.slice(), 3]} // copy to avoid mutation issues if any
-        />
+        <bufferAttribute attach="attributes-position" args={[bufferPositions, 3]} />
       </bufferGeometry>
       <pointsMaterial
         size={0.15} // サイズ調整
