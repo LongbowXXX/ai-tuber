@@ -3,7 +3,7 @@
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
 
-from typing import Literal, Union
+from typing import Literal, Optional, Union
 
 from pydantic import BaseModel
 
@@ -18,6 +18,7 @@ class SpeakPayload(BaseModel):
     message: str
     caption: str
     emotion: str
+    style: Optional[str] = None
     speakId: str
 
 

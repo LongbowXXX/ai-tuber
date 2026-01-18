@@ -105,12 +105,13 @@ class StageDirectorMCPClient:
                         "caption": item.caption if item.caption else item.tts_text,
                         "character_id": speech.character_id,
                         "emotion": item.emotion,
+                        "style": item.style,
                     },
                 )
             except Exception as e:
                 logger.exception(f"Error in speak_all-call_tool: {e}")
             finally:
-                logger.info(f"Finished speaking {item.tts_text} with emotion {item.emotion}")
+                logger.info(f"Finished speaking {item.tts_text} with emotion {item.emotion} and style {item.style}")
 
     async def wait_for_current_speak_end(self) -> None:
         logger.info("Waiting for current speak task to finish.")

@@ -85,6 +85,10 @@ export class SpeakPayload {
   emotion!: string;
 
   @IsString()
+  @IsOptional()
+  style?: string; // VoiceVoxスタイル名
+
+  @IsString()
   @IsDefined()
   speakId!: string; // 発話一意IDを追加
 }

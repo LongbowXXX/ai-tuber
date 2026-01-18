@@ -63,7 +63,7 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
     yawFrequency: 0.5,
     pitchFrequency: 0.5,
     rollFrequency: 0.5,
-    intensity: 0, // Default to 0, enabled by mode
+    intensity: 0.2, // Default to 0, enabled by mode
   });
 
   // OrbitControls への参照を取得
@@ -249,7 +249,7 @@ export const AnimatedCamera: React.FC<{ cameraState: CameraState | null }> = ({ 
           );
           const faceHeight = calculateFaceHeight(ty, cameraState.targetHeight);
 
-          targetPosRef.current.set(tx, faceHeight + 1.3, tz + HIGH_ANGLE_OFFSET_Z);
+          targetPosRef.current.set(tx, faceHeight + 0.5, tz + HIGH_ANGLE_OFFSET_Z);
           targetLookAtRef.current.set(tx, centerHeight, tz);
           targetFovRef.current = CLOSEUP_FOV;
         } else {
