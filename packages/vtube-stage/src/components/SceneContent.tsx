@@ -1,8 +1,8 @@
 // src/components/SceneContent.tsx
 import React, { useRef, useEffect, useMemo, Suspense } from 'react';
 import * as THREE from 'three';
-import { OrbitControls, Sky, MeshReflectorMaterial, Float, Text3D, Cloud, Clouds } from '@react-three/drei';
-import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
+import { OrbitControls, Sky, MeshReflectorMaterial, Float, Text3D, Cloud, Clouds, Grid } from '@react-three/drei';
+import { EffectComposer, Bloom, Vignette, ChromaticAberration } from '@react-three/postprocessing';
 import { VRMAvatar } from './VRMAvatar';
 import { VRM } from '@pixiv/three-vrm';
 import { AvatarState } from '../types/avatar_types';
@@ -86,7 +86,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
 
       {/* 4. 床の改善: MeshReflectorMaterialで鏡面反射 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
-        <planeGeometry args={[10, 10]} />
+        <planeGeometry args={[13.25, 13.25]} />
         <MeshReflectorMaterial
           blur={[300, 100]}
           resolution={1024}
@@ -101,6 +101,22 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
           mirror={0.5}
         />
       </mesh>
+
+      {/* サイバー風グリッド床 */}
+      <Grid
+        position={[0, 0.01, 0]} // 床のわずかに下
+        args={[10.5, 10.5]} // グリッド全体のサイズ
+        cellSize={0.6} // 小さいマスのサイズ
+        cellThickness={1} // 小さいマスの線の太さ
+        cellColor="#6f6f6f" // 小さいマスの色
+        sectionSize={3.3} // 大きい区切りのサイズ
+        sectionThickness={1.5} // 大きい区切りの線の太さ
+        sectionColor="#9d4b4b" // 大きい区切りの色（赤や青に変えると雰囲気が激変します）
+        fadeDistance={30} // 奥の方をフェードアウトさせる距離
+        fadeStrength={1}
+        followCamera={false}
+        infiniteGrid // どこまでカメラが動いても床が続く
+      />
 
       {/* 5. 空間演出: 浮遊するテキストとオブジェクト */}
       <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
@@ -151,6 +167,13 @@ export const SceneContent: React.FC<SceneContentProps> = ({ avatars, controlsEna
         />
         {/* Vignette: 四隅を暗くしてシネマティックに */}
         <Vignette eskil={false} offset={0.2} darkness={0.7} />
+
+        {/* ▼▼▼ 追加: 色収差 ▼▼▼ */}
+        <ChromaticAberration
+          offset={[0.002, 0.002]} // ずらす量（0.001~0.005くらいが上品）
+          radialModulation={true}
+          modulationOffset={0.6} // 中心からどれくらい離れたら収差が出始めるか
+        />
       </EffectComposer>
       {/* Camera Controls */}
       {controlsEnabled && <OrbitControls ref={controlsRef} makeDefault />}
