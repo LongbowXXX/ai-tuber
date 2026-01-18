@@ -108,7 +108,6 @@ export const useAvatarLookAt = (vrm: VRM | null, isLoaded: boolean, currentAnima
         const neckYaw = yaw * NECK_WEIGHT;
         const neckPitch = pitch * NECK_WEIGHT;
         const neckQuat = new THREE.Quaternion().setFromEuler(new THREE.Euler(-neckPitch, neckYaw, twist, 'YXZ'));
-        neckNode.quaternion.slerp(neckQuat, 0.5); // アニメーションとの合成を考慮しslerp (重み高め)
         // もしくは直接代入: neckNode.quaternion.copy(neckQuat);
         // 既存アニメーションがあると update で上書きされるが、hooksの実行タイミングは mixer update 後。
         // なので copy すれば上書きになる。
