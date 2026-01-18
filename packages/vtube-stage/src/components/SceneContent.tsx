@@ -69,7 +69,8 @@ export const SceneContent: React.FC<SceneContentProps> = ({
 
   // 設定ファイルの読み込み
   useEffect(() => {
-    fetch('/visual_effects.json')
+    const controller = new AbortController();
+    fetch('/visual_effects.json', { signal: controller.signal })
       .then(res => {
         if (!res.ok) throw new Error('Failed to load visual_effects.json');
         return res.json();
@@ -78,8 +79,14 @@ export const SceneContent: React.FC<SceneContentProps> = ({
         setEffectsConfig(data);
       })
       .catch(err => {
-        console.error('Failed to load visual effects config:', err);
+        if (err.name !== 'AbortError') {
+          console.error('Failed to load visual effects config:', err);
+        }
       });
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   // エモーションに合わせて色変化
@@ -261,7 +268,12 @@ export const SceneContent: React.FC<SceneContentProps> = ({
           {/* 色収差 */}
           {effectsConfig?.chromaticAberration.enabled && (
             <ChromaticAberration
-              offset={effectsConfig.chromaticAberration.offset} // ずらす量（0.001~0.005くらいが上品）
+              offset={
+                new THREE.Vector2(
+                  effectsConfig.chromaticAberration.offset[0],
+                  effectsConfig.chromaticAberration.offset[1]
+                )
+              } // ずらす量（0.001~0.005くらいが上品）
               radialModulation={effectsConfig.chromaticAberration.radialModulation}
               modulationOffset={effectsConfig.chromaticAberration.modulationOffset} // 中心からどれくらい離れたら収差が出始めるか
             />
@@ -273,7 +285,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({
               delay={new THREE.Vector2(...effectsConfig.glitch.delay)} // ノイズが発生しない間隔（秒）のランダム範囲
               duration={new THREE.Vector2(...effectsConfig.glitch.duration)} // ノイズが続いている時間（秒）。短めがおすすめ
               strength={new THREE.Vector2(...effectsConfig.glitch.strength)} // ノイズの強さ。弱めにしておくと「通信障害」っぽくてリアル
-              mode={effectsConfig.glitch.mode === 'SPORADIC' ? GlitchMode.SPORADIC : GlitchMode.CONSTANT_MILD} // SPORADIC = 間欠的（ランダム）に発生
+              mode={effectsConfig.glitch.mode === 'SPORADIC' ? GlitchMode.SPORADIC : GlitchMode.CONSTANT_MILD}
               active={effectsConfig.glitch.active}
               ratio={effectsConfig.glitch.ratio} // ノイズの発生確率（しきい値）
             />

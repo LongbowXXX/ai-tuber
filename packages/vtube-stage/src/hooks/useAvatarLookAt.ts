@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { VRM } from '@pixiv/three-vrm';
 import { RootState } from '@react-three/fiber';
+import { DEFAULT_AVATAR_CONFIG } from '../constants/avatar_config';
 
 export const useAvatarLookAt = (
   vrm: VRM | null,
@@ -38,7 +39,7 @@ export const useAvatarLookAt = (
       const localHeadPos = vrm.scene.worldToLocal(headWorldPos);
 
       // 特定のアニメーションの最中はLookAtを無効化し、正面を見るようにする
-      const disabledAnimations = config?.disableLookAtAnimations ?? ['agree', 'no']; // Default to old hardcoded values if missing
+      const disabledAnimations = config?.disableLookAtAnimations ?? DEFAULT_AVATAR_CONFIG.lookAt.disabledAnimations;
       if (currentAnimationName && disabledAnimations.includes(currentAnimationName)) {
         // ローカル座標系で正面(Z+)にターゲットを置く
         const centerDir = new THREE.Vector3(0, 0, 1.0);

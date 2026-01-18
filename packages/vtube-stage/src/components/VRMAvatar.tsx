@@ -183,7 +183,15 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentAnimationName, loadedAnimationNames, id, onAnimationEnd, createAnimationClipFromVRMA]);
+  }, [
+    currentAnimationName,
+    loadedAnimationNames,
+    id,
+    onAnimationEnd,
+    createAnimationClipFromVRMA,
+    vrmUrl,
+    autoReturnToIdleTimeout,
+  ]);
 
   const { updateExpressions } = useFacialExpression(isLoaded ? vrmRef.current : null, current_emotion, isTtsSpeaking);
   const { lookAtTargetRef, updateLookAt } = useAvatarLookAt(

@@ -23,7 +23,7 @@ export interface VisualEffectsConfig {
     delay: [number, number];
     duration: [number, number];
     strength: [number, number];
-    mode: string;
+    mode: 'SPORADIC' | 'CONSTANT_MILD';
     active: boolean;
     ratio: number;
   };
