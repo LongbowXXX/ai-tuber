@@ -5,6 +5,7 @@
 import logging
 import os
 import uuid
+from typing import Optional
 
 from mcp.server.fastmcp import FastMCP
 
@@ -44,12 +45,17 @@ async def trigger_animation(character_id: str, animation_name: str) -> str:
 
 
 @mcp.tool()
-async def speak(character_id: str, message: str, caption: str, emotion: str) -> str:
+async def speak(character_id: str, message: str, caption: str, emotion: str, style: Optional[str] = None) -> str:
     # Generate a UUID for the speakId
     speak_id = str(uuid.uuid4())
 
     payload = SpeakPayload(
-        characterId=character_id, message=message, caption=caption, emotion=emotion, speakId=speak_id
+        characterId=character_id,
+        message=message,
+        caption=caption,
+        emotion=emotion,
+        style=style,
+        speakId=speak_id,
     )
     logger.info(f"MCP Tool 'speak' called: speak={payload}")
     try:
