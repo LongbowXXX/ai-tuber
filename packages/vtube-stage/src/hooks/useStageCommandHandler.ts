@@ -28,14 +28,16 @@ export function useStageCommandHandler() {
           console.log(`Server log: ${command.payload.message}`);
           break;
         case 'speak': {
-          const { characterId, message, caption, emotion, speakId } = command.payload;
-          console.log(`Received speak: Character=${characterId}, SpeakId=${speakId}, Message=${message}`);
+          const { characterId, message, caption, emotion, speakId, style } = command.payload;
+          console.log(
+            `Received speak: Character=${characterId}, SpeakId=${speakId}, Message=${message}, Style=${style}`
+          );
           setAvatars(prevAvatars =>
             prevAvatars.map(a => {
               if (a.id === characterId) {
                 return {
                   ...a,
-                  speechText: { id: speakId, text: message, caption: caption },
+                  speechText: { id: speakId, text: message, caption: caption, style: style },
                   currentEmotion: emotion,
                 };
               }

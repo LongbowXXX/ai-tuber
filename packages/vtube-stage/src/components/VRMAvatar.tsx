@@ -190,9 +190,9 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
 
   // TTS再生関数（onPlayコールバック対応）
   const playTTS = useCallback(
-    async (text: string, onPlay?: () => void) => {
+    async (text: string, onPlay?: () => void, style?: string) => {
       console.log('[TTS] playTTS called with text:', text);
-      await playVoice(id, text, onPlay); // onPlayを渡す
+      await playVoice(id, text, onPlay, style); // onPlayを渡す
     },
     [id]
   );
@@ -202,7 +202,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
     if (speechText && speechText.text !== '') {
       setBubbleText(speechText);
       // setIsLipSync(true); // ここでは開始しない
-      playTTS(speechText.text, () => setIsTtsSpeaking(true)).then(() => {
+      playTTS(speechText.text, () => setIsTtsSpeaking(true), speechText.style).then(() => {
         setBubbleText(null);
         setIsTtsSpeaking(false); // 再生終了でLipSync終了
         if (onTTSComplete && speechText.id) {

@@ -3,6 +3,7 @@ export interface SpeakMessage {
   id: string;
   text: string;
   caption: string;
+  style?: string; // VoiceVoxのスタイル名（例: "あまあま", "ツンツン"）
 }
 
 // AvatarState インターフェースの定義
