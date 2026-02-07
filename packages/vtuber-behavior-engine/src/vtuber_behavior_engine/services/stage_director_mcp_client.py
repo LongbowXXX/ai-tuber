@@ -15,23 +15,25 @@ from typing import cast
 
 from google.adk.tools.base_tool import BaseTool
 from google.adk.tools.mcp_tool.mcp_toolset import McpToolset
-from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams, MCPSessionManager
+from google.adk.tools.mcp_tool.mcp_session_manager import StdioServerParams, MCPSessionManager
 
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
 
 logger = logging.getLogger(__name__)
-STAGE_DIRECTOR_MCP_SERVER_URL = os.getenv("STAGE_DIRECTOR_MCP_SERVER_URL")
+VTUBE_STAGE_EXECUTABLE = os.getenv("VTUBE_STAGE_EXECUTABLE")
 
 
 class StageDirectorMCPClient:
     @classmethod
     def create(cls, async_exit_stack: AsyncExitStack) -> "StageDirectorMCPClient":
         logger.info("create")
-        if not STAGE_DIRECTOR_MCP_SERVER_URL:
-            logger.error("STAGE_DIRECTOR_MCP_SERVER_URL is not set.")
-            raise ValueError("STAGE_DIRECTOR_MCP_SERVER_URL is not set.")
-        connection_params = SseServerParams(
-            url=STAGE_DIRECTOR_MCP_SERVER_URL,
+        if not VTUBE_STAGE_EXECUTABLE:
+            logger.error("VTUBE_STAGE_EXECUTABLE is not set.")
+            raise ValueError("VTUBE_STAGE_EXECUTABLE is not set.")
+        connection_params = StdioServerParams(
+            command=VTUBE_STAGE_EXECUTABLE,
+            args=[],
+            env=None,
         )
         toolset = McpToolset(
             connection_params=connection_params,
