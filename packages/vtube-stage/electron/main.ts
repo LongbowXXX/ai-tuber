@@ -1,8 +1,10 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import express from 'express';
+import cors from 'cors';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
 import { CallToolRequestSchema, ListToolsRequestSchema, Tool } from '@modelcontextprotocol/sdk/types.js';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -44,7 +46,7 @@ function createWindow() {
   });
 }
 
-// Initialize MCP server
+// Initialize MCP server with HTTP/SSE transport
 async function initMCPServer() {
   const server = new Server(
     {
@@ -172,7 +174,7 @@ async function initMCPServer() {
           };
 
           // Send command to renderer
-          if (mainWindow) {
+          if (mainWindow && !mainWindow.isDestroyed()) {
             mainWindow.webContents.send('stage-command', command);
           }
 
@@ -193,7 +195,7 @@ async function initMCPServer() {
             },
           };
 
-          if (mainWindow) {
+          if (mainWindow && !mainWindow.isDestroyed()) {
             mainWindow.webContents.send('stage-command', command);
           }
 
@@ -210,7 +212,7 @@ async function initMCPServer() {
             },
           };
 
-          if (mainWindow) {
+          if (mainWindow && !mainWindow.isDestroyed()) {
             mainWindow.webContents.send('stage-command', command);
           }
 
@@ -229,7 +231,7 @@ async function initMCPServer() {
             },
           };
 
-          if (mainWindow) {
+          if (mainWindow && !mainWindow.isDestroyed()) {
             mainWindow.webContents.send('stage-command', command);
           }
 
@@ -250,11 +252,40 @@ async function initMCPServer() {
     }
   });
 
-  // Start the MCP server with stdio transport
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  // Create Express app for SSE endpoint
+  const expressApp = express();
+  expressApp.use(cors());
+  expressApp.use(express.json());
 
-  console.log('MCP server started');
+  // SSE endpoint
+  expressApp.get('/sse', async (req, res) => {
+    console.log('SSE connection established');
+
+    // Set headers for SSE
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    const transport = new SSEServerTransport('/message', res);
+    await server.connect(transport);
+
+    // Handle client disconnect
+    req.on('close', () => {
+      console.log('SSE connection closed');
+    });
+  });
+
+  // POST endpoint for messages
+  expressApp.post('/message', async (req, res) => {
+    // This endpoint is handled by the SSE transport
+    res.status(202).send('Accepted');
+  });
+
+  const port = parseInt(process.env.MCP_SERVER_PORT || '8080');
+  expressApp.listen(port, '0.0.0.0', () => {
+    console.log(`MCP server listening on http://localhost:${port}`);
+    console.log(`SSE endpoint: http://localhost:${port}/sse`);
+  });
 }
 
 // Wait for a command to complete
@@ -277,9 +308,11 @@ ipcMain.on('speakEnd', (_event, speakId: string) => {
 app.whenReady().then(async () => {
   createWindow();
 
-  // Initialize MCP server only in production or when explicitly enabled
-  if (process.env.ENABLE_MCP_SERVER === 'true' || !process.env.VITE_DEV_SERVER_URL) {
+  // Always initialize MCP server
+  try {
     await initMCPServer();
+  } catch (error) {
+    console.error('Failed to initialize MCP server:', error);
   }
 
   app.on('activate', () => {
