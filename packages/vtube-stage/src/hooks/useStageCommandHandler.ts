@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useWebSocket } from './useWebSocket';
 import { validateStageCommand } from '../utils/command_validator';
 import { AvatarState } from '../types/avatar_types';
 import { StageCommand } from '../types/command';
@@ -15,8 +14,9 @@ export function useStageCommandHandler() {
     currentMarkdownText: null,
     camera: null,
   });
+  const [isConnected, setIsConnected] = useState(false);
 
-  const handleWebSocketMessage = useCallback(async (data: unknown) => {
+  const handleCommandMessage = useCallback(async (data: unknown) => {
     const validationResult = await validateStageCommand(data);
 
     if (validationResult.errors.length === 0 && validationResult.command) {
@@ -92,34 +92,36 @@ export function useStageCommandHandler() {
     }
   }, []);
 
-  const { isConnected, sendMessage } = useWebSocket<unknown>({
-    onMessage: handleWebSocketMessage,
-  });
+  // Setup Electron IPC listener
+  useEffect(() => {
+    if (window.electronAPI) {
+      setIsConnected(true);
+      window.electronAPI.onStageCommand((command: any) => {
+        handleCommandMessage(command);
+      });
+    } else {
+      console.warn('Electron API not available. Running in browser mode.');
+    }
+  }, [handleCommandMessage]);
 
   // TTS完了時のハンドラ
-  const handleTTSComplete = useCallback(
-    (avatarId: string, speakId: string) => {
-      console.log(`TTS complete for Avatar: ${avatarId}, SpeakId: ${speakId}`);
-      setAvatars(prevAvatars =>
-        prevAvatars.map(a => {
-          if (a.id === avatarId) {
-            return {
-              ...a,
-              currentEmotion: 'neutral',
-            };
-          }
-          return a;
-        })
-      );
-      if (sendMessage && speakId) {
-        sendMessage({
-          command: 'speakEnd',
-          payload: { speakId },
-        });
-      }
-    },
-    [sendMessage]
-  );
+  const handleTTSComplete = useCallback((avatarId: string, speakId: string) => {
+    console.log(`TTS complete for Avatar: ${avatarId}, SpeakId: ${speakId}`);
+    setAvatars(prevAvatars =>
+      prevAvatars.map(a => {
+        if (a.id === avatarId) {
+          return {
+            ...a,
+            currentEmotion: 'neutral',
+          };
+        }
+        return a;
+      })
+    );
+    if (window.electronAPI && speakId) {
+      window.electronAPI.sendSpeakEnd(speakId);
+    }
+  }, []);
 
   // アニメーション終了時のハンドラ
   const handleAnimationEnd = useCallback((avatarId: string, animationName: string) => {

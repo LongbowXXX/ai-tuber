@@ -13,4 +13,9 @@ logger.warn = (msg, options) => {
 export default defineConfig({
   plugins: [react()],
   customLogger: logger,
+  base: './', // For Electron, use relative paths
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+  },
 });

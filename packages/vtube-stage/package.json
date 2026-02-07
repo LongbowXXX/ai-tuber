@@ -3,13 +3,30 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
+    "dev:electron": "tsc -p tsconfig.electron.json && electron .",
     "build": "tsc -b && vite build",
+    "build:electron": "tsc -p tsconfig.electron.json && vite build && electron-builder",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "preview": "vite preview"
+  },
+  "build": {
+    "appId": "com.longbowxxx.ai-tuber",
+    "productName": "AI Tuber",
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": ["nsis"]
+    }
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -35,10 +52,13 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@modelcontextprotocol/sdk": "^1.26.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@types/three": "^0.175.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^40.2.1",
+    "electron-builder": "^26.7.0",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-react-hooks": "^5.2.0",
@@ -47,6 +67,7 @@
     "prettier": "^3.5.3",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.26.1",
-    "vite": "^6.3.1"
+    "vite": "^6.3.1",
+    "zod": "^4.3.6"
   }
 }
