@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-if (!import.meta.env.VITE_STAGE_DIRECTER_ENDPOINT) {
-  console.warn('VITE_STAGE_DIRECTER_ENDPOINT is not set in the environment variables.');
+if (!import.meta.env.VITE_VTUBE_STAGE_MCP_ENDPOINT) {
+  console.warn('VITE_VTUBE_STAGE_MCP_ENDPOINT is not set in the environment variables.');
 }
 
-const WS_URL = (import.meta.env.VITE_STAGE_DIRECTER_ENDPOINT as string) || 'ws://localhost:8000/ws';
+const WS_URL = (import.meta.env.VITE_VTUBE_STAGE_MCP_ENDPOINT as string) || 'ws://localhost:8000/ws';
 
 interface UseWebSocketOptions<T> {
   onMessage: (message: T) => void; // Callback to handle validated messages

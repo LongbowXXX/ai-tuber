@@ -20,18 +20,26 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams, MCPSe
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
 
 logger = logging.getLogger(__name__)
-STAGE_DIRECTOR_MCP_SERVER_URL = os.getenv("STAGE_DIRECTOR_MCP_SERVER_URL")
+VTUBE_STAGE_MCP_SERVER_URL = os.getenv("VTUBE_STAGE_MCP_SERVER_URL")
 
 
 class StageDirectorMCPClient:
+    """
+    MCP client for connecting to the VTube Stage MCP server.
+    
+    Note: Despite the name "StageDirector", this client now connects to the
+    vtube-stage Electron app which provides the MCP server functionality.
+    The name is kept for backward compatibility.
+    """
+
     @classmethod
     def create(cls, async_exit_stack: AsyncExitStack) -> "StageDirectorMCPClient":
         logger.info("create")
-        if not STAGE_DIRECTOR_MCP_SERVER_URL:
-            logger.error("STAGE_DIRECTOR_MCP_SERVER_URL is not set.")
-            raise ValueError("STAGE_DIRECTOR_MCP_SERVER_URL is not set.")
+        if not VTUBE_STAGE_MCP_SERVER_URL:
+            logger.error("VTUBE_STAGE_MCP_SERVER_URL is not set.")
+            raise ValueError("VTUBE_STAGE_MCP_SERVER_URL is not set.")
         connection_params = SseServerParams(
-            url=STAGE_DIRECTOR_MCP_SERVER_URL,
+            url=VTUBE_STAGE_MCP_SERVER_URL,
         )
         toolset = McpToolset(
             connection_params=connection_params,
