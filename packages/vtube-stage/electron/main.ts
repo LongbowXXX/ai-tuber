@@ -3,7 +3,6 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import * as path from 'path';
-import { z } from 'zod';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -84,14 +83,19 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 });
 
 // Handle tool calls and forward to renderer
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
+server.setRequestHandler(CallToolRequestSchema, async request => {
   const { name, arguments: args } = request.params;
 
   if (!mainWindow) {
     throw new Error('Main window not available');
   }
 
-  let command: any;
+  interface StageCommand {
+    command: string;
+    payload: Record<string, unknown>;
+  }
+
+  let command: StageCommand;
   let speakId: string | undefined;
 
   switch (name) {
@@ -172,7 +176,7 @@ const pendingSpeakCompletions = new Map<string, () => void>();
 
 // Wait for speak end event
 function waitForSpeakEnd(speakId: string): Promise<void> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     pendingSpeakCompletions.set(speakId, resolve);
   });
 }

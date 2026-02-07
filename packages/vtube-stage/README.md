@@ -1,34 +1,40 @@
 # VTuber Stage
 
-AI V-Tuber システムのフロントエンドであり、VRM モデルの描画、アニメーション、表情制御、コンテンツ表示を担当します。
+AI V-Tuber システムの Electron デスクトップアプリケーション。VRM モデルの描画、アニメーション、表情制御、コンテンツ表示を担当し、MCP Server として AI からのツール呼び出しを処理します。
 
 ## 概要
 
-`vtube-stage` は、リアルタイムで V-Tuber キャラクターを描画し、`stage-director` からのコマンドに基づいてキャラクターの表情や動作を制御するフロントエンド Web アプリケーションです。Three.js と `@pixiv/three-vrm` を使用して VRM モデルをレンダリングし、OBS Studio を介して配信可能な映像を生成します。
+`vtube-stage` は、リアルタイムで V-Tuber キャラクターを描画する Electron デスクトップアプリケーション（1920x1080 解像度）です。
+
+- **Main Process**: MCP Server (stdio) として `vtuber-behavior-engine` からのツール呼び出しを受信し、Electron IPC 経由で Renderer Process にコマンドを送信
+- **Renderer Process**: Three.js と `@pixiv/three-vrm` を使用して VRM モデルをレンダリングし、OBS Studio を介して配信可能な映像を生成
 
 ## アーキテクチャにおける役割
 
 `vtube-stage` は以下の役割を担います:
 
-1.  VRM モデルの読み込みとレンダリング。
-2.  `stage-director` からの WebSocket コマンドを受信し、キャラクターの表情、ポーズ、視線をリアルタイムで更新。
-3.  (オプション) TTS (Text-to-Speech) を使用した音声合成とリップシンク。
+1.  **MCP Server**: stdio トランスポートで `vtuber-behavior-engine` からツール呼び出し (`speak`, `trigger_animation`, `display_markdown_text`) を受信
+2.  **Main Process**: コマンドのキューイング、完了同期、Electron IPC 経由での Renderer への命令送信
+3.  **Renderer Process**: VRM モデルの読み込みとレンダリング、キャラクターの表情・ポーズ・視線のリアルタイム更新、TTS (Text-to-Speech) を使用した音声合成とリップシンク
 
 ## 機能
 
-- **VRM モデルのレンダリング:** Three.js と `@pixiv/three-vrm` を使用。
-- **リアルタイム更新:** WebSocket を介して受信したコマンドに基づく表情やポーズの更新。
-- **TTS/リップシンク:** (オプション) VOICEVOX を使用した音声合成とリップシンクのサポート。
-- **Markdown オーバーレイ:** 画面上への Markdown テキスト表示。
+- **Electron Desktop App:** 1920x1080 解像度のデスクトップアプリケーション
+- **MCP Server:** stdio トランスポートで AI からのツール呼び出しを受信
+- **VRM モデルのレンダリング:** Three.js と `@pixiv/three-vrm` を使用
+- **リアルタイム更新:** Electron IPC を介して受信したコマンドに基づく表情やポーズの更新
+- **TTS/リップシンク:** VOICEVOX を使用した音声合成とリップシンクのサポート
+- **Markdown オーバーレイ:** 画面上への Markdown テキスト表示
 
 ## 技術スタック
 
 - TypeScript
+- Electron
 - React
 - Vite
 - Three.js
 - `@pixiv/three-vrm`
-- WebSocket クライアント
+- `@modelcontextprotocol/sdk` (MCP Server)
 - VOICEVOX TTS
 
 ## 前提条件
@@ -49,20 +55,19 @@ AI V-Tuber システムのフロントエンドであり、VRM モデルの描�
    `.env` ファイルを作成し、以下の設定を追加します。
 
    ```env
-   # Stage Director の WebSocket エンドポイント
-   # 注意: 変数名は DIRECTOR ではなく DIRECTER (E) です
-   VITE_STAGE_DIRECTER_ENDPOINT=ws://localhost:8000/ws
+   # VoiceVox TTS サービスのエンドポイント
+   VITE_VOICEVOX_ENDPOINT=http://localhost:50021
    ```
 
 ## サービスの実行
 
-開発サーバーを起動するには、以下のコマンドを実行します:
+開発モードで Electron アプリを起動するには、以下のコマンドを実行します:
 
 ```bash
 npm run dev
 ```
 
-サーバ起動時に表示されるアドレスに、ブラウザでアクセスしてアプリケーションを確認できます。
+Electron デスクトップアプリが起動し、VRM キャラクターが表示されます。
 
 ## ビルド
 

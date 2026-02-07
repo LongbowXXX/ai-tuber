@@ -96,7 +96,7 @@ export function useStageCommandHandler() {
   useEffect(() => {
     if (window.electronAPI) {
       setIsConnected(true);
-      window.electronAPI.onStageCommand((command: any) => {
+      window.electronAPI.onStageCommand((command: StageCommand | unknown) => {
         handleCommandMessage(command);
       });
     } else {

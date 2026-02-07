@@ -16,32 +16,32 @@
 
 | Category  | Technology                  | Version/Range | Purpose                                      |
 | --------- | --------------------------- | ------------- | -------------------------------------------- |
-| Language  | Python                      | >= 3.11       | stage-director / vtuber-behavior-engine      |
-| Language  | TypeScript                  | ~5.7          | vtube-stage                                  |
-| Framework | FastAPI                     | 0.120.0       | stage-director WebSocket/HTTP                |
-| Protocol  | MCP (mcp / FastMCP)         | >= 1.19.0     | AI→Director のツール呼び出し（SSE）          |
-| Protocol  | WebSocket                   | -             | Director↔Stage のリアルタイムコマンド        |
+| Language  | Python                      | >= 3.11       | vtuber-behavior-engine                       |
+| Language  | TypeScript                  | ~5.7          | vtube-stage (Electron + Renderer)            |
+| Framework | Electron                    | Latest        | vtube-stage desktop application              |
+| Protocol  | MCP (@modelcontextprotocol) | >= 1.0.0      | AI→vtube-stage ツール呼び出し（stdio）       |
+| Protocol  | Electron IPC                | -             | Main↔Renderer プロセス間通信                 |
 | Agent FW  | Google ADK                  | >= 1.17.0     | vtuber-behavior-engine（マルチエージェント） |
-| Frontend  | React                       | 19.x          | vtube-stage UI                               |
+| Frontend  | React                       | 19.x          | vtube-stage renderer UI                      |
 | Build     | Vite                        | 6.x           | vtube-stage dev/build                        |
 | 3D        | Three.js / @pixiv/three-vrm | ^0.175 / ^3.4 | VRM 描画/制御                                |
 | TTS       | VoiceVox                    | -             | 音声合成（HTTP API）                         |
 
 ### アーキテクチャパターン
 
-- **モジュラーモノレポ**: 3 パッケージ（AI/Director/Stage）を `packages/` で分離。
+- **モジュラーモノレポ**: 2 パッケージ（AI/Stage）を `packages/` で分離。
 - **ツール境界（MCP）**: AI の「意図」をツール呼び出しに正規化し、表現層へ安全に渡す。
-- **コマンドバス（WebSocket）**: Director から Stage へ JSON コマンドを送る。
-- **キュー + 完了同期**: `speak` は `speakEnd` を待って順序とペースを保証（`command_queue.py` + `command_events`）。
+- **Electron アーキテクチャ**: vtube-stage は Electron デスクトップアプリケーション（Main + Renderer プロセス）。
+- **プロセス間通信（IPC）**: Main プロセスと Renderer プロセス間で Electron IPC を使用。
+- **キュー + 完了同期**: `speak` は `speakEnd` を待って順序とペースを保証。
 
 ## 3. ディレクトリ構成
 
 ```
 ai-tuber-system/
 ├── packages/
-│   ├── stage-director/         # MCP Server + WebSocket Server
 │   ├── vtuber-behavior-engine/ # ADK Agents + MCP Client
-│   └── vtube-stage/            # React + Three.js + VRM Renderer
+│   └── vtube-stage/            # Electron App (MCP Server + React Renderer)
 ├── docs/                       # プロジェクトドキュメント
 ├── knowledge/                  # ワークフロー/テンプレ/ガイドライン
 └── .github/                    # Copilot/プロンプト/テンプレ
@@ -49,34 +49,31 @@ ai-tuber-system/
 
 ### 主要ディレクトリ
 
-| Directory                         | Purpose               | Key Files                                                                            |
-| --------------------------------- | --------------------- | ------------------------------------------------------------------------------------ |
-| `packages/stage-director`         | 舞台監督（MCP/WS）    | `src/stage_director/main.py`, `stage_director_mcp_server.py`, `websocket_handler.py` |
-| `packages/vtuber-behavior-engine` | AI コア（ADK）        | `src/vtuber_behavior_engine/main.py`, `agent_runner.py`                              |
-| `packages/vtube-stage`            | 描画・TTS・表示       | `src/main.tsx`, `src/hooks/useWebSocket.ts`, `src/hooks/useStageCommandHandler.ts`   |
-| `docs`                            | 設計/運用ドキュメント | `mcp_adk_explanation.md`, `architecture/*`, `rules/*`                                |
-| `knowledge`                       | 開発プロセスの標準    | `workflows/workflow.md`, `templates/*`, `guidelines/*`                               |
+| Directory                         | Purpose                   | Key Files                                                                                   |
+| --------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------- |
+| `packages/vtuber-behavior-engine` | AI コア（ADK）            | `src/vtuber_behavior_engine/main.py`, `agent_runner.py`                                     |
+| `packages/vtube-stage`            | Electron App + 描画・TTS  | `electron/main.ts`, `electron/mcp-server.ts`, `src/main.tsx`, `src/hooks/useStageCommandHandler.ts` |
+| `docs`                            | 設計/運用ドキュメント     | `mcp_adk_explanation.md`, `architecture/*`, `rules/*`                                       |
+| `knowledge`                       | 開発プロセスの標準        | `workflows/workflow.md`, `templates/*`, `guidelines/*`                                      |
 
 ## 4. 主要概念（ユビキタス言語）
 
 | Term                   | Definition                                        | Example                                               |
 | ---------------------- | ------------------------------------------------- | ----------------------------------------------------- |
 | **Behavior Engine**    | ADK 上のエージェントが対話/行動を生成する AI コア | `packages/vtuber-behavior-engine`                     |
-| **Stage Director**     | MCP ツールを公開し、WS コマンドへ変換するハブ     | `packages/stage-director`                             |
-| **VTube Stage**        | WS コマンドに従い VRM/TTS/表示を実行するフロント  | `packages/vtube-stage`                                |
+| **VTube Stage**        | Electron デスクトップアプリ（MCP Server + Renderer） | `packages/vtube-stage`                                |
 | **MCP Tool**           | AI から舞台を操作する関数インターフェース         | `speak`, `trigger_animation`, `display_markdown_text` |
-| **StageCommand**       | Director→Stage の JSON コマンド契約               | `speak`, `triggerAnimation`, `displayMarkdown`        |
+| **StageCommand**       | Main→Renderer の IPC メッセージ                  | `speak`, `triggerAnimation`, `displayMarkdown`        |
 | **speakId / speakEnd** | 発話の完了同期に使う識別子とイベント              | `speakId` をキーに待機/通知                           |
 
 ## 5. エントリポイント
 
-| Entry Point          | Location                                                                  | Purpose                                |
-| -------------------- | ------------------------------------------------------------------------- | -------------------------------------- |
-| Stage Director Main  | `packages/stage-director/src/stage_director/main.py`                      | WebSocket サーバと MCP(SSE) を同時起動 |
-| Stage WebSocket      | `packages/stage-director/src/stage_director/stage_director_server.py`     | `/ws` を提供（FastAPI）                |
-| MCP Server           | `packages/stage-director/src/stage_director/stage_director_mcp_server.py` | `FastMCP.run_sse_async()`              |
-| Behavior Engine Main | `packages/vtuber-behavior-engine/src/vtuber_behavior_engine/main.py`      | 既定で News Agent を起動               |
-| Frontend Main        | `packages/vtube-stage/src/main.tsx`                                       | React のルートをマウント               |
+| Entry Point          | Location                                                             | Purpose                                      |
+| -------------------- | -------------------------------------------------------------------- | -------------------------------------------- |
+| VTube Stage Main     | `packages/vtube-stage/electron/main.ts`                              | Electron メインプロセス + MCP Server 起動    |
+| MCP Server           | `packages/vtube-stage/electron/mcp-server.ts`                        | stdio MCP Server（@modelcontextprotocol/sdk） |
+| Renderer Main        | `packages/vtube-stage/src/main.tsx`                                  | React のルートをマウント                     |
+| Behavior Engine Main | `packages/vtuber-behavior-engine/src/vtuber_behavior_engine/main.py` | 既定で News Agent を起動、stdio で MCP 接続  |
 
 ## 6. 開発ルール（憲章サマリー）
 
@@ -100,13 +97,13 @@ ai-tuber-system/
 
 ### Must Avoid
 
-- コマンド契約（`command`/`payload` 形状）を片側だけ変更すること。
+- IPC メッセージ契約（`command`/`payload` 形状）を片側だけ変更すること。
 - `speakEnd` を送らないまま `speak` 同期を前提とした機能を実装すること。
 
 ### Patterns to Use
 
-- `stage-director` のツール追加は「MCP ツール → キュー投入 → WS 送信」という既存パターンに合わせる。
-- `vtube-stage` のコマンド追加は「型定義 → validator registry → handler switch」という既存パターンに合わせる。
+- `vtube-stage` の MCP ツール追加は「MCP ツール定義 → Main プロセスハンドラ → IPC 送信」という既存パターンに合わせる。
+- Renderer のコマンド追加は「型定義 → IPC ハンドラ → 実行処理」という既存パターンに合わせる。
 
 ## 7. クイックリファレンス
 
@@ -116,15 +113,11 @@ ai-tuber-system/
 # Root（概要）
 # VoiceVox を起動（別途）
 
-# stage-director
-uv sync --extra dev
-uv run python src/stage_director/main.py
-
-# vtube-stage
+# vtube-stage (Electron app)
 npm install
 npm run dev
 
-# vtuber-behavior-engine
+# vtuber-behavior-engine (stdio MCP で vtube-stage に接続)
 uv sync --extra dev
 uv run python src/vtuber_behavior_engine/main.py
 ```

@@ -40,12 +40,49 @@ jobs:
       - name: Run Prettier format check
         run: npm run format:check
 
-      - name: Build project
+      - name: Compile Electron main process
+        run: npx tsc -p tsconfig.electron.json
+
+      - name: Build Vite project
         run: npm run build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: vtube-stage-build
-          path: packages/vtube-stage/dist
+          path: |
+            packages/vtube-stage/dist
+            packages/vtube-stage/dist-electron
           retention-days: 3
+
+  build-windows:
+    name: Build Windows Application
+    runs-on: windows-latest
+    needs: build-vtube-stage
+
+    defaults:
+      run:
+        working-directory: ./packages/vtube-stage
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+          cache-dependency-path: packages/vtube-stage/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Electron app for Windows
+        run: npm run build:electron
+
+      - name: Upload Windows application
+        uses: actions/upload-artifact@v4
+        with:
+          name: vtube-stage-windows
+          path: packages/vtube-stage/release/*.exe
+          retention-days: 7
