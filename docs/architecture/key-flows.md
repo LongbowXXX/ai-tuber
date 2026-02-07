@@ -7,7 +7,7 @@
 README の推奨順序:
 
 1. VoiceVox（デフォルト `localhost:50021`）を起動
-2. `stage-director` を起動: `uv run python src/stage_director/main.py`
+2. `stage-director` を起動: `npm run dev`
 3. `vtube-stage` を起動: `npm run dev`
 4. `vtuber-behavior-engine` を起動: `uv run python src/vtuber_behavior_engine/main.py`
 

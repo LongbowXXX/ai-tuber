@@ -28,37 +28,31 @@ MCP Server としてツールを提供し、AI エージェントがキャラク
 
 ## 技術スタック
 
-- Python 3.11+
-- **FastAPI**: WebSocket サーバー
-- **mcp (FastMCP)**: Model Context Protocol サーバー
-- **uvicorn**: ASGI サーバー
-- **pydantic**: データバリデーション
+- Node.js >= 18.0.0
+- TypeScript ~5.7
+- **ws**: WebSocket サーバー
+- **@modelcontextprotocol/sdk**: Model Context Protocol サーバー
+- **zod**: スキーマバリデーション
 
 ## ドキュメント
 
-- [セットアップガイド](SetupGuide.md) - VS Code + uv での開発環境構築
+- [セットアップガイド](SetupGuide.md) - VS Code + npm での開発環境構築
 - [AGENTS.md](AGENTS.md) - AI エージェント向けの開発ガイド・コンテキスト
 - [docs/](docs/) - アーキテクチャ詳細、コーディング規約、用語集など
 
 ## 前提条件
 
-- Python >= 3.11
-- `uv` (パッケージマネージャー)
+- Node.js >= 18.0.0
+- npm (パッケージマネージャー)
 
 ## インストール
 
 詳細な手順については [セットアップガイド](SetupGuide.md) を参照してください。
 
-1. **`uv` を使用して仮想環境を作成します:**
+1. **依存関係をインストールします:**
 
    ```bash
-   uv venv
-   ```
-
-2. **依存関係をインストールします:**
-
-   ```bash
-   uv sync --extra dev
+   npm install
    ```
 
 ## サービスの実行
@@ -66,11 +60,11 @@ MCP Server としてツールを提供し、AI エージェントがキャラク
 `stage-director` は、MCP サーバーと WebSocket サーバーの両方を起動します。
 
 ```bash
-uv run python src/stage_director/main.py
+npm run dev
 ```
 
 - **WebSocket Server**: `ws://127.0.0.1:8000/ws`
-- **MCP Server**: `0.0.0.0:8080` (SSE)
+- **MCP Server**: stdio (標準入出力)
 
 ## 環境変数
 
@@ -79,8 +73,6 @@ uv run python src/stage_director/main.py
 ```env
 STAGE_DIRECTOR_HOST=127.0.0.1
 STAGE_DIRECTOR_PORT=8000
-STAGE_DIRECTOR_MCP_HOST=0.0.0.0
-STAGE_DIRECTOR_MCP_PORT=8080
 ```
 
 ## 開発
@@ -89,15 +81,39 @@ STAGE_DIRECTOR_MCP_PORT=8080
 
 ```bash
 # フォーマット
-uv run black .
+npm run format
 
 # リンティング
-uv run flake8
+npm run lint
 
 # 型チェック
-uv run mypy .
+npm run build
 
 # テスト
+npm run test
+
+# テスト（カバレッジ付き）
+npm run test:coverage
+```
+
+## ビルド
+
+```bash
+npm run build
+```
+
+ビルドされたファイルは `dist/` ディレクトリに出力されます。
+
+## プロダクション実行
+
+```bash
+npm run build
+npm start
+```
+
+## ライセンス
+
+MIT License - 詳細は [LICENSE](../../LICENSE) を参照してください。
 uv run pytest
 ```
 

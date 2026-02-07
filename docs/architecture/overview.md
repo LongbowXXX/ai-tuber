@@ -38,7 +38,7 @@
 | コンポーネント             | 責任                                                      | 主要技術                       |
 | :------------------------- | :-------------------------------------------------------- | :----------------------------- |
 | **vtuber-behavior-engine** | シナリオ制御、対話生成、ツール選択、感情決定              | Python, Google ADK, MCP Client |
-| **stage-director**         | ツール定義の公開、コマンドの正規化、WS 配信、完了待機     | Python, FastAPI, FastMCP       |
+| **stage-director**         | ツール定義の公開、コマンドの正規化、WS 配信、完了待機     | Node.js, TypeScript, ws, @mcp/sdk |
 | **vtube-stage**            | VRM 描画、TTS 再生、リップシンク、Markdown 表示、OBS 連携 | TypeScript, React, Three.js    |
 
 ## 3. 動作原理

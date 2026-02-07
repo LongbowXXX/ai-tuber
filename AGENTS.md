@@ -16,12 +16,12 @@
 
 | Category  | Technology                  | Version/Range | Purpose                                      |
 | --------- | --------------------------- | ------------- | -------------------------------------------- |
-| Language  | Python                      | >= 3.11       | stage-director / vtuber-behavior-engine      |
-| Language  | TypeScript                  | ~5.7          | vtube-stage                                  |
-| Framework | FastAPI                     | 0.120.0       | stage-director WebSocket/HTTP                |
-| Protocol  | MCP (mcp / FastMCP)         | >= 1.19.0     | AI→Director のツール呼び出し（SSE）          |
+| Language  | Python                      | >= 3.11       | vtuber-behavior-engine                       |
+| Language  | TypeScript                  | ~5.7          | stage-director / vtube-stage                 |
+| Language  | Node.js                     | >= 18.0.0     | stage-director                               |
+| Framework | Google ADK                  | >= 1.17.0     | vtuber-behavior-engine（マルチエージェント） |
+| Protocol  | MCP (mcp / @mcp/sdk)        | >= 1.19.0     | AI→Director のツール呼び出し（stdio）        |
 | Protocol  | WebSocket                   | -             | Director↔Stage のリアルタイムコマンド        |
-| Agent FW  | Google ADK                  | >= 1.17.0     | vtuber-behavior-engine（マルチエージェント） |
 | Frontend  | React                       | 19.x          | vtube-stage UI                               |
 | Build     | Vite                        | 6.x           | vtube-stage dev/build                        |
 | 3D        | Three.js / @pixiv/three-vrm | ^0.175 / ^3.4 | VRM 描画/制御                                |
@@ -49,13 +49,13 @@ ai-tuber-system/
 
 ### 主要ディレクトリ
 
-| Directory                         | Purpose               | Key Files                                                                            |
-| --------------------------------- | --------------------- | ------------------------------------------------------------------------------------ |
-| `packages/stage-director`         | 舞台監督（MCP/WS）    | `src/stage_director/main.py`, `stage_director_mcp_server.py`, `websocket_handler.py` |
-| `packages/vtuber-behavior-engine` | AI コア（ADK）        | `src/vtuber_behavior_engine/main.py`, `agent_runner.py`                              |
-| `packages/vtube-stage`            | 描画・TTS・表示       | `src/main.tsx`, `src/hooks/useWebSocket.ts`, `src/hooks/useStageCommandHandler.ts`   |
-| `docs`                            | 設計/運用ドキュメント | `mcp_adk_explanation.md`, `architecture/*`, `rules/*`                                |
-| `knowledge`                       | 開発プロセスの標準    | `workflows/workflow.md`, `templates/*`, `guidelines/*`                               |
+| Directory                         | Purpose               | Key Files                                                                    |
+| --------------------------------- | --------------------- | ---------------------------------------------------------------------------- |
+| `packages/stage-director`         | 舞台監督（MCP/WS）    | `src/index.ts`, `src/mcpServer.ts`, `src/websocketServer.ts`                 |
+| `packages/vtuber-behavior-engine` | AI コア（ADK）        | `src/vtuber_behavior_engine/main.py`, `agent_runner.py`                      |
+| `packages/vtube-stage`            | 描画・TTS・表示       | `src/main.tsx`, `src/hooks/useWebSocket.ts`, `src/hooks/useStageCommandHandler.ts` |
+| `docs`                            | 設計/運用ドキュメント | `mcp_adk_explanation.md`, `architecture/*`, `rules/*`                        |
+| `knowledge`                       | 開発プロセスの標準    | `workflows/workflow.md`, `templates/*`, `guidelines/*`                       |
 
 ## 4. 主要概念（ユビキタス言語）
 
@@ -70,13 +70,13 @@ ai-tuber-system/
 
 ## 5. エントリポイント
 
-| Entry Point          | Location                                                                  | Purpose                                |
-| -------------------- | ------------------------------------------------------------------------- | -------------------------------------- |
-| Stage Director Main  | `packages/stage-director/src/stage_director/main.py`                      | WebSocket サーバと MCP(SSE) を同時起動 |
-| Stage WebSocket      | `packages/stage-director/src/stage_director/stage_director_server.py`     | `/ws` を提供（FastAPI）                |
-| MCP Server           | `packages/stage-director/src/stage_director/stage_director_mcp_server.py` | `FastMCP.run_sse_async()`              |
-| Behavior Engine Main | `packages/vtuber-behavior-engine/src/vtuber_behavior_engine/main.py`      | 既定で News Agent を起動               |
-| Frontend Main        | `packages/vtube-stage/src/main.tsx`                                       | React のルートをマウント               |
+| Entry Point          | Location                                                      | Purpose                                  |
+| -------------------- | ------------------------------------------------------------- | ---------------------------------------- |
+| Stage Director Main  | `packages/stage-director/src/index.ts`                        | WebSocket サーバと MCP(stdio) を同時起動 |
+| MCP Server           | `packages/stage-director/src/mcpServer.ts`                    | stdio で MCP ツールを提供                |
+| WebSocket Server     | `packages/stage-director/src/websocketServer.ts`              | `/ws` を提供                             |
+| Behavior Engine Main | `packages/vtuber-behavior-engine/src/vtuber_behavior_engine/main.py` | 既定で News Agent を起動          |
+| Frontend Main        | `packages/vtube-stage/src/main.tsx`                           | React のルートをマウント                 |
 
 ## 6. 開発ルール（憲章サマリー）
 
@@ -117,8 +117,8 @@ ai-tuber-system/
 # VoiceVox を起動（別途）
 
 # stage-director
-uv sync --extra dev
-uv run python src/stage_director/main.py
+npm install
+npm run dev
 
 # vtube-stage
 npm install
