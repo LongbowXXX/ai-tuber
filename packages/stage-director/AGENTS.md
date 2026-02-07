@@ -54,12 +54,12 @@
 
 ## 4. 主要概念 (ユビキタス言語)
 
-| 用語                  | 定義                               | 例                               |
-| :-------------------- | :--------------------------------- | :------------------------------- |
-| **Stage Director**    | 本システム。AI と舞台の橋渡し役。  | -                                |
-| **vtube-stage**       | リアルタイムレンダリングエンジン。 | -                                |
+| 用語                  | 定義                               | 例                                                                                             |
+| :-------------------- | :--------------------------------- | :--------------------------------------------------------------------------------------------- |
+| **Stage Director**    | 本システム。AI と舞台の橋渡し役。  | -                                                                                              |
+| **vtube-stage**       | リアルタイムレンダリングエンジン。 | -                                                                                              |
 | **Speak**             | 発話と口パクを伴うアクション。     | `speak(character_id="default", message="こんにちは", caption="こんにちは", emotion="neutral")` |
-| **Trigger Animation** | 特定のアニメーション再生。         | `trigger_animation(character_id="default", animation_name="wave")` |
+| **Trigger Animation** | 特定のアニメーション再生。         | `trigger_animation(character_id="default", animation_name="wave")`                             |
 
 ## 5. エントリーポイント
 

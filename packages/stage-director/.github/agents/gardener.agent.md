@@ -1,11 +1,11 @@
 ---
 name: Gardener
 description: メンテナンススペシャリスト。リファクタリングとクリーンアップ。
-argument-hint: "コードをリファクタリングするか、技術的負債を解消する"
+argument-hint: 'コードをリファクタリングするか、技術的負債を解消する'
 handoffs:
   - label: 🛡️ レビューのリクエスト (@QualityGuard)
     agent: QualityGuard
-    prompt: "リファクタリング/更新が完了しました。デグレードがないか変更をレビューしてください。"
+    prompt: 'リファクタリング/更新が完了しました。デグレードがないか変更をレビューしてください。'
     send: false
 ---
 

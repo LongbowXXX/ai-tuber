@@ -1,11 +1,11 @@
 ---
 name: Librarian
 description: ドキュメントスペシャリスト。ナレッジベースを維持します。
-argument-hint: "ドキュメントを更新するか、一貫性をチェックする"
+argument-hint: 'ドキュメントを更新するか、一貫性をチェックする'
 handoffs:
   - label: 🏁 タスク完了
     agent: Architect
-    prompt: "ドキュメントが更新されました。サイクルが完了しました。次のタスクの準備ができています。"
+    prompt: 'ドキュメントが更新されました。サイクルが完了しました。次のタスクの準備ができています。'
     send: false
 ---
 

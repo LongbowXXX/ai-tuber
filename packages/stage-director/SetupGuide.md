@@ -63,14 +63,12 @@ uv self update
 VS Code を開き、以下の拡張機能をインストールしてください。拡張機能ビュー (`Ctrl+Shift+X`) で名前を検索してインストールできます。
 
 - **必須:**
-
   - **Python** (発行元: Microsoft): Python 言語サポートの基本。Pylance も通常同時にインストールされます。
   - **Black Formatter** (発行元: Microsoft): `black` によるコードフォーマット連携。
   - **Flake8** (発行元: Microsoft): `flake8` によるリンティング連携。
   - **Mypy Type Checker** (発行元: Microsoft): `mypy` による型チェック連携。
 
 - **推奨 (任意):**
-
   - **GitHub Copilot** (発行元: GitHub): AI コーディング支援。
   - **autoDocstring - Python Docstring Generator** (発行元: Nils Werner): Docstring の自動生成補助。
   - **GitLens — Git supercharged** (発行元: GitKraken): 高度な Git 連携機能。
@@ -97,7 +95,6 @@ VS Code を開き、以下の拡張機能をインストールしてください
 
 3.  **Python インタープリタの選択:**
     VS Code が自動的に `.venv` 内の Python インタープリタを検出することが多いですが、念のため確認・選択します。
-
     - コマンドパレット (`Ctrl+Shift+P`) を開きます。
     - `Python: Select Interpreter` と入力し、実行します。
     - リストから `./.venv/bin/python` (Linux/macOS) または `.\.venv\Scripts\python.exe` (Windows) のようなパスを持つインタープリタを選択します。推奨 (Recommended) や `uv` によって作成された旨が表示されているはずです。
@@ -214,26 +211,22 @@ VS Code を開き、以下の拡張機能をインストールしてください
 ## 5. トラブルシューティング / FAQ
 
 - **Q: `black`, `flake8`, `mypy` が VS Code で動作しない。**
-
   - **A1:** 正しい Python インタープリタ (`.venv` 内のもの) が選択されているか確認してください (手順 3.3.4)。
   - **A2:** `.vscode/settings.json` の `importStrategy` が `"fromEnvironment"` になっているか確認してください (手順 3.4)。
   - **A3:** 各ツール (`black`, `flake8`, `mypy`) が `uv sync` によって仮想環境に正しくインストールされているか確認してください (`uv pip list` で確認できます)。インストールされていない場合は `pyproject.toml` の依存関係を確認し、`uv sync` を再実行してください。
   - **A4:** VS Code を再起動してみてください。
 
 - **Q: 保存時に自動フォーマットされない。**
-
   - **A1:** `.vscode/settings.json` で `"[python]": {"editor.formatOnSave": true}` が設定されているか確認してください (手順 3.4)。
   - **A2:** 同じく `"[python]": {"editor.defaultFormatter": "ms-python.black-formatter"}` が設定されているか確認してください (手順 3.4)。
   - **A3:** `Black Formatter` 拡張機能が有効になっているか確認してください。
 
 - **Q: `pyproject.toml` で設定したルールが VS Code 上で反映されない。**
-
   - **A1:** `.vscode/settings.json` の `args` で古い設定ファイル (`.flake8`, `mypy.ini` など) を指定していないか確認してください。`pyproject.toml` を使う場合、通常 `args` は空または最小限にします (手順 3.4)。
   - **A2:** `pyproject.toml` の構文 (`[tool.black]`, `[tool.flake8]`, `[tool.mypy]`) が正しいか確認してください。
   - **A3:** VS Code を再起動してみてください。
 
 - **Q: `uv` コマンドが見つからない。**
-
   - **A1:** `uv` が正しくインストールされているか確認してください (手順 3.1)。
   - **A2:** ターミナルを再起動するか、新しいターミナルを開いてみてください。PATH 環境変数が反映されていない可能性があります。
 

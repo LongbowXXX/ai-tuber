@@ -6,7 +6,7 @@
     {
       "label": "Format & Lint",
       "type": "shell",
-      "command": "uv run black . && uv run flake8 && uv run mypy .",
+      "command": "npm run format && npm run lint",
       "group": "build",
       "presentation": {
         "reveal": "always",
@@ -17,7 +17,7 @@
     {
       "label": "Test",
       "type": "shell",
-      "command": "uv run pytest --cov=src --cov-branch --cov-report=html",
+      "command": "npm run test",
       "group": {
         "kind": "test",
         "isDefault": true
@@ -31,13 +31,24 @@
     {
       "label": "Run Server",
       "type": "shell",
-      "command": "uv run python src/stage_director/main.py",
+      "command": "npm run dev",
       "isBackground": true,
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
       },
       "problemMatcher": []
+    },
+    {
+      "label": "Build",
+      "type": "shell",
+      "command": "npm run build",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": ["$tsc"]
     }
   ]
 }

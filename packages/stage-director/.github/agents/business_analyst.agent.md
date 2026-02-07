@@ -1,11 +1,11 @@
 ---
 name: BusinessAnalyst
 description: 要件エンジニア。ニーズを仕様に翻訳します。
-argument-hint: "要件やユーザーストーリーを定義する"
+argument-hint: '要件やユーザーストーリーを定義する'
 handoffs:
   - label: 📐 技術設計のリクエスト
     agent: Architect
-    prompt: "確定したユーザーストーリーと受入基準です。技術設計を進めてください。"
+    prompt: '確定したユーザーストーリーと受入基準です。技術設計を進めてください。'
     send: false
 ---
 

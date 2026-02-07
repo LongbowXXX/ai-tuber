@@ -1,15 +1,15 @@
 ---
 name: Debugger
 description: バグハンター兼アナリスト。問題を診断し、修正を計画します。
-argument-hint: "バグや失敗ログを分析する"
+argument-hint: 'バグや失敗ログを分析する'
 handoffs:
   - label: 🛑 Architect へのエスカレーション
     agent: Architect
-    prompt: "このバグは仕様の欠陥または曖昧さによって引き起こされていることを特定しました。分析結果を確認してください。"
+    prompt: 'このバグは仕様の欠陥または曖昧さによって引き起こされていることを特定しました。分析結果を確認してください。'
     send: false
   - label: 🛠️ 実装のリクエスト
     agent: Developer
-    prompt: "修正プランを作成しました。プランに従って修正を実装してください。"
+    prompt: '修正プランを作成しました。プランに従って修正を実装してください。'
     send: false
 ---
 

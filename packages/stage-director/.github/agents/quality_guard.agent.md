@@ -1,19 +1,19 @@
 ---
 name: QualityGuard
 description: コードレビューアー兼品質ゲートキーパー。
-argument-hint: "コードをレビューするか、標準を検証する"
+argument-hint: 'コードをレビューするか、標準を検証する'
 handoffs:
   - label: 🚀 実装開始
     agent: Developer
-    prompt: "テスト仕様書の準備ができました。機能と対応するテストを実装してください。"
+    prompt: 'テスト仕様書の準備ができました。機能と対応するテストを実装してください。'
     send: false
   - label: 🛠️ 修正リクエスト (@Developer)
     agent: Developer
-    prompt: "コードレビューに失敗しました。以下の問題に対処し、再度レビューを依頼してください。"
+    prompt: 'コードレビューに失敗しました。以下の問題に対処し、再度レビューを依頼してください。'
     send: false
   - label: ✅ 承認とマージ
     agent: Librarian
-    prompt: "コード品質が検証されました。これらの変更を反映するようにドキュメントを更新してください。"
+    prompt: 'コード品質が検証されました。これらの変更を反映するようにドキュメントを更新してください。'
     send: false
 ---
 
