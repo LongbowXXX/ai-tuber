@@ -157,6 +157,13 @@ async function initMCPServer() {
   server.setRequestHandler(CallToolRequestSchema, async request => {
     const { name, arguments: args } = request.params;
 
+    if (!args) {
+      return {
+        content: [{ type: 'text', text: 'Error: Missing arguments' }],
+        isError: true,
+      };
+    }
+
     try {
       switch (name) {
         case 'speak': {
@@ -276,7 +283,7 @@ async function initMCPServer() {
   });
 
   // POST endpoint for messages
-  expressApp.post('/message', async (req, res) => {
+  expressApp.post('/message', async (_req, res) => {
     // This endpoint is handled by the SSE transport
     res.status(202).send('Accepted');
   });

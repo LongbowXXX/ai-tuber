@@ -56,7 +56,7 @@ AI V-Tuber システムのフロントエンドであり、VRM モデルの描�
    ```env
    # MCP Server ポート (デフォルト: 8080)
    MCP_SERVER_PORT=8080
-   
+
    # VoiceVox TTS エンドポイント (デフォルト: http://localhost:50021)
    VITE_VOICEVOX_ENDPOINT=http://localhost:50021
    ```
