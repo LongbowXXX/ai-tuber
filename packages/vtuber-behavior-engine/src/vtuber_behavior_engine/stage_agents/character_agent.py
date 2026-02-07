@@ -14,7 +14,7 @@ from google.adk.tools.base_tool import BaseTool
 from google.genai import types
 from google.genai.types import Part
 
-from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
+from vtuber_behavior_engine.services.vtube_stage_mcp_client import VtubeStageMCPClient
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     AGENT_LLM_MODEL,
     OUTPUT_LLM_MODEL,
@@ -71,7 +71,7 @@ def create_character_agent(
     return agent
 
 
-def create_character_output_agent(character_id: str, stage_director_client: StageDirectorMCPClient) -> LlmAgent:
+def create_character_output_agent(character_id: str, stage_client: VtubeStageMCPClient) -> LlmAgent:
     async def handle_speech(callback_context: CallbackContext) -> Optional[types.Content]:
         if STATE_AGENT_SPEECH_BASE + character_id not in callback_context.state:
             logger.info("No speech data found in state. skipping output.")
@@ -86,7 +86,7 @@ def create_character_output_agent(character_id: str, stage_director_client: Stag
             logger.info(f"speak(): {speech_data}")
             if speech_data:
                 speech_model = AgentSpeech.model_validate(speech_data)
-                await stage_director_client.speak(speech_model, markdown_text)
+                await stage_client.speak(speech_model, markdown_text)
                 callback_context.state[STATE_AGENT_SPEECH_BASE + character_id] = None
         return None
 
@@ -95,7 +95,7 @@ def create_character_output_agent(character_id: str, stage_director_client: Stag
     ) -> Optional[dict[str, Any]]:
         # ツール実行前に前のキャラのセリフが終わるのを待つ
         logger.info(f"Waiting for speech before executing tool: {tool.name}")
-        await stage_director_client.wait_for_current_speak_end()
+        await stage_client.wait_for_current_speak_end()
         return None
 
     # Tools will be loaded lazily by the root agent initializer

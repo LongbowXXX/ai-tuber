@@ -8,7 +8,7 @@ from contextlib import AsyncExitStack
 
 from google.adk.agents import BaseAgent
 
-from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
+from vtuber_behavior_engine.services.vtube_stage_mcp_client import VtubeStageMCPClient
 from vtuber_behavior_engine.stage_agents.agent_builder import build_root_agent
 from vtuber_behavior_engine.stage_agents.agents_config import AgentsConfig
 from vtuber_behavior_engine.stage_agents.presentation.presentation_context_agent import (
@@ -22,13 +22,13 @@ logger = logging.getLogger(__name__)
 def build_root_presentation_agent(agent_config: AgentsConfig) -> BaseAgent | None:
     logger.info(f"Building root agent. agent_config={agent_config}")
     exit_stack = AsyncExitStack()
-    stage_director_client = StageDirectorMCPClient.create(exit_stack)
+    stage_client = VtubeStageMCPClient.create(exit_stack)
     exit_stack.callback(lambda: logger.info("build_root_presentation_agent(): exit_stack closed."))
     try:
         initial_context_agent = create_initial_presentation_context_agent()
         update_context_agent = create_update_presentation_context_agent()
         character_agent = build_root_agent(
-            initial_context_agent, update_context_agent, stage_director_client, agent_config, exit_stack
+            initial_context_agent, update_context_agent, stage_client, agent_config, exit_stack
         )
         return character_agent
     except Exception as e:

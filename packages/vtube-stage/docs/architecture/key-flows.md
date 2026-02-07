@@ -11,7 +11,7 @@
 
 ## 2. コマンド受信フロー
 
-1. `stage-director` から WebSocket 経由で JSON コマンドが送信される。
+1. MCP ツール呼び出しを受け取り、Electron IPC 経由で JSON コマンドをレンダラへ送信する。
 2. `useWebSocket` がメッセージを受信し、`useStageCommandHandler` に渡す。
 3. `useStageCommandHandler` がコマンドの種類を判別する。
    - **表情コマンド**: `useFacialExpression` を通じて VRM の BlendShape を更新。

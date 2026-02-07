@@ -5,14 +5,14 @@ AI V-Tuber システムの頭脳となる AI コア。Google ADK (Agent Developm
 ## 概要
 
 `vtuber-behavior-engine` は、複数の専門エージェントが協調して動作する AI システムです。
-MCP (Model Context Protocol) Client として `stage-director` に接続し、生成した対話やアクションを実際のキャラクター動作（発話、アニメーション、表示）として実行します。
+ MCP (Model Context Protocol) Client として `vtube-stage` (Electron) に接続し、生成した対話やアクションを実際のキャラクター動作（発話、アニメーション、表示）として実行します。
 
 ## アーキテクチャにおける役割
 
 メインの [アーキテクチャ概要](docs/architecture/overview.md) で説明されているように、`vtuber-behavior-engine` は以下の役割を担います:
 
 1. **マルチエージェントシステム**: 役割の異なる複数のエージェント（キャラクター、ニュース、プレゼンテーションなど）を協調動作させます。
-2. **MCP Client**: `stage-director` の MCP Server に接続し、以下のツールを使用してキャラクターを制御します。
+2. **MCP Client**: `vtube-stage` の MCP Server に接続し、以下のツールを使用してキャラクターを制御します。
    - `speak`: 発話と感情表現
    - `trigger_animation`: ポーズ変更
    - `display_markdown_text`: 情報表示
@@ -66,8 +66,7 @@ MCP (Model Context Protocol) Client として `stage-director` に接続し、�
 ```env
 GOOGLE_API_KEY=your_gemini_api_key
 GOOGLE_APPLICATION_CREDENTIALS=path/to/service_account.json
-STAGE_DIRECTOR_MCP_HOST=localhost
-STAGE_DIRECTOR_MCP_PORT=8080
+VTUBE_STAGE_MCP_SERVER_URL=http://localhost:8080/sse
 ```
 
 ## サービスの実行

@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock, AsyncMock
-from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
+from vtuber_behavior_engine.services.vtube_stage_mcp_client import VtubeStageMCPClient
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech, AgentSpeechItem
 from google.adk.tools.mcp_tool.mcp_session_manager import MCPSessionManager
 from google.adk.tools.mcp_tool.mcp_toolset import McpToolset
@@ -14,7 +14,7 @@ async def test_speak_with_style() -> None:
     mock_session = AsyncMock()
     mock_session_manager.create_session.return_value = mock_session
 
-    client = StageDirectorMCPClient(toolset=mock_toolset, mcp_session_manager=mock_session_manager)
+    client = VtubeStageMCPClient(toolset=mock_toolset, mcp_session_manager=mock_session_manager)
 
     # Create test data
     speech_item = AgentSpeechItem(tts_text="Hello", caption="Hello Caption", emotion="happy", style="あまあま")
@@ -44,7 +44,7 @@ async def test_speak_without_style() -> None:
     mock_session = AsyncMock()
     mock_session_manager.create_session.return_value = mock_session
 
-    client = StageDirectorMCPClient(toolset=mock_toolset, mcp_session_manager=mock_session_manager)
+    client = VtubeStageMCPClient(toolset=mock_toolset, mcp_session_manager=mock_session_manager)
 
     # Create test data without style
     speech_item = AgentSpeechItem(tts_text="Hello", caption="Hello Caption", emotion="neutral")

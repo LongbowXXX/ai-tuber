@@ -7,9 +7,6 @@
 		"path": "packages/vtube-stage"
 	},
 	{
-		"path": "packages/stage-director"
-	},
-	{
 		"path": "packages/vtuber-behavior-engine"
 	}
 ],

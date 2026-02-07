@@ -1,0 +1,16 @@
+appId: com.longbow.ai-tuber.stage
+productName: AI VTuber Stage
+directories:
+  output: dist-electron-build
+files:
+  - dist/**
+  - dist-electron/**
+asar: true
+extraMetadata:
+  main: dist-electron/main.js
+win:
+  target: nsis
+mac:
+  target: dmg
+linux:
+  target: AppImage

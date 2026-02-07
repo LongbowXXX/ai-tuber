@@ -33,9 +33,9 @@ async def test_build_root_news_agent_with_speech_disabled() -> None:
     """SRT-002: 音声認識を明示的に無効化して起動"""
     config = AgentsConfig(use_speech_recognition=False)
 
-    # StageDirectorMCPClient.create_async をモック
+    # VtubeStageMCPClient.create_async をモック
     with patch(
-        "vtuber_behavior_engine.stage_agents.news.news_root_agent_builder.StageDirectorMCPClient.create"
+        "vtuber_behavior_engine.stage_agents.news.news_root_agent_builder.VtubeStageMCPClient.create"
     ) as mock_create:
         mock_client = AsyncMock()
         mock_client.load_tools.return_value = []
@@ -62,7 +62,7 @@ async def test_build_root_news_agent_with_speech_enabled_default() -> None:
     config = AgentsConfig()  # default use_speech_recognition=True
 
     with patch(
-        "vtuber_behavior_engine.stage_agents.news.news_root_agent_builder.StageDirectorMCPClient.create"
+        "vtuber_behavior_engine.stage_agents.news.news_root_agent_builder.VtubeStageMCPClient.create"
     ) as mock_create:
         mock_client = AsyncMock()
         mock_client.load_tools.return_value = []

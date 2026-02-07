@@ -90,6 +90,8 @@ out
 # Nuxt.js build / generate output
 .nuxt
 dist
+packages/vtube-stage/dist-electron
+packages/vtube-stage/dist-electron-build
 
 # Gatsby files
 .cache/

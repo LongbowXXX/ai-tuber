@@ -10,7 +10,7 @@
 2. **コンテキスト取得**: `ChromaMemoryService` が過去の会話から関連情報を検索。
 3. **エージェント推論**: `AgentRunner` が適切なエージェント（Character, News 等）を選択し、Gemini API を呼び出し。
 4. **アクション生成**: LLM がテキスト応答と演出指示（感情、アニメーション）を生成。
-5. **演出実行**: `StageDirectorMCPClient` が `stage-director` に `speak` や `trigger_animation` ツールを介して指示を送信。
+5. **演出実行**: `VtubeStageMCPClient` が `vtube-stage` に `speak` や `trigger_animation` ツールを介して指示を送信。
 
 ## 2. ニュース解説フロー
 

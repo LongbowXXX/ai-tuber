@@ -39,4 +39,4 @@ vtube-stage/
 
 - **Three.js 関連**: `three`, `@react-three/fiber`, `@pixiv/three-vrm` がコアの描画を担います。
 - **UI 関連**: `MUI (Material UI)` と `styled-components` を使用して UI を構築しています。
-- **通信**: 標準の `WebSocket` API を使用して `stage-director` と通信します。
+- **通信**: MCP (SSE) でツールを受け取り、Electron IPC 経由でレンダラへ伝搬します。

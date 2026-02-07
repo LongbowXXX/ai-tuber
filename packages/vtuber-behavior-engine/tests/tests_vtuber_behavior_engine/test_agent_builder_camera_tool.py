@@ -3,9 +3,7 @@ import inspect
 
 import pytest
 from google.adk.tools.base_tool import BaseTool
-from vtuber_behavior_engine.services.stage_director_mcp_client import (
-    StageDirectorMCPClient,
-)
+from vtuber_behavior_engine.services.vtube_stage_mcp_client import VtubeStageMCPClient
 from vtuber_behavior_engine.stage_agents.agent_builder import build_root_agent
 from vtuber_behavior_engine.stage_agents.agents_config import AgentsConfig
 
@@ -21,7 +19,7 @@ async def test_agent_builder_includes_camera_tool() -> None:
 
     initial_context_agent = create_dummy_agent("initial_context")
     update_context_agent = create_dummy_agent("update_context")
-    stage_director_client = MagicMock(spec=StageDirectorMCPClient)
+    stage_client = MagicMock(spec=VtubeStageMCPClient)
     # Mock load_tools to return camera control tools
     mock_camera_tool = MagicMock(spec=BaseTool)
     mock_camera_tool.name = "control_camera"
@@ -30,7 +28,7 @@ async def test_agent_builder_includes_camera_tool() -> None:
     mock_other_tool = MagicMock(spec=BaseTool)
     mock_other_tool.name = "other_tool"
 
-    stage_director_client.load_tools = AsyncMock(return_value=[mock_camera_tool, mock_trigger_tool, mock_other_tool])
+    stage_client.load_tools = AsyncMock(return_value=[mock_camera_tool, mock_trigger_tool, mock_other_tool])
 
     agent_config = AgentsConfig(max_iterations=1)
     exit_stack = AsyncMock()
@@ -39,7 +37,7 @@ async def test_agent_builder_includes_camera_tool() -> None:
     root_agent = build_root_agent(
         initial_context_agent,
         update_context_agent,
-        stage_director_client,
+        stage_client,
         agent_config,
         exit_stack,
     )

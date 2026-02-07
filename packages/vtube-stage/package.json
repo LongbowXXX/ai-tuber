@@ -5,15 +5,22 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:electron": "VITE_DEV_SERVER_URL=http://localhost:5173 electron .",
     "build": "tsc -b && vite build",
+    "build:electron-main": "tsc -p tsconfig.electron.json",
+    "build:electron": "npm run build && npm run build:electron-main",
+    "start:electron": "npm run build:electron && electron .",
+    "build:win": "npm run build:electron && electron-builder --win --config electron-builder.yml",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "preview": "vite preview"
   },
+  "main": "dist-electron/main.js",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@modelcontextprotocol/sdk": "^1.26.0",
     "@mui/icons-material": "^7.0.2",
     "@mui/material": "^7.0.2",
     "@pixiv/three-vrm": "^3.4.0",
@@ -31,14 +38,19 @@
     "reflect-metadata": "^0.2.2",
     "remark-gfm": "^4.0.1",
     "styled-components": "^6.1.18",
-    "three": "^0.175.0"
+    "three": "^0.175.0",
+    "zod": "^3.25.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.1",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@types/three": "^0.175.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^33.2.0",
+    "electron-builder": "^24.13.3",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-react-hooks": "^5.2.0",

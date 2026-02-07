@@ -13,7 +13,7 @@ from google.genai import types
 
 from contextlib import AsyncExitStack
 from vtuber_behavior_engine.services.speech_recognition import SpeechRecognitionTool
-from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
+from vtuber_behavior_engine.services.vtube_stage_mcp_client import VtubeStageMCPClient
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     AGENT1_CHARACTER_ID,
     AGENT2_CHARACTER_ID,
@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 def build_root_agent(
     initial_context_agent: BaseAgent,
     update_context_agent: BaseAgent,
-    stage_director_client: StageDirectorMCPClient,
+    stage_client: VtubeStageMCPClient,
     agent_config: AgentsConfig,
     exit_stack: AsyncExitStack,
     speech_tool: Optional[SpeechRecognitionTool] = None,
@@ -43,8 +43,8 @@ def build_root_agent(
     agent1_thought = create_character_agent(AGENT1_CHARACTER_ID, character1(), speech_tool)
     agent2_thought = create_character_agent(AGENT2_CHARACTER_ID, character2(), speech_tool)
 
-    agent1_output = create_character_output_agent(AGENT1_CHARACTER_ID, stage_director_client)
-    agent2_output = create_character_output_agent(AGENT2_CHARACTER_ID, stage_director_client)
+    agent1_output = create_character_output_agent(AGENT1_CHARACTER_ID, stage_client)
+    agent2_output = create_character_output_agent(AGENT2_CHARACTER_ID, stage_client)
 
     recall_conversation_agent = create_conversation_recall_agent()
 
@@ -64,7 +64,7 @@ def build_root_agent(
 
     async def teardown_root_agent(callback_context: CallbackContext) -> Optional[types.Content]:
         logger.debug(f"teardown_root_agent {callback_context.state}")
-        await stage_director_client.wait_for_current_speak_end()
+        await stage_client.wait_for_current_speak_end()
         await exit_stack.aclose()
         return None
 
@@ -73,7 +73,7 @@ def build_root_agent(
             return None
         logger.info("Initializing tools...")
         try:
-            all_tools = await stage_director_client.load_tools()
+            all_tools = await stage_client.load_tools()
             tools = list(
                 filter(
                     lambda tool: tool.name in ["trigger_animation", "control_camera"],

@@ -4,10 +4,10 @@
 
 ## 共通
 
-- **境界を守る**: AI（Behavior Engine）から「表現系（Stage/Director）」へは MCP ツール/コマンド経由で制御し、直接依存を増やさない。
-- **型/スキーマを中心に設計**: stage-director は `pydantic`、vtube-stage は `class-validator` を基準に、コマンドの契約を崩さない。
+- **境界を守る**: AI（Behavior Engine）から「表現系（Stage）」へは MCP ツール/コマンド経由で制御し、直接依存を増やさない。
+- **型/スキーマを中心に設計**: MCP ツール定義は `zod`、レンダラ側は `class-validator` を基準に、コマンドの契約を崩さない。
 
-## Python（stage-director / vtuber-behavior-engine）
+## Python（vtuber-behavior-engine）
 
 - 実行: `uv run python ...`
 - フォーマット: `black`（`line-length = 120`）
@@ -17,8 +17,8 @@
 
 推奨:
 
-- 非同期処理は `asyncio` を基本とし、I/O 境界（WebSocket/MCP/HTTP）で `await` を徹底する
-- 例外時はログに `exc_info=True` を付け、原因追跡可能にする（`stage_director_mcp_server.py` のパターンを踏襲）
+- 非同期処理は `asyncio` を基本とし、I/O 境界（MCP/HTTP）で `await` を徹底する
+- 例外時はログに `exc_info=True` を付け、原因追跡可能にする
 
 ## TypeScript（vtube-stage）
 
@@ -28,16 +28,16 @@
 
 推奨:
 
-- WebSocket 受信データは必ず `validateStageCommand` を通し、未知のコマンドをそのまま処理しない
+- MCP/IPC 受信データは必ず `validateStageCommand` を通し、未知のコマンドをそのまま処理しない
 - `command` 値に応じた分岐（`switch`）は必ず default ケースで警告ログを出す
 
-## コマンド契約（Director ↔ Stage）
+## コマンド契約（MCP ↔ Stage）
 
-- `stage-director` が送る JSON は `StageCommand`（pydantic Union）から生成されます。
-- `vtube-stage` が受け取る `StageCommand` は `class-transformer`/`class-validator` で検証します。
+- MCP サーバー（`vtube-stage` main）は `zod` でツール入力を検証し、`StageCommand` に変換してレンダラへ送信します。
+- レンダラは `class-transformer`/`class-validator` で `StageCommand` を検証します。
 
 新しいコマンドを追加する場合（最小要件）:
 
-1. `stage-director`: `models.py` に pydantic コマンド/ペイロードを追加
-2. `vtube-stage`: `types/command.ts` と `utils/command_validator.ts` に型と registry を追加
+1. `vtube-stage` MCP: `electron/main.ts` でツール定義（`zod`）と `StageCommand` 生成を追加
+2. `vtube-stage` レンダラ: `types/command.ts` と `utils/command_validator.ts` に型と registry を追加
 3. `vtube-stage`: `useStageCommandHandler.ts` に処理分岐を追加

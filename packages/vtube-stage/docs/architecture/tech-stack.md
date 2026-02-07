@@ -24,5 +24,5 @@
 
 ## 外部サービス・連携
 
-- **WebSocket**: `stage-director` とのリアルタイム双方向通信。
+- **MCP (SSE) + Electron IPC**: MCP ツールからのコマンド受信とレンダラへの伝搬。
 - **VOICEVOX**: 音声合成 (TTS) エンジン (外部実行が必要)。

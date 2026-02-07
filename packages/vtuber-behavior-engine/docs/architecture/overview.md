@@ -16,7 +16,7 @@
   - **Conversation Context Agent**: 会話の文脈とトピックを管理。
 - **Services**:
   - **Speech Recognition**: Google Cloud Speech API を使用した音声入力処理。
-  - **Stage Director MCP Client**: `stage-director` (MCP Server) と通信し、キャラクターの動作（発話、アニメーション）を指示。
+  - **Stage MCP Client**: `vtube-stage` (MCP Server) と通信し、キャラクターの動作（発話、アニメーション）を指示。
   - **Memory Service**: ChromaDB を使用した長期・短期記憶の管理。
 
 ## アーキテクチャ図

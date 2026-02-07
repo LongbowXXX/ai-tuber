@@ -3,7 +3,7 @@
 #  This software is released under the MIT License.
 #  http://opensource.org/licenses/mit-license.php
 
-AGENT_SYSTEM_AAP_NAME = "ai_vtuber_stage_director"
+AGENT_SYSTEM_AAP_NAME = "ai_vtuber_stage"
 AGENT_SYSTEM_USER_ID = "vtuber_user"
 
 CONVERSATION_RECALL_LLM_MODEL = "gemini-3-flash-preview"

@@ -10,19 +10,10 @@
 
 ## テスト種別
 
-- **Python ユニット/結合**: `pytest`（stage-director / vtuber-behavior-engine）
+- **Python ユニット/結合**: `pytest`（vtuber-behavior-engine）
 - **フロント品質**: `eslint` / `prettier`（現状、専用テストランナー依存は `package.json` に含まれない）
 
 ## 実行コマンド
-
-### stage-director
-
-```bash
-uv sync --extra dev
-uv run pytest
-uv run mypy .
-uv run flake8
-```
 
 ### vtuber-behavior-engine
 
@@ -48,6 +39,6 @@ npm run build
 
 ## 推奨テスト観点（追加時）
 
-- `stage-director`: `speak` が `speakEnd` により解除されること（タイムアウト/例外パス含む）
+- `vtube-stage`: `speak` が `speakEnd` により解除されること（タイムアウト/例外パス含む）
 - `vtube-stage`: 未知コマンド/不正 payload が確実に弾かれること（`validateStageCommand`）
 - `vtuber-behavior-engine`: MCP 呼び出し失敗時のリトライ/フォールバック方針（現状はログ + 例外）

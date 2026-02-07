@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useWebSocket } from './useWebSocket';
 import { validateStageCommand } from '../utils/command_validator';
 import { AvatarState } from '../types/avatar_types';
 import { StageCommand } from '../types/command';
@@ -92,9 +91,24 @@ export function useStageCommandHandler() {
     }
   }, []);
 
-  const { isConnected, sendMessage } = useWebSocket<unknown>({
-    onMessage: handleWebSocketMessage,
-  });
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    if (!window.stageApi) {
+      console.warn('stageApi is not available. The Electron preload may not be loaded.');
+      setIsConnected(false);
+      return;
+    }
+
+    const unsubscribe = window.stageApi.onCommand(handleWebSocketMessage);
+    window.stageApi.notifyReady();
+    setIsConnected(true);
+
+    return () => {
+      setIsConnected(false);
+      unsubscribe?.();
+    };
+  }, [handleWebSocketMessage]);
 
   // TTS完了時のハンドラ
   const handleTTSComplete = useCallback(
@@ -111,14 +125,11 @@ export function useStageCommandHandler() {
           return a;
         })
       );
-      if (sendMessage && speakId) {
-        sendMessage({
-          command: 'speakEnd',
-          payload: { speakId },
-        });
+      if (window.stageApi && speakId) {
+        window.stageApi.notifySpeakEnd(speakId);
       }
     },
-    [sendMessage]
+    []
   );
 
   // アニメーション終了時のハンドラ
