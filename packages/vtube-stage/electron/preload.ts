@@ -7,14 +7,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   sendSpeakEnd: (speakId: string) => {
     ipcRenderer.send('speakEnd', speakId);
   },
-  
+
   // Receive stage commands from main process
   onStageCommand: (callback: (command: unknown) => void) => {
     ipcRenderer.on('stage-command', (_event, command) => {
       callback(command);
     });
   },
-  
+
   // Remove listener
   removeStageCommandListener: () => {
     ipcRenderer.removeAllListeners('stage-command');

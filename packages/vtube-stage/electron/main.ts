@@ -3,22 +3,18 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-  Tool,
-} from '@modelcontextprotocol/sdk/types.js';
+import { CallToolRequestSchema, ListToolsRequestSchema, Tool } from '@modelcontextprotocol/sdk/types.js';
 import { v4 as uuidv4 } from 'uuid';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Command queue for stage commands
+// Stage command interface
 interface StageCommand {
   command: string;
   payload: unknown;
 }
 
-const commandQueue: StageCommand[] = [];
+// Command events for tracking completion
 const commandEvents: Map<string, () => void> = new Map();
 
 let mainWindow: BrowserWindow | null = null;
@@ -156,7 +152,7 @@ async function initMCPServer() {
   });
 
   // Handle tool call requests
-  server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  server.setRequestHandler(CallToolRequestSchema, async request => {
     const { name, arguments: args } = request.params;
 
     try {
@@ -174,15 +170,15 @@ async function initMCPServer() {
               speakId,
             },
           };
-          
+
           // Send command to renderer
           if (mainWindow) {
             mainWindow.webContents.send('stage-command', command);
           }
-          
+
           // Wait for completion
           await waitForCommand(speakId);
-          
+
           return {
             content: [{ type: 'text', text: 'Success' }],
           };
@@ -196,11 +192,11 @@ async function initMCPServer() {
               animationName: args.animation_name,
             },
           };
-          
+
           if (mainWindow) {
             mainWindow.webContents.send('stage-command', command);
           }
-          
+
           return {
             content: [{ type: 'text', text: 'Success' }],
           };
@@ -213,11 +209,11 @@ async function initMCPServer() {
               text: args.text,
             },
           };
-          
+
           if (mainWindow) {
             mainWindow.webContents.send('stage-command', command);
           }
-          
+
           return {
             content: [{ type: 'text', text: 'Success' }],
           };
@@ -232,11 +228,11 @@ async function initMCPServer() {
               duration: args.duration || 1.0,
             },
           };
-          
+
           if (mainWindow) {
             mainWindow.webContents.send('stage-command', command);
           }
-          
+
           return {
             content: [{ type: 'text', text: 'Success' }],
           };
@@ -263,7 +259,7 @@ async function initMCPServer() {
 
 // Wait for a command to complete
 function waitForCommand(commandId: string): Promise<void> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     commandEvents.set(commandId, resolve);
   });
 }
@@ -280,7 +276,7 @@ ipcMain.on('speakEnd', (_event, speakId: string) => {
 // App lifecycle
 app.whenReady().then(async () => {
   createWindow();
-  
+
   // Initialize MCP server only in production or when explicitly enabled
   if (process.env.ENABLE_MCP_SERVER === 'true' || !process.env.VITE_DEV_SERVER_URL) {
     await initMCPServer();

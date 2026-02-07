@@ -125,7 +125,7 @@ export function useStageCommandHandler() {
           return a;
         })
       );
-      
+
       // Send speakEnd via Electron IPC or WebSocket
       if (isElectron && window.electronAPI) {
         window.electronAPI.sendSpeakEnd(speakId);
