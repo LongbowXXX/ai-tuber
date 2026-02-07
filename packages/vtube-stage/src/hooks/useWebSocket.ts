@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 if (!import.meta.env.VITE_STAGE_DIRECTER_ENDPOINT) {
-  throw new Error('VITE_STAGE_DIRECTER_ENDPOINT is not set in the environment variables.');
+  console.warn('VITE_STAGE_DIRECTER_ENDPOINT is not set in the environment variables.');
 }
 
-const WS_URL = import.meta.env.VITE_STAGE_DIRECTER_ENDPOINT as string;
+const WS_URL = (import.meta.env.VITE_STAGE_DIRECTER_ENDPOINT as string) || 'ws://localhost:8000/ws';
 
 interface UseWebSocketOptions<T> {
   onMessage: (message: T) => void; // Callback to handle validated messages
@@ -82,6 +82,13 @@ export function useWebSocket<T>(options: UseWebSocketOptions<T>) {
   }, [onMessage, onRawMessage, onError, onClose, onOpen]); // Add callbacks to dependencies
 
   useEffect(() => {
+    // Skip WebSocket connection if running in Electron
+    const isElectron = typeof window !== 'undefined' && window.electronAPI !== undefined;
+    if (isElectron) {
+      console.log('Running in Electron mode, skipping WebSocket connection');
+      return;
+    }
+
     connectWebSocket();
 
     return () => {

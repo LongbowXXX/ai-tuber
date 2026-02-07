@@ -16,7 +16,10 @@ export function useStageCommandHandler() {
     camera: null,
   });
 
-  const handleWebSocketMessage = useCallback(async (data: unknown) => {
+  // Check if running in Electron
+  const isElectron = typeof window !== 'undefined' && window.electronAPI !== undefined;
+
+  const handleCommand = useCallback(async (data: unknown) => {
     const validationResult = await validateStageCommand(data);
 
     if (validationResult.errors.length === 0 && validationResult.command) {
@@ -92,8 +95,19 @@ export function useStageCommandHandler() {
     }
   }, []);
 
+  // Setup Electron IPC listener
+  useEffect(() => {
+    if (isElectron && window.electronAPI) {
+      window.electronAPI.onStageCommand(handleCommand);
+      return () => {
+        window.electronAPI?.removeStageCommandListener();
+      };
+    }
+  }, [isElectron, handleCommand]);
+
+  // Use WebSocket for non-Electron mode (development)
   const { isConnected, sendMessage } = useWebSocket<unknown>({
-    onMessage: handleWebSocketMessage,
+    onMessage: handleCommand,
   });
 
   // TTS完了時のハンドラ
@@ -111,14 +125,18 @@ export function useStageCommandHandler() {
           return a;
         })
       );
-      if (sendMessage && speakId) {
+      
+      // Send speakEnd via Electron IPC or WebSocket
+      if (isElectron && window.electronAPI) {
+        window.electronAPI.sendSpeakEnd(speakId);
+      } else if (sendMessage && speakId) {
         sendMessage({
           command: 'speakEnd',
           payload: { speakId },
         });
       }
     },
-    [sendMessage]
+    [isElectron, sendMessage]
   );
 
   // アニメーション終了時のハンドラ
@@ -162,6 +180,6 @@ export function useStageCommandHandler() {
     stage,
     setStage,
     lastMessage,
-    isConnected,
+    isConnected: isElectron || isConnected,
   };
 }
