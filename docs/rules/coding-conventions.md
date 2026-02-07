@@ -4,10 +4,10 @@
 
 ## 共通
 
-- **境界を守る**: AI（Behavior Engine）から「表現系（Stage/Director）」へは MCP ツール/コマンド経由で制御し、直接依存を増やさない。
-- **型/スキーマを中心に設計**: stage-director は `pydantic`、vtube-stage は `class-validator` を基準に、コマンドの契約を崩さない。
+- **境界を守る**: AI（Behavior Engine）から「表現系（Stage）」へは MCP ツール経由で制御し、直接依存を増やさない。
+- **型/スキーマを中心に設計**: vtube-stage は MCP SDK と TypeScript の型システムを基準に、ツールの契約を崩さない。
 
-## Python（stage-director / vtuber-behavior-engine）
+## Python（vtuber-behavior-engine）
 
 - 実行: `uv run python ...`
 - フォーマット: `black`（`line-length = 120`）
@@ -17,27 +17,27 @@
 
 推奨:
 
-- 非同期処理は `asyncio` を基本とし、I/O 境界（WebSocket/MCP/HTTP）で `await` を徹底する
-- 例外時はログに `exc_info=True` を付け、原因追跡可能にする（`stage_director_mcp_server.py` のパターンを踏襲）
+- 非同期処理は `asyncio` を基本とし、I/O 境界（MCP/HTTP）で `await` を徹底する
+- 例外時はログに `exc_info=True` を付け、原因追跡可能にする
 
 ## TypeScript（vtube-stage）
 
-- ビルド: `tsc -b && vite build`
+- ビルド: `npm run build` (Web版) / `npm run build:win` (Electron版)
 - Lint: `eslint .`
 - フォーマット: `prettier --write ...`
 
 推奨:
 
-- WebSocket 受信データは必ず `validateStageCommand` を通し、未知のコマンドをそのまま処理しない
-- `command` 値に応じた分岐（`switch`）は必ず default ケースで警告ログを出す
+- MCP ツール呼び出しのレスポンスは、処理完了後に確実に返す
+- 新しい MCP ツールを追加する場合は、`src/mcp/server.ts` でツール定義とハンドラーを実装
 
-## コマンド契約（Director ↔ Stage）
+## MCP ツール契約（AI ↔ Stage）
 
-- `stage-director` が送る JSON は `StageCommand`（pydantic Union）から生成されます。
-- `vtube-stage` が受け取る `StageCommand` は `class-transformer`/`class-validator` で検証します。
+- `vtuber-behavior-engine` は MCP Client として `vtube-stage` の MCP Server に接続します。
+- `vtube-stage` は MCP SDK を使用してツールを提供します。
 
-新しいコマンドを追加する場合（最小要件）:
+新しい MCP ツールを追加する場合（最小要件）:
 
-1. `stage-director`: `models.py` に pydantic コマンド/ペイロードを追加
-2. `vtube-stage`: `types/command.ts` と `utils/command_validator.ts` に型と registry を追加
-3. `vtube-stage`: `useStageCommandHandler.ts` に処理分岐を追加
+1. `vtube-stage`: `src/mcp/server.ts` にツール定義（name, description, parameters）を追加
+2. `vtube-stage`: ツールハンドラーを実装し、処理完了後にレスポンスを返す
+3. `vtuber-behavior-engine`: ADK の `MCPToolset` が自動的に新しいツールを認識して利用可能にします

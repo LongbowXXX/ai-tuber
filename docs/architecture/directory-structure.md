@@ -9,14 +9,17 @@
 ```text
 ai-tuber-system/
 ├── packages/
-│   ├── stage-director/            # MCP Server + WebSocket Server（舞台監督）
-│   │   ├── src/stage_director/    # FastAPI, MCP(FastMCP), コマンドキュー
-│   │   └── tests/                 # pytest
 │   ├── vtuber-behavior-engine/    # ADK ベースの AI コア（MCP Client）
 │   │   ├── src/vtuber_behavior_engine/
 │   │   └── tests/
-│   └── vtube-stage/               # React + Three.js（VRM レンダラ）
-│       ├── src/                   # hooks/components/services/types
+│   └── vtube-stage/               # Electron App（MCP Server + React + Three.js）
+│       ├── src/
+│       │   ├── electron/          # Electron メインプロセス
+│       │   ├── mcp/               # MCP サーバー実装
+│       │   ├── hooks/             # React カスタムフック
+│       │   ├── components/        # React コンポーネント
+│       │   ├── services/          # TTS サービス等
+│       │   └── types/             # TypeScript 型定義
 │       └── public/                # VRM/VRMA/設定 JSON（例: avatars.json）
 ├── docs/                          # プロジェクトドキュメント
 │   ├── mcp_adk_explanation.md     # 既存: MCP/ADK 解説
@@ -28,16 +31,15 @@ ai-tuber-system/
 
 ## 主要ディレクトリ
 
-| ディレクトリ                      | 目的                                 | 代表ファイル                                                                         |
-| --------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------ |
-| `packages/stage-director`         | MCP ツール提供 + WebSocket 配信      | `src/stage_director/main.py`, `stage_director_mcp_server.py`, `websocket_handler.py` |
-| `packages/vtuber-behavior-engine` | ADK エージェント実行、ツール呼び出し | `src/vtuber_behavior_engine/main.py`, `agent_runner.py`                              |
-| `packages/vtube-stage`            | VRM 描画、コマンド受信、TTS          | `src/main.tsx`, `src/hooks/useWebSocket.ts`, `src/hooks/useStageCommandHandler.ts`   |
-| `docs`                            | プロジェクト説明                     | `architecture/overview.md`, `mcp_adk_explanation.md`                                 |
-| `knowledge`                       | 標準ワークフロー/テンプレ            | `knowledge/workflows/workflow.md`                                                    |
+| ディレクトリ                      | 目的                                       | 代表ファイル                                                   |
+| --------------------------------- | ------------------------------------------ | -------------------------------------------------------------- |
+| `packages/vtuber-behavior-engine` | ADK エージェント実行、ツール呼び出し       | `src/vtuber_behavior_engine/main.py`, `agent_runner.py`       |
+| `packages/vtube-stage`            | Electron App、MCP サーバー、VRM 描画、TTS  | `src/electron/main.ts`, `src/mcp/server.ts`, `src/main.tsx`   |
+| `docs`                            | プロジェクト説明                           | `architecture/overview.md`, `mcp_adk_explanation.md`           |
+| `knowledge`                       | 標準ワークフロー/テンプレ                  | `knowledge/workflows/workflow.md`                              |
 
 ## 依存関係の方向（高レベル）
 
-- `vtuber-behavior-engine` →（MCP）→ `stage-director` →（WebSocket）→ `vtube-stage`
+- `vtuber-behavior-engine` →（MCP: HTTP/SSE）→ `vtube-stage`
 - `vtube-stage` →（HTTP）→ VoiceVox
-- OBS は `vtube-stage` ウィンドウをキャプチャ（現状 obs-websocket 制御は未実装）
+- OBS は `vtube-stage` の Electron ウィンドウをキャプチャ（現状 obs-websocket 制御は未実装）

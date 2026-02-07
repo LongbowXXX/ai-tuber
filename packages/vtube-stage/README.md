@@ -4,32 +4,37 @@ AI V-Tuber システムのフロントエンドであり、VRM モデルの描�
 
 ## 概要
 
-`vtube-stage` は、リアルタイムで V-Tuber キャラクターを描画し、`stage-director` からのコマンドに基づいてキャラクターの表情や動作を制御するフロントエンド Web アプリケーションです。Three.js と `@pixiv/three-vrm` を使用して VRM モデルをレンダリングし、OBS Studio を介して配信可能な映像を生成します。
+`vtube-stage` は、Electron デスクトップアプリケーション（1920x1080）として動作し、リアルタイムで V-Tuber キャラクターを描画します。MCP (Model Context Protocol) Server を内蔵し、AI からのツール呼び出しを受け付けます。Three.js と `@pixiv/three-vrm` を使用して VRM モデルをレンダリングし、OBS Studio を介して配信可能な映像を生成します。
 
 ## アーキテクチャにおける役割
 
 `vtube-stage` は以下の役割を担います:
 
-1.  VRM モデルの読み込みとレンダリング。
-2.  `stage-director` からの WebSocket コマンドを受信し、キャラクターの表情、ポーズ、視線をリアルタイムで更新。
-3.  (オプション) TTS (Text-to-Speech) を使用した音声合成とリップシンク。
+1.  **MCP Server**: HTTP/SSE エンドポイント (`http://localhost:8080/sse`) を提供し、AI からのツール呼び出しを受け付けます。
+2.  **VRM レンダリング**: VRM モデルの読み込みとリアルタイム描画。
+3.  **TTS/リップシンク**: VoiceVox を使用した音声合成とリップシンク。
+4.  **キャラクター制御**: MCP コマンドに基づく表情、ポーズ、視線のリアルタイム更新。
+5.  **Electron GUI**: 1920x1080 のデスクトップウィンドウを提供。
 
 ## 機能
 
-- **VRM モデルのレンダリング:** Three.js と `@pixiv/three-vrm` を使用。
-- **リアルタイム更新:** WebSocket を介して受信したコマンドに基づく表情やポーズの更新。
-- **TTS/リップシンク:** (オプション) VOICEVOX を使用した音声合成とリップシンクのサポート。
-- **Markdown オーバーレイ:** 画面上への Markdown テキスト表示。
+- **MCP Server**: HTTP/SSE による MCP サーバー機能。
+- **Electron デスクトップアプリ**: 1920x1080 の GUI ウィンドウ。
+- **VRM モデルのレンダリング**: Three.js と `@pixiv/three-vrm` を使用。
+- **リアルタイム更新**: MCP ツール呼び出しに基づく表情やポーズの更新。
+- **TTS/リップシンク**: VoiceVox を使用した音声合成とリップシンクのサポート。
+- **Markdown オーバーレイ**: 画面上への Markdown テキスト表示。
 
 ## 技術スタック
 
-- TypeScript
-- React
-- Vite
-- Three.js
-- `@pixiv/three-vrm`
-- WebSocket クライアント
-- VOICEVOX TTS
+- **Electron**: デスクトップアプリケーションフレームワーク
+- **TypeScript**: プログラミング言語
+- **React**: UI フレームワーク
+- **Vite**: ビルドツール
+- **Three.js**: 3D レンダリングエンジン
+- **@pixiv/three-vrm**: VRM モデル制御
+- **@modelcontextprotocol/sdk**: MCP Server 実装
+- **VoiceVox**: TTS サービス
 
 ## 前提条件
 
@@ -46,17 +51,29 @@ AI V-Tuber システムのフロントエンドであり、VRM モデルの描�
 
 2. **環境変数の設定:**
 
-   `.env` ファイルを作成し、以下の設定を追加します。
+   必要に応じて `.env` ファイルを作成し、設定をカスタマイズできます。
 
    ```env
-   # Stage Director の WebSocket エンドポイント
-   # 注意: 変数名は DIRECTOR ではなく DIRECTER (E) です
-   VITE_STAGE_DIRECTER_ENDPOINT=ws://localhost:8000/ws
+   # MCP Server ポート (デフォルト: 8080)
+   MCP_SERVER_PORT=8080
+   
+   # VoiceVox TTS エンドポイント (デフォルト: http://localhost:50021)
+   VITE_VOICEVOX_ENDPOINT=http://localhost:50021
    ```
 
 ## サービスの実行
 
-開発サーバーを起動するには、以下のコマンドを実行します:
+### Electron アプリとして実行（推奨）
+
+Electron デスクトップアプリとして起動します。MCP サーバーは自動的に起動します。
+
+```bash
+npm run dev:electron
+```
+
+### Web ブラウザでの開発
+
+開発サーバーをブラウザで起動するには、以下のコマンドを実行します:
 
 ```bash
 npm run dev
@@ -66,7 +83,17 @@ npm run dev
 
 ## ビルド
 
-本番環境用にビルドするには、以下のコマンドを実行します:
+### Electron アプリのビルド
+
+Windows 向けの Electron アプリをビルドするには:
+
+```bash
+npm run build:win
+```
+
+### Web 版のビルド
+
+Web ブラウザ用にビルドするには:
 
 ```bash
 npm run build

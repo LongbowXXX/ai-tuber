@@ -16,31 +16,27 @@ graph LR
     subgraph "AI Backend"
         direction LR
         VBE[vtuber-behavior-engine<br/>ADK Agents]
-        SD[stage-director<br/>MCP Server + WebSocket]
     end
 
     subgraph "Frontend & Services"
         direction LR
-        VS[vtube-stage<br/>React + Three.js]
+        VS[vtube-stage<br/>Electron + React + Three.js<br/>MCP Server]
         VV[VoiceVox<br/>TTS Service]
         OBS[OBS Studio<br/>Capture]
     end
 
-    VBE -- MCP Client --> SD;
-    SD -- WebSocket --> VS;
+    VBE -- MCP Client (HTTP/SSE) --> VS;
     VS -- HTTP API --> VV;
     VS -- Window Capture --> OBS;
     style VBE stroke-width: 2px
-    style SD stroke-width: 2px
     style VS stroke-width: 2px
     style OBS stroke-width: 2px
 ```
 
 ### コアコンポーネント (Core Components)
 
-- **`vtuber-behavior-engine`**: AI コア。Google ADK を使用したマルチエージェントシステム。MCP Client として `stage-director` に接続し、キャラクターを制御します。
-- **`stage-director`**: オーケストレーションハブ。MCP Server としてツールを提供し、WebSocket Server として `vtube-stage` にコマンドを送信します。
-- **`vtube-stage`**: レンダリングエンジン。React + Three.js で VRM モデルを描画し、VoiceVox と連携して発話とリップシンクを行います。
+- **`vtuber-behavior-engine`**: AI コア。Google ADK を使用したマルチエージェントシステム。MCP Client として `vtube-stage` に接続し、キャラクターを制御します。
+- **`vtube-stage`**: Electron デスクトップアプリケーション。MCP Server を内蔵し、React + Three.js で VRM モデルを描画し、VoiceVox と連携して発話とリップシンクを行います。
 - **VoiceVox**: 音声合成サービス。テキストから高品質な音声を生成します。
 
 ## 主な機能 (Key Features)
@@ -53,8 +49,9 @@ graph LR
 
 ## 技術スタック (Tech Stack)
 
-- **AI Backend**: Python 3.11+, Google ADK, Gemini API, MCP (FastMCP)
-- **Frontend**: TypeScript, React 19, Vite, Three.js, @pixiv/three-vrm
+- **AI Backend**: Python 3.11+, Google ADK, Gemini API, MCP Client
+- **Desktop App**: Electron, TypeScript, MCP Server (HTTP/SSE)
+- **Frontend**: React 19, Vite, Three.js, @pixiv/three-vrm
 - **TTS**: VoiceVox
 - **Streaming**: OBS Studio
 
@@ -75,7 +72,6 @@ graph LR
 3. **各パッケージのセットアップ**:
    各ディレクトリ (`packages/*`) の `README.md` に従って、依存関係のインストールと環境変数の設定を行ってください。
 
-   - `packages/stage-director`: `uv sync`
    - `packages/vtuber-behavior-engine`: `uv sync`
    - `packages/vtube-stage`: `npm install`
 
@@ -83,9 +79,8 @@ graph LR
    以下の順序でコンポーネントを起動します。
 
    1. **VoiceVox**: アプリケーションを起動
-   2. **Stage Director**: `uv run python src/stage_director/main.py`
-   3. **VTube Stage**: `npm run dev` (ブラウザで開く)
-   4. **Behavior Engine**: `uv run python src/vtuber_behavior_engine/main.py`
+   2. **VTube Stage**: `npm run dev:electron` (Electron アプリとして起動)
+   3. **Behavior Engine**: `uv run python src/vtuber_behavior_engine/main.py`
 
 ## プロジェクト構成 (Project Structure)
 
@@ -93,8 +88,7 @@ graph LR
 /ai-vtuber-system/
 ├── packages/
 │   ├── vtuber-behavior-engine/ # AI Core (ADK, MCP Client)
-│   ├── stage-director/         # Orchestration (MCP Server, WebSocket)
-│   └── vtube-stage/            # Frontend (React, Three.js)
+│   └── vtube-stage/            # Electron App (MCP Server, React, Three.js)
 ├── docs/                       # Documentation
 │   ├── architecture/           # Architecture details (Overview, Tech Stack, etc.)
 │   ├── rules/                  # Coding conventions and Testing
