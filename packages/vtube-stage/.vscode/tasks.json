@@ -50,6 +50,22 @@
           "endsPattern": "ready in \\d+"
         }
       }
+    },
+    {
+      "type": "npm",
+      "script": "lint",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "npm: lint",
+      "detail": "check for lint errors"
+    },
+    {
+      "type": "npm",
+      "script": "format",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "npm: format",
+      "detail": "format code with prettier"
     }
   ]
 }

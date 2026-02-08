@@ -5,6 +5,8 @@ import { AvatarState } from '../types/avatar_types';
 import { StageCommand } from '../types/command';
 import { StageState } from '../types/scene_types';
 
+import { toAssetPath } from '../utils/path_utils';
+
 export function useStageCommandHandler() {
   const [lastMessage, setLastMessage] = useState<StageCommand | object | null>(null);
   const [avatars, setAvatars] = useState<AvatarState[]>([]); // 初期値を空配列に
@@ -138,18 +140,32 @@ export function useStageCommandHandler() {
   }, []);
 
   useEffect(() => {
-    fetch('/avatars.json')
+    fetch(toAssetPath('avatars.json'))
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch avatars.json');
         return res.json();
       })
       .then(data => {
-        for (const avarar of data) {
-          avarar.onTTSComplete = (speakId: string) => handleTTSComplete(avarar.id, speakId);
-          avarar.onAnimationEnd = (animationName: string) => handleAnimationEnd(avarar.id, animationName);
-        }
+        // Resolve asset paths
+        const newAvatars = data.map((avatar: AvatarState) => {
+          const newAvatar = { ...avatar };
+          if (newAvatar.vrmUrl) {
+            newAvatar.vrmUrl = toAssetPath(newAvatar.vrmUrl);
+          }
+          if (newAvatar.animationUrls) {
+            const newAnimationUrls = { ...newAvatar.animationUrls };
+            for (const key in newAnimationUrls) {
+              newAnimationUrls[key] = toAssetPath(newAnimationUrls[key]);
+            }
+            newAvatar.animationUrls = newAnimationUrls;
+          }
 
-        setAvatars(data);
+          newAvatar.onTTSComplete = (speakId: string) => handleTTSComplete(newAvatar.id, speakId);
+          newAvatar.onAnimationEnd = (animationName: string) => handleAnimationEnd(newAvatar.id, animationName);
+          return newAvatar;
+        });
+
+        setAvatars(newAvatars);
       })
       .catch(err => {
         console.error('Error loading avatars.json:', err);

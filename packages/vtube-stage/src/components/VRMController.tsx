@@ -12,7 +12,7 @@ interface VRMControllerProps {
 }
 
 // 制御する表情のリスト（モデルに合わせて変更）
-const emotionNames = ['neutral', 'happy', 'sad', 'angry', 'relaxed', 'Surprised', 'blink', 'blinkLeft', 'blinkRight'];
+const emotionNames = ['neutral', 'happy', 'sad', 'angry', 'relaxed', 'surprised', 'blink', 'blinkLeft', 'blinkRight'];
 
 export const VRMController: React.FC<VRMControllerProps> = ({
   title, // Destructure title
