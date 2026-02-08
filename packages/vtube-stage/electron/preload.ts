@@ -20,13 +20,11 @@ contextBridge.exposeInMainWorld('electron', {
       return () => ipcRenderer.removeListener('socket-on-close', subscription);
     },
     onError: (callback: (error: string) => void) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const subscription = (_: Electron.IpcRendererEvent, error: string) => callback(error);
       ipcRenderer.on('socket-on-error', subscription);
       return () => ipcRenderer.removeListener('socket-on-error', subscription);
     },
     onMessage: (callback: (message: string) => void) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const subscription = (_: Electron.IpcRendererEvent, message: string) => callback(message);
       ipcRenderer.on('socket-on-message', subscription);
       return () => ipcRenderer.removeListener('socket-on-message', subscription);
