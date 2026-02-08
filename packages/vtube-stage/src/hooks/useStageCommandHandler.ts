@@ -5,6 +5,8 @@ import { AvatarState } from '../types/avatar_types';
 import { StageCommand } from '../types/command';
 import { StageState } from '../types/scene_types';
 
+import { toAssetPath } from '../utils/path_utils';
+
 export function useStageCommandHandler() {
   const [lastMessage, setLastMessage] = useState<StageCommand | object | null>(null);
   const [avatars, setAvatars] = useState<AvatarState[]>([]); // 初期値を空配列に
@@ -138,15 +140,25 @@ export function useStageCommandHandler() {
   }, []);
 
   useEffect(() => {
-    fetch('/avatars.json')
+    fetch(toAssetPath('avatars.json'))
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch avatars.json');
         return res.json();
       })
       .then(data => {
-        for (const avarar of data) {
-          avarar.onTTSComplete = (speakId: string) => handleTTSComplete(avarar.id, speakId);
-          avarar.onAnimationEnd = (animationName: string) => handleAnimationEnd(avarar.id, animationName);
+        // Resolve asset paths
+        for (const avatar of data) {
+          if (avatar.vrmUrl) {
+            avatar.vrmUrl = toAssetPath(avatar.vrmUrl);
+          }
+          if (avatar.animationUrls) {
+            for (const key in avatar.animationUrls) {
+              avatar.animationUrls[key] = toAssetPath(avatar.animationUrls[key]);
+            }
+          }
+
+          avatar.onTTSComplete = (speakId: string) => handleTTSComplete(avatar.id, speakId);
+          avatar.onAnimationEnd = (animationName: string) => handleAnimationEnd(avatar.id, animationName);
         }
 
         setAvatars(data);

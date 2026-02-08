@@ -9,6 +9,22 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "console": "integratedTerminal"
+    },
+    {
+      "name": "Electron: Build & Run",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+      },
+      "args": ["."],
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "preLaunchTask": "npm: build",
+      "console": "integratedTerminal"
     }
   ]
 }

@@ -28,6 +28,7 @@ import { AvatarState } from '../types/avatar_types';
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { CustomSparkles } from './CustomSparkles';
 import { VisualEffectsConfig } from '../types/scene_types';
+import { toAssetPath } from '../utils/path_utils';
 
 // Define a type for the data needed for each avatar
 interface AvatarData extends AvatarState {
@@ -70,7 +71,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({
   // 設定ファイルの読み込み
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/visual_effects.json', { signal: controller.signal })
+    fetch(toAssetPath('visual_effects.json'), { signal: controller.signal })
       .then(res => {
         if (!res.ok) throw new Error('Failed to load visual_effects.json');
         return res.json();
@@ -209,7 +210,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({
       {/* 5. 空間演出: 浮遊するテキストとオブジェクト */}
       <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
         <Text3D
-          font="/fonts/rounded_mplus_1c_regular.json"
+          font={toAssetPath('fonts/rounded_mplus_1c_regular.json')}
           size={0.5}
           height={0.15} // 奥行き (Thickness)
           curveSegments={12}
