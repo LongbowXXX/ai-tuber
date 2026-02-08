@@ -1,47 +1,44 @@
 {
-    // VS Code Launch Configuration
-    // https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "name": "Debug Server",
-            "type": "debugpy",
+            "type": "node",
             "request": "launch",
-            "module": "stage_director.main",
-            "cwd": "${workspaceFolder}",
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}/src"
-            },
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "dev"
+            ],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
             "console": "integratedTerminal",
-            "justMyCode": true
+            "internalConsoleOptions": "neverOpen"
         },
         {
-            "name": "Debug Current File",
-            "type": "debugpy",
+            "name": "Debug Build",
+            "type": "node",
             "request": "launch",
-            "program": "${file}",
-            "cwd": "${workspaceFolder}",
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}/src"
-            },
-            "console": "integratedTerminal",
-            "justMyCode": true
+            "program": "${workspaceFolder}/dist/index.js",
+            "preLaunchTask": "Build",
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal"
         },
         {
             "name": "Debug Tests",
-            "type": "debugpy",
+            "type": "node",
             "request": "launch",
-            "module": "pytest",
-            "args": [
-                "-v",
-                "--no-cov"
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "test"
             ],
-            "cwd": "${workspaceFolder}",
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}/src"
-            },
-            "console": "integratedTerminal",
-            "justMyCode": true
+            "console": "integratedTerminal"
         }
     ]
 }

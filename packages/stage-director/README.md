@@ -15,62 +15,58 @@ MCP Server としてツールを提供し、AI エージェントがキャラク
    - `speak`: キャラクターの発話と感情表現
    - `trigger_animation`: アニメーション（ポーズ）の再生
    - `display_markdown_text`: Markdown テキストの表示
+   - `control_camera`: カメラ制御
 2. **WebSocket Server**: `vtube-stage` からの接続を受け入れ、コマンドを送信します。
 3. **コマンドキューイング**: AI からのツール呼び出しをキューに入れ、順次処理します。
 4. **同期制御**: TTS（音声合成）の完了を待機し、AI の発話ペースを制御します。
 
 ## 機能
 
-- **MCP ツール提供**: `speak`, `trigger_animation`, `display_markdown_text`
+- **MCP ツール提供**: `speak`, `trigger_animation`, `display_markdown_text`, `control_camera`
 - **WebSocket 通信**: `vtube-stage` への JSON コマンド送信
 - **同期制御**: `speakEnd` イベントによる発話完了待機
 - **UUID 管理**: 各発話コマンドに一意な ID を付与し、追跡可能にする
 
 ## 技術スタック
 
-- Python 3.11+
-- **FastAPI**: WebSocket サーバー
-- **mcp (FastMCP)**: Model Context Protocol サーバー
-- **uvicorn**: ASGI サーバー
-- **pydantic**: データバリデーション
+- Node.js (TypeScript)
+- **Express**: HTTP Server (MCP SSE & WebSocket handshake)
+- **ws**: WebSocket Server
+- **@modelcontextprotocol/sdk**: Model Context Protocol
+- **Zod**: データバリデーション
 
 ## ドキュメント
 
-- [セットアップガイド](SetupGuide.md) - VS Code + uv での開発環境構築
+- [セットアップガイド](SetupGuide.md) - プロジェクト開発環境セットアップガイド
 - [AGENTS.md](AGENTS.md) - AI エージェント向けの開発ガイド・コンテキスト
-- [docs/](docs/) - アーキテクチャ詳細、コーディング規約、用語集など
+- [docs/](docs/) - アーキテクチャ詳細など
 
 ## 前提条件
 
-- Python >= 3.11
-- `uv` (パッケージマネージャー)
+- Node.js >= 18
+- npm
 
 ## インストール
 
-詳細な手順については [セットアップガイド](SetupGuide.md) を参照してください。
-
-1. **`uv` を使用して仮想環境を作成します:**
+1. **依存関係をインストール:**
 
    ```bash
-   uv venv
-   ```
-
-2. **依存関係をインストールします:**
-
-   ```bash
-   uv sync --extra dev
+   npm install
    ```
 
 ## サービスの実行
 
-`stage-director` は、MCP サーバーと WebSocket サーバーの両方を起動します。
+`stage-director` は、WebSocket サーバーと MCP サーバー（SSE）の両方を起動します。
 
 ```bash
-uv run python src/stage_director/main.py
+npm run dev
+# またはビルド後
+npm run build
+npm start
 ```
 
 - **WebSocket Server**: `ws://127.0.0.1:8000/ws`
-- **MCP Server**: `0.0.0.0:8080` (SSE)
+- **MCP Server**: `http://0.0.0.0:8080` (SSE Endpoint: `/sse`, Messages: `/messages`)
 
 ## 環境変数
 
@@ -85,22 +81,15 @@ STAGE_DIRECTOR_MCP_PORT=8080
 
 ## 開発
 
-コード品質ツール:
-
 ```bash
-# フォーマット
-uv run black .
-
-# リンティング
-uv run flake8
-
-# 型チェック
-uv run mypy .
+# フォーマット & Lint
+npm run format
+npm run lint
 
 # テスト
-uv run pytest
+npm test
 ```
 
 ## ライセンス
 
-MIT License - [LICENSE](../../LICENSE)
+MIT License
