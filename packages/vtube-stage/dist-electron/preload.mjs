@@ -1,22 +1,14 @@
 "use strict";
 const electron = require("electron");
-electron.contextBridge.exposeInMainWorld("ipcRenderer", {
-  // on(...args: Parameters<typeof ipcRenderer.on>) {
-  //   const [channel, listener] = args
-  //   return ipcRenderer.on(channel, (event, ...args) => listener(event, ...args))
-  // },
-  // off(...args: Parameters<typeof ipcRenderer.off>) {
-  //   const [channel, ...omit] = args
-  //   return ipcRenderer.off(channel, ...omit)
-  // },
-  // send(...args: Parameters<typeof ipcRenderer.send>) {
-  //   const [channel, ...omit] = args
-  //   return ipcRenderer.send(channel, ...omit)
-  // },
-  // invoke(...args: Parameters<typeof ipcRenderer.invoke>) {
-  //   const [channel, ...omit] = args
-  //   return ipcRenderer.invoke(channel, ...omit)
-  // },
-  // You can expose other APTs you need here.
-  // ...
+console.log("[Preload] Script execution started");
+electron.contextBridge.exposeInMainWorld("electron", {
+  socket: {
+    connect: () => electron.ipcRenderer.send("socket-connect"),
+    disconnect: () => electron.ipcRenderer.send("socket-disconnect"),
+    send: (message) => electron.ipcRenderer.send("socket-send", message),
+    onOpen: (callback) => electron.ipcRenderer.on("socket-on-open", () => callback()),
+    onClose: (callback) => electron.ipcRenderer.on("socket-on-close", () => callback()),
+    onError: (callback) => electron.ipcRenderer.on("socket-on-error", (_event, error) => callback(error)),
+    onMessage: (callback) => electron.ipcRenderer.on("socket-on-message", (_event, message) => callback(message))
+  }
 });

@@ -49,19 +49,22 @@
     "axios": "^1.9.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "dotenv": "^17.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
     "reflect-metadata": "^0.2.2",
     "remark-gfm": "^4.0.1",
     "styled-components": "^6.1.18",
-    "three": "^0.175.0"
+    "three": "^0.175.0",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@types/three": "^0.175.0",
+    "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^4.3.4",
     "electron": "^40.2.1",
     "electron-builder": "^26.7.0",
