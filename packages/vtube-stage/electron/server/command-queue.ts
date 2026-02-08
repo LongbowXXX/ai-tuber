@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { StageCommand } from '../types.js';
+import { StageCommand } from './types.ts';
 
 class CommandQueueService {
   private queue: StageCommand[] = [];

@@ -3,7 +3,7 @@ import { ListToolsRequestSchema, CallToolRequestSchema, JSONRPCMessage } from '@
 import { Transport } from '@modelcontextprotocol/sdk/shared/transport.js'; // This might be in strict path
 import { v4 as uuidv4 } from 'uuid';
 import { Response } from 'express';
-import { commandQueue } from './services/CommandQueue.js';
+import { commandQueue } from './command-queue.ts';
 
 // Manual implementation of SSEServerTransport if not available or for control
 export class SSEServerTransport implements Transport {

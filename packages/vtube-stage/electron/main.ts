@@ -1,8 +1,11 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import WebSocket from 'ws';
 import dotenv from 'dotenv';
+import express from 'express';
+import cors from 'cors';
+import { createMcpServer, SSEServerTransport } from './server/mcp-server.ts';
+import { IPCHandler } from './server/ipc-handler.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -22,8 +25,6 @@ dotenv.config({ path: path.join(APP_ROOT, '.env') });
 
 console.log('[Main] Script execution started');
 
-// ... const definitions
-
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 export const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL'];
 console.log('[Main] VITE_DEV_SERVER_URL:', VITE_DEV_SERVER_URL);
@@ -35,9 +36,8 @@ const VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(APP_ROOT, 'public') : RENDER
 process.env.VITE_PUBLIC = VITE_PUBLIC;
 
 let win: BrowserWindow | null;
-let ws: WebSocket | null = null;
-const WS_ENDPOINT = process.env.VITE_STAGE_DIRECTER_ENDPOINT || 'ws://localhost:8080';
-console.log('[Main] WS_ENDPOINT:', WS_ENDPOINT);
+// let ws: WebSocket | null = null; // Removed WebSocket
+// const WS_ENDPOINT = process.env.VITE_STAGE_DIRECTER_ENDPOINT || 'ws://localhost:8080'; // Removed
 
 function createWindow() {
   console.log('[Main] createWindow called');
@@ -66,62 +66,59 @@ function createWindow() {
     win.webContents.openDevTools(); // Open DevTools for debugging
   } else {
     console.log('[Main] Loading File:', path.join(RENDERER_DIST, 'index.html'));
-    // win.loadFile('dist/index.html')
     win.loadFile(path.join(RENDERER_DIST, 'index.html'));
   }
+
+  // Initialize IPC Handler for Stage commands
+  new IPCHandler(win);
 }
 
-// WebSocket Handlers
-function setupWebSocketHandlers() {
-  console.log('[Main] setupWebSocketHandlers called');
-  ipcMain.on('socket-connect', () => {
-    console.log('[Main] IPC: socket-connect received');
-    // ... rest of the handler
-    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
-      console.log('WebSocket is already connected or connecting.');
+// Start MCP Server
+async function startMcpServer() {
+  const mcpApp = express();
+  const mcpPort = parseInt(process.env.STAGE_DIRECTOR_MCP_PORT || '8080', 10);
+  const mcpHost = process.env.STAGE_DIRECTOR_MCP_HOST || '0.0.0.0';
+
+  mcpApp.use(cors());
+  mcpApp.use(express.json());
+
+  const transports = new Map<string, SSEServerTransport>();
+
+  mcpApp.get('/sse', async (_req, res) => {
+    console.log('New SSE connection established');
+    const mcpServer = createMcpServer();
+    const transport = new SSEServerTransport('/messages', res);
+    transports.set(transport.sessionId, transport);
+
+    // Clean up on close
+    transport.onclose = () => {
+      console.log(`SSE connection closed: ${transport.sessionId}`);
+      transports.delete(transport.sessionId);
+    };
+
+    await mcpServer.connect(transport);
+  });
+
+  mcpApp.post('/messages', async (req, res) => {
+    const sessionId = req.query.sessionId as string;
+    const transport = transports.get(sessionId);
+    if (!transport) {
+      console.warn(`Session not found: ${sessionId}`);
+      res.status(404).send('Session not found');
       return;
     }
 
-    console.log(`Connecting to WebSocket at ${WS_ENDPOINT}...`);
-    ws = new WebSocket(WS_ENDPOINT);
-
-    ws.on('open', () => {
-      console.log('WebSocket connected');
-      win?.webContents.send('socket-on-open');
-    });
-
-    ws.on('message', data => {
-      // console.log('Received message:', data.toString());
-      win?.webContents.send('socket-on-message', data.toString());
-    });
-
-    ws.on('close', (code, reason) => {
-      console.log(`WebSocket disconnected: ${code} ${reason}`);
-      win?.webContents.send('socket-on-close');
-      ws = null;
-    });
-
-    ws.on('error', error => {
-      console.error('WebSocket error:', error);
-      win?.webContents.send('socket-on-error', error.message);
-    });
-  });
-
-  ipcMain.on('socket-disconnect', () => {
-    if (ws) {
-      console.log('Disconnecting WebSocket...');
-      ws.close();
-      ws = null;
+    try {
+      await transport.handleMessage(req.body);
+      res.sendStatus(200);
+    } catch (error) {
+      console.error(`Error handling message: ${error}`);
+      res.status(500).send(String(error));
     }
   });
 
-  ipcMain.on('socket-send', (_event, message: string | object) => {
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      const msg = typeof message === 'string' ? message : JSON.stringify(message);
-      ws.send(msg);
-    } else {
-      console.warn('WebSocket is not connected. Cannot send message.');
-    }
+  mcpApp.listen(mcpPort, mcpHost, () => {
+    console.log(`MCP Server running on ${mcpHost}:${mcpPort} (SSE)`);
   });
 }
 
@@ -143,6 +140,6 @@ app.on('activate', () => {
 });
 
 app.whenReady().then(() => {
-  setupWebSocketHandlers();
+  startMcpServer();
   createWindow();
 });
