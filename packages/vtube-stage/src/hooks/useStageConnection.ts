@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 
-interface UseWebSocketOptions<T> {
+/**
+ * サーバー接続のオプション
+ */
+interface UseStageConnectionOptions<T> {
   onMessage: (message: T) => void;
   onRawMessage?: (data: string) => void;
   onError?: (error: string) => void;
@@ -8,50 +11,53 @@ interface UseWebSocketOptions<T> {
   onOpen?: () => void;
 }
 
-export function useWebSocket<T>(options: UseWebSocketOptions<T>) {
+/**
+ * ステージサーバーとの接続を管理するフック
+ * 通信プロトコル(WebSocket等)の実装詳細は隠蔽する
+ */
+export function useStageConnection<T>(options: UseStageConnectionOptions<T>) {
   const { onMessage, onRawMessage, onError, onClose, onOpen } = options;
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    // 接続開始
+    // 接続開始 (内部的に Electron IPC / WebSocket を使用)
     window.electron.socket.connect();
 
-    // イベントリスナーの登録
     window.electron.socket.onOpen(() => {
-      console.log('WebSocket Connected via Electron');
+      console.log('Stage Connection Established');
       setIsConnected(true);
       onOpen?.();
     });
 
     window.electron.socket.onClose(() => {
-      console.log('WebSocket Disconnected via Electron');
+      console.log('Stage Connection Closed');
       setIsConnected(false);
       onClose?.();
     });
 
     window.electron.socket.onError(error => {
-      console.error('WebSocket Error via Electron:', error);
+      console.error('Stage Connection Error:', error);
       onError?.(error);
     });
 
     window.electron.socket.onMessage(data => {
-      // console.log('Raw message from server:', data);
       onRawMessage?.(data);
-
       try {
         const parsedData = JSON.parse(data);
         onMessage(parsedData);
       } catch (error) {
-        console.error('Failed to parse message JSON:', error);
+        console.error('Failed to parse stage message:', error);
       }
     });
 
-    // クリーンアップ
+    // Clean up function
     return () => {
-      console.log('Closing WebSocket connection via Electron on unmount (or keeping it alive based on design)');
-      // コンポーネントのアンマウント時に切断するかどうかは要件次第だが、
-      // 通常 Electron アプリではバックグラウンドで維持したい場合もある。
-      // 今回は既存実装に合わせて切断する挙動にする。
+      // リスナーの解除が必要だが、現状の preload 実装では removeListener を返していない。
+      // ただし、useEffect のクリーンアップで disconnect を呼ぶ設計であれば、
+      // サーバー切断 -> イベント発火 -> ステート更新 -> アンマウント というフローになる。
+      // 本来は IPC リスナーの削除もすべきだが、簡易実装として disconnect を呼ぶ。
+
+      console.log('Disconnecting stage connection on unmount');
       window.electron.socket.disconnect();
     };
   }, [onMessage, onRawMessage, onError, onClose, onOpen]);
@@ -60,9 +66,8 @@ export function useWebSocket<T>(options: UseWebSocketOptions<T>) {
     (message: string | object) => {
       if (isConnected) {
         window.electron.socket.send(message);
-        // console.log('Sent message via Electron:', message);
       } else {
-        console.warn('WebSocket is not connected. Cannot send message via Electron.');
+        console.warn('Stage connection is not ready. Cannot send message.');
       }
     },
     [isConnected]

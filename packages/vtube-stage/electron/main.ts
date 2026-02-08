@@ -56,7 +56,7 @@ function createWindow() {
     win?.webContents.send('main-process-message', new Date().toLocaleString());
   });
 
-  win.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+  win.webContents.on('did-fail-load', (_event, errorCode, errorDescription) => {
     console.error('[Main] did-fail-load:', errorCode, errorDescription);
   });
 

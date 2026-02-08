@@ -4004,7 +4004,7 @@ function createWindow() {
     console.log("[Main] did-finish-load");
     win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
   });
-  win.webContents.on("did-fail-load", (event, errorCode, errorDescription) => {
+  win.webContents.on("did-fail-load", (_event, errorCode, errorDescription) => {
     console.error("[Main] did-fail-load:", errorCode, errorDescription);
   });
   if (VITE_DEV_SERVER_URL) {

@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useWebSocket } from './useWebSocket';
+import { useStageConnection } from './useStageConnection';
 import { validateStageCommand } from '../utils/command_validator';
 import { AvatarState } from '../types/avatar_types';
 import { StageCommand } from '../types/command';
@@ -92,7 +92,7 @@ export function useStageCommandHandler() {
     }
   }, []);
 
-  const { isConnected, sendMessage } = useWebSocket<unknown>({
+  const { isConnected, sendMessage } = useStageConnection<unknown>({
     onMessage: handleWebSocketMessage,
   });
 
