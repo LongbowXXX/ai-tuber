@@ -24,25 +24,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: "3.11"
-
-      - name: Install uv
-        run: pip install uv
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: packages/stage-director/package-lock.json
 
       - name: Install dependencies
-        run: uv sync --frozen --all-extras # Add --all-extras to install dev dependencies
+        run: npm ci
 
-      - name: Run Flake8
-        run: uv run flake8 .
+      - name: Run Lint
+        run: npm run lint
 
-      - name: Run Black check
-        run: uv run black . --check
+      - name: Build
+        run: npm run build
 
-      - name: Run MyPy
-        run: uv run mypy .
-
-      - name: Run Pytest
-        run: uv run pytest
+      - name: Run Test
+        run: npm test
