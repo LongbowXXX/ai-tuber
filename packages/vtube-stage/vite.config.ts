@@ -1,6 +1,8 @@
 import { defineConfig, createLogger } from 'vite';
 import react from '@vitejs/plugin-react';
 
+import electron from 'vite-plugin-electron/simple';
+
 const logger = createLogger();
 const originalWarning = logger.warn;
 
@@ -11,6 +13,16 @@ logger.warn = (msg, options) => {
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    electron({
+      main: {
+        entry: 'electron/main.ts',
+      },
+      preload: {
+        input: 'electron/preload.ts',
+      },
+    }),
+  ],
   customLogger: logger,
 });

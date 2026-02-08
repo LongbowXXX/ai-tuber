@@ -2,39 +2,16 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Chrome でデバッグ",
-      "type": "chrome",
+      "name": "Electron: Dev",
+      "type": "node",
       "request": "launch",
-      "url": "http://localhost:5173",
-      "webRoot": "${workspaceFolder}/src",
-      "preLaunchTask": "npm: dev",
-      "sourceMaps": true
-    },
-    {
-      "name": "Edge でデバッグ",
-      "type": "msedge",
-      "request": "launch",
-      "url": "http://localhost:5173",
-      "webRoot": "${workspaceFolder}/src",
-      "preLaunchTask": "npm: dev",
-      "sourceMaps": true
-    },
-    {
-      "name": "Chrome でアタッチ",
-      "type": "chrome",
-      "request": "attach",
-      "port": 9222,
-      "webRoot": "${workspaceFolder}/src",
-      "sourceMaps": true
-    },
-    {
-      "name": "Chrome (デバッグサイドバー有効)",
-      "type": "chrome",
-      "request": "launch",
-      "url": "http://localhost:5173",
-      "webRoot": "${workspaceFolder}/src",
-      "preLaunchTask": "dev (デバッグサイドバー有効)",
-      "sourceMaps": true
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "console": "integratedTerminal"
     }
   ]
 }
