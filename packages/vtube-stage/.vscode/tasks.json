@@ -11,6 +11,14 @@
     },
     {
       "type": "npm",
+      "script": "build",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "npm: build",
+      "detail": "build for production"
+    },
+    {
+      "type": "npm",
       "script": "dev",
       "problemMatcher": [],
       "label": "npm: dev",

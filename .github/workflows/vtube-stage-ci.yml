@@ -2,7 +2,6 @@ name: VTube Stage CI
 
 on:
   push:
-    branches: [main]
     paths:
       - "packages/vtube-stage/**"
       - ".github/workflows/vtube-stage-ci.yml"
