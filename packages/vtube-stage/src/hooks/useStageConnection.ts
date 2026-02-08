@@ -20,27 +20,25 @@ export function useStageConnection<T>(options: UseStageConnectionOptions<T>) {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    // 接続開始 (内部的に Electron IPC / WebSocket を使用)
-    window.electron.socket.connect();
-
-    window.electron.socket.onOpen(() => {
+    // 1. Setup listeners first to avoid missing events
+    const unsubOpen = window.electron.socket.onOpen(() => {
       console.log('Stage Connection Established');
       setIsConnected(true);
       onOpen?.();
     });
 
-    window.electron.socket.onClose(() => {
+    const unsubClose = window.electron.socket.onClose(() => {
       console.log('Stage Connection Closed');
       setIsConnected(false);
       onClose?.();
     });
 
-    window.electron.socket.onError(error => {
+    const unsubError = window.electron.socket.onError(error => {
       console.error('Stage Connection Error:', error);
       onError?.(error);
     });
 
-    window.electron.socket.onMessage(data => {
+    const unsubMessage = window.electron.socket.onMessage(data => {
       onRawMessage?.(data);
       try {
         const parsedData = JSON.parse(data);
@@ -50,14 +48,19 @@ export function useStageConnection<T>(options: UseStageConnectionOptions<T>) {
       }
     });
 
+    // 2. Connect after listeners are ready
+    window.electron.socket.connect();
+
     // Clean up function
     return () => {
-      // リスナーの解除が必要だが、現状の preload 実装では removeListener を返していない。
-      // ただし、useEffect のクリーンアップで disconnect を呼ぶ設計であれば、
-      // サーバー切断 -> イベント発火 -> ステート更新 -> アンマウント というフローになる。
-      // 本来は IPC リスナーの削除もすべきだが、簡易実装として disconnect を呼ぶ。
+      console.log('Cleaning up stage connection listeners and disconnecting on unmount');
+      // Unsubscribe from all listeners
+      unsubOpen();
+      unsubClose();
+      unsubError();
+      unsubMessage();
 
-      console.log('Disconnecting stage connection on unmount');
+      // Disconnect
       window.electron.socket.disconnect();
     };
   }, [onMessage, onRawMessage, onError, onClose, onOpen]);

@@ -77,7 +77,7 @@ function createWindow() {
 async function startMcpServer() {
   const mcpApp = express();
   const mcpPort = parseInt(process.env.STAGE_DIRECTOR_MCP_PORT || '8080', 10);
-  const mcpHost = process.env.STAGE_DIRECTOR_MCP_HOST || '0.0.0.0';
+  const mcpHost = process.env.STAGE_DIRECTOR_MCP_HOST || '127.0.0.1';
 
   mcpApp.use(cors());
   mcpApp.use(express.json());

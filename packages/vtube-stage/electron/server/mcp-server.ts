@@ -21,6 +21,12 @@ export class SSEServerTransport implements Transport {
       Connection: 'keep-alive',
     });
 
+    // Handle SSE close
+    this.res.on('close', () => {
+      console.log(`SSE connection closed by client: ${this.sessionId}`);
+      this.onclose?.();
+    });
+
     // Send initial endpoint event
     this.res.write(`event: endpoint\ndata: ${path}?sessionId=${this.sessionId}\n\n`);
   }
@@ -161,8 +167,12 @@ export const createMcpServer = () => {
           },
         });
 
-        await commandQueue.waitForCommand(speakId);
-        return { content: [{ type: 'text', text: 'Success' }] };
+        try {
+          await commandQueue.waitForCommand(speakId);
+          return { content: [{ type: 'text', text: 'Success' }] };
+        } catch (error) {
+          return { content: [{ type: 'text', text: `Error: ${error}` }], isError: true };
+        }
       }
 
       if (name === 'display_markdown_text') {

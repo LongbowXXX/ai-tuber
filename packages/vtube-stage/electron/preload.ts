@@ -7,11 +7,29 @@ contextBridge.exposeInMainWorld('electron', {
     connect: () => ipcRenderer.send('socket-connect'),
     disconnect: () => ipcRenderer.send('socket-disconnect'),
     send: (message: string | object) => ipcRenderer.send('socket-send', message),
-    onOpen: (callback: () => void) => ipcRenderer.on('socket-on-open', () => callback()),
-    onClose: (callback: () => void) => ipcRenderer.on('socket-on-close', () => callback()),
-    onError: (callback: (error: string) => void) =>
-      ipcRenderer.on('socket-on-error', (_event, error) => callback(error)),
-    onMessage: (callback: (message: string) => void) =>
-      ipcRenderer.on('socket-on-message', (_event, message) => callback(message)),
+    onOpen: (callback: () => void) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const subscription = (_: Electron.IpcRendererEvent) => callback();
+      ipcRenderer.on('socket-on-open', subscription);
+      return () => ipcRenderer.removeListener('socket-on-open', subscription);
+    },
+    onClose: (callback: () => void) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const subscription = (_: Electron.IpcRendererEvent) => callback();
+      ipcRenderer.on('socket-on-close', subscription);
+      return () => ipcRenderer.removeListener('socket-on-close', subscription);
+    },
+    onError: (callback: (error: string) => void) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const subscription = (_: Electron.IpcRendererEvent, error: string) => callback(error);
+      ipcRenderer.on('socket-on-error', subscription);
+      return () => ipcRenderer.removeListener('socket-on-error', subscription);
+    },
+    onMessage: (callback: (message: string) => void) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const subscription = (_: Electron.IpcRendererEvent, message: string) => callback(message);
+      ipcRenderer.on('socket-on-message', subscription);
+      return () => ipcRenderer.removeListener('socket-on-message', subscription);
+    },
   },
 });

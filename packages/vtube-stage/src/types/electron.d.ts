@@ -3,10 +3,10 @@ export interface IElectronAPI {
     connect: () => void;
     disconnect: () => void;
     send: (message: string | object) => void;
-    onOpen: (callback: () => void) => void;
-    onClose: (callback: () => void) => void;
-    onError: (callback: (error: string) => void) => void;
-    onMessage: (callback: (message: string) => void) => void;
+    onOpen: (callback: () => void) => () => void;
+    onClose: (callback: () => void) => () => void;
+    onError: (callback: (error: string) => void) => () => void;
+    onMessage: (callback: (message: string) => void) => () => void;
   };
 }
 
