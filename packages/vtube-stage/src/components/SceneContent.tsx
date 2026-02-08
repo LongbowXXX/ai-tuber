@@ -48,7 +48,7 @@ const EMOTION_COLORS: { [key: string]: string } = {
   sad: '#4169E1', // Royal Blue
   angry: '#FF4500', // Red Orange
   relaxed: '#98FB98', // Pale Green
-  Surprised: '#FFFF00', // Yellow
+  surprised: '#FFFF00', // Yellow
 };
 
 export const SceneContent: React.FC<SceneContentProps> = ({
@@ -152,7 +152,7 @@ export const SceneContent: React.FC<SceneContentProps> = ({
       {/* スポットライト (Active Character) - sad, angry, Surprised の時のみ点灯 */}
       {(() => {
         const shouldShowSpotlight =
-          activeAvatar && ['sad', 'angry', 'Surprised'].includes(activeAvatar.currentEmotion || '');
+          activeAvatar && ['sad', 'angry', 'surprised'].includes(activeAvatar.currentEmotion || '');
 
         return (
           <SpotLight

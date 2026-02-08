@@ -1,6 +1,6 @@
 /**
  * Resolves the absolute path for a static asset.
- * This ensures assets are loaded correctly regardless of the base path (e.g. in Electron production build).
+ * Returns the path prefixed with BASE_URL (which might be relative like './' in Electron).
  *
  * @param path - The path to the asset (e.g., "/avatars.json" or "avatars.json")
  * @returns The resolved absolute path

@@ -49,9 +49,9 @@ AI V-Tuber システムのフロントエンドであり、VRM モデルの描�
    `.env` ファイルを作成し、以下の設定を追加します。
 
    ```env
-   # Stage Director の WebSocket エンドポイント
-   # 注意: 変数名は DIRECTOR ではなく DIRECTER (E) です
-   VITE_STAGE_DIRECTER_ENDPOINT=ws://localhost:8000/ws
+   # MCP Server Configuration (SSE)
+   STAGE_DIRECTOR_MCP_HOST=localhost
+   STAGE_DIRECTOR_MCP_PORT=3000
    ```
 
 ## サービスの実行

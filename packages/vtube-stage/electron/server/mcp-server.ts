@@ -170,7 +170,7 @@ export const createMcpServer = () => {
         payload: {
           mode,
           targetId: target_id || '',
-          duration: duration ?? 1.0,
+          duration: duration,
         },
       });
       return { content: [{ type: 'text', text: 'Success' }] };

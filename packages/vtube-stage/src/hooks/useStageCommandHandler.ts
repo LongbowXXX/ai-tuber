@@ -147,21 +147,25 @@ export function useStageCommandHandler() {
       })
       .then(data => {
         // Resolve asset paths
-        for (const avatar of data) {
-          if (avatar.vrmUrl) {
-            avatar.vrmUrl = toAssetPath(avatar.vrmUrl);
+        const newAvatars = data.map((avatar: AvatarState) => {
+          const newAvatar = { ...avatar };
+          if (newAvatar.vrmUrl) {
+            newAvatar.vrmUrl = toAssetPath(newAvatar.vrmUrl);
           }
-          if (avatar.animationUrls) {
-            for (const key in avatar.animationUrls) {
-              avatar.animationUrls[key] = toAssetPath(avatar.animationUrls[key]);
+          if (newAvatar.animationUrls) {
+            const newAnimationUrls = { ...newAvatar.animationUrls };
+            for (const key in newAnimationUrls) {
+              newAnimationUrls[key] = toAssetPath(newAnimationUrls[key]);
             }
+            newAvatar.animationUrls = newAnimationUrls;
           }
 
-          avatar.onTTSComplete = (speakId: string) => handleTTSComplete(avatar.id, speakId);
-          avatar.onAnimationEnd = (animationName: string) => handleAnimationEnd(avatar.id, animationName);
-        }
+          newAvatar.onTTSComplete = (speakId: string) => handleTTSComplete(newAvatar.id, speakId);
+          newAvatar.onAnimationEnd = (animationName: string) => handleAnimationEnd(newAvatar.id, animationName);
+          return newAvatar;
+        });
 
-        setAvatars(data);
+        setAvatars(newAvatars);
       })
       .catch(err => {
         console.error('Error loading avatars.json:', err);
