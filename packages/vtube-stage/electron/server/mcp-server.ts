@@ -76,12 +76,17 @@ export const createMcpServer = () => {
       tools: [
         {
           name: 'trigger_animation',
-          description: 'Trigger an animation for a character',
+          description:
+            'Trigger an animation for a character. Valid animations: "wave", "agree", "no", "fear", "victory", "punch".',
           inputSchema: {
             type: 'object',
             properties: {
               character_id: { type: 'string' },
-              animation_name: { type: 'string' },
+              animation_name: {
+                type: 'string',
+                description: 'The name of the animation to trigger ("wave", "agree", "no", "fear", "victory", "punch")',
+                enum: ['wave', 'agree', 'no', 'fear', 'victory', 'punch'],
+              },
             },
             required: ['character_id', 'animation_name'],
           },
@@ -95,8 +100,8 @@ export const createMcpServer = () => {
               character_id: { type: 'string' },
               message: { type: 'string' },
               caption: { type: 'string' },
-              emotion: { type: 'string' },
-              style: { type: 'string' },
+              emotion: { type: 'string', enum: ['neutral', 'happy', 'sad', 'angry', 'relaxed', 'surprised'] },
+              style: { type: 'string', enum: ['ノーマル', 'あまあま', 'ツンツン', 'セクシー', 'ささやき', 'ヒソヒソ'] },
             },
             required: ['character_id', 'message', 'caption', 'emotion'],
           },
@@ -114,13 +119,22 @@ export const createMcpServer = () => {
         },
         {
           name: 'control_camera',
-          description: 'Control the vtube-stage camera',
+          description:
+            'Control the vtube-stage camera. \n\nArgs:\n  mode: The camera mode ("default", "intro", "closeUp", "fullBody", "lowAngle", "highAngle", "sideRight", "sideLeft").\n  target_id: The ID of the target to focus on (optional).\n  duration: The duration of the camera transition in seconds (default: 1.0).',
           inputSchema: {
             type: 'object',
             properties: {
-              mode: { type: 'string' },
-              target_id: { type: 'string', default: '' },
-              duration: { type: 'number', default: 1.0 },
+              mode: {
+                type: 'string',
+                description:
+                  'The camera mode ("default", "intro", "closeUp", "fullBody", "lowAngle", "highAngle", "sideRight", "sideLeft")',
+                enum: ['default', 'intro', 'closeUp', 'fullBody', 'lowAngle', 'highAngle', 'sideRight', 'sideLeft'],
+              },
+              target_id: { type: 'string', description: 'The ID of the target to focus on (optional)' },
+              duration: {
+                type: 'number',
+                description: 'The duration of the camera transition in seconds (default: 1.0)',
+              },
             },
             required: ['mode'],
           },
