@@ -14,8 +14,6 @@ from vtuber_behavior_engine.services.memory.chroma_memory_service import ChromaM
 from vtuber_behavior_engine.stage_agents.agent_constants import (
     AGENT_SYSTEM_AAP_NAME,
     AGENT_SYSTEM_USER_ID,
-    AGENT1_CHARACTER_ID,
-    AGENT2_CHARACTER_ID,
     STATE_CONVERSATION_CONTEXT,
     STATE_CONVERSATION_RECALL,
     STATE_CURRENT_TIME,
@@ -25,14 +23,14 @@ from vtuber_behavior_engine.stage_agents.agent_constants import (
 logger = logging.getLogger(__name__)
 
 
-async def run_agent_standalone(agent: BaseAgent, initial_message: str) -> str:
+async def run_agent_standalone(agent: BaseAgent, initial_message: str, character_ids: list[str]) -> str:
     logger.info(f"Running agent with initial_message: '{initial_message}'")
 
     # Prepare to use ADK Runner
     session_service = InMemorySessionService()  # type: ignore[no-untyped-call]
     artifacts_service = InMemoryArtifactService()
     memory_service = ChromaMemoryService(
-        event_filter=lambda event_data: event_data.author in [AGENT1_CHARACTER_ID, AGENT2_CHARACTER_ID],
+        event_filter=lambda event_data: event_data.author in character_ids,
     )
     # Convert user input into a format ADK can understand
     message = Content(role="user", parts=[Part(text=initial_message)])

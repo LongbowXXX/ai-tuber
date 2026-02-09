@@ -47,6 +47,14 @@ def logical_thinking_slides_json() -> str:
     )
 
 
+def load_character_xml(prompt_file: str) -> str:
+    path = Path(__file__, f"../resources/{prompt_file}").resolve()
+    if not path.exists():
+        # absolute path or relative to cwd check
+        path = Path(prompt_file).resolve()
+    return path.read_text(encoding="utf-8")
+
+
 def character1() -> str:
     return Path(__file__, "../resources/characters/character1.xml").resolve().read_text(encoding="utf-8")
 
@@ -65,12 +73,15 @@ def character_prompt(character_id: str, character_detail: str) -> str:
     )
 
 
-def character_output_prompt(character_id: str) -> str:
+def character_output_prompt(character_id: str, available_character_ids: list[str]) -> str:
+    # Format: "Character1" または "Character2"
+    formatted_ids = " または ".join([f'"{cid}"' for cid in available_character_ids])
     return (
         Path(__file__, "../resources/character_output_prompt.md")
         .resolve()
         .read_text(encoding="utf-8")
         .replace("{character_id}", character_id)
+        .replace("{available_characters}", formatted_ids)
     )
 
 
