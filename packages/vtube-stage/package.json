@@ -30,6 +30,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:win": "tsc -b && vite build && electron-builder",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
