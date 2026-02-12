@@ -14,18 +14,14 @@ from google.genai import types
 from contextlib import AsyncExitStack
 from vtuber_behavior_engine.services.speech_recognition import SpeechRecognitionTool
 from vtuber_behavior_engine.services.stage_director_mcp_client import StageDirectorMCPClient
-from vtuber_behavior_engine.stage_agents.agent_constants import (
-    AGENT1_CHARACTER_ID,
-    AGENT2_CHARACTER_ID,
-)
+
 from vtuber_behavior_engine.stage_agents.agents_config import AgentsConfig
 from vtuber_behavior_engine.stage_agents.character_agent import create_character_agent, create_character_output_agent
 from vtuber_behavior_engine.stage_agents.conversation_context_agent import (
     create_conversation_recall_agent,
 )
 from vtuber_behavior_engine.stage_agents.resources import (
-    character1,
-    character2,
+    load_character_xml,
 )
 
 logger = logging.getLogger(__name__)
@@ -40,24 +36,39 @@ def build_root_agent(
     speech_tool: Optional[SpeechRecognitionTool] = None,
 ) -> BaseAgent:
     logger.info(f"Creating root agent. agent_config={agent_config}")
-    agent1_thought = create_character_agent(AGENT1_CHARACTER_ID, character1(), speech_tool)
-    agent2_thought = create_character_agent(AGENT2_CHARACTER_ID, character2(), speech_tool)
 
-    agent1_output = create_character_output_agent(AGENT1_CHARACTER_ID, stage_director_client)
-    agent2_output = create_character_output_agent(AGENT2_CHARACTER_ID, stage_director_client)
+    thought_agents = []
+    output_agents = []
+
+    available_character_ids = [c.id for c in agent_config.characters]
+
+    for char_config in agent_config.characters:
+        prompt_content = load_character_xml(char_config.prompt_file)
+        # Create thought agent
+        thought_agent = create_character_agent(char_config.id, prompt_content, speech_tool)
+        thought_agents.append(thought_agent)
+
+        # Create output agent
+        output_agent = create_character_output_agent(
+            char_config.id,
+            stage_director_client,
+            available_character_ids,
+        )
+        output_agents.append(output_agent)
 
     recall_conversation_agent = create_conversation_recall_agent()
 
+    # Construct sub_agents list for LoopAgent
+    # Order: recall, [thought1, output1, thought2, output2...], update_context
+    loop_sub_agents = [recall_conversation_agent]
+    for thought, output in zip(thought_agents, output_agents):
+        loop_sub_agents.append(thought)
+        loop_sub_agents.append(output)
+    loop_sub_agents.append(update_context_agent)
+
     agent_conversation_loop = LoopAgent(
         name="ConversationLoop",
-        sub_agents=[
-            recall_conversation_agent,
-            agent1_thought,
-            agent1_output,
-            agent2_thought,
-            agent2_output,
-            update_context_agent,
-        ],
+        sub_agents=loop_sub_agents,
         max_iterations=agent_config.max_iterations,
         description="Handles the conversation between two agents.",
     )
@@ -82,8 +93,8 @@ def build_root_agent(
             )
 
             # Inject tools into output agents
-            agent1_output.tools = cast(list[ToolUnion], tools)
-            agent2_output.tools = cast(list[ToolUnion], tools)
+            for output_agent in output_agents:
+                output_agent.tools = cast(list[ToolUnion], tools)
 
             logger.info(f"Tools initialized and injected. Count: {len(tools)}")
             callback_context.state["is_tools_initialized"] = True

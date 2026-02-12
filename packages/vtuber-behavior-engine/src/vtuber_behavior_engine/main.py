@@ -17,6 +17,10 @@ logger = logging.getLogger(__name__)
 
 async def main() -> None:
     from vtuber_behavior_engine.news_agent.agent import root_agent
+    from vtuber_behavior_engine.config_loader import load_config
+
+    # Load configuration (defaulting to news config for now, or could be argument based)
+    config = load_config("news_config.yaml")
 
     character_agent = root_agent
     if character_agent is None:
@@ -25,7 +29,8 @@ async def main() -> None:
 
     # initial message
     message = initial_message()
-    await run_agent_standalone(character_agent, message)
+    character_ids = [c.id for c in config.characters]
+    await run_agent_standalone(character_agent, message, character_ids)
 
 
 if __name__ == "__main__":

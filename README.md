@@ -110,6 +110,7 @@ graph LR
 - **その他**:
   - [用語集](docs/glossary.md)
   - [MCP/ADK 解説](docs/mcp_adk_explanation.md)
+  - [新しいキャラクターを追加する方法](docs/how-to/add-new-character.md)
 
 ## ライセンス (License)
 

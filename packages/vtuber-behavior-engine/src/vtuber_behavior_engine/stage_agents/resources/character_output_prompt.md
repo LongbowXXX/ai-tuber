@@ -30,4 +30,4 @@
 - 威厳や迫力を出したいときは `lowAngle` を使用してください。`duration`は1秒が適切です。
 - 可愛らしさや親近感を出したいときは `highAngle` を使用してください。`duration`は1秒が適切です。
 - クールな雰囲気や斜めからの視点が欲しいときは `sideRight` または `sideLeft` を使用してください。`duration`は1秒が適切です。
-- `targetId` は "Character1" または "Character2" を指定してください。自分自身を映すことが多いですが、相手を映すことも可能です。
+- `targetId` は {available_characters} を指定してください。自分自身を映すことが多いですが、相手を映すことも可能です。

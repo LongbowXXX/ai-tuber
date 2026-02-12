@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, AsyncMock
+from unittest.mock import MagicMock, AsyncMock, patch
 import inspect
 
 import pytest
@@ -7,7 +7,7 @@ from vtuber_behavior_engine.services.stage_director_mcp_client import (
     StageDirectorMCPClient,
 )
 from vtuber_behavior_engine.stage_agents.agent_builder import build_root_agent
-from vtuber_behavior_engine.stage_agents.agents_config import AgentsConfig
+from vtuber_behavior_engine.stage_agents.agents_config import AgentsConfig, CharacterConfig
 
 
 @pytest.mark.asyncio
@@ -32,17 +32,31 @@ async def test_agent_builder_includes_camera_tool() -> None:
 
     stage_director_client.load_tools = AsyncMock(return_value=[mock_camera_tool, mock_trigger_tool, mock_other_tool])
 
-    agent_config = AgentsConfig(max_iterations=1)
+    agent_config = AgentsConfig(
+        max_iterations=1,
+        characters=[
+            CharacterConfig(id="char1", name="Char1", prompt_file="char1.xml"),
+            CharacterConfig(id="char2", name="Char2", prompt_file="char2.xml"),
+        ],
+    )
     exit_stack = AsyncMock()
 
-    # Build the root agent
-    root_agent = build_root_agent(
-        initial_context_agent,
-        update_context_agent,
-        stage_director_client,
-        agent_config,
-        exit_stack,
-    )
+    # Mock load_character_xml and character_output_prompt to avoid file system access
+    with (
+        patch("vtuber_behavior_engine.stage_agents.agent_builder.load_character_xml", return_value="dummy_prompt"),
+        patch(
+            "vtuber_behavior_engine.stage_agents.character_agent.character_output_prompt",
+            return_value="dummy_output_prompt",
+        ),
+    ):
+        # Build the root agent
+        root_agent = build_root_agent(
+            initial_context_agent,
+            update_context_agent,
+            stage_director_client,
+            agent_config,
+            exit_stack,
+        )
 
     # Simulate initialization callback
     # The initialization logic is inside the before_agent_callback of the root agent

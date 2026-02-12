@@ -71,7 +71,11 @@ def create_character_agent(
     return agent
 
 
-def create_character_output_agent(character_id: str, stage_director_client: StageDirectorMCPClient) -> LlmAgent:
+def create_character_output_agent(
+    character_id: str,
+    stage_director_client: StageDirectorMCPClient,
+    available_character_ids: list[str],
+) -> LlmAgent:
     async def handle_speech(callback_context: CallbackContext) -> Optional[types.Content]:
         if STATE_AGENT_SPEECH_BASE + character_id not in callback_context.state:
             logger.info("No speech data found in state. skipping output.")
@@ -103,7 +107,7 @@ def create_character_output_agent(character_id: str, stage_director_client: Stag
     agent = LlmAgent(
         model=OUTPUT_LLM_MODEL,
         name=f"CharacterOutput_{character_id}",
-        instruction=character_output_prompt(character_id),
+        instruction=character_output_prompt(character_id, available_character_ids),
         description=f"Character {character_id} output",
         tools=list(cast(Iterable[ToolUnion], tools)),
         before_agent_callback=handle_speech,

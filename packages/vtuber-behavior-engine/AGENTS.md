@@ -71,6 +71,40 @@ vtuber-behavior-engine/
 
 ## 6. 開発ルール (憲法要約)
 
+### 重要: 仮想環境でのコマンド実行 (Critical: Execution in Virtual Environment)
+
+**テストやスクリプトを実行する際は、必ず `uv run` を使用してください。**
+環境依存のパッケージ (`pyaudio` 等) は仮想環境内にのみインストールされています。
+システムグローバルの `pytest` や `python` を直接実行すると、インポートエラーが発生します。
+
+❌ **Bad**:
+
+```bash
+pytest
+python src/main.py
+```
+
+✅ **Good**:
+
+```bash
+uv run pytest
+uv run python src/vtuber_behavior_engine/main.py
+```
+
+### 必須: 品質保証プロトコル (Mandatory: Quality Assurance Protocol)
+
+**タスクを完了する前、またはユーザーにレビューを依頼する前に、必ず以下のコマンドを実行し、全てがパスすることを確認しなければなりません。**
+「多忙」や「些細な修正」を理由に省略することは許されません。
+
+1.  **フォーマット**: `uv run black .`
+    - コードスタイルを統一します。
+2.  **リント**: `uv run flake8`
+    - 潜在的なバグやスタイル違反を検出します。
+3.  **型チェック**: `uv run mypy .`
+    - 型の整合性を検証します。
+4.  **テスト**: `uv run pytest`
+    - 機能の退行がないか確認します。
+
 ### 🔍 動的コンテキストプロトコル (調査フェーズ)
 
 **すべてのエージェントに対する重要な指示:**
