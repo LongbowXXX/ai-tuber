@@ -74,6 +74,53 @@ npm run build
 
 生成されたファイルは `dist/` ディレクトリに出力されます。
 
+## 公開 (Publish)
+
+GitHub Packages に公開するには、以下の手順を実行します。
+
+1.  **認証設定**:
+    `~/.npmrc` (ユーザーホームディレクトリ) またはプロジェクトルートの `.npmrc` に以下を設定します（トークンは `write:packages` 権限が必要）。
+
+    ```ini
+    @longbowxxx:registry=https://npm.pkg.github.com
+    //npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+    ```
+
+2.  **公開コマンド**:
+    ```bash
+    npm publish
+    ```
+
+## 他の PC での利用
+
+公開されたパッケージを他の PC で実行するには、以下の手順を行います。
+
+1.  **認証設定**:
+    実行する PC の `~/.npmrc` に以下を設定します（トークンは `read:packages` 権限が必要）。
+
+    ```ini
+    @longbowxxx:registry=https://npm.pkg.github.com
+    //npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+    ```
+
+2.  **インストール**:
+    パッケージをグローバルインストールします。
+
+    ```bash
+    npm install -g @longbowxxx/vtube-stage
+    ```
+
+3.  **実行**:
+    インストール後、以下のコマンドで実行します。
+
+    ```bash
+    # Stdio モードで実行 (推奨)
+    vtube-stage --transport=stdio
+
+    # デフォルトモード (SSE)
+    vtube-stage
+    ```
+
 ## 開発
 
 このプロジェクトでは、コードの品質を確保するためにいくつかのツールを使用しています:
