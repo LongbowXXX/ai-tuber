@@ -2,6 +2,7 @@
   "name": "@longbowxxx/vtube-stage",
   "author": "AI Tuber Team",
   "version": "0.0.2",
+  "description": "AI Tuber Stage Application",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
@@ -27,6 +28,12 @@
     }
   },
   "type": "module",
+  "files": [
+    "dist-electron",
+    "dist",
+    "bin",
+    "package.json"
+  ],
   "main": "dist-electron/main.js",
   "bin": {
     "vtube-stage": "bin/vtube-stage.cjs"

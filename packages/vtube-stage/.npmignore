@@ -2,15 +2,6 @@
 src
 electron
 public
-# except public resources if needed?
-# public folder is copied to dist/dist-electron?
-# Vite build puts public into dist.
-# Electron main process might need resources?
-# main.ts uses process.env.VITE_PUBLIC which is path.join(APP_ROOT, 'public') OR RENDERER_DIST.
-# In production, VITE_DEV_SERVER_URL is undefined, so VITE_PUBLIC = RENDERER_DIST.
-# So 'public' source folder behaves as assets.
-# But `dist-electron` and `dist` contain the output.
-# So we can ignore `src` and `electron` (ts files).
 
 # Dev config
 .vscode

@@ -79,7 +79,7 @@ npm run build
 GitHub Packages に公開するには、以下の手順を実行します。
 
 1.  **認証設定**:
-    `~/.npmrc` (ユーザーホームディレクトリ) またはプロジェクトルートの `.npmrc` に以下を設定します（トークンは `write:packages` 権限が必要）。
+    `~/.npmrc` (ユーザーホームディレクトリ) に以下を設定します（トークンは `write:packages` 権限が必要）。
 
     ```ini
     @longbowxxx:registry=https://npm.pkg.github.com
@@ -112,6 +112,8 @@ GitHub Packages に公開するには、以下の手順を実行します。
 
 3.  **実行**:
     インストール後、以下のコマンドで実行します。
+
+    **注意**: このパッケージは Electron を依存関係に含んでいるため、インストールには 100MB 以上のダウンロードが必要です。
 
     ```bash
     # Stdio モードで実行 (推奨)
