@@ -1,0 +1,22 @@
+# Source files (we only ship built files)
+src
+electron
+public
+
+# Dev config
+.vscode
+.github
+.agent
+logs
+*.log
+.env
+.env_sample
+vite.config.ts
+tsconfig.*
+eslint.config.js
+
+
+# Build output
+release
+dist-electron-unpacked
+

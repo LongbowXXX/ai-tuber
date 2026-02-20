@@ -24,3 +24,6 @@ dist-ssr
 
 # electron build
 /release
+
+# Security
+.npmrc

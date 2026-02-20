@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import { createMcpServer, SSEServerTransport } from './server/mcp-server.ts';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { IPCHandler } from './server/ipc-handler.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -75,6 +76,20 @@ function createWindow() {
 
 // Start MCP Server
 async function startMcpServer() {
+  if (process.argv.includes('--transport=stdio')) {
+    console.log = console.error;
+    console.info = console.error;
+    console.warn = console.error;
+    console.debug = console.error;
+
+    console.error('[MCP] Starting in stdio mode');
+    const mcpServer = createMcpServer();
+    const transport = new StdioServerTransport();
+    await mcpServer.connect(transport);
+    console.error('[MCP] Stdio server connected');
+    return;
+  }
+
   const mcpApp = express();
   const mcpPort = parseInt(process.env.STAGE_DIRECTOR_MCP_PORT || '8080', 10);
   const mcpHost = process.env.STAGE_DIRECTOR_MCP_HOST || '127.0.0.1';
