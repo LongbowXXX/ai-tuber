@@ -15,7 +15,7 @@
 | :---------- | :----------------------- | :-------- | :--------------------------------------- | :-------------------------------------- | :---------------------------------------------------------------------------------- |
 | 1. 要件     | 要件定義                 | Issue     | `issues/task_requirement.md`             | `docs/specs/[Feature]/requirements.md`  | 目的、背景、スコープ、および受け入れ基準の議論／合意。                              |
 | 2. 設計     | 設計ディスカッション記録 | Issue     | `issues/task_design.md`                  | -                                       | アーキテクチャ選定、トレードオフ検討、設計レビュー履歴。                            |
-|             | 機能仕様                 | Git       | `artifacts/specification.template.md`    | `docs/specs/[Feature]/specification.md` | 合意済みの機能仕様。Issue の議論を反映し、常に最新に保たなければならない。          |
+|             | 機能仕様                 | Git       | -                                        | `docs/specs/[Feature]/specification.md` | 合意済みの機能仕様。Issue の議論を反映し、常に最新に保たなければならない。          |
 |             | 技術設計                 | Git       | `artifacts/design.template.md`           | `docs/specs/[Feature]/design.md`        | 合意済みのシステム設計、API 定義、DB スキーマ等。                                   |
 |             | 機能テスト仕様           | Git       | `artifacts/test_spec.template.md`        | `docs/specs/[Feature]/test-specs/`      | 機能テストケース（手順／期待結果）。`docs/specs/[Feature]/test-specs/` に保存する。 |
 | 3. 実装     | ソースコード             | Git       | N/A                                      | `src/`                                  | `src/` 配下のプロダクトコード。                                                     |

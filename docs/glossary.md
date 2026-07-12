@@ -1,5 +1,3 @@
-<!-- このドキュメントは .github/prompts/doc-sync.prompt.md によって生成および更新されています -->
-
 # 用語集（Glossary）
 
 | 用語                         | 定義                                                                         | 例/補足                                          |

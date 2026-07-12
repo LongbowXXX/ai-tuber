@@ -1,5 +1,3 @@
-<!-- This document is generated and updated by .github/prompts/doc-sync.prompt.md -->
-
 # アーキテクチャ概要
 
 ## システム概要

@@ -1,5 +1,3 @@
-<!-- This document is generated and updated by .github/prompts/doc-sync.prompt.md -->
-
 # コーディング規約
 
 ## 基本原則

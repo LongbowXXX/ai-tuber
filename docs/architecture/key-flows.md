@@ -1,5 +1,3 @@
-<!-- このドキュメントは .github/prompts/doc-sync.prompt.md によって生成および更新されています -->
-
 # 主要フロー（Key Flows）
 
 ## 1. 起動フロー（ローカル開発）

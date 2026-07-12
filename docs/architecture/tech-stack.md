@@ -1,5 +1,3 @@
-<!-- このドキュメントは .github/prompts/doc-sync.prompt.md によって生成および更新されています -->
-
 # 技術スタック (Tech Stack)
 
 ## 1. 言語とランタイム

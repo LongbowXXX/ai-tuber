@@ -44,7 +44,7 @@ ai-tuber-system/
 │   └── vtube-stage/            # React + Three.js + VRM Renderer
 ├── docs/                       # プロジェクトドキュメント
 ├── knowledge/                  # ワークフロー/テンプレ/ガイドライン
-└── .github/                    # Copilot/プロンプト/テンプレ
+└── .github/                    # Copilot 指示 / CI ワークフロー
 ```
 
 ### 主要ディレクトリ
@@ -80,22 +80,8 @@ ai-tuber-system/
 
 ## 6. 開発ルール（憲章サマリー）
 
-### 🔍 Dynamic Context Protocol（調査フェーズ）
-
-**全エージェントへの CRITICAL INSTRUCTION:**
-このファイル（`AGENTS.md`）で提供されるコンテキストは **要約インデックス** です。タスクに必要な詳細のすべてを含みません。
-**いかなるタスクを開始する前にも、あなたは MUST:**
-
-1.  **Search**: 利用可能なツールを使って **キーワード/正規表現検索** または **セマンティック検索** を実行し、ユーザー要求に関連する `docs/` または `knowledge/` 内の特定ドキュメントを見つける。
-    - _Example_: ユーザーが「Testing」について尋ねた場合、テスト手順に関連するドキュメントを検索して読む。
-    - _Example_: ユーザーが「Review」を求めた場合、レビューガイドラインを検索して読む。
-2.  **Follow Links**: `AGENTS.md` は要約インデックスであり重要ファイル/フォルダへのリンクを提供するため、あなたは詳細情報を得るためにこれらのリンクを MUST 追跡する。
-3.  **Read**: これらの詳細ドキュメントの内容をコンテキストにロードする。
-4.  **Cross-Reference**: 仮定に頼ってはならない。必ず見つけた公式ドキュメントに照らして検証する。
-
 ### Must Follow
 
-- 全エージェントは情報収集時に [Sequential Inquiry](./knowledge/guidelines/prompting/sequential-inquiry.md) プロトコルに従うこと：質問はまとめてではなく、1 つずつ行う。
 - 受信した Stage コマンドは必ず検証すること（Stage: `class-validator`、Director: `pydantic`）。
 
 ### Must Avoid
@@ -136,7 +122,6 @@ uv run python src/vtuber_behavior_engine/main.py
 | Project Rules           | `.github/copilot-instructions.md` |
 | High-level Architecture | `docs/architecture/overview.md`   |
 | MCP/ADK Explanation     | `docs/mcp_adk_explanation.md`     |
-| Generated Docs Index    | `docs/architecture/overview.md`   |
 
 ## 8. ドキュメントインデックス
 
@@ -158,69 +143,8 @@ uv run python src/vtuber_behavior_engine/main.py
 
 ## 9. ナレッジベース
 
-→ **Details**: [knowledge/](./knowledge/)
+開発プロセスの標準（ワークフロー・ガイドライン・テンプレート）は [knowledge/](./knowledge/) を参照。索引は `knowledge/README.md`。
 
-`knowledge/` 配下のファイル一覧:
-
-| Topic                                  | Link                                                         |
-| -------------------------------------- | ------------------------------------------------------------ |
-| Knowledge Index                        | `knowledge/README.md`                                        |
-| Workflow                               | `knowledge/workflows/workflow.md`                            |
-| Workflow: Deliverables                 | `knowledge/workflows/deliverables.md`                        |
-| Workflow: Bug Fix                      | `knowledge/workflows/bug_fix_task_details.md`                |
-| Workflow: Feature                      | `knowledge/workflows/feature_task_details.md`                |
-| Workflow: Release                      | `knowledge/workflows/release_task_details.md`                |
-| Guideline: Adoption                    | `knowledge/guidelines/adoption-guide.md`                     |
-| Guideline: Debugging                   | `knowledge/guidelines/debugging.md`                          |
-| Guideline: PR Creation                 | `knowledge/guidelines/pr-creation-guidelines.md`             |
-| Guideline: Software Review             | `knowledge/guidelines/software-review.md`                    |
-| Guideline: Specification               | `knowledge/guidelines/specification-guidelines.md`           |
-| Guideline: AI Literacy                 | `knowledge/guidelines/ai-literacy/README.md`                 |
-| Guideline: AI Literacy - Context       | `knowledge/guidelines/ai-literacy/context-management.md`     |
-| Guideline: AI Literacy - Advanced      | `knowledge/guidelines/ai-literacy/advanced-strategies.md`    |
-| Guideline: AI Literacy - Self Study    | `knowledge/guidelines/ai-literacy/self-study.md`             |
-| Guideline: Prompting                   | `knowledge/guidelines/prompting/README.md`                   |
-| Prompting: Circuit Breaker             | `knowledge/guidelines/prompting/circuit-breaker.md`          |
-| Prompting: Dynamic Context             | `knowledge/guidelines/prompting/dynamic-context.md`          |
-| Prompting: Environment Agnostic        | `knowledge/guidelines/prompting/environment-agnostic.md`     |
-| Prompting: Explicit Parallelism        | `knowledge/guidelines/prompting/explicit-parallelism.md`     |
-| Prompting: Few-shot CoT                | `knowledge/guidelines/prompting/few-shot-cot.md`             |
-| Prompting: Iterative Changes           | `knowledge/guidelines/prompting/iterative-changes.md`        |
-| Prompting: Knowledge Retrieval         | `knowledge/guidelines/prompting/knowledge-retrieval.md`      |
-| Prompting: Multilingual Guardrails     | `knowledge/guidelines/prompting/multilingual-guardrails.md`  |
-| Prompting: Sequential Inquiry          | `knowledge/guidelines/prompting/sequential-inquiry.md`       |
-| Prompting: Simulation Verification     | `knowledge/guidelines/prompting/simulation-verification.md`  |
-| Prompting: Task Management             | `knowledge/guidelines/prompting/task-management.md`          |
-| Prompting: Transparency                | `knowledge/guidelines/prompting/transparency.md`             |
-| Prompting: XML Structured Prompting    | `knowledge/guidelines/prompting/xml-structured-prompting.md` |
-| Template: Pull Request                 | `knowledge/templates/issues/pull_request.md`                 |
-| Template: Report Bug                   | `knowledge/templates/issues/report_bug.md`                   |
-| Template: Report Feature               | `knowledge/templates/issues/report_feature.md`               |
-| Template: Report Question              | `knowledge/templates/issues/report_question.md`              |
-| Template: Story Bug Fix                | `knowledge/templates/issues/story_bug_fix.md`                |
-| Template: Story Feature                | `knowledge/templates/issues/story_feature.md`                |
-| Template: Story Release                | `knowledge/templates/issues/story_release.md`                |
-| Template: Task Requirement             | `knowledge/templates/issues/task_requirement.md`             |
-| Template: Task Design                  | `knowledge/templates/issues/task_design.md`                  |
-| Template: Task Implementation          | `knowledge/templates/issues/task_implementation.md`          |
-| Template: Task Docs Update             | `knowledge/templates/issues/task_docs_update.md`             |
-| Template: Task Create Test Spec        | `knowledge/templates/issues/task_create_test_spec.md`        |
-| Template: Task Define Exit Criteria    | `knowledge/templates/issues/task_define_exit_criteria.md`    |
-| Template: Task Static Analysis         | `knowledge/templates/issues/task_static_analysis.md`         |
-| Template: Task Test Functional         | `knowledge/templates/issues/task_test_functional.md`         |
-| Template: Task Test Sanity             | `knowledge/templates/issues/task_test_sanity.md`             |
-| Template: Task Update Sanity Checklist | `knowledge/templates/issues/task_update_sanity_checklist.md` |
-| Template: Task Verify Exit Criteria    | `knowledge/templates/issues/task_verify_exit_criteria.md`    |
-| Template: Task Verify Related Fixes    | `knowledge/templates/issues/task_verify_related_fixes.md`    |
-| Template: Task Vulnerability Check     | `knowledge/templates/issues/task_vulnerability_check.md`     |
-| Template: Task Version Agreement       | `knowledge/templates/issues/task_version_agreement.md`       |
-| Template: Task Release Checklist       | `knowledge/templates/issues/task_release_checklist.md`       |
-| Template: Task Release Execution       | `knowledge/templates/issues/task_release_execution.md`       |
-| Template: Task License Check           | `knowledge/templates/issues/task_license_check.md`           |
-| Template: Agent Bug Fix Plan           | `knowledge/templates/agents/bug_fix_plan.template.md`        |
-| Template: Agent Review Report          | `knowledge/templates/agents/review_report.template.md`       |
-| Artifact Template: Requirements        | `knowledge/templates/artifacts/requirements.template.md`     |
-| Artifact Template: Specification       | `knowledge/templates/artifacts/specification.template.md`    |
-| Artifact Template: Design              | `knowledge/templates/artifacts/design.template.md`           |
-| Artifact Template: Test Spec           | `knowledge/templates/artifacts/test_spec.template.md`        |
-| Artifact Template: Sanity Checklist    | `knowledge/templates/artifacts/sanity_checklist.template.md` |
+- `knowledge/workflows/` — Story/Task の開発プロセス定義と成果物マトリクス
+- `knowledge/guidelines/` — デバッグ・PR 作成・ソフトウェアレビューの規約
+- `knowledge/templates/` — Issue/PR・成果物のテンプレート

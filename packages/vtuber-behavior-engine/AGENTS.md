@@ -71,56 +71,23 @@ vtuber-behavior-engine/
 
 ## 6. 開発ルール (憲法要約)
 
-### 重要: 仮想環境でのコマンド実行 (Critical: Execution in Virtual Environment)
+### コマンド実行は `uv run` 経由で
 
-**テストやスクリプトを実行する際は、必ず `uv run` を使用してください。**
-環境依存のパッケージ (`pyaudio` 等) は仮想環境内にのみインストールされています。
-システムグローバルの `pytest` や `python` を直接実行すると、インポートエラーが発生します。
+環境依存のパッケージ (`pyaudio` 等) は仮想環境内にのみインストールされているため、`pytest` や `python` は直接ではなく `uv run pytest` / `uv run python ...` として実行すること。
 
-❌ **Bad**:
+### 品質チェック
 
-```bash
-pytest
-python src/main.py
-```
-
-✅ **Good**:
+タスク完了前に以下がすべてパスすること:
 
 ```bash
+uv run black .
+uv run flake8
+uv run mypy .
 uv run pytest
-uv run python src/vtuber_behavior_engine/main.py
 ```
-
-### 必須: 品質保証プロトコル (Mandatory: Quality Assurance Protocol)
-
-**タスクを完了する前、またはユーザーにレビューを依頼する前に、必ず以下のコマンドを実行し、全てがパスすることを確認しなければなりません。**
-「多忙」や「些細な修正」を理由に省略することは許されません。
-
-1.  **フォーマット**: `uv run black .`
-    - コードスタイルを統一します。
-2.  **リント**: `uv run flake8`
-    - 潜在的なバグやスタイル違反を検出します。
-3.  **型チェック**: `uv run mypy .`
-    - 型の整合性を検証します。
-4.  **テスト**: `uv run pytest`
-    - 機能の退行がないか確認します。
-
-### 🔍 動的コンテキストプロトコル (調査フェーズ)
-
-**すべてのエージェントに対する重要な指示:**
-このファイル (`AGENTS.md`) に提供されているコンテキストは**要約インデックス**です。タスクに必要なすべての詳細は含まれていません。
-**タスクを開始する前に、必ず以下の手順を踏まなければなりません:**
-
-1.  **検索**: 利用可能なツールを使用して、ユーザーのリクエストに関連する `docs/` または `knowledge/` 内の特定のドキュメントを**キーワード/正規表現検索**または**セマンティック検索**で見つけてください。
-    - _例_: ユーザーが「テスト」について尋ねた場合、テスト手順に関連するドキュメントを検索して読んでください。
-    - _例_: ユーザーが「レビュー」を求めた場合、レビューガイドラインを検索して読んでください。
-2.  **リンクを辿る**: `AGENTS.md` は要約インデックスとして機能し、重要なファイルやフォルダへのリンクを提供しているため、詳細情報を得るためにこれらのリンクを辿らなければなりません。
-3.  **読み込む**: これらの詳細なドキュメントの内容をコンテキストに読み込んでください。
-4.  **相互参照**: 推測に頼らないでください。常に見つかった公式ドキュメントと照らし合わせて確認してください。
 
 ### 必須事項
 
-- すべてのエージェントは、情報を収集する際に [**Sequential Inquiry（逐次質問）**](./knowledge/guidelines/prompting/sequential-inquiry.md) プロトコルに従わなければなりません。質問は一括ではなく、1 つずつ行ってください。
 - すべての外部サービスアクセスは `services/` レイヤーを介して行うこと。
 - プロンプトは `resources/` 内の Markdown ファイルから読み込むこと。
 
@@ -178,4 +145,3 @@ uv run pytest
 | ガイドライン       | [knowledge/guidelines/](./knowledge/guidelines/)                                                               |
 | テンプレート       | [knowledge/templates/](./knowledge/templates/)                                                                 |
 | ワークフロー       | [knowledge/workflows/](./knowledge/workflows/)                                                                 |
-| 逐次質問プロトコル | [knowledge/guidelines/prompting/sequential-inquiry.md](./knowledge/guidelines/prompting/sequential-inquiry.md) |

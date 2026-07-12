@@ -1,5 +1,3 @@
-<!-- このドキュメントは .github/prompts/doc-sync.prompt.md によって生成および更新されています -->
-
 # テスト方針（Testing）
 
 ## 目的

@@ -1,5 +1,3 @@
-<!-- This document is generated and updated by .github/prompts/doc-sync.prompt.md -->
-
 # 主要なフロー
 
 ## 1. アプリケーション起動フロー
