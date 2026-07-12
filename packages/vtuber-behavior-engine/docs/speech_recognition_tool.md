@@ -89,7 +89,7 @@ speech_tool.start_recognition()
 
 # 3. エージェントにツールを登録
 agent = LlmAgent(
-    model="gemini-3-flash-preview",
+    model="gemini-3.1-flash-lite",
     system_instruction=(
         "あなたは音声認識アシスタントです。"
         "定期的に get_user_speech ツールでユーザー発話を確認してください。"
@@ -129,13 +129,11 @@ system_instruction = """
 ### バックグラウンドスレッドの動作
 
 1. **スレッド開始** (`start()` 呼び出し時)
-
    - デーモンスレッドとして `_stt_thread_func` を実行
    - PyAudio ストリームを開いてマイク入力を開始
    - Google Cloud Speech-to-Text API にストリーミング接続
 
 2. **音声認識ループ**
-
    - マイクから音声チャンクを読み込み
    - STT API にリアルタイム送信
    - 確定した発話 (`is_final=True`) を `_transcript_queue` に追加
