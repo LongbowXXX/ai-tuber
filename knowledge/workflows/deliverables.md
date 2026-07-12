@@ -13,11 +13,11 @@
 
 | フェーズ    | 成果物名                 | 場所      | テンプレート                             | 成果物パス（Git）                       | 説明                                                                                |
 | :---------- | :----------------------- | :-------- | :--------------------------------------- | :-------------------------------------- | :---------------------------------------------------------------------------------- |
-| 1. 要件     | 要件定義                 | Issue     | `issues/task_requirement.md`             | `docs/specs/[Feature]/requirements.md`  | 目的、背景、スコープ、および受け入れ基準の議論／合意。                              |
+| 1. 要件     | 要件定義                 | Issue     | `issues/task_requirement.md`             | `specs/[NNN-feature]/spec.md`           | 目的、背景、スコープ、および受け入れ基準の議論／合意。`/speckit-specify` で作成。   |
 | 2. 設計     | 設計ディスカッション記録 | Issue     | `issues/task_design.md`                  | -                                       | アーキテクチャ選定、トレードオフ検討、設計レビュー履歴。                            |
-|             | 機能仕様                 | Git       | -                                        | `docs/specs/[Feature]/specification.md` | 合意済みの機能仕様。Issue の議論を反映し、常に最新に保たなければならない。          |
-|             | 技術設計                 | Git       | `artifacts/design.template.md`           | `docs/specs/[Feature]/design.md`        | 合意済みのシステム設計、API 定義、DB スキーマ等。                                   |
-|             | 機能テスト仕様           | Git       | `artifacts/test_spec.template.md`        | `docs/specs/[Feature]/test-specs/`      | 機能テストケース（手順／期待結果）。`docs/specs/[Feature]/test-specs/` に保存する。 |
+|             | 機能仕様                 | Git       | Spec Kit（`/speckit-specify`）           | `specs/[NNN-feature]/spec.md`           | 合意済みの機能仕様。Issue の議論を反映し、常に最新に保たなければならない。          |
+|             | 実装計画／タスク分解     | Git       | Spec Kit（`/speckit-plan`, `/speckit-tasks`） | `specs/[NNN-feature]/plan.md`, `tasks.md` | 合意済みのシステム設計、API 定義、実装タスク等。                              |
+|             | 機能テスト仕様           | Git       | Spec Kit（`/speckit-checklist`）         | `specs/[NNN-feature]/checklists/`       | 機能テストケース／検証チェックリスト（手順／期待結果）。                            |
 | 3. 実装     | ソースコード             | Git       | N/A                                      | `src/`                                  | `src/` 配下のプロダクトコード。                                                     |
 |             | テストコード             | Git       | N/A                                      | `tests/`                                | `tests/` 配下の自動テストコード。                                                   |
 |             | プルリクエスト           | Git (PR)  | `issues/pull_request.md`                 | -                                       | コード変更提案、レビュー、CI 結果。                                                 |
@@ -37,5 +37,5 @@
 ## 成果物の永続性
 
 Issue はクローズ後も検索できますが、プロジェクトの「信頼できる唯一の情報源」は常に Git に反映されていなければなりません。
-例えば Issue で「仕様変更」が議論された場合、議論は Issue に残りますが、**決定事項は Git 上の仕様（`docs/specs/`）へマージしなければなりません**。
+例えば Issue で「仕様変更」が議論された場合、議論は Issue に残りますが、**決定事項は Git 上の仕様（`specs/` 配下の feature spec）へマージしなければなりません**。
 AI はこの「Issue から Git への情報の蒸留」を支援します。

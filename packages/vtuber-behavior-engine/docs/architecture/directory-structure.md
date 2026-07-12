@@ -5,8 +5,7 @@
 ```text
 vtuber-behavior-engine/
 ├── .github/
-│   ├── agents/           # AI エージェントのロール定義 (Agent Mode 用)
-│   └── prompts/          # AI エージェントのスキル定義 (Skill 用)
+│   └── copilot-instructions.md  # AI コーディングエージェント向け指示
 ├── docs/                 # プロジェクトドキュメント
 ├── knowledge/            # ガイドライン、テンプレート、ワークフロー
 ├── src/
@@ -20,8 +19,8 @@ vtuber-behavior-engine/
 │       ├── stage_agents/      # エージェントの定義、プロンプト、設定
 │       │   ├── news/          # ニュースエージェントのロジック
 │       │   ├── presentation/  # プレゼンエージェントのロジック
-│       │   └── resources/     # プロンプトテンプレート（Markdown）
-│       ├── theater/           # シアター（劇）形式の制御モデル
+│       │   ├── resources/     # プロンプトテンプレート（Markdown）
+│       │   └── theater/       # シアター（劇）形式の制御モデル
 │       └── utils/             # 共通ユーティリティ（ロガー等）
 ├── tests/                # テストコード
 ├── pyproject.toml        # プロジェクト設定と依存関係

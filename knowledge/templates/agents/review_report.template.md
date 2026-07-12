@@ -20,7 +20,7 @@ status: pending
 
 ## 2. レビューチェックリスト
 
-- [ ] **仕様準拠**: `docs/specs/[FeatureName]/...` と一致している。
+- [ ] **仕様準拠**: `specs/[NNN-feature]/spec.md`（feature spec）と一致している。
 
 ### 正しさ
 

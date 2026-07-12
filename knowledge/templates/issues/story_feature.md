@@ -12,7 +12,7 @@
 ### 1. 要件フェーズ
 
 - [ ] 要件定義タスク（`task_requirement.md`）
-  - **成果物**: `docs/specs/[FeatureName]/requirements.md`
+  - **成果物**: `specs/[NNN-feature]/spec.md`（`/speckit-specify` で作成）
   - **完了条件**: 要件がプロダクトオーナーに承認されている。
 - [ ] 完了条件 定義タスク（`task_define_exit_criteria.md`）
   - **成果物**: 完了条件ドキュメント
@@ -20,8 +20,8 @@
 ### 2. 設計フェーズ
 
 - [ ] 設計議論タスク（`task_design.md`）
-  - **成果物**: `docs/specs/[FeatureName]/design.md`
-  - **成果物**: `docs/specs/[FeatureName]/implementation_plan.md`
+  - **成果物**: `specs/[NNN-feature]/plan.md`（`/speckit-plan` で作成）
+  - **成果物**: `specs/[NNN-feature]/tasks.md`（`/speckit-tasks` で作成）
   - **チェック**: サニティチェックリスト更新（`task_update_sanity_checklist.md`）
   - **チェック**: テスト仕様作成（`task_create_test_spec.md`）
   - **完了条件**: 設計がアーキテクトに承認されている。
@@ -35,7 +35,7 @@
 ### 4. 検証フェーズ
 
 - [ ] テストケース作成（設計/実装の一部）
-  - **成果物**: `docs/specs/[FeatureName]/test-specs/`
+  - **成果物**: `specs/[NNN-feature]/checklists/`（`/speckit-checklist` で作成）
 - [ ] サニティテストタスク（`task_test_sanity.md`）
   - **成果物**: サニティチェック結果
 - [ ] 機能テストタスク（`task_test_functional.md`）

@@ -9,6 +9,7 @@
 
 - **Issue 上のプロセス**: 議論の記録、意思決定プロセス、検討事項は GitHub Issues に残します。
 - **Git 上の成果物**: 仕様、設計、コード、テスト結果などの最終成果物は Git リポジトリで管理します。
+- **Spec Kit による仕様管理**: 仕様・実装計画・タスク分解は Spec Kit（`/speckit-specify` → `/speckit-plan` → `/speckit-tasks` → `/speckit-implement`）で `specs/[NNN-feature]/` 配下に作成します（`spec.md`, `plan.md`, `tasks.md`）。
 - **パートナーとしての AI**: AI は単なるツールではなく、ペアプログラミングの相棒として振る舞います。
 
 ## フェーズ定義
@@ -45,7 +46,7 @@ graph TD
 - **人間の役割**: 要件提示、スコープ定義、ビジネス価値の判断。
 - **主要成果物**:
   - [要件定義タスク](../templates/issues/task_requirement.md)（目的、コンテキスト、スコープ、完了条件）
-  - **成果物**: `docs/specs/[FeatureName]/requirements.md`
+  - **成果物**: `specs/[NNN-feature]/spec.md`（Spec Kit の feature spec。`/speckit-specify` で作成）
 
 ### 2. 設計フェーズ
 
@@ -56,9 +57,8 @@ graph TD
 - **人間の役割**: 設計判断、セキュリティリスク評価、仕様承認。
 - **主要成果物**:
   - [設計議論タスク](../templates/issues/task_design.md)
-  - **成果物**: `docs/specs/[FeatureName]/specification.md`
-  - **成果物**: `docs/specs/[FeatureName]/design.md`
-  - **成果物**: `docs/specs/[FeatureName]/implementation_plan.md`
+  - **成果物**: `specs/[NNN-feature]/plan.md`（実装計画。`/speckit-plan` で作成）
+  - **成果物**: `specs/[NNN-feature]/tasks.md`（タスク分解。`/speckit-tasks` で作成）
 
 ### 3. 実装フェーズ
 
@@ -88,8 +88,8 @@ graph TD
   - テストケース実行の補助、バグの特定、修正提案。
 - **人間の役割**: 探索的テスト、ユーザビリティ確認、リリース判断。
 - **主要成果物**:
-  - **成果物**: `docs/specs/[FeatureName]/test-specs/*.md`（テスト仕様）
-  - **成果物**: `docs/specs/fixes/[IssueID]/fix-plan.md`（バグ修正計画）
+  - **成果物**: `specs/[NNN-feature]/checklists/*.md`（検証チェックリスト。`/speckit-checklist` で作成）
+  - **成果物**: バグ修正計画（Issue コメント。[bug_fix_plan.template.md](../templates/agents/bug_fix_plan.template.md) を使用）
   - [サニティテスト結果](../templates/issues/task_test_sanity.md)
   - [機能テスト結果](../templates/issues/task_test_functional.md)
   - [完了条件チェックタスク](../templates/issues/task_verify_exit_criteria.md)

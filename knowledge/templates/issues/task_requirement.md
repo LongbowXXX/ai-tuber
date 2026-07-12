@@ -6,10 +6,10 @@
 
 ## 構造
 
-次のテンプレートを使用して要件ドキュメントを作成してください:
+要件ドキュメント（feature spec）は Spec Kit で作成してください:
 
-- **テンプレート**: [要件テンプレート](../artifacts/requirements.template.md)
-- **保存先**: `docs/specs/[FeatureName]/requirements.md`
+- **作成方法**: `/speckit-specify`（必要に応じて `/speckit-clarify` で明確化）
+- **保存先**: `specs/[NNN-feature]/spec.md`
 
 ## ✅ 完了条件
 

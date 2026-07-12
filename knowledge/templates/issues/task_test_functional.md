@@ -26,7 +26,7 @@
 
 ## 対象
 
-テストケース（Git）: `docs/specs/{機能名}/test-specs/spec.md`
+テストケース（Git）: `specs/{NNN-feature}/checklists/*.md`
 
 ## 結果サマリー
 

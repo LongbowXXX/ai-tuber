@@ -30,11 +30,13 @@
 
 #### [Artifacts](./templates/artifacts/)
 
-リポジトリ内の永続ファイル（`docs/`）です。
+リポジトリ内の永続ファイルのテンプレートです。
 
 - **場所**: `knowledge/templates/artifacts/`
 - **例**:
-  - `design.template.md`
+  - `sanity_checklist.template.md`
+
+なお、要件・設計・テスト仕様のテンプレートは Spec Kit に置き換えられました。仕様関連の成果物（`spec.md` / `plan.md` / `tasks.md` / `checklists/`）は `/speckit-specify` → `/speckit-plan` → `/speckit-tasks`（必要に応じて `/speckit-checklist`）で `specs/[NNN-feature]/` 配下に作成してください。
 
 #### [Agents](./templates/agents/)
 

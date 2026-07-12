@@ -14,7 +14,7 @@
   - **Conversation Context Agent**: 会話の文脈とトピックを管理。
 - **Services**:
   - **Speech Recognition**: Google Cloud Speech API を使用した音声入力処理。
-  - **Stage Director MCP Client**: `stage-director` (MCP Server) と通信し、キャラクターの動作（発話、アニメーション）を指示。
+  - **Stage Director MCP Client**: `vtube-stage` 内蔵の MCP サーバーと SSE で通信し、キャラクターの動作（発話、アニメーション）を指示（クラス名 `StageDirectorMCPClient` は旧構成に由来する歴史的な識別子）。
   - **Memory Service**: ChromaDB を使用した長期・短期記憶の管理。
 
 ## アーキテクチャ図
@@ -34,7 +34,7 @@ graph TD
 
     ADK <--> Memory[ChromaDB Memory Service]
     ADK --> MCP[Stage Director MCP Client]
-    MCP --> Stage[Stage Director / MCP Server]
+    MCP --> Stage[vtube-stage / 内蔵 MCP Server]
     Stage --> VTuber((VTuber Character))
 ```
 

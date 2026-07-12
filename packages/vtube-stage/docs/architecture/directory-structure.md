@@ -8,7 +8,11 @@ vtube-stage/
 │   ├── avatar/          # VRM モデルファイル
 │   ├── vrma/            # VRM アニメーションファイル
 │   └── avatars.json     # アバター一覧定義
-├── src/                 # ソースコード
+├── electron/            # Electron main process
+│   ├── main.ts          # main process エントリーポイント
+│   ├── preload.ts       # preload スクリプト (window.electron.socket)
+│   └── server/          # 内蔵 MCP サーバー、コマンドキュー、IPC ハンドラー
+├── src/                 # ソースコード (renderer)
 │   ├── assets/          # 画像、フォントなどのアセット
 │   ├── components/      # React コンポーネント
 │   ├── contexts/        # React Context (状態管理 - 現在はプレースホルダ)
@@ -26,8 +30,9 @@ vtube-stage/
 
 | ディレクトリ     | 役割                                       | 主要なファイル                                                                             |
 | :--------------- | :----------------------------------------- | :----------------------------------------------------------------------------------------- |
+| `electron/server` | 内蔵 MCP サーバーとコマンド制御            | `mcp-server.ts`, `command-queue.ts`, `ipc-handler.ts`                                          |
 | `src/components` | UI 部品および 3D オブジェクトの定義        | `VRMAvatar.tsx`, `SceneContent.tsx`, `SpeechBubble.tsx`, `VRMController.tsx`               |
-| `src/hooks`      | ビジネスロジック、WebSocket 通信、VRM 制御 | `useStageCommandHandler.ts`, `useVrmModel.ts`, `useFacialExpression.ts`, `useWebSocket.ts` |
+| `src/hooks`      | ビジネスロジック、IPC 通信、VRM 制御       | `useStageCommandHandler.ts`, `useVrmModel.ts`, `useFacialExpression.ts`, `useStageConnection.ts` |
 | `src/services`   | 外部 API (VOICEVOX 等) との通信            | `tts_service.ts`                                                                           |
 | `src/types`      | コマンドやモデルの型定義                   | `command.ts`, `avatar_types.ts`, `scene_types.ts`                                          |
 | `src/utils`      | 共通ユーティリティ                         | `command_validator.ts`                                                                     |
@@ -37,4 +42,4 @@ vtube-stage/
 
 - **Three.js 関連**: `three`, `@react-three/fiber`, `@pixiv/three-vrm` がコアの描画を担います。
 - **UI 関連**: `MUI (Material UI)` と `styled-components` を使用して UI を構築しています。
-- **通信**: 標準の `WebSocket` API を使用して `stage-director` と通信します。
+- **通信**: main process の内蔵 MCP サーバー (`@modelcontextprotocol/sdk` + Express) が AI からのツール呼び出しを受理し、renderer へは Electron IPC (preload の `window.electron.socket`) 経由でコマンドを伝達します。

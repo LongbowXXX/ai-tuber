@@ -6,8 +6,8 @@
 
 ## 1. エグゼクティブサマリー
 
-**目的**: リアルタイムで V-Tuber キャラクターを描画し、バックエンドからのコマンドに基づいて表情や動作を制御する。
-**タイプ**: Web アプリケーション (フロントエンド)
+**目的**: リアルタイムで V-Tuber キャラクターを描画し、内蔵 MCP サーバーが受けた AI からのツール呼び出しに基づいて表情や動作を制御する。
+**タイプ**: Electron アプリケーション (フロントエンド + 内蔵 MCP サーバー)
 **ステータス**: 開発中 (Experimental)
 
 ## 2. アーキテクチャと技術スタック
@@ -20,11 +20,13 @@
 | フレームワーク  | React            | 19.0       | Web フレームワーク |
 | 3D レンダリング | Three.js         | 0.175      | 3D グラフィックス  |
 | VRM 制御        | @pixiv/three-vrm | 3.4        | VRM モデル操作     |
+| デスクトップ    | Electron         | 40         | アプリランタイム   |
+| プロトコル      | MCP SDK          | 1.26       | 内蔵 MCP サーバー  |
 
 ### アーキテクチャパターン
 
 - **コンポーネントベース**: React を使用した UI と 3D シーンの構築。
-- **カスタムフック**: 3D モデルのロード、WebSocket 通信、コマンド処理などのロジックを分離。
+- **カスタムフック**: 3D モデルのロード、IPC 通信 (`useStageConnection.ts`)、コマンド処理などのロジックを分離。
 - **サービスレイヤー**: TTS (音声合成) などの外部 API 連携をカプセル化。
 
 ## 3. ディレクトリ構造
@@ -32,7 +34,9 @@
 ```
 vtube-stage/
 ├── public/              # 静的アセット (VRM, VRMA)
-├── src/                 # ソースコード
+├── electron/            # Electron main process (内蔵 MCP サーバー、IPC)
+│   └── server/          # mcp-server.ts, command-queue.ts, ipc-handler.ts
+├── src/                 # ソースコード (renderer)
 │   ├── components/      # React コンポーネント
 │   ├── hooks/           # カスタムフック
 │   ├── services/        # 外部サービス連携
@@ -43,18 +47,21 @@ vtube-stage/
 
 ### 主要ディレクトリ
 
-| ディレクトリ     | 用途                      | 主要ファイル                                                     |
-| :--------------- | :------------------------ | :--------------------------------------------------------------- |
-| `src/components` | UI および 3D オブジェクト | `VRMAvatar.tsx`, `SceneContent.tsx`                              |
-| `src/hooks`      | ビジネスロジック          | `useStageCommandHandler.ts`, `useVrmModel.ts`, `useWebSocket.ts` |
+| ディレクトリ      | 用途                       | 主要ファイル                                                          |
+| :---------------- | :------------------------- | :-------------------------------------------------------------------- |
+| `src/components`  | UI および 3D オブジェクト  | `VRMAvatar.tsx`, `SceneContent.tsx`                                   |
+| `src/hooks`       | ビジネスロジック           | `useStageCommandHandler.ts`, `useVrmModel.ts`, `useStageConnection.ts` |
+| `electron/server` | MCP サーバーとコマンド制御 | `mcp-server.ts`, `command-queue.ts`, `ipc-handler.ts`                 |
 
 ## 4. 主要概念 (ユビキタス言語)
 
-| 用語               | 定義                           | 例                   |
-| :----------------- | :----------------------------- | :------------------- |
-| **VRM**            | 3D アバターの標準フォーマット  | `avatar.vrm`         |
-| **BlendShape**     | 表情を制御するパラメータ       | `Joy`, `Angry`, `Aa` |
-| **Stage Director** | コマンドを送信するバックエンド | WebSocket 経由の指示 |
+| 用語                    | 定義                                                                     | 例                            |
+| :---------------------- | :----------------------------------------------------------------------- | :---------------------------- |
+| **VRM**                 | 3D アバターの標準フォーマット                                            | `avatar.vrm`                  |
+| **BlendShape**          | 表情を制御するパラメータ                                                 | `Joy`, `Angry`, `Aa`          |
+| **内蔵 MCP サーバー**   | main process 内で AI からのツール呼び出しを受理し、IPC で renderer に指示 | `electron/server/mcp-server.ts` |
+
+> 注: MCP サーバー名や環境変数 `STAGE_DIRECTOR_MCP_*` に残る「stage-director」は、削除された旧パッケージに由来する歴史的な識別子です。
 
 ## 5. エントリーポイント
 
