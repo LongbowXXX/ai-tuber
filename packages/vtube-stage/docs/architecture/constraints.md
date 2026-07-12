@@ -1,5 +1,3 @@
-<!-- This document is generated and updated by .github/prompts/doc-sync.prompt.md -->
-
 # 制約事項と既知の課題
 
 ## 技術的制約

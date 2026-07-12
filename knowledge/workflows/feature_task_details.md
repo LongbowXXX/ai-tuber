@@ -51,13 +51,11 @@
 - 機能の目的と背景を明確化する。
 - ユーザーストーリーと要件を特定する。
 - 仕様を作成/更新する。
-  - **テンプレート**: [仕様テンプレート](../templates/artifacts/specification.template.md)
 - プロダクトオーナーと合意する。
 - 仕様を Git で管理する。
 
 **チェックポイント**:
 
-- [ ] [仕様テンプレート](../templates/artifacts/specification.template.md) を使って検証する。
 - [ ] 署名（Sign-off）基準は Issue テンプレートを参照する。
 
 ---

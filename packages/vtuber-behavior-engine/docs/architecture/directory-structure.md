@@ -1,5 +1,3 @@
-<!-- このドキュメントは .github/prompts/doc-sync.prompt.md によって生成および更新されています -->
-
 # ディレクトリ構造
 
 ## フォルダ構成
@@ -34,8 +32,6 @@ vtuber-behavior-engine/
 
 | ディレクトリ                     | 役割                                        | 主要なファイル                                      |
 | :------------------------------- | :------------------------------------------ | :-------------------------------------------------- |
-| `.github/agents`                 | AI エージェントのペルソナと権限の定義       | `architect.agent.md`, `developer.agent.md`          |
-| `.github/prompts`                | AI エージェントが実行可能なスキルの定義     | `plan.prompt.md`, `implement.prompt.md`             |
 | `src/.../services`               | 外部 API やデータベースとのインターフェース | `speech_recognition.py`, `chroma_memory_service.py` |
 | `src/.../stage_agents`           | エージェントの振る舞いとプロンプトの定義    | `character_agent.py`, `agent_builder.py`            |
 | `src/.../stage_agents/resources` | LLM に与えるプロンプトテンプレート          | `character_prompt.md`, `initial_message.md`         |

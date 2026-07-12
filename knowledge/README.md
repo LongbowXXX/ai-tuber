@@ -34,7 +34,6 @@
 
 - **場所**: `knowledge/templates/artifacts/`
 - **例**:
-  - `specification.template.md`
   - `design.template.md`
 
 #### [Agents](./templates/agents/)
@@ -53,8 +52,6 @@
 
 - **場所**: `knowledge/guidelines/`
 - **主要ドキュメント**:
-  - `adoption-guide.md`: Terraformer をプロジェクトに導入する方法。
   - `debugging.md`: デバッグのための科学的方法。
   - `pr-creation-guidelines.md`: Pull Request 提出の標準。
   - `software-review.md`: コードレビューのチェック観点。
-  - `specification-guidelines.md`: 曖昧さのない仕様の書き方。
