@@ -1,19 +1,19 @@
 # 用語集（Glossary）
 
-| 用語                         | 定義                                                                         | 例/補足                                          |
-| ---------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------ |
-| VTuber Behavior Engine       | AI コア。ADK で会話・行動を生成し、MCP クライアントとして舞台制御を呼び出す  | `packages/vtuber-behavior-engine`                |
-| Stage Director               | 舞台監督。MCP サーバーでツール提供し、WebSocket でフロントへコマンド送信する | `packages/stage-director`                        |
-| VTube Stage                  | フロントエンド/レンダラ。VRM 描画・表情・TTS・Markdown 表示                  | `packages/vtube-stage`                           |
-| MCP (Model Context Protocol) | LLM アプリが外部ツール/コンテキストと対話するためのプロトコル                | 本プロジェクトでは `stage-director` がツール提供 |
-| ADK (Agent Development Kit)  | Google のマルチエージェントフレームワーク                                    | `google-adk`                                     |
-| FastMCP                      | MCP サーバー実装（SSE 実行）                                                 | `mcp.server.fastmcp.FastMCP`                     |
-| WebSocket コマンド           | `stage-director` → `vtube-stage` で送る JSON 命令                            | `speak` / `triggerAnimation` / `displayMarkdown` |
-| `speakId`                    | 発話を一意に識別する ID。完了同期に利用                                      | `stage-director` が UUID を生成                  |
-| `speakEnd`                   | `vtube-stage` → `stage-director` の完了通知コマンド                          | `payload.speakId` を含む                         |
-| コマンドキュー               | `stage-director` 内で StageCommand を順序制御するキュー                      | `command_queue.py`                               |
-| VRM                          | 3D アバターモデル形式                                                        | `@pixiv/three-vrm`                               |
-| VRMA                         | VRM 用アニメーション形式（モーション）                                       | 将来/サンプルで利用                              |
-| BlendShape                   | VRM の表情制御（口/目/感情）                                                 | emotion → BlendShape へマッピング                |
-| VoiceVox                     | 日本語向けの TTS サービス                                                    | デフォルト `localhost:50021`                     |
-| OBS Studio                   | 配信ソフト。vtube-stage のウィンドウをキャプチャ                             | obs-websocket 制御は未実装                       |
+| 用語                         | 定義                                                                                                             | 例/補足                                                                                        |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| VTuber Behavior Engine       | AI コア。ADK で会話・行動を生成し、MCP クライアントとして舞台制御を呼び出す                                      | `packages/vtuber-behavior-engine`                                                              |
+| VTube Stage                  | Electron アプリ。MCP サーバーを内蔵し、VRM 描画・表情・TTS・Markdown 表示を実行する                              | `packages/vtube-stage`                                                                         |
+| Stage Director               | vtube-stage 内蔵 MCP サーバーの歴史的名称。名称がコード識別子に残る                                              | サーバー名 `stage-director`、環境変数 `STAGE_DIRECTOR_MCP_*`、クラス `StageDirectorMCPClient`  |
+| MCP (Model Context Protocol) | LLM アプリが外部ツール/コンテキストと対話するためのプロトコル                                                    | 本プロジェクトでは `vtube-stage` 内蔵 MCP サーバーがツール提供                                 |
+| ADK (Agent Development Kit)  | Google のマルチエージェントフレームワーク                                                                        | `google-adk`                                                                                   |
+| MCP サーバー実装             | `@modelcontextprotocol/sdk` + Express（TypeScript）。SSE 既定、`--transport=stdio` で stdio も可                 | `packages/vtube-stage/electron/server/mcp-server.ts`                                           |
+| StageCommand                 | Electron main → renderer に IPC で送る JSON 命令                                                                 | `speak` / `triggerAnimation` / `controlCamera` / `displayMarkdown`                             |
+| `speakId`                    | 発話を一意に識別する ID。完了同期に利用                                                                          | MCP サーバー側が生成                                                                           |
+| `speakEnd`                   | renderer → Electron main（IPC）の発話完了通知。TTS 完了時に送信                                                  | `speakId` を含む                                                                               |
+| コマンドキュー               | Electron main 内で StageCommand を順序制御するキュー（30 秒タイムアウト）                                        | `electron/server/command-queue.ts`                                                             |
+| VRM                          | 3D アバターモデル形式                                                                                            | `@pixiv/three-vrm`                                                                             |
+| VRMA                         | VRM 用アニメーション形式（モーション）                                                                           | 将来/サンプルで利用                                                                            |
+| BlendShape                   | VRM の表情制御（口/目/感情）                                                                                     | emotion → BlendShape へマッピング                                                              |
+| VoiceVox                     | 日本語向けの TTS サービス                                                                                        | デフォルト `localhost:50021`                                                                   |
+| OBS Studio                   | 配信ソフト。vtube-stage のウィンドウをキャプチャ                                                                 | obs-websocket 制御は未実装                                                                     |

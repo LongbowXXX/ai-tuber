@@ -31,4 +31,4 @@ assignees: []
 - [ ] テスト仕様がすべての受け入れ基準をカバーしている。
 - [ ] 正常系がカバーされている。
 - [ ] 異常系/エッジケースがカバーされている。
-- [ ] テスト仕様が Git（`docs/specs/[Feature]/test-specs/`）に記録されている。
+- [ ] テスト仕様が Git（`specs/[NNN-feature]/checklists/`。`/speckit-checklist` で作成）に記録されている。

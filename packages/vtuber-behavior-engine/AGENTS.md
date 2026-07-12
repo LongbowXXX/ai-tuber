@@ -19,14 +19,14 @@
 | 言語           | Python                | 3.11+      | メイン開発言語                         |
 | フレームワーク | Google ADK            | 1.17.0+    | マルチエージェントフレームワーク       |
 | AI モデル      | Gemini (Google GenAI) | 最新       | 対話生成、推論                         |
-| プロトコル     | MCP                   | 1.19.0+    | 演出エンジン (Stage Director) との通信 |
+| プロトコル     | MCP                   | 1.19.0+    | 演出エンジン (vtube-stage) との通信    |
 | データベース   | ChromaDB              | 1.2.2+     | ベクトルデータベース（記憶管理）       |
 
 ### アーキテクチャパターン
 
 - **マルチエージェントシステム (ADK)**: 役割の異なるエージェント（Character, News, Presentation 等）が協調して動作。
 - **サービスレイヤー**: 外部 API（音声認識、MCP、DB）との通信を抽象化。
-- **MCP クライアント/サーバー**: `stage-director` を MCP サーバーとして利用し、ツール経由で演出を実行。
+- **MCP クライアント/サーバー**: `vtube-stage` 内蔵の MCP サーバーに SSE で接続し、ツール経由で演出を実行。
 
 ## 3. ディレクトリ構造
 
@@ -41,8 +41,8 @@ vtuber-behavior-engine/
 │       ├── news_agent/        # ニュース特化型エージェント
 │       ├── presentation_agent/# プレゼン特化型エージェント
 │       ├── services/          # 外部連携サービス（音声、MCP、DB等）
-│       ├── stage_agents/      # エージェントの定義、プロンプト、設定
-│       └── theater/           # シアター形式の制御モデル
+│       └── stage_agents/      # エージェントの定義、プロンプト、設定
+│           └── theater/       # シアター形式の制御モデル
 └── tests/                # テストコード
 ```
 
@@ -59,7 +59,7 @@ vtuber-behavior-engine/
 | 用語                | 定義                                                       | 例                         |
 | :------------------ | :--------------------------------------------------------- | :------------------------- |
 | **Character Agent** | キャラクターの性格（ペルソナ）を体現するエージェント。     | `character_agent.py`       |
-| **Stage Director**  | キャラクターの動作（発話、アニメ）を制御する外部システム。 | MCP ツール `speak`         |
+| **vtube-stage**     | キャラクターの動作（発話、アニメ）を制御する Electron アプリ。内蔵 MCP サーバーのツールを呼び出して演出する（クラス名 `StageDirectorMCPClient` は歴史的経緯）。 | MCP ツール `speak`         |
 | **Memory**          | ChromaDB を使用した会話履歴や知識の保存・検索。            | `chroma_memory_service.py` |
 
 ## 5. エントリーポイント

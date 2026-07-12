@@ -10,6 +10,8 @@
 | 3D レンダリング | Three.js                   | 0.175      | 3D グラフィックス      |
 | VRM 制御        | @pixiv/three-vrm           | 3.4        | VRM モデルの操作       |
 | アニメーション  | @pixiv/three-vrm-animation | 3.4        | VRM アニメーション再生 |
+| デスクトップ    | Electron                   | 40         | アプリランタイム       |
+| プロトコル      | @modelcontextprotocol/sdk  | 1.26       | 内蔵 MCP サーバー      |
 
 ## ライブラリ・ツール
 
@@ -22,5 +24,6 @@
 
 ## 外部サービス・連携
 
-- **WebSocket**: `stage-director` とのリアルタイム双方向通信。
+- **MCP (SSE / stdio)**: `vtuber-behavior-engine` からのツール呼び出しを内蔵 MCP サーバーで受理 (Express ベース、既定 127.0.0.1:8080)。
+- **Electron IPC**: main process から renderer へのコマンド伝達 (preload の `window.electron.socket`)。
 - **VOICEVOX**: 音声合成 (TTS) エンジン (外部実行が必要)。

@@ -49,8 +49,8 @@ graph LR
 
 ## 技術スタック (Tech Stack)
 
-- **AI Backend**: Python 3.11+, Google ADK, Gemini API, MCP (FastMCP)
-- **Frontend**: TypeScript, React 19, Vite, Three.js, @pixiv/three-vrm, Electron, Express (MCP Server)
+- **AI Backend**: Python 3.11+, Google ADK, Gemini API, MCP Client (Google ADK McpToolset)
+- **Frontend**: TypeScript, React 19, Vite, Three.js, @pixiv/three-vrm, Electron, MCP Server (@modelcontextprotocol/sdk + Express)
 - **TTS**: VoiceVox
 - **Streaming**: OBS Studio
 
@@ -86,6 +86,8 @@ graph LR
 ├── packages/
 │   ├── vtuber-behavior-engine/ # AI Core (ADK, MCP Client)
 │   └── vtube-stage/            # Frontend (React, Three.js, Electron, MCP Server)
+├── specs/                      # Feature specs (Spec Kit)
+├── .specify/                   # Spec Kit config & project constitution
 ├── docs/                       # Documentation
 │   ├── architecture/           # Architecture details (Overview, Tech Stack, etc.)
 │   ├── rules/                  # Coding conventions and Testing
@@ -93,6 +95,14 @@ graph LR
 ├── README.md                   # This file
 └── LICENSE                     # License
 ```
+
+## 仕様管理 (Spec Management)
+
+仕様は [Spec Kit](https://github.com/github/spec-kit) で管理しています。
+
+- **プロジェクト憲章**: [.specify/memory/constitution.md](.specify/memory/constitution.md)
+- **ベースライン仕様**: [specs/001-ai-vtuber-system/spec.md](specs/001-ai-vtuber-system/spec.md)
+- 新機能の仕様は `/speckit-specify` → `/speckit-plan` → `/speckit-tasks` → `/speckit-implement` のフローで `specs/` 配下に作成します。
 
 ## ドキュメント (Documentation)
 

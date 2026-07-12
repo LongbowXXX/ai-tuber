@@ -10,7 +10,7 @@
 ### 1. 分析と再現
 
 - [ ] バグ修正計画の作成（`knowledge/templates/agents/bug_fix_plan.template.md`）
-  - **成果物**: `docs/specs/fixes/[IssueID]/fix-plan.md`
+  - **成果物**: バグ修正計画（Issue コメントとして記録）
 
 ### 2. 実装
 

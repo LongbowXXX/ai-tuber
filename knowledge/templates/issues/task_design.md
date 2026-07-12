@@ -4,10 +4,10 @@
 
 この Issue は、要件定義に基づいて具体的な実装方法（アーキテクチャ、インターフェース）を議論し決定するためのものです。
 
-次のテンプレートを使用して設計ドキュメントを作成してください:
+設計ドキュメント（実装計画）は Spec Kit で作成してください:
 
-- **テンプレート**: [設計テンプレート](../artifacts/design.template.md)
-- **保存先**: `docs/specs/[FeatureName]/design.md`
+- **作成方法**: `/speckit-plan`（続けて `/speckit-tasks` でタスク分解）
+- **保存先**: `specs/[NNN-feature]/plan.md`, `specs/[NNN-feature]/tasks.md`
 
 ## ✅ 完了条件
 

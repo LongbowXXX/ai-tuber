@@ -96,7 +96,7 @@
 - データモデル設計。
 - 設計レビュー。
 - チーム合意。
-- **テンプレート**: [設計テンプレート](../templates/artifacts/design.template.md)
+- **成果物**: `specs/[NNN-feature]/plan.md`, `tasks.md`（Spec Kit。`/speckit-plan` → `/speckit-tasks` で作成）
 
 **重要事項**:
 
@@ -105,7 +105,7 @@
 
 **チェックポイント**:
 
-- [ ] [設計テンプレート](../templates/artifacts/design.template.md) を使って検証する。
+- [ ] Spec Kit の成果物（`specs/[NNN-feature]/plan.md`）を使って検証する。
 - [ ] レビュー基準は Issue テンプレートを参照する。
 
 ---
@@ -144,7 +144,7 @@
 **作業内容**:
 
 - 仕様/設計に基づいてチェック項目を作る。
-  - **テンプレート**: [テスト仕様](../templates/artifacts/test_spec.template.md)
+  - **成果物**: `specs/[NNN-feature]/checklists/*.md`（Spec Kit。`/speckit-checklist` で作成）
   - **Issue テンプレート**: [テスト仕様作成](../templates/issues/task_create_test_spec.md)
 - 正常/異常系のテストケースを定義する。
 - 境界値テストを定義する。
