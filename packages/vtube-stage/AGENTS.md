@@ -47,19 +47,19 @@ vtube-stage/
 
 ### 主要ディレクトリ
 
-| ディレクトリ      | 用途                       | 主要ファイル                                                          |
-| :---------------- | :------------------------- | :-------------------------------------------------------------------- |
-| `src/components`  | UI および 3D オブジェクト  | `VRMAvatar.tsx`, `SceneContent.tsx`                                   |
+| ディレクトリ      | 用途                       | 主要ファイル                                                           |
+| :---------------- | :------------------------- | :--------------------------------------------------------------------- |
+| `src/components`  | UI および 3D オブジェクト  | `VRMAvatar.tsx`, `SceneContent.tsx`                                    |
 | `src/hooks`       | ビジネスロジック           | `useStageCommandHandler.ts`, `useVrmModel.ts`, `useStageConnection.ts` |
-| `electron/server` | MCP サーバーとコマンド制御 | `mcp-server.ts`, `command-queue.ts`, `ipc-handler.ts`                 |
+| `electron/server` | MCP サーバーとコマンド制御 | `mcp-server.ts`, `command-queue.ts`, `ipc-handler.ts`                  |
 
 ## 4. 主要概念 (ユビキタス言語)
 
-| 用語                    | 定義                                                                     | 例                            |
-| :---------------------- | :----------------------------------------------------------------------- | :---------------------------- |
-| **VRM**                 | 3D アバターの標準フォーマット                                            | `avatar.vrm`                  |
-| **BlendShape**          | 表情を制御するパラメータ                                                 | `Joy`, `Angry`, `Aa`          |
-| **内蔵 MCP サーバー**   | main process 内で AI からのツール呼び出しを受理し、IPC で renderer に指示 | `electron/server/mcp-server.ts` |
+| 用語                  | 定義                                                                      | 例                              |
+| :-------------------- | :------------------------------------------------------------------------ | :------------------------------ |
+| **VRM**               | 3D アバターの標準フォーマット                                             | `avatar.vrm`                    |
+| **BlendShape**        | 表情を制御するパラメータ                                                  | `Joy`, `Angry`, `Aa`            |
+| **内蔵 MCP サーバー** | main process 内で AI からのツール呼び出しを受理し、IPC で renderer に指示 | `electron/server/mcp-server.ts` |
 
 > 注: MCP サーバー名や環境変数 `STAGE_DIRECTOR_MCP_*` に残る「stage-director」は、削除された旧パッケージに由来する歴史的な識別子です。
 

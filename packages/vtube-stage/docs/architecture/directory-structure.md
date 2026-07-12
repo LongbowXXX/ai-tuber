@@ -28,15 +28,15 @@ vtube-stage/
 
 ## 各ディレクトリの役割
 
-| ディレクトリ     | 役割                                       | 主要なファイル                                                                             |
-| :--------------- | :----------------------------------------- | :----------------------------------------------------------------------------------------- |
-| `electron/server` | 内蔵 MCP サーバーとコマンド制御            | `mcp-server.ts`, `command-queue.ts`, `ipc-handler.ts`                                          |
-| `src/components` | UI 部品および 3D オブジェクトの定義        | `VRMAvatar.tsx`, `SceneContent.tsx`, `SpeechBubble.tsx`, `VRMController.tsx`               |
-| `src/hooks`      | ビジネスロジック、IPC 通信、VRM 制御       | `useStageCommandHandler.ts`, `useVrmModel.ts`, `useFacialExpression.ts`, `useStageConnection.ts` |
-| `src/services`   | 外部 API (VOICEVOX 等) との通信            | `tts_service.ts`                                                                           |
-| `src/types`      | コマンドやモデルの型定義                   | `command.ts`, `avatar_types.ts`, `scene_types.ts`                                          |
-| `src/utils`      | 共通ユーティリティ                         | `command_validator.ts`                                                                     |
-| `public/vrma`    | キャラクターの動作定義                     | `idle_pose.vrma`, `wave_pose.vrma`                                                         |
+| ディレクトリ      | 役割                                 | 主要なファイル                                                                                   |
+| :---------------- | :----------------------------------- | :----------------------------------------------------------------------------------------------- |
+| `electron/server` | 内蔵 MCP サーバーとコマンド制御      | `mcp-server.ts`, `command-queue.ts`, `ipc-handler.ts`                                            |
+| `src/components`  | UI 部品および 3D オブジェクトの定義  | `VRMAvatar.tsx`, `SceneContent.tsx`, `SpeechBubble.tsx`, `VRMController.tsx`                     |
+| `src/hooks`       | ビジネスロジック、IPC 通信、VRM 制御 | `useStageCommandHandler.ts`, `useVrmModel.ts`, `useFacialExpression.ts`, `useStageConnection.ts` |
+| `src/services`    | 外部 API (VOICEVOX 等) との通信      | `tts_service.ts`                                                                                 |
+| `src/types`       | コマンドやモデルの型定義             | `command.ts`, `avatar_types.ts`, `scene_types.ts`                                                |
+| `src/utils`       | 共通ユーティリティ                   | `command_validator.ts`                                                                           |
+| `public/vrma`     | キャラクターの動作定義               | `idle_pose.vrma`, `wave_pose.vrma`                                                               |
 
 ## 依存関係
 
