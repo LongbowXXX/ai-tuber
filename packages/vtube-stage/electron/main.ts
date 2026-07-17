@@ -22,7 +22,7 @@ process.env.APP_ROOT = path.join(__dirname, '..');
 const APP_ROOT = process.env.APP_ROOT;
 
 // Load .env file
-dotenv.config({ path: path.join(APP_ROOT, '.env') });
+dotenv.config({ path: path.join(APP_ROOT, '.env'), quiet: true });
 
 console.log('[Main] Script execution started');
 
