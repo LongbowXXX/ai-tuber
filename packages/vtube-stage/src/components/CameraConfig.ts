@@ -50,14 +50,7 @@ export const SIDE_ANGLE_OFFSET_Z = 2.0;
 export const CLOSEUP_FOV = 35; // 少し望遠気味にして背景圧縮効果を狙う
 
 export type CameraMode =
-  | 'default'
-  | 'intro'
-  | 'closeUp'
-  | 'fullBody'
-  | 'lowAngle'
-  | 'highAngle'
-  | 'sideRight'
-  | 'sideLeft';
+  'default' | 'intro' | 'closeUp' | 'fullBody' | 'lowAngle' | 'highAngle' | 'sideRight' | 'sideLeft';
 
 export interface CameraState {
   mode: string;

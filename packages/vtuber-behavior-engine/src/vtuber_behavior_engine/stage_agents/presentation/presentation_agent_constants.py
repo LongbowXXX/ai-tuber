@@ -5,5 +5,5 @@
 
 STATE_PRESENTATION_ALL_DATA = "presentation_all_data"
 
-INITIAL_PRESENTATION_LLM_MODEL = "gemini-3-flash-preview"
-UPDATE_PRESENTATION_LLM_MODEL = "gemini-3-flash-preview"
+INITIAL_PRESENTATION_LLM_MODEL = "gemini-3.5-flash"
+UPDATE_PRESENTATION_LLM_MODEL = "gemini-3.5-flash"

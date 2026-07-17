@@ -6,10 +6,10 @@
 AGENT_SYSTEM_AAP_NAME = "ai_vtuber_stage_director"
 AGENT_SYSTEM_USER_ID = "vtuber_user"
 
-CONVERSATION_RECALL_LLM_MODEL = "gemini-3-flash-preview"
-# AGENT_LLM_MODEL = "gemini-3-flash-preview"
-AGENT_LLM_MODEL = "gemini-3-flash-preview"
-OUTPUT_LLM_MODEL = "gemini-3-flash-preview"
+CONVERSATION_RECALL_LLM_MODEL = "gemini-3.1-flash-lite"
+# AGENT_LLM_MODEL = "gemini-3.5-flash"
+AGENT_LLM_MODEL = "gemini-3.1-flash-lite"
+OUTPUT_LLM_MODEL = "gemini-3.1-flash-lite"
 # OUTPUT_LLM_MODEL = LiteLlm("ollama_chat/gemma3:27b")
 
 
