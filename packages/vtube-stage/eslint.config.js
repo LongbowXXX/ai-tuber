@@ -23,9 +23,11 @@ export default tseslint.config(
       'react-refresh': reactRefresh,
     },
     rules: {
-      // react-hooks v7 の React Compiler 系新ルールは three.js/R3F の
-      // シーングラフ直接変異イディオムと衝突するため無効化(従来の
-      // rules-of-hooks / exhaustive-deps は有効のまま)。指摘内容は
+      // react-hooks v7 の React Compiler 系新ルールを無効化(従来の
+      // rules-of-hooks / exhaustive-deps は有効のまま)。refs/immutability は
+      // three.js/R3F のシーングラフ直接変異イディオムと、purity はパーティクル
+      // 生成等でのレンダー中 Math.random() と、set-state-in-effect は既存の
+      // effect 内同期 setState パターンと衝突する。個別の指摘内容は
       // 後続課題として PR に記録済み。
       'react-hooks/refs': 'off',
       'react-hooks/purity': 'off',
