@@ -35,7 +35,7 @@ export const useAvatarBlink = (vrm: VRM | null, currentEmotion: string, config?:
           if (blinkProgressRef.current < BLINK_DURATION) {
             // 0.0 -> 0.1 (閉じ) -> 0.2 (開き)
             // 0.1の時点で1.0(完閉)になるように
-            let weight = 0;
+            let weight: number;
             if (blinkProgressRef.current < BLINK_DURATION / 2) {
               // 閉じていく
               weight = blinkProgressRef.current / (BLINK_DURATION / 2);
