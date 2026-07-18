@@ -10,14 +10,14 @@ readme = "README.md"
 license = { text = "MIT" }
 dependencies = [
     "python-dotenv>=1.2.1",
-    "google-adk>=1.21.0",
-    "google-genai>=1.56.0",
+    "google-adk>=2.5.0",
+    "google-genai>=2.9.0",
     "google-cloud-speech>=2.35.0",
     "pyaudio>=0.2.14",
     "mcp[cli]>=1.25.0",
     "wheel>=0.45.1",
     "setuptools>=80.9.0",
-    "litellm>=1.80.11",
+    "litellm>=1.84.0",
     "google-api-python-client>=2.187.0",
     "google-auth-oauthlib>=1.2.2",
     "google-auth-httplib2>=0.3.0",
