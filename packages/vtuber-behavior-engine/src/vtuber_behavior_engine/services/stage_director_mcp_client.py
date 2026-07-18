@@ -15,7 +15,7 @@ from typing import cast
 
 from google.adk.tools.base_tool import BaseTool
 from google.adk.tools.mcp_tool.mcp_toolset import McpToolset
-from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams, MCPSessionManager
+from google.adk.tools.mcp_tool.mcp_session_manager import SseConnectionParams, MCPSessionManager
 
 from vtuber_behavior_engine.stage_agents.models import AgentSpeech
 
@@ -30,7 +30,7 @@ class StageDirectorMCPClient:
         if not STAGE_DIRECTOR_MCP_SERVER_URL:
             logger.error("STAGE_DIRECTOR_MCP_SERVER_URL is not set.")
             raise ValueError("STAGE_DIRECTOR_MCP_SERVER_URL is not set.")
-        connection_params = SseServerParams(
+        connection_params = SseConnectionParams(
             url=STAGE_DIRECTOR_MCP_SERVER_URL,
         )
         toolset = McpToolset(
