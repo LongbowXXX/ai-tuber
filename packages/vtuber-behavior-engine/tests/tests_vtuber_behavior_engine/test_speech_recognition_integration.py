@@ -10,6 +10,7 @@ SpeechRecognitionManager の統合テスト
 
 pytest -k test_speech_recognition_integration で実行できます。
 """
+
 import logging
 import queue
 import time
