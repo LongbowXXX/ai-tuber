@@ -32,12 +32,7 @@ class ChromaMemoryService(BaseMemoryService):
         self._client = chromadb.PersistentClient(
             str(self._db_path),
         )
-        # NOTE: 旧実装はここで GoogleGenerativeAiEmbeddingFunction を生成していたが、
-        # コレクションに渡しておらず埋め込みには一切使われていなかった（実際の埋め込みは
-        # chromadb デフォルトの ONNX MiniLM）。chromadb 1.5.9 では旧 google-generativeai
-        # SDK との非互換でこの生成自体がクラッシュするため、死んでいた生成を削除した。
-        # Gemini 埋め込み（GoogleGenaiEmbeddingFunction）への移行は既存コレクションの
-        # 再埋め込みが必要なため別課題。
+        # NOTE: 現在はデフォルトの ONNX MiniLM 埋め込みを使用しています。\n        # Gemini 埋め込み（GoogleGenaiEmbeddingFunction）への移行は、\n        # 既存コレクションの再埋め込み（マイグレーション）が必要となるため、別課題として扱います。
         self._collection = self._client.get_or_create_collection(
             name="vtuber_sessions",
         )
