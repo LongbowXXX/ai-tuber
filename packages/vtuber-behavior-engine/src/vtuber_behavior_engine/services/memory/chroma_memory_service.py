@@ -7,7 +7,6 @@ from typing import Callable
 
 import chromadb
 from chromadb import QueryResult
-from chromadb.utils import embedding_functions
 from google.adk.events import Event
 from google.adk.memory import BaseMemoryService
 from google.adk.memory.base_memory_service import SearchMemoryResponse
@@ -33,7 +32,12 @@ class ChromaMemoryService(BaseMemoryService):
         self._client = chromadb.PersistentClient(
             str(self._db_path),
         )
-        embedding_functions.GoogleGenerativeAiEmbeddingFunction(api_key_env_var="GOOGLE_API_KEY")
+        # NOTE: 旧実装はここで GoogleGenerativeAiEmbeddingFunction を生成していたが、
+        # コレクションに渡しておらず埋め込みには一切使われていなかった（実際の埋め込みは
+        # chromadb デフォルトの ONNX MiniLM）。chromadb 1.5.9 では旧 google-generativeai
+        # SDK との非互換でこの生成自体がクラッシュするため、死んでいた生成を削除した。
+        # Gemini 埋め込み（GoogleGenaiEmbeddingFunction）への移行は既存コレクションの
+        # 再埋め込みが必要なため別課題。
         self._collection = self._client.get_or_create_collection(
             name="vtuber_sessions",
         )
