@@ -32,7 +32,9 @@ class ChromaMemoryService(BaseMemoryService):
         self._client = chromadb.PersistentClient(
             str(self._db_path),
         )
-        # NOTE: 現在はデフォルトの ONNX MiniLM 埋め込みを使用しています。\n        # Gemini 埋め込み（GoogleGenaiEmbeddingFunction）への移行は、\n        # 既存コレクションの再埋め込み（マイグレーション）が必要となるため、別課題として扱います。
+        # NOTE: 現在はデフォルトの ONNX MiniLM 埋め込みを使用しています。
+        # Gemini 埋め込み（GoogleGenaiEmbeddingFunction）への移行は、
+        # 既存コレクションの再埋め込み（マイグレーション）が必要となるため、別課題として扱います。
         self._collection = self._client.get_or_create_collection(
             name="vtuber_sessions",
         )
