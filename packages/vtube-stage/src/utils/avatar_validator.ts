@@ -45,7 +45,8 @@ export function validateAvatarConfigs(data: unknown): ValidatedAvatarConfig[] {
     if (result.success) {
       validAvatars.push(result.data);
     } else {
-      const id = typeof entry === 'object' && entry !== null && 'id' in entry ? (entry as { id: unknown }).id : '(unknown)';
+      const id =
+        typeof entry === 'object' && entry !== null && 'id' in entry ? (entry as { id: unknown }).id : '(unknown)';
       console.error(`Invalid avatar config (id=${String(id)}) in avatars.json, skipping:`, result.error.format());
     }
   }
