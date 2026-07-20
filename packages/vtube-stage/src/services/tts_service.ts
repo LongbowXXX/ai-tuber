@@ -36,11 +36,9 @@ export function splitAndMergeSentences(input: string): string[] {
 
 import { VOICE_VOX_SPEAKERS } from '../constants/voice_vox_speakers';
 
-function getSpeakerId(voiceVoxSpeaker?: string, style?: string): number {
-  // デフォルト: ずんだもん ノーマル (3)
+function getSpeakerId(voiceVoxSpeaker: string, style?: string): number {
+  // 未知の話者名が指定された場合のフォールバック: ずんだもん ノーマル (3)
   const DEFAULT_ID = 3;
-
-  if (!voiceVoxSpeaker) return DEFAULT_ID;
 
   const speaker = VOICE_VOX_SPEAKERS.find(s => s.name === voiceVoxSpeaker);
   if (!speaker) return DEFAULT_ID;
@@ -57,9 +55,9 @@ function getSpeakerId(voiceVoxSpeaker?: string, style?: string): number {
 
 export async function playVoice(
   text: string,
+  voiceVoxSpeaker: string,
   onPlay?: () => void,
-  style?: string,
-  voiceVoxSpeaker?: string
+  style?: string
 ): Promise<void> {
   const speakerId = getSpeakerId(voiceVoxSpeaker, style);
 

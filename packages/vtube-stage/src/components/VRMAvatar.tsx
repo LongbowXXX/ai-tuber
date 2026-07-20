@@ -25,17 +25,17 @@ export interface VRMAvatarProps {
   onLoad?: (vrm: VRM) => void;
   onTTSComplete?: (speakId: string) => void;
   onAnimationEnd?: (animationName: string) => void;
-  height?: number;
-  voiceVoxSpeaker?: string;
+  height: number;
+  voiceVoxSpeaker: string;
   name?: string;
-  lookAtConfig?: {
+  lookAtConfig: {
     yawLimitDeg: number;
     pitchLimitDeg: number;
     headWeight: number;
     neckWeight: number;
-    disableLookAtAnimations?: string[];
+    disableLookAtAnimations: string[];
   };
-  blinkConfig?: {
+  blinkConfig: {
     disabledEmotions: string[];
   };
   autoReturnToIdleTimeout?: number;
@@ -218,7 +218,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
   const playTTS = useCallback(
     async (text: string, onPlay?: () => void, style?: string) => {
       console.log('[TTS] playTTS called with text:', text);
-      await playVoice(text, onPlay, style, voiceVoxSpeaker); // onPlayを渡す, speakerPass
+      await playVoice(text, voiceVoxSpeaker, onPlay, style);
     },
     [voiceVoxSpeaker]
   );
@@ -249,7 +249,7 @@ export const VRMAvatar: React.FC<VRMAvatarProps> = ({
       <primitive object={lookAtTargetRef.current} />
 
       {/* Add SpeechBubble as a child, positioned relative to the avatar */}
-      {bubbleText && <SpeechBubble message={bubbleText} position={[0, height || 1.8, 0]} />}
+      {bubbleText && <SpeechBubble message={bubbleText} position={[0, height, 0]} />}
     </primitive>
   ) : null;
 };

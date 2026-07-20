@@ -1,8 +1,7 @@
 import { useCallback, useRef } from 'react';
 import { VRM } from '@pixiv/three-vrm';
-import { DEFAULT_AVATAR_CONFIG } from '../constants/avatar_config';
 
-export const useAvatarBlink = (vrm: VRM | null, currentEmotion: string, config?: { disabledEmotions: string[] }) => {
+export const useAvatarBlink = (vrm: VRM | null, currentEmotion: string, config: { disabledEmotions: string[] }) => {
   const blinkTimerRef = useRef<number>(Math.random() * 2 + 1); // 瞬きタイマー
   const isBlinkingRef = useRef<boolean>(false);
   const blinkProgressRef = useRef<number>(0);
@@ -11,7 +10,7 @@ export const useAvatarBlink = (vrm: VRM | null, currentEmotion: string, config?:
     (delta: number) => {
       if (!vrm || !vrm.expressionManager) return;
 
-      const disabledEmotions = config?.disabledEmotions ?? DEFAULT_AVATAR_CONFIG.blink.disabledEmotions;
+      const disabledEmotions = config.disabledEmotions;
       if (disabledEmotions.includes(currentEmotion)) {
         // happyなどのときは瞬きしない（笑顔で目が細くなっているため干渉を防ぐ）
         vrm.expressionManager.setValue('blink', 0);

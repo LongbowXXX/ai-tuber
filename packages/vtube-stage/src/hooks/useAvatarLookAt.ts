@@ -2,18 +2,17 @@ import { useCallback, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { VRM } from '@pixiv/three-vrm';
 import { RootState } from '@react-three/fiber';
-import { DEFAULT_AVATAR_CONFIG } from '../constants/avatar_config';
 
 export const useAvatarLookAt = (
   vrm: VRM | null,
   isLoaded: boolean,
   currentAnimationName: string | null,
-  config?: {
+  config: {
     yawLimitDeg: number;
     pitchLimitDeg: number;
     headWeight: number;
     neckWeight: number;
-    disableLookAtAnimations?: string[];
+    disableLookAtAnimations: string[];
   }
 ) => {
   const lookAtTargetRef = useRef<THREE.Object3D>(new THREE.Object3D());
@@ -39,7 +38,7 @@ export const useAvatarLookAt = (
       const localHeadPos = vrm.scene.worldToLocal(headWorldPos);
 
       // 特定のアニメーションの最中はLookAtを無効化し、正面を見るようにする
-      const disabledAnimations = config?.disableLookAtAnimations ?? DEFAULT_AVATAR_CONFIG.lookAt.disabledAnimations;
+      const disabledAnimations = config.disableLookAtAnimations;
       if (currentAnimationName && disabledAnimations.includes(currentAnimationName)) {
         // ローカル座標系で正面(Z+)にターゲットを置く
         const centerDir = new THREE.Vector3(0, 0, 1.0);
@@ -65,16 +64,16 @@ export const useAvatarLookAt = (
       let pitch = Math.atan2(targetDir.y, xzLen);
 
       // 角度制限 (ラジアン)
-      const yawLimit = (config?.yawLimitDeg ?? 50) * (Math.PI / 180);
-      const pitchLimit = (config?.pitchLimitDeg ?? 30) * (Math.PI / 180);
+      const yawLimit = config.yawLimitDeg * (Math.PI / 180);
+      const pitchLimit = config.pitchLimitDeg * (Math.PI / 180);
 
       yaw = THREE.MathUtils.clamp(yaw, -yawLimit, yawLimit);
       pitch = THREE.MathUtils.clamp(pitch, -pitchLimit, pitchLimit);
 
       // --- Head & Neck Rotation Application ---
       // 回転をHeadとNeckに分配する比率 (例: Head 50%, Neck 50%)
-      const headWt = config?.headWeight ?? 0.5;
-      const neckWt = config?.neckWeight ?? 0.5;
+      const headWt = config.headWeight;
+      const neckWt = config.neckWeight;
 
       // 目線 (VRM LookAt) 用のターゲット計算
       // 制限した角度から位置を再計算
