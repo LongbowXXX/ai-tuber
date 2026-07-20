@@ -10,7 +10,7 @@ export interface SpeakMessage {
 export interface AvatarState {
   id: string;
   name?: string; // Display name
-  voiceVoxSpeaker?: string; // VoiceVox matching name
+  voiceVoxSpeaker: string; // VoiceVox matching name
   vrmUrl: string;
   animationUrls: { [key: string]: string };
   currentEmotion: string;
@@ -19,15 +19,15 @@ export interface AvatarState {
   position: [number, number, number];
   onTTSComplete?: (speakId: string) => void;
   onAnimationEnd?: (animationName: string) => void;
-  height?: number;
-  lookAtConfig?: {
+  height: number;
+  lookAtConfig: {
     yawLimitDeg: number;
     pitchLimitDeg: number;
     headWeight: number;
     neckWeight: number;
-    disableLookAtAnimations?: string[];
+    disableLookAtAnimations: string[];
   };
-  blinkConfig?: {
+  blinkConfig: {
     disabledEmotions: string[];
   };
   autoReturnToIdleTimeout?: number;
