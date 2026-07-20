@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useStageConnection } from './useStageConnection';
 import { validateStageCommand } from '../utils/command_validator';
+import { validateAvatarConfigs } from '../utils/avatar_validator';
 import { AvatarState } from '../types/avatar_types';
 import { StageCommand } from '../types/command';
 import { StageState } from '../types/scene_types';
@@ -146,9 +147,11 @@ export function useStageCommandHandler() {
         return res.json();
       })
       .then(data => {
+        const validatedAvatars = validateAvatarConfigs(data);
+
         // Resolve asset paths
-        const newAvatars = data.map((avatar: AvatarState) => {
-          const newAvatar = { ...avatar };
+        const newAvatars = validatedAvatars.map((avatar): AvatarState => {
+          const newAvatar: AvatarState = { ...avatar, speechText: null };
           if (newAvatar.vrmUrl) {
             newAvatar.vrmUrl = toAssetPath(newAvatar.vrmUrl);
           }
